@@ -1,0 +1,198 @@
+.vertical-wrapper-menu-izquierda {
+  position: fixed;
+  left: 1vw;          
+  bottom: 0;
+  width: 10vw;  
+  height: 83vh; 
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  z-index: 999;
+}
+
+.icono-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1rem;
+  cursor: pointer;
+  color: #616160;
+  transition: background 0.2s;
+}
+.icono-menu-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.icono-menu-item span {
+  margin-left: 0.75rem;   /* ajusta a tu gusto */
+}
+
+.icono-menu-item svg.icono-menu {
+  margin-right: 0.75rem;  /* ajusta a tu gusto */
+}
+
+.menu-izquierda ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;  
+}
+
+.menu-izquierda li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.menu-izquierda li svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+nav.menu-izquierda svg.icono-menu {
+  display: inline-block;      
+  vertical-align: middle;  
+  color: #616160;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  transition: color 0.2s, stroke 0.2s;
+}
+
+nav.menu-izquierda svg.icono-menu:hover {
+  color: #D4367A;
+}
+
+.menu-izquierda li:hover {
+  background: rgba(0,0,0,0.05);
+  border-radius: 4px;
+}
+
+.vertical-wrapper {
+    position: fixed;          
+    left: 1vw;             
+    bottom: 0;             
+    height: 85vh;          
+    width: 17vw;           
+    overflow-y: auto;      
+    overflow-x: hidden;
+    border-radius: 10px;    
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .vertical-wrapper-derecha {
+    position: fixed;          
+    right: 1vw;               
+    bottom: 0;                
+    height: 85vh;             
+    width: 17vw;            
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 997;
+  } 
+  
+  .contenedor-xpress {
+    position: fixed;
+    top: 80px; 
+    left: 50%;
+    width: 60%;
+    transform: translateX(-50%);
+    z-index: 997;
+  }
+  .contenedor-premium {
+    position: fixed;
+    top: 220px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    z-index: 997;
+  }
+  .contenedor-generales {
+    position: fixed;
+    top: 550px; 
+    left: 50%;
+    height: calc(100vh - 270px);
+    transform: translateX(-50%);
+    width: 60%;
+    overflow-y: auto; 
+    padding-bottom: 1rem; 
+    z-index: 997;
+  }  
+
+  .overlay-notificaciones {
+    position: fixed;
+    top: 130px; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    z-index: 998; 
+    background: rgba(255, 255, 255, 0.95);
+    padding: 1rem;
+    pointer-events: auto;
+  }
+  
+  .registro-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .registro-modal {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  
+  .cerrar-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .perfil-toggle-wrapper {
+    position: fixed;
+    top: 75px;
+    left: 20px;
+    z-index: 1100;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .perfil-icono {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid white;
+  }
+  .nombre-usuario {
+    font-family: 'Gobold', sans-serif;
+    color: #616160;
+    margin: 10px;
+    font-size: 14px;
+  }
+

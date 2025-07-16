@@ -1,0 +1,168 @@
+.wrapper-busqueda {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.seguimiento-container {
+  flex: 1;
+  overflow-y: auto;
+}
+.contenedor-subastas-generales {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  padding: 5px;
+  height: 100%;
+  padding-right: 25px;
+  scroll-behavior: smooth;
+  
+  }
+  .detalle-general p,
+  .detalle-general h4,
+  .detalle-general h6,
+  .detalle-general strong {
+    margin: 2px 0;
+    line-height: 1.1; /* Más compacto que el default (~1.5) */
+    padding: 0;
+    text-transform: capitalize;
+  }
+  /* Tarjeta individual */
+  .tarjeta-general {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0.3,0.3);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  /* Animación al pasar el mouse */
+  .tarjeta-general:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Imagen a la izquierda */
+  .imagen-general {
+    width: 45%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+  .contenido-general {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 5px;
+    padding-left: 5px;
+    flex: 1;
+  }
+  /* Contenedor de información */
+  .detalle-general {
+    flex-grow: 1;
+    overflow: hidden;
+  }
+  
+  /* Texto del título */
+  .detalle-general h4 {
+    font-size: 14px;
+    margin: 0;
+    color: #333;
+  }
+  
+  /* Precio */
+  .detalle-general strong {
+    font-size: 12px;
+    color: #28AAE2;
+  }
+  
+  /* Contador de tiempo */
+  .hora-restante {
+    font-size: 10px;
+    color: #333;
+  }
+  
+  .descripcion-limitada {
+    font-size: 8px;
+    display: -webkit-box;
+    display: box; /* estándar futuro */
+    -webkit-line-clamp: 2;
+    line-clamp: 2; /* estándar futuro */
+    -webkit-box-orient: vertical;
+    box-orient: vertical; /* estándar futuro */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Opciones de botones */
+  .opciones-general {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 2px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .opciones-item-general {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+     margin: 1px;
+    transition: transform 0.2s;
+  }
+  .opciones-item-general:hover {
+    transform: scale(1.1);
+  }
+  
+  .opcionesimg-general {
+    width: 20px;
+    height: 20px;
+    margin-bottom: 2px;
+  }
+  
+  .opciones-item-general span {
+    font-size: 6px;
+    text-align: center;
+  }
+  .sin-subastas {
+    text-align: center;
+    font-size: 18px;
+    color: #888;
+    margin-top: 2rem;
+  }
+  
+    .detalle strong {
+      font-size: 12px;
+      color:#28AAE2;
+    }
+    .fade-out {
+      opacity: 0;
+      transition: opacity 1s ease-out;
+    }
+    .header-busqueda {
+      position: sticky;
+      top: 0; 
+      display: flex;               /* <-- Esto lo vuelve horizontal */
+      justify-content: space-between; /* <-- Esto separa título y botón */
+      align-items: center;            /* <-- Esto los alinea verticalmente */
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      z-index: 10;
+    }
+    
+    .btn-regresar {
+      background: #007bff;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .btn-regresar:hover {
+      background: #0056b3;
+    }

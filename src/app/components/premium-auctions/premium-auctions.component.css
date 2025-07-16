@@ -1,0 +1,107 @@
+.barra-subastas {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  margin-top: 10px;
+  border-bottom: 3px solid #28AAE2; 
+}
+
+.contenedor-items {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  width: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.contenedor-items::-webkit-scrollbar {
+  display: none;
+}
+
+/* TARJETA */
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  border-radius: 25px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 160px;
+  flex-shrink: 0;
+}
+
+/* IMAGEN PRINCIPAL */
+.imagen-subasta {
+  width: 100%;
+  height: 120px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+/* DETALLES */
+.detalle {
+  text-align: center;
+  margin: 10px 0;
+  font-size: 10px;
+  text-transform: capitalize;
+  color: #333;
+}
+.detalle h4 {
+  font-size: 12px;
+  text-transform: capitalize;
+  margin: 5px 0;
+}
+.detalle strong {
+  font-size: 13px;
+  text-transform: capitalize;
+  color: #28AAE2;
+}
+
+/* OPCIONES - BOTONES */
+.opciones {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.opciones-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.opciones-item:hover {
+  transform: scale(1.05);
+}
+.opcionesimg {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+}
+.opciones-item span {
+  font-size: 7px;
+  text-align: center;
+}
+
+/* FLECHAS */
+.flecha-izquierda, .flecha-derecha {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #616160;
+  border: 3px solid #616160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  user-select: none;
+  flex-shrink: 0;
+}

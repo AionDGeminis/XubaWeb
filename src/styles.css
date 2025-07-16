@@ -1,1 +1,43 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat-Bold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: 'Montserrat', sans-serif;
+}
+
+@font-face {
+  font-family: 'Gobold';
+  src: url('/fonts/Gobold Lowplus.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.toast-top-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  max-width: 90vw;
+  text-align: center;
+  position: fixed; /* Asegura que quede en la ventana */
+}
+
+.toast-top-center .ngx-toastr {
+  display: inline-block;
+  background-color: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  font-size: 15px;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+  }

@@ -1,0 +1,22 @@
+<nav class="navbar">
+    <img src="logo.png" alt="Xuba Logo" class="logo" (click)="recargarPagina()" style="cursor: pointer;" />
+    <div class="busqueda-container">
+      <input
+        *ngIf="mostrarBusqueda"
+        #campoBusqueda
+        type="text"
+        class="campo-busqueda"
+        placeholder="Buscar..."
+        [(ngModel)]="textoBusqueda"
+        (keydown.enter)="buscar()"
+      />
+    
+      <img
+        src="lupa.png"
+        alt="Buscar"
+        class="search-icon"
+        (click)="toggleBusqueda()"
+        
+      />
+    </div>
+  </nav>

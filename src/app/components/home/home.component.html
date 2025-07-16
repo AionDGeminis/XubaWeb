@@ -1,0 +1,103 @@
+<div class="vertical-wrapper-menu-izquierda">
+  <nav class="menu-izquierda">    
+    <ul>
+      <li (click)="recargarPagina()" class="icono-menu-item"
+      style="cursor: pointer;"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" class="icono-menu" >
+        <path d="M3 12l9-9 9 9v8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4H9v4a2 2 0 0 1-2 2H3z"/>
+      </svg>  Inicio</li>
+      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" class="icono-menu">
+     <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+     <circle cx="12" cy="12" r="3"/>
+   </svg> Seguidos</li>
+      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" class="icono-menu">
+     <path d="M8 21h8"/>     <path d="M12 17v4"/>
+     <path d="M18 3H6v6a6 6 0 0 0 12 0V3z"/>
+     <path d="M4 7H2"/>     <path d="M22 7h-2"/>
+   </svg> Ganadas</li>
+      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" class="icono-menu">
+     <circle cx="12" cy="12" r="10"/><path d="M12 8v8"/>
+     <path d="M8 12h8"/>
+   </svg> Crear Subasta</li>
+      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"  class="icono-menu" >
+     <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9z"/>
+     <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+   </svg> Notificaciones</li>
+      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" fill="none"
+        class="icono-menu">
+     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+     <circle cx="9" cy="7" r="4"/>
+     <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+     <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+   </svg> Seguidores</li>
+      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" fill="none"
+        class="icono-menu" >
+     <path d="M4 21V10"/>
+     <path d="M9 21V3"/>
+     <path d="M15 21V6"/>
+     <path d="M20 21V14"/>
+   </svg> Estadísticas</li>
+      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" class="icono-menu">
+     <path d="M12 1l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-8.5L2 8h7z"/>
+   </svg>
+    Premium</li>
+      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" class="icono-menu">
+     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+   </svg>
+    Express</li>
+      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" class="icono-menu">
+     <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+     <path d="M16 3h-8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/>
+   </svg>
+    Wallet</li>
+    </ul>
+  </nav>
+</div>
+
+<div *ngIf="isLoggedIn() && !menuVisible" class="perfil-toggle-wrapper" (click)="toggleSidebar()" tabindex="0">
+  <img [src]="usuario()?.imgPerfil || 'assets/default-user.png'" class="perfil-icono" alt="Perfil"/>
+  <h2 class="nombre-usuario">{{ usuario()?.nombre }}</h2>
+</div>
+
+<app-sidebar *ngIf="menuVisible" @fadeSlideInOut ></app-sidebar>
+
+
+<div class="contenedor-xpress">
+  <app-xpress-auctions (abrirDetalle)="abrirDetalle($event)"></app-xpress-auctions>
+</div>
+<div class="contenedor-premium">
+  <app-premium-auctions (abrirDetalle)="abrirDetalle($event)"></app-premium-auctions>
+</div>
+<div class="contenedor-generales">
+  <app-search-auctions *ngIf="terminoBusqueda" [terminoBusqueda]="terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-search-auctions>
+  <app-general-auctions *ngIf="!terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-general-auctions>
+</div>
+
+
+<div class="vertical-wrapper-derecha">
+  <ng-container *ngIf="!isLoggedIn(); else loggedIn">
+    <app-login (mostrarRegistro)="abrirRegistroModal()"></app-login>
+  </ng-container>
+  <ng-template #loggedIn>
+    <app-followed-auctions (abrirDetalle)="abrirDetalle($event)"></app-followed-auctions>
+  </ng-template>
+</div>
+
+<app-notifications *ngIf="mostrarNoti" class="overlay-notificaciones"></app-notifications>
+
+<div class="registro-modal-overlay" *ngIf="mostrarRegistro">
+  <div class="registro-modal">
+    <app-register></app-register>
+    <button class="cerrar-modal" (click)="cerrarRegistroModal()">✕</button>
+  </div>
+</div>
+

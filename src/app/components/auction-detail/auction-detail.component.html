@@ -1,0 +1,219 @@
+<!-- auction-detail.component.html corregido para rutas y modal personalizado -->
+<div class="detalle-container" *ngIf="subasta">
+  <!-- Columna izquierda: lista secundaria de subastas -->
+  <div class="left-column">
+    <div class="vertical-wrapper">
+      <!-- Navega a otra subasta usando abrirDetalle -->
+      <app-vertical-premium-auctions
+        (abrirDetalle)="abrirDetalle($event)"
+      ></app-vertical-premium-auctions>
+    </div>
+  </div>
+
+  <!-- Columna central: imagen principal y controles -->
+  <div class="center-column">
+    <div class="fondo-imagen">
+      <div class="image-wrapper-con-fondo">
+        <!-- Flecha izquierda -->
+        <img
+          src="iconos/izquierda.png"
+          alt="Anterior"
+          class="boton-flecha izquierda"
+          (click)="irAAnterior()"
+          [class.deshabilitado]="indiceActual === 0"
+        />
+
+        <!-- Imagen principal -->
+        <div class="image-container">
+          <img [src]="imagenActual" class="imagen-principal" />
+
+          <!-- Botones inferiores -->
+          <div class="botones-inferiores">
+            <ng-container *ngIf="!vencida; else finalizado">
+              <button class="btn-personalizar" (click)="mostrarModal = true">
+                Personalizar oferta
+              </button>
+              <button
+                #botonApuesta
+                class="btn-siguiente-apuesta"
+                (click)="animarApuestaClick()"
+              >
+                Ofertar ${{ siguienteApuesta | number:'1.0-0' }}
+              </button>
+            </ng-container>
+            <ng-template #finalizado>
+              <div
+                class="mensaje-final"
+                [ngClass]="{
+                  'ganaste': mensajeFinal === '¡¡GANASTE!!',
+                  'comprado': mensajeFinal === 'Comprado',
+                  'no-alcanzado': mensajeFinal === 'Mínimo no alcanzado'
+                }"
+              >
+                {{ mensajeFinal }}
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Acciones adicionales -->
+          <div class="iconos">
+            <div class="acciones-subasta">
+              <div class="accion" (click)="toggleSeguir()">
+                <img
+                  [src]="estaSiguiendo ? 'iconos/siguiendo.png' : 'iconos/seguir.png'"
+                  [alt]="estaSiguiendo ? 'Siguiendo' : 'Seguir'"
+                />
+                <span>{{ estaSiguiendo ? 'SIGUIENDO' : 'SEGUIR' }}</span>
+              </div>
+              <div class="accion">
+                <img src="iconos/compartir_blanco.png" alt="Compartir" />
+                <span>COMPARTIR</span>
+              </div>
+              <div
+                class="accion"
+                *ngIf="subasta.precio > valorApuesta && subasta.compraDirecta && !vencida"
+                (click)="realizarApuesta(subasta.precio, true)"
+              >
+                <img src="iconos/comprar.png" alt="Comprar YA" />
+                <span>COMPRAR ${{ subasta.precio | number:'1.0-0' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flecha derecha -->
+        <img
+          src="iconos/derecha.png"
+          alt="Siguiente"
+          class="boton-flecha derecha"
+          (click)="irASiguiente()"
+          [class.deshabilitado]="indiceActual === lista.length - 1"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Columna derecha: detalles y estadísticas -->
+  <div class="right-column">
+    <!-- Origen -->
+    <p class="texto-origen">Origen: {{ origen }}</p>
+
+    <!-- Info de usuario y envío -->
+    <div class="usuario-envio-contenedor">
+      <div class="usuario-info">
+        <img
+          [src]="subasta.musuarios.imgPerfil"
+          alt="Avatar"
+          class="avatar"
+        />
+        <span class="nombre-usuario">
+          {{ subasta.musuarios.nombre }} {{ subasta.musuarios.apellido }}
+        </span>
+      </div>
+      <div class="envio-info">
+        <img src="iconos/envios.png" class="icon-envio" />
+        <span>Envíos de $x a $xx</span>
+      </div>
+    </div>
+
+    <!-- Estado de la puja -->
+    <div class="estado-apuesta">
+      <div class="texto-superior">
+        {{ vencida ? 'Precio final:' : 'Subasta va en:' }}
+      </div>
+      <div class="apuesta">
+        ${{ valorApuesta | number:'1.0-0' }}
+      </div>
+    </div>
+
+    <!-- Miniaturas y descripción -->
+    <div class="centrar-vertical">
+      <div class="miniaturas-wrapper">
+        <div class="miniaturas">
+          <img
+            *ngFor="let img of subasta.mimagenesSubasta"
+            [src]="img.url"
+            (click)="cambiarImagen(img.url)"
+            [class.seleccionada]="img.url === imagenActual"
+            class="miniatura"
+          />
+        </div>
+
+        <h2 #tituloElement class="titulo">
+          {{ subasta.id }} {{ subasta.caption }}
+        </h2>
+        <p #descripcionElement class="descripcion-limitada">
+          {{ subasta.descripcion }}
+        </p>
+
+        <button
+          *ngIf="textoTruncado && !mostrarDetalles"
+          class="btn-detalles boton-derecha"
+          (click)="mostrarDetalles = true"
+        >
+          Ver detalles
+        </button>
+        <button
+          *ngIf="mostrarDetalles"
+          class="btn-detalles boton-derecha"
+          (click)="mostrarDetalles = false"
+        >
+          Ocultar detalles
+        </button>
+      </div>
+
+      <!-- Temporizador -->
+      <div class="bloque-tiempo">
+        <p class="subastatermina">
+          {{ vencida ? 'Subasta finalizada' : 'Subasta termina en:' }}
+        </p>
+        <div class="tiempo-restante">
+          {{ vencida ? '00:00:00' : tiempoVence }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Ganadores -->
+    <div class="bloque-ganadores" *ngIf="ganadoresDetalles.length > 0">
+      <button class="letrero-quienvaalacabeza">
+        {{ usuarioMayor }} {{ vencida ? 'Ganó' : 'va Ganando' }}
+      </button>
+      <ul class="lista-ganadores">
+        <li *ngFor="let g of ganadoresDetalles.slice(-3)">
+          <strong>
+            ${{ limpiarMontoNumber(g.monto) | number:'1.0-0' }}
+          </strong>
+          - {{ g.usuario }} - <small>{{ g.fecha }}</small>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Volver al listado -->
+    <button class="btn-volver" (click)="cerrarDetalle()">
+      Volver a las subastas
+    </button>
+  </div>
+</div>
+
+<!-- Modal de personalizar oferta -->
+<ng-container *ngIf="mostrarModal">
+  <div class="modal-overlay">
+    <app-oferta-personalizada-modal
+      [valorApuesta]="valorApuesta"
+      [tiempoVence]="tiempoVence"
+      (cerrar)="mostrarModal = false"
+      (ofertar)="realizarApuesta($event)"
+    ></app-oferta-personalizada-modal>
+  </div>
+</ng-container>
+
+<!-- Panel de detalles completo -->
+<div *ngIf="mostrarDetalles" class="detalle-overlay">
+  <div class="panel-detalles">
+    <h2>{{ subasta.id }} {{ subasta.caption }}</h2>
+    <p>{{ subasta.descripcion }}</p>
+    <button class="btn-detalles" (click)="mostrarDetalles = false">
+      Cerrar
+    </button>
+  </div>
+</div>

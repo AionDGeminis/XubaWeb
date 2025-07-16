@@ -1,0 +1,14 @@
+<div class="notificaciones">
+    <h2>NOTIFICACIONES</h2>
+    
+    <div class="tarjeta" *ngFor="let noti of notificaciones">
+      <img class="producto" [src]="noti.msubastas?.url" alt="producto" />
+  
+      <div class="contenido">
+        <img class="icono-alerta" src="iconos/bell.png" />
+        <p class="texto">{{ noti.descripcion }}</p>
+      </div>
+  
+      <img class="icono-final" src="iconos/win.png" alt="icono" />
+    </div>
+  </div>

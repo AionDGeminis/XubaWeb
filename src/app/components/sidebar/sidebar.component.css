@@ -1,0 +1,88 @@
+.sidebar {
+  position: absolute;
+  top: 80px; /* debajo del icono */
+  left: 20px;
+  width: 260px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  }
+  
+  .avatar-container {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+  }
+  
+  .userdate {
+    margin-top: 0px;
+    font-family: 'Montserrat-Hairline', sans-serif; 
+    color:black;
+    font-size: 12px;
+  }
+
+  .username {
+    margin-top: 10px; margin-bottom: 0;
+    color:black;
+    font-family: 'Gobold High Bold', sans-serif;
+    font-size: 30px;
+  }
+  
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Gobold Thin', sans-serif;; 
+    gap: 14px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  
+  .nav-item {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;       
+    font-family: 'Gobold Thin', sans-serif;; 
+    transition: transform 0.2s, color 0.2s;    
+  }
+  
+  .nav-item:hover {
+    transform: translateX(5px);
+    color: #ffc107;
+  }
+  .icon-img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  
+.create-private-auction {
+  margin-top: 30px;
+}
+
+.btn-private-auction {
+  background: linear-gradient(to right, #f45da2, #3eb2ff);
+  color: white;
+  font-size: 18px;
+  border: none;
+  padding: 14px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+}
+  .gradient-button:hover {
+    transform: scale(1.05);
+  }

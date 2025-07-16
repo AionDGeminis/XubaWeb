@@ -1,0 +1,34 @@
+
+<div >
+  <h2 style="text-align: center; margin: 10px; margin-bottom: 0;  color: #616160 ; font-family: Gobold;" >Xubastas Express</h2>
+</div>
+  <div class="barra-subastas">
+    <!-- Flecha izquierda -->
+    <div
+      class="flecha-izquierda"
+      *ngIf="mostrarFlechaIzquierda"
+      (click)="scrollIzquierda(contenedorRef.nativeElement)"
+    >
+      <
+    </div>
+  
+    <!-- Contenedor de subastas -->
+    <div class="contenedor-items" 
+    #contenedor (scroll)="verificarScroll(contenedorRef.nativeElement)">
+      <div class="subasta-item" *ngFor="let subasta of xpress" 
+      [ngClass]="{ 'fade-out': subasta.vencida }" 
+      (click)="abrirModal(subasta)" >
+        <img [src]="subasta.url" alt="Producto" />
+        <div class="hora">{{ subasta.tiempoVence }}</div>
+      </div>
+    </div>
+  
+    <!-- Flecha derecha -->
+    <div
+      class="flecha-derecha"
+      *ngIf="mostrarFlechaDerecha"
+      (click)="scrollDerecha(contenedorRef.nativeElement)"
+    >
+      >
+    </div>
+  </div>

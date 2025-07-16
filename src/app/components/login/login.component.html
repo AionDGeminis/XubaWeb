@@ -1,0 +1,40 @@
+<div class="login-container">
+  <div class="logo">
+    <img src="iconos/logo-xuba.png" alt="XUBA Subastas" />
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+    @for (field of fields; track field.name) {
+      <input
+        [type]="field.type"
+        [placeholder]="field.placeholder"
+        [formControlName]="field.name" />
+
+      @if (loginForm.get(field.name)?.touched && loginForm.get(field.name)?.invalid) {
+        <div class="error">
+          El campo {{ field.label }} es obligatorio
+        </div>
+      }
+    }
+
+    <button type="submit" class="btn-login">Inicia sesión</button>
+  </form>
+
+  <div class="links">
+    <a href="#" (click)="abrirRegistro()" >Regístrate</a> |
+    <a href="#">¿Olvidaste tu contraseña?</a>
+  </div>
+
+  <div class="social-login">
+    <button type="button" class="btn-facebook" (click)="loginWithFacebook()">
+      <img src="iconos/facebook-icon.png" alt="Facebook" />
+      Inicia sesión con Facebook
+    </button>
+    <button type="button" class="btn-google" (click)="loginWithGoogle()">
+      <img src="iconos/google-icon.png" alt="Google" />
+      Inicia sesión con Google
+    </button>
+  </div>
+
+ 
+</div>

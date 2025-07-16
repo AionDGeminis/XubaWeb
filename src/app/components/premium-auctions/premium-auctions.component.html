@@ -1,0 +1,48 @@
+<div >
+  <h2 style="text-align: center; margin-top: 10px; margin-bottom: 0; color: #616160 ; font-family: Gobold; " >Xubastas Premium</h2>
+</div>
+<div class="barra-subastas">
+    <!-- Flecha izquierda -->
+    <div
+      class="flecha-izquierda"
+      *ngIf="mostrarFlechaIzquierda"
+      (click)="scrollIzquierda(contenedorRef.nativeElement)"
+    >
+      <
+    </div>
+  
+    <!-- Contenedor de subastas -->
+    <div class="contenedor-items" 
+    #contenedor (scroll)="verificarScroll(contenedorRef.nativeElement)">
+      <div class="tarjeta" *ngFor="let subasta of premium">
+        <img [src]="subasta.url" alt="Producto" class="imagen-subasta" />
+        <div class="detalle">
+            <h4>{{ subasta.caption }}</h4>
+            <p>Subasta empieza en ${{ subasta.apuesta }} mxn </p>            
+          </div>
+    
+          <div class="extras">            
+            <div class="opciones" >
+              <div class="opciones-item">
+                <img src="iconos/megusta.png" alt="Seguir" class="opcionesimg" />
+                <span>Seguir Subasta</span>
+              </div>
+              <div class="opciones-item">
+                <img src="iconos/puja.png" alt="Seguir" class="opcionesimg" />
+                <span>Ofertar</span>
+              </div>
+            </div>          
+          </div>
+      </div>
+    </div>
+  
+    <!-- Flecha derecha -->
+    <div
+      class="flecha-derecha"
+      *ngIf="mostrarFlechaDerecha"
+      (click)="scrollDerecha(contenedorRef.nativeElement)"
+    >
+      >
+    </div>
+  </div>
+ 

@@ -1,0 +1,24 @@
+<div class="registro-container">
+    <h2>Registro</h2>
+    <form [formGroup]="formulario" (ngSubmit)="registrarUsuario()">
+      <input type="text" placeholder="Usuario" formControlName="usuario" />
+      <input type="text" placeholder="Nombre" formControlName="nombre" />
+      <input type="text" placeholder="Apellido" formControlName="apellido" />
+      <input type="text" placeholder="Teléfono" formControlName="telefono" />
+      <input type="email" placeholder="Correo" formControlName="correo" />
+      <input type="password" placeholder="Contraseña" formControlName="contra" />
+      <input type="password" placeholder="Confirmar contraseña" formControlName="confirmarContra" />
+      <div *ngIf="formulario.hasError('noCoincide') && formulario.get('confirmarContra')?.touched" style="color: red;">
+        Las contraseñas no coinciden.
+      </div>
+      <select formControlName="genero">
+        <option value="">Seleccione género</option>
+        <option value="H">Masculino</option>
+        <option value="M">Femenino</option>
+        <option value="Otro">Otro</option>
+      </select>
+  
+      <button type="submit" [disabled]="formulario.invalid">Registrarse</button>
+    </form>
+  </div>
+  

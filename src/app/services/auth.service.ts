@@ -1,0 +1,49 @@
+import { Injectable, signal, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Usuario } from '../models/subasta.model';
+import {  Observable, tap } from 'rxjs';
+
+
+const API_BASE_URL = (window as any).apiBaseUrl;
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private apiUrl = `${API_BASE_URL}/usuarios/login`;
+  
+  
+  private _usuario = signal<Usuario | null>(null);
+ 
+
+  currentUser = computed(() => this._usuario());
+  constructor(private http: HttpClient)  {
+
+    const userData = localStorage.getItem('usuario');
+    if (userData) {
+      this._usuario.set(JSON.parse(userData));
+    }
+    
+  }
+
+  get idUsuario(): string {
+    const user = this.currentUser();
+    return user ? user.id.toString() : '';
+  }
+
+  login(telefono: string, contra: string, correo: string): Observable<Usuario> {
+    const body= { telefono, contra, correo };
+
+    return this.http.post<Usuario>(this.apiUrl, body);
+  }
+  setUser(user: Usuario) {
+    this._usuario.set(user);
+    localStorage.setItem('usuario', JSON.stringify(user)); // opcional
+    console.log('setUser');
+  }
+
+  logout() {
+    this._usuario.set(null);
+    console.log('logout _usuario set null');
+    localStorage.removeItem('usuario');
+  }
+}

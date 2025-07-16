@@ -1,0 +1,156 @@
+:host {
+  position: fixed;
+  top: 15%;
+  right: 1vw; /* Separación del borde derecho */
+  height: auto; 
+  display: block;
+  width: 17vw;           /* igual que vertical-wrapper */
+  height: 85vh;
+  overflow: hidden;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  .seguimiento-container {
+    width: 100%;
+  height: 100%;
+    padding: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* 🔥 Este es el contenedor que SÍ tiene scroll */
+  .tarjetas-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    width: 100%;             /* ✅ Asegura que no crezca más de su padre */
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  
+  .tarjeta {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 95%;            /* ✅ Que use todo el ancho disponible */
+    max-width: 100%;        /* ✅ No se pase */
+    height: 100px;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+  }
+
+  .tarjeta:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .imagen-subasta {
+    width: 30%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+  
+  .detalle {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 5px;
+    padding-left: 5px;
+    flex: 1;
+    overflow: hidden;
+    font-size: 10px;
+  }
+  .detalle h4,
+  .detalle p,
+  .detalle strong {
+    margin: 2px 0; /* 🔽 reduce espacios verticales */
+    line-height: 1.1; /* opcional: reduce altura de línea */
+  }
+  
+  .extras {
+    display: flex;
+    flex-direction: column;
+    font-size: 8px;
+    align-items: center;
+  }
+
+  
+  
+  .icon {
+    width: 40px;
+    margin-top: 0px;
+  }
+
+  .opciones {
+    width: 100%; /* Ocupa un tercio */
+    display: flex;
+    justify-content: space-around;
+    padding: 0px 0;
+  }
+  
+
+  .opciones-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 5px;
+    transition: transform 0.2s;
+  }
+  
+  .opciones-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .opcionesimg {
+    width: 20px;
+    margin-bottom: 0px;
+  }
+  
+  .opciones-item span {
+    font-size: 4px;
+  }
+
+  .detalle strong {
+    font-size: 12px;
+    color:#28AAE2;
+  }
+
+  .contador-texto {
+    font-size: 10px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 4px;
+  }
+  
+  .contador-texto::after {
+    content: '';
+  }
+  .deshabilitado {
+    opacity: 0.4;
+    pointer-events: none; 
+    cursor: default;
+  }
+  .descripcion-limitada {
+    font-size: 8px;
+    display: -webkit-box;
+    display: box; /* estándar futuro */
+    -webkit-line-clamp: 2;
+    line-clamp: 2; /* estándar futuro */
+    -webkit-box-orient: vertical;
+    box-orient: vertical; /* estándar futuro */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

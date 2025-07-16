@@ -1,0 +1,70 @@
+:host {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  position: relative;
+  z-index: 1100;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  width: 320px;
+  max-width: 90%;
+}
+
+
+.modal-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 280px;
+    margin: auto;
+    text-align: center;
+    font-family: sans-serif;
+  }
+  
+  .timer {
+    margin: 10px 0;
+    font-size: 18px;
+  }
+  
+  .buttons-rápidas button {
+    display: block;
+    margin: 5px auto;
+    width: 80%;
+    background: #ccc;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+  }
+  
+  .otra-cantidad {
+    margin-top: 10px;
+  }
+  
+  .otra-cantidad input {
+    width: 80%;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #aaa;
+  }
+  
+  .acciones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  
+  .ofertar {
+    background: #00c6ff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+  }
+  
+  .cancelar {
+    background: #ff3ca1;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+  }
+  
