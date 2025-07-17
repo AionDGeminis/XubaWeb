@@ -6,6 +6,10 @@
 /out-tsc
 /bazel-out
 
+# Temporary files
+tmp/
+temp/
+
 # Node
 /node_modules
 npm-debug.log
@@ -19,6 +23,9 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
+*.sublime-project
+
+
 
 # Visual Studio Code
 .vscode/*
@@ -27,6 +34,9 @@ yarn-error.log
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+
+# Compiled TypeScript
+*.tsbuildinfo
 
 # Miscellaneous
 /.angular/cache
