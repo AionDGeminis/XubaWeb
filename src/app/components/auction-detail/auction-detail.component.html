@@ -5,7 +5,7 @@
     <div class="vertical-wrapper">
       <!-- Navega a otra subasta usando abrirDetalle -->
       <app-vertical-premium-auctions
-        (abrirDetalle)="abrirDetalle($event)"
+      (abrirDetalle)="cambiarSubastaDesdePremium($event)"
       ></app-vertical-premium-auctions>
     </div>
   </div>
@@ -139,10 +139,10 @@
           />
         </div>
 
-        <h2 #tituloElement class="titulo">
+        <h2 #titulo class="titulo">
           {{ subasta.id }} {{ subasta.caption }}
         </h2>
-        <p #descripcionElement class="descripcion-limitada">
+        <p #descripcion class="descripcion-limitada">
           {{ subasta.descripcion }}
         </p>
 

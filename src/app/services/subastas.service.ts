@@ -15,6 +15,10 @@ export class SubastasService {
         
     return this.http.get<Subasta[]>(apiUrl);
   }
+
+  getAuctionById(id: number): Observable<Subasta> {
+    return this.http.get<Subasta>(`${API_BASE_URL}/subastas/ConsultaSubataId/${id}`);
+  }
   consultarGanador(idSubasta: number) {
     return this.http.get<any>(`${API_BASE_URL}/subastas/ConsultaGanador/${idSubasta}`);
   }

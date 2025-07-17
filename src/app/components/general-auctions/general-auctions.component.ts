@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
 import { AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Router } from '@angular/router';    
 import { CommonModule } from '@angular/common';
 import { SubastasService } from '../../services/subastas.service';
 import { Subasta } from '../../models/subasta.model';
@@ -17,7 +18,7 @@ import { ModalService } from '../../services/modal.service';
 export class GeneralAuctionsComponent implements OnInit {
   generales: Subasta[] = [];
  
-  constructor(private subastaService:SubastasService, private modalService: ModalService){
+  constructor(private subastaService:SubastasService, private modalService: ModalService,private router: Router  ){
     
   }
   @Output() abrirDetalle = new EventEmitter<{ subasta: Subasta, lista: Subasta[], origen: string }>();
@@ -53,8 +54,9 @@ export class GeneralAuctionsComponent implements OnInit {
   }
   abrirModal(subasta: Subasta) {
     console.log('Subasta seleccionada:', subasta);
-    this.abrirDetalle.emit({ subasta, lista: this.generales, origen: 'Subastas Generales' });
-    this.modalService.abrir(subasta);
+    //this.abrirDetalle.emit({ subasta,  origen: 'todas' });
+    //this.modalService.abrir(subasta);
+    this.router.navigate(['/subasta', subasta.id, 'Subastas Generales']);
   }
   restarUnSegundo(tiempo: string): string {
     const [h, m, s] = tiempo.split(':').map(Number);

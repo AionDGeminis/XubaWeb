@@ -14,7 +14,7 @@
     <!-- Contenedor de subastas -->
     <div class="contenedor-items" 
     #contenedor (scroll)="verificarScroll(contenedorRef.nativeElement)">
-      <div class="tarjeta" *ngFor="let subasta of premium">
+      <div class="tarjeta" *ngFor="let subasta of premium" (click)="abrirModal(subasta)" >
         <img [src]="subasta.url" alt="Producto" class="imagen-subasta" />
         <div class="detalle">
             <h4>{{ subasta.caption }}</h4>

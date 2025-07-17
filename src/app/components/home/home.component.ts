@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, computed, effect, HostListener } from '@angular/core';
+import { Component, ViewEncapsulation, Signal, computed, effect, HostListener } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -49,8 +49,8 @@ import { Usuario, Subasta } from '../../models/subasta.model';
 })
 export class HomeComponent {
   title = 'XUBA';
-  usuario!: typeof AuthService.prototype.currentUser;
-  isLoggedIn = computed(() => !!this.usuario());
+  public usuario!: Signal<Usuario|null>;
+  public isLoggedIn!: Signal<boolean>;
 
 
   menuVisible = false;
@@ -63,6 +63,8 @@ export class HomeComponent {
     private busquedaService: BusquedaService,
     private router: Router
   ) {
+    this.usuario = this.authService.currentUser;
+    this.isLoggedIn = computed(() => !!this.usuario());
     this.busquedaService.terminoBusqueda$.subscribe(
       termino => this.terminoBusqueda = termino
     );

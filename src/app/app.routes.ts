@@ -5,7 +5,7 @@ import { AuctionDetailComponent } from './components/auction-detail/auction-deta
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
-    { path: 'subasta/:id', component: AuctionDetailComponent },
+    { path: 'subasta/:id/:origen', component: AuctionDetailComponent },
     { path: '**', redirectTo: '' }
 ];
 

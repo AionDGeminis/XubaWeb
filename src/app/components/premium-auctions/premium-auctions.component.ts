@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { SubastasService } from '../../services/subastas.service';
 import { Subasta } from '../../models/subasta.model';
 import { interval } from 'rxjs';
+import { Router } from '@angular/router';    
 
 
 @Component({
@@ -20,7 +21,7 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
   mostrarFlechaDerecha = true;
   premium: Subasta[] = [];
   @Output() abrirDetalle = new EventEmitter<{ subasta: Subasta, lista: Subasta[], origen: string }>();
-  constructor(private subastaService:SubastasService){}
+  constructor(private subastaService:SubastasService,private router: Router){}
   ngOnInit(): void {
     this.subastaService.getAuctions('premium').subscribe({
       next: (data) => {
@@ -66,7 +67,7 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
   
   abrirModal(subasta: Subasta): void {
     console.log('Subasta express seleccionada:', subasta);
-    this.abrirDetalle.emit({ subasta, lista: this.premium, origen: 'Subastas Express' }); // usa el array que tengas
+    this.router.navigate(['/subasta', subasta.id, 'Subastas Premium']);
   }
 
 }

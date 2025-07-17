@@ -22,6 +22,7 @@ import { interval, Subscription } from 'rxjs';
   styleUrls: ['./auction-detail.component.css']
 })
 export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy {
+
   subasta!: Subasta;
   lista: Subasta[] = [];
   origen = '';
@@ -49,8 +50,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   private idSubastaConectada: string | null = null;
   private temporizadorSub$?: Subscription;
 
-  @ViewChild('tituloElement') tituloElement!: ElementRef<HTMLElement>;
-  @ViewChild('descripcionElement') descripcionElement!: ElementRef<HTMLElement>;
+  @ViewChild('titulo', { static: false }) tituloElement!: ElementRef;
+  @ViewChild('descripcion', { static: false }) descripcionElement!: ElementRef;
   @ViewChild('botonApuesta') botonApuesta!: ElementRef;
 
   constructor(
@@ -64,27 +65,67 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   ) {}
 
   ngOnInit(): void {
-    const data = this.route.snapshot.data as { subasta: Subasta; lista: Subasta[] };
-    this.subasta = data.subasta;
-    this.lista = data.lista;
-    this.origen = this.route.snapshot.queryParamMap.get('origen') || '';
 
-    this.indiceActual = this.lista.findIndex(s => s.id === this.subasta.id);
-    this.imagenActual = this.subasta.url;
-    this.tiempoVence = this.subasta.tiempoVence ?? '00:00:00';
+    const id     = +this.route.snapshot.paramMap.get('id')!;
+    this.origen  = this.route.snapshot.paramMap.get('origen') || '';
+    console.log('Origen:', this.origen);
 
-    this.iniciarTemporizador();
-    this.verificarSiSiguiendo();
-    this.conectarSignalR();
-  }
+    this.subastasService.getAuctionById(id).subscribe(sub => {
+      this.subasta = sub;
+  
+      // 2. Luego cargar la lista
+      let tipo: 'porvencer' | 'premium' | 'todas' = 'todas';
+      if (this.origen === 'Subastas Premium') tipo = 'premium';
+      else if (this.origen === 'Subastas Express') tipo = 'porvencer';
+  
+      console.log('Tipo de subastas a consultar:', tipo);
+      this.subastasService.getAuctions(tipo).subscribe(list => {
+        console.log('Lista recibida:', list);
+        this.lista = list;
+  
+        // 3. Ya tienes subasta y lista. Ahora sí puedes usar todo
+        this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta.id);
+        this.imagenActual  = this.subasta.url;
+        this.tiempoVence   = this.subasta.tiempoVence ?? '00:00:00';
+  
+        this.iniciarTemporizador();
+        this.verificarSiSiguiendo();
+        this.conectarSignalR();
+      });
+    }); 
+    
+}
+setupIndices() {
+  this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta.id);
+  this.imagenActual = this.subasta.url;
+  this.tiempoVence  = this.subasta.tiempoVence ?? '00:00:00';
+}
 
-  ngAfterViewInit(): void {
-    const tituloEl = this.tituloElement.nativeElement;
-    const descripcionEl = this.descripcionElement.nativeElement;
-    this.textoTruncado =
-      tituloEl.scrollWidth > tituloEl.clientWidth ||
-      descripcionEl.scrollHeight > descripcionEl.clientHeight;
-  }
+cambiarSubastaDesdePremium(data: { subasta: Subasta; lista: Subasta[]; origen: string }): void {
+  this.subasta = data.subasta;
+  this.lista = data.lista;
+  this.origen = data.origen;
+
+  this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta.id);
+  this.imagenActual  = this.subasta.url;
+  this.tiempoVence   = this.subasta.tiempoVence ?? '00:00:00';
+
+  this.resetDatos(); // reinicia temporizador, verifica seguimiento, etc.
+  this.actualizarVista();
+}
+  
+ngAfterViewInit(): void {
+  setTimeout(() => {
+    const tituloEl = this.tituloElement?.nativeElement;
+    const descripcionEl = this.descripcionElement?.nativeElement;
+
+    if (tituloEl && descripcionEl) {
+      this.textoTruncado =
+        tituloEl.scrollWidth > tituloEl.clientWidth ||
+        descripcionEl.scrollHeight > descripcionEl.clientHeight;
+    }
+  });
+}
 
   ngOnDestroy(): void {
     if (this.idSubastaConectada) {
@@ -215,17 +256,24 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       this.indiceActual--;
       this.subasta = this.lista[this.indiceActual];
       this.resetDatos();
-      this.ngOnInit();
+      this.actualizarVista(); // actualiza imagen, tiempo, etc.
     }
   }
-
+  
   irASiguiente(): void {
     if (this.indiceActual < this.lista.length - 1) {
       this.indiceActual++;
       this.subasta = this.lista[this.indiceActual];
       this.resetDatos();
-      this.ngOnInit();
+      this.actualizarVista(); // actualiza imagen, tiempo, etc.
     }
+  }
+  actualizarVista() {
+    this.imagenActual  = this.subasta.url;
+    this.tiempoVence   = this.subasta.tiempoVence ?? '00:00:00';
+    this.iniciarTemporizador();
+    this.verificarSiSiguiendo();
+    this.conectarSignalR();
   }
 
   cerrarDetalle(): void {
