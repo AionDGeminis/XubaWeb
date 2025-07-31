@@ -53,5 +53,6 @@ export interface ImagenSubasta {
     fechaVencimiento?: Date;
     tiempoVence: string;
     vencida: boolean;
+    nuevo: boolean;
   }
   

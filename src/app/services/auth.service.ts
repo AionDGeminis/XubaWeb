@@ -2,14 +2,15 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Usuario } from '../models/subasta.model';
 import {  Observable, tap } from 'rxjs';
+import {environment as env, headers, auth_headers, test_headers} from '../environment/environment';
 
 
-const API_BASE_URL = (window as any).apiBaseUrl;
+// const API_BASE_URL = (window as any).apiBaseUrl;
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${API_BASE_URL}/usuarios/login`;
+  private apiUrl = `${env.base_url}/usuarios/login`;
   
   
   private _usuario = signal<Usuario | null>(null);
@@ -39,6 +40,11 @@ export class AuthService {
     this._usuario.set(user);
     localStorage.setItem('usuario', JSON.stringify(user)); // opcional
     console.log('setUser');
+  }
+
+  getUserData(){
+    const userData = localStorage.getItem('usuario');
+    return userData ? JSON.parse(userData) : null;
   }
 
   logout() {

@@ -9,7 +9,7 @@
       <div class="contenedor-subastas-generales">
         @for ( subasta of generales; track subasta.id) {
           @let clase = subasta.vencida ? 'tarjeta-general fade-out' : 'tarjeta-general';
-            <div class="{{ clase }}" (click)="abrirModal(subasta)">
+            <!-- <div class="{{ clase }}" (click)="abrirModal(subasta)">
             <img [src]="subasta.url" alt="Producto" class="imagen-general" />
             <div class="contenido-general">
               <div class="detalle-general">
@@ -37,7 +37,19 @@
                 </div>
             </div>
            
-          </div>          
+          </div>           -->
+          <div class="auction-card" (click)="abrirDetalleSubasta(subasta)">
+            <img [src]="subasta.url" alt="">
+              <div class="title">{{ subasta.caption }}</div>
+              <div class="desc">{{ subasta.descripcion }}</div>
+              <div class="price">${{ subasta.apuesta }} MXN</div>
+              <div class="timer">09:15:01</div>
+              <div class="actions">
+                <button title="Seguir" (click)="toggleSeguida(subasta.id, $event)"><i class="fas fa-heart" [ngClass]="{'fa-heart': !isSeguida(subasta.id),'fa-bookmark': isSeguida(subasta.id)}"></i></button>
+                <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+                <button title="Compartir"><i class="fas fa-share"></i></button>
+              </div>
+          </div> 
         }
       </div>
     } @else {

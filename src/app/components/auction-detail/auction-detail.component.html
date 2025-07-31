@@ -1,219 +1,130 @@
-<!-- auction-detail.component.html corregido para rutas y modal personalizado -->
-<div class="detalle-container" *ngIf="subasta">
-  <!-- Columna izquierda: lista secundaria de subastas -->
-  <div class="left-column">
-    <div class="vertical-wrapper">
-      <!-- Navega a otra subasta usando abrirDetalle -->
-      <app-vertical-premium-auctions
-      (abrirDetalle)="cambiarSubastaDesdePremium($event)"
-      ></app-vertical-premium-auctions>
+<div class="row m-auto bg-light main-container-h">
+  <aside class="col-lg-2 bg-clouds" style="height: 100%; ">
+    <!-- ... -->
+     <h4 class="text-center mt-3 text-caption" style="font-size: 1rem;">XUBASTAS PREMIUM</h4>
+    <div style="height: 90%; overflow-y: scroll; margin-top: 6%;">
+      <div class=" mb-4 mt-2 auction-card bg-gold"  *ngFor="let subasta of lista">
+        <img [src]="subasta.url" alt="">
+          <div class="title">{{ subasta.caption }}</div>
+          <div class="desc">{{ toShort(subasta.descripcion)  }}</div>
+          <div class="price">${{ subasta.apuesta }} MXN</div>
+          <div class="timer">09:15:01</div>
+          <div class="actions">
+            <button title="Seguir"><i class="fas fa-heart"></i></button>
+            <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+            <button title="Compartir"><i class="fas fa-share"></i></button>
+          </div>
+      </div> 
     </div>
+  </aside>
+  <div class="col-lg-8 ps-0" style="position: relative;height: 100%;overflow: hidden;">      
+    <img [src]="subasta.url" alt="Imagen de la subasta" style="height: 100%; display: block;margin:auto; overflow-y: hidden;" />
+    <div [class]="'auction-label-container-winner fast-animation animate__animated ' + animatedClass" *ngIf="usuarioMayor">
+      {{usuarioMayor}} <span class="winner-span" >Va Ganando!</span>
+    </div>
+    <div class="auction-actions-vertical" *ngIf="isLoggedIn()">
+      <button class="action-btn" alt="Personalizado" (click)="openModal()"><i class="fas fa-handshake"></i></button>
+      <button class="action-btn" alt="Seguir"><i class="far fa-heart"></i></button>
+      <button class="action-btn"><i class="fas fa-cart-arrow-down"></i></button>
+      <button class="action-btn"><i class="fas fa-share"></i></button>
+    </div>
+    <div class="auction-btn-container-bid">
+        <button *ngIf="isLoggedIn()" class="btn-bid-xuba auction-main-btn" (click)="realizarApuesta(siguienteApuesta, false)">Ofertar ${{siguienteApuesta}}</button>
+        <button *ngIf="!isLoggedIn()" class="btn-bid-xuba auction-main-btn" >Inicie Sesion para Ofertar</button>
+    </div>
+    <!-- <button class="btn-dark-yellow auction-main-btn">Apostar ahora</button> -->
   </div>
-
-  <!-- Columna central: imagen principal y controles -->
-  <div class="center-column">
-    <div class="fondo-imagen">
-      <div class="image-wrapper-con-fondo">
-        <!-- Flecha izquierda -->
-        <img
-          src="iconos/izquierda.png"
-          alt="Anterior"
-          class="boton-flecha izquierda"
-          (click)="irAAnterior()"
-          [class.deshabilitado]="indiceActual === 0"
-        />
-
-        <!-- Imagen principal -->
-        <div class="image-container">
-          <img [src]="imagenActual" class="imagen-principal" />
-
-          <!-- Botones inferiores -->
-          <div class="botones-inferiores">
-            <ng-container *ngIf="!vencida; else finalizado">
-              <button class="btn-personalizar" (click)="mostrarModal = true">
-                Personalizar oferta
-              </button>
-              <button
-                #botonApuesta
-                class="btn-siguiente-apuesta"
-                (click)="animarApuestaClick()"
-              >
-                Ofertar ${{ siguienteApuesta | number:'1.0-0' }}
-              </button>
-            </ng-container>
-            <ng-template #finalizado>
-              <div
-                class="mensaje-final"
-                [ngClass]="{
-                  'ganaste': mensajeFinal === '¡¡GANASTE!!',
-                  'comprado': mensajeFinal === 'Comprado',
-                  'no-alcanzado': mensajeFinal === 'Mínimo no alcanzado'
-                }"
-              >
-                {{ mensajeFinal }}
-              </div>
-            </ng-template>
-          </div>
-
-          <!-- Acciones adicionales -->
-          <div class="iconos">
-            <div class="acciones-subasta">
-              <div class="accion" (click)="toggleSeguir()">
-                <img
-                  [src]="estaSiguiendo ? 'iconos/siguiendo.png' : 'iconos/seguir.png'"
-                  [alt]="estaSiguiendo ? 'Siguiendo' : 'Seguir'"
-                />
-                <span>{{ estaSiguiendo ? 'SIGUIENDO' : 'SEGUIR' }}</span>
-              </div>
-              <div class="accion">
-                <img src="iconos/compartir_blanco.png" alt="Compartir" />
-                <span>COMPARTIR</span>
-              </div>
-              <div
-                class="accion"
-                *ngIf="subasta.precio > valorApuesta && subasta.compraDirecta && !vencida"
-                (click)="realizarApuesta(subasta.precio, true)"
-              >
-                <img src="iconos/comprar.png" alt="Comprar YA" />
-                <span>COMPRAR ${{ subasta.precio | number:'1.0-0' }}</span>
-              </div>
-            </div>
-          </div>
+  <aside class="col-lg-2 bg-clouds">
+    <div class="auction-info-card mb-4 mt-2 bg-light">
+      <div class="d-flex align-items-center mb-2">
+        <!-- <img [src]="subasta.sellerAvatar" class="seller-avatar me-2" alt="Vendedor"> -->
+        <div>
+          <div class="seller-name text-dark">{{ subasta.musuarios.nombre }}</div>
+          <div class="seller-rating text-muted small">★ {{ 2 }}</div>
         </div>
-
-        <!-- Flecha derecha -->
-        <img
-          src="iconos/derecha.png"
-          alt="Siguiente"
-          class="boton-flecha derecha"
-          (click)="irASiguiente()"
-          [class.deshabilitado]="indiceActual === lista.length - 1"
-        />
       </div>
-    </div>
-  </div>
-
-  <!-- Columna derecha: detalles y estadísticas -->
-  <div class="right-column">
-    <!-- Origen -->
-    <p class="texto-origen">Origen: {{ origen }}</p>
-
-    <!-- Info de usuario y envío -->
-    <div class="usuario-envio-contenedor">
-      <div class="usuario-info">
-        <img
-          [src]="subasta.musuarios.imgPerfil"
-          alt="Avatar"
-          class="avatar"
-        />
-        <span class="nombre-usuario">
-          {{ subasta.musuarios.nombre }} {{ subasta.musuarios.apellido }}
+      <h2 class="auction-title-dark mb-2 text-caption">{{ subasta.caption }}#{{subasta.id}}</h2>
+      <div class="auction-desc-dark mb-3">{{ subasta.descripcion }}</div>
+      <div class="auction-meta-dark mb-3 pt-3">
+        <span [class]="'meta-chip-dark price-chip-dark w-100 bg-dark text-price pt-0 pb-0 fast-animation animate__animated '+ animatedClass">
+          <i class="fas fa-money-bill"></i> ${{ valorApuesta }}
         </span>
       </div>
-      <div class="envio-info">
-        <img src="iconos/envios.png" class="icon-envio" />
-        <span>Envíos de $x a $xx</span>
+      <!-- <div class="auction-meta-dark mb-3 text-center w-100">
+        <span class="meta-chip-dark time-chip-dark">
+          <i class="fas fa-clock"></i> 10:00:00
+        </span>
+      </div> -->
+      <div class="w-100 text-dark text-center pt-5" style="font-size: 1.5rem;">
+        <i class="fas fa-clock"></i> {{tiempoVence}}
       </div>
+      <!-- <div class="mb-3">
+        <span class="badge bg-dark-yellow text-dark">Ganando: Usuario prueba</span>
+      </div> -->
+      <!-- <form class="d-flex gap-2" >
+        <input type="number" class="form-control-dark" min="1000" placeholder="Tu apuesta"  name="customBid">
+        <button class="btn-dark-yellow" type="submit">Apostar</button>
+      </form> -->
     </div>
-
-    <!-- Estado de la puja -->
-    <div class="estado-apuesta">
-      <div class="texto-superior">
-        {{ vencida ? 'Precio final:' : 'Subasta va en:' }}
-      </div>
-      <div class="apuesta">
-        ${{ valorApuesta | number:'1.0-0' }}
-      </div>
-    </div>
-
-    <!-- Miniaturas y descripción -->
-    <div class="centrar-vertical">
-      <div class="miniaturas-wrapper">
-        <div class="miniaturas">
-          <img
-            *ngFor="let img of subasta.mimagenesSubasta"
-            [src]="img.url"
-            (click)="cambiarImagen(img.url)"
-            [class.seleccionada]="img.url === imagenActual"
-            class="miniatura"
-          />
-        </div>
-
-        <h2 #titulo class="titulo">
-          {{ subasta.id }} {{ subasta.caption }}
-        </h2>
-        <p #descripcion class="descripcion-limitada">
-          {{ subasta.descripcion }}
-        </p>
-
-        <button
-          *ngIf="textoTruncado && !mostrarDetalles"
-          class="btn-detalles boton-derecha"
-          (click)="mostrarDetalles = true"
-        >
-          Ver detalles
-        </button>
-        <button
-          *ngIf="mostrarDetalles"
-          class="btn-detalles boton-derecha"
-          (click)="mostrarDetalles = false"
-        >
-          Ocultar detalles
-        </button>
-      </div>
-
-      <!-- Temporizador -->
-      <div class="bloque-tiempo">
-        <p class="subastatermina">
-          {{ vencida ? 'Subasta finalizada' : 'Subasta termina en:' }}
-        </p>
-        <div class="tiempo-restante">
-          {{ vencida ? '00:00:00' : tiempoVence }}
-        </div>
-      </div>
-    </div>
-
-    <!-- Ganadores -->
-    <div class="bloque-ganadores" *ngIf="ganadoresDetalles.length > 0">
-      <button class="letrero-quienvaalacabeza">
-        {{ usuarioMayor }} {{ vencida ? 'Ganó' : 'va Ganando' }}
-      </button>
-      <ul class="lista-ganadores">
-        <li *ngFor="let g of ganadoresDetalles.slice(-3)">
-          <strong>
-            ${{ limpiarMontoNumber(g.monto) | number:'1.0-0' }}
-          </strong>
-          - {{ g.usuario }} - <small>{{ g.fecha }}</small>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Volver al listado -->
-    <button class="btn-volver" (click)="cerrarDetalle()">
-      Volver a las subastas
-    </button>
-  </div>
+  </aside>
 </div>
 
-<!-- Modal de personalizar oferta -->
-<ng-container *ngIf="mostrarModal">
-  <div class="modal-overlay">
-    <app-oferta-personalizada-modal
-      [valorApuesta]="valorApuesta"
-      [tiempoVence]="tiempoVence"
-      (cerrar)="mostrarModal = false"
-      (ofertar)="realizarApuesta($event)"
-    ></app-oferta-personalizada-modal>
-  </div>
-</ng-container>
 
-<!-- Panel de detalles completo -->
-<div *ngIf="mostrarDetalles" class="detalle-overlay">
-  <div class="panel-detalles">
-    <h2>{{ subasta.id }} {{ subasta.caption }}</h2>
-    <p>{{ subasta.descripcion }}</p>
-    <button class="btn-detalles" (click)="mostrarDetalles = false">
-      Cerrar
-    </button>
+<div *ngIf="isModalOpen" class="cart-modal-backdrop" (click)="closeModal()">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <!-- <i class="fas fa-shopping-cart "></i> -->
+        <span class="text-white" >Enviar otra oferta</span>
+      
+      </h3>
+      <button class="close-button" (click)="closeModal()">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+    
+    <!-- Paso 1: Contenido del carrito -->
+    <div class="modal-body">
+
+        <!-- <hr> -->
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
+            <!-- form-producto.component.html -->
+            <form class="form-productos pl-2 pr-2">
+                <div class="form-row">
+                    <div class="form-group">
+                      <button class="btn btn-info mb-2" (click)="setApuestaPersonalizada(100)"><i class="fas fa-cash"></i> $100</button>
+                      <button class="btn btn-info mb-2" (click)="setApuestaPersonalizada(300)"><i class="fas fa-cash"></i> $300</button>
+                      <button class="btn btn-info"(click)="setApuestaPersonalizada(500)"><i class="fas fa-cash"></i> $500</button>
+                        <!-- <label for="nombre">Nombre del producto</label> -->
+                        <!-- <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" /> -->
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cantidadPuja">OTRA OFERTA</label>
+                        <input type="number" [(ngModel)]="valorSubastaPersonalizada" id="cantidadPuja" name="cantidadPuja" />
+                    </div>
+                    <!-- <div class="form-group">
+                        <label for="tiempoActivo">Tiempo activo (100 hrs Max)</label>
+                        <input type="number" [(ngModel)]="subasta.horas" id="tiempoActivo" name="tiempoActivo" />
+                    </div> -->
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer text-start pb-3 pe-3">
+    
+      <!-- Botones para el paso del carrito -->
+      <div>
+        <button class="btn btn-dark me-2" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button class="btn btn-xuba"  (click)="tryOfertaPersonalizada()">
+          <i class="fas fa-check"></i> Ofertar
+        </button>
+      </div>     
+    </div>
+    <!-- </div> -->
   </div>
 </div>

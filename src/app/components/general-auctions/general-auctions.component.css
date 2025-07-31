@@ -24,7 +24,7 @@
 .contenedor-subastas-generales {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 2rem;
   padding: 5px;
   height: 100%;  
@@ -157,3 +157,84 @@
     opacity: 0;
     transition: opacity 1s ease-out;
   }
+
+
+
+
+.auction-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 15px;
+  margin-left:5px;
+}
+
+.auction-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.auction-card .title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 1rem 1rem 0.2rem 1rem;
+}
+
+.auction-card .desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0 1rem 0.2rem 1rem;
+}
+
+.auction-card .price {
+  color: var(--secondary);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 1rem 0.2rem 1rem;
+}
+
+.auction-card .timer {
+  font-size: 0.92rem;
+  color: var(--primary);
+  font-weight: 600;
+  margin: 0 1rem 0.3rem 1rem;
+}
+
+.auction-card .actions {
+  display: flex;
+  gap: 1.1rem;
+  margin: 0 1rem;
+  margin-top: 0.3rem;
+}
+
+.auction-card .actions button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  border-radius: 50%;
+  padding: 0.3rem;
+}
+
+.auction-card .actions button:hover {
+  color: var(--secondary);
+  background: #f3eaff;
+}
+

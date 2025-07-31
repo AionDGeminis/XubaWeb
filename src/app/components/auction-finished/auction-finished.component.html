@@ -1,0 +1,172 @@
+<div class="container-fluid auction-finished-window py-4">
+    <div class="row justify-content-center">
+      <!-- Columna principal -->
+      <div class="col-md-7">
+        <div class="card p-4 shadow-sm mb-3">
+          <div class="w-100 text-center badge-common">
+            <span class="badge badge-ganador" *ngIf=" ganadorInfo &&usuario!.id === ganadorInfo.idComprador">
+                Felicidades, Has ganado la subasta!
+            </span>
+            <span class="badge badge-common" *ngIf="ganadorInfo && usuario!.id !== ganadorInfo.idComprador">
+                Subasta Finalizada
+            </span>
+
+          </div>
+          <div class="text-center mb-3">
+            <img [src]="subasta.url" alt="Imagen de la subasta" class="img-fluid rounded auction-img-finished" />
+          </div> 
+          <div class="text-end">
+            <span class="text-secondary">Vendedor: <strong>{{subasta.musuarios.nombre}} {{subasta.musuarios.apellido}}</strong></span>
+          </div>
+          <h3 class="fw-bold mb-2">{{subasta.caption}}</h3>
+          <p class="text-muted mb-3">{{subasta.descripcion}}</p>
+          <!-- <div class="mb-2">
+            <span class="badge bg-pink text-white px-3 py-2 fs-6">Estatus: {{subasta.estatus}}</span>
+          </div> -->
+          <div class="mb-2 text-center">
+            <span class="fw-bold label-price">Precio final: ${{subasta.apuesta}} MXN</span>
+          </div>
+          
+          
+          <hr>
+          <div class="w-100 text-center">
+             <span class="label label-info-status">La subasta esta terminada puede proceder al pago</span> 
+             <br><br>
+             <button class="btn bg-xuba w-50 mt-1" (click)="openModalPago()">Ventana de pago <i class="fas fa-credit-card"></i></button>
+          </div>
+        </div>
+      </div>
+      <!-- Columna track de estatus 5523   6257   -->   
+      <div class="col-md-4">
+        <div class="card p-4 shadow-sm auction-status-track">
+          <h5 class="mb-4 fw-bold text-center">Historial de estatus</h5>
+          <ul class="status-track-list list-unstyled">
+            <li class="status-track-item" *ngFor="let item of listaEstatus;let i = index;" [ngClass]="{'status-current': i === 0}">
+                <span class="status-dot"></span>
+                <div class="status-content">
+                  <div class="status-main">
+                    <span class="status-label">{{item.desStatus}}</span>
+                    <span class="status-date">{{item.fecha}}</span>
+                  </div>
+                  <div class="status-main">
+                    <small class="desc">{{item.labelC}}</small>
+                  </div>
+                </div>
+            </li>
+            <!-- <li class="status-track-item">
+              <span class="status-dot"></span>
+              <span class="status-label">Activo</span>
+              <span class="status-date">25 Jul 2025, 12:00</span>
+            </li>
+            <li class="status-track-item">
+              <span class="status-dot"></span>
+              <span class="status-label">Pendiente de pago</span>
+              <span class="status-date">27 Jul 2025, 18:05</span>
+            </li>
+            <li class="status-track-item">
+              <span class="status-dot"></span>
+              <span class="status-label">Pagado</span>
+              <span class="status-date">28 Jul 2025, 10:00</span>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="openModal" class="cart-modal-backdrop" (click)="closeModal()">
+    <div class="cart-modal-container" (click)="onContentClick($event)">
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >Pago de subasta</span>
+        </h3>
+        <button [disabled]="loading" class="close-button" (click)="closeModal()">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <app-loader *ngIf="loading"></app-loader>
+          <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
+            <div class="w-100 text-center">
+                <img src="images/visa.png" alt="" class="w-5 me-1">
+                <img src="images/mastercard.png" alt="" class="w-5 me-1">
+                <img src="images/amex.png" alt="" class="w-5">
+            </div>
+            <form class="form-productos pl-2 pr-2">
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="nombre">Tarjeta guardada</label>
+                      <!-- <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" /> -->
+                  </div>
+              </div>
+              <div class="mb-2 label-final-price">
+                Total a Pagar: <strong>${{subasta.apuesta}}</strong> 
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">No. Tarjeta</label>
+                    <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event)" maxlength="16" id="cardnumber" name="cardnumber" />
+                </div>
+            </div>
+             
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="precio">Expiracion (MM)</label>
+                      <input type="number" [(ngModel)]="tarjeta.expiration_month" maxlength="2" id="expm" name="expm" />
+                  </div>
+                  <div class="form-group">
+                      <label for="compraDirecta">Expiracion (YY)</label>
+                      <input type="number" [(ngModel)]="tarjeta.expiration_year" maxlength="2" id="expy" name="expy" />
+                  </div>
+                  <div class="form-group">
+                    <label for="compraDirecta">CCV</label>
+                    <input type="number" [(ngModel)]="tarjeta.cvv2" id="ccv" name="ccv" />
+                  </div>
+              </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="marca">Nombre</label>
+                      <input type="text" [(ngModel)]="tarjeta.holder_name" id="marca" name="marca" />
+                  </div>
+                   <div class="form-group">
+                      <label for="marca">Apellido</label>
+                      <input type="text" [(ngModel)]="tarjeta.holder_lastname" id="marca" name="marca" />
+                  </div>
+              </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="marca">Correo Electronico</label>
+                      <input type="text" [(ngModel)]="tarjeta.mail" id="marca" name="marca" />
+                  </div>
+                  <div class="form-group">
+                    <label for="marca">Telefono</label>
+                    <input type="text" [(ngModel)]="tarjeta.phone" id="marca" name="marca" />
+                </div>
+              </div>
+          </form>
+          <div class="mb-2 text-center">
+            <span class="fw-bold label-secure"><i class="fas fa-lock"></i> Transacciones realizadas por </span>
+          </div>
+          <div class="w-100 text-center">
+            <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="OpenPay Logo" >
+          </div>
+          <hr>
+        </div>
+      </div>
+      <div class="modal-footer text-start">
+      
+        <!-- Botones para el paso del carrito -->
+        <div class="pb-3 pe-3">
+          <button [disabled]="loading" class="btn btn-dark me-2" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button [disabled]="loading" class="btn btn-xuba btn-add-cart" (click)="procesarPago()">
+           <i class="fa fa-lock"></i> Procesa pago
+          </button>
+        </div>     
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>

@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild  } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BusquedaService } from '../../services/busqueda.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',  
@@ -14,7 +15,7 @@ export class NavbarComponent {
   @ViewChild('campoBusqueda') campoBusqueda!: ElementRef<HTMLInputElement>;
 
 
-  constructor(private busquedaService: BusquedaService) {}
+  constructor(private busquedaService: BusquedaService, private router: Router) {}
   mostrarBusqueda = false;
   textoBusqueda = '';
 
@@ -30,7 +31,12 @@ export class NavbarComponent {
     }
   }
   recargarPagina() {
-    location.reload(); // ← Esto emula un F5
+    this.router.navigate(
+      ['/home'],
+    
+    );
+    // location.reload(); // ← Esto emula un F5
+
   }
 
   buscar() {

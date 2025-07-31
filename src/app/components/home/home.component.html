@@ -1,4 +1,4 @@
-<div class="vertical-wrapper-menu-izquierda">
+<!-- <div class="vertical-wrapper-menu-izquierda">
   <nav class="menu-izquierda">    
     <ul>
       <li (click)="recargarPagina()" class="icono-menu-item"
@@ -17,11 +17,11 @@
      <path d="M18 3H6v6a6 6 0 0 0 12 0V3z"/>
      <path d="M4 7H2"/>     <path d="M22 7h-2"/>
    </svg> Ganadas</li>
-      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
+      <li class="icono-menu-item" (click)="openModalCreateAuction()"><svg xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24" class="icono-menu">
      <circle cx="12" cy="12" r="10"/><path d="M12 8v8"/>
      <path d="M8 12h8"/>
-   </svg><a href="/crearSubasta">Crear Subasta</a></li>
+   </svg>Crear Subasta</li>
       <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"  class="icono-menu" >
      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9z"/>
@@ -61,35 +61,160 @@
     Wallet</li>
     </ul>
   </nav>
-</div>
+</div> -->
+<!-- <div class="w-25">
+  <aside class="sidebar bg-info">
+    <div class="profile">
+        <img src="tony.png" alt="Usuario">
+        <div class="name">Antonio</div>
+    </div>
+    <div class="menu">
+        <div class="menu-item active"><i class="fas fa-home"></i>Inicio</div>
+        <div class="menu-item"><i class="fas fa-star"></i>Seguidos</div>
+        <div class="menu-item"><i class="fas fa-trophy"></i>Ganadas</div>
+        <div class="menu-item"><i class="fas fa-plus-circle"></i>Crear Subasta</div>
+        <div class="menu-item"><i class="fas fa-bell"></i>Notificaciones</div>
+        <div class="menu-item"><i class="fas fa-users"></i>Seguidores</div>
+        <div class="menu-item"><i class="fas fa-chart-bar"></i>Estadísticas</div>
+        <div class="menu-item"><i class="fas fa-gem"></i>Premium</div>
+        <div class="menu-item"><i class="fas fa-bolt"></i>Express</div>
+        <div class="menu-item"><i class="fas fa-wallet"></i>Wallet</div>
+    </div>
+  </aside>
+</div> -->
 
-<div *ngIf="isLoggedIn() && !menuVisible" class="perfil-toggle-wrapper" (click)="toggleSidebar()" tabindex="0">
+
+<!-- <div *ngIf="isLoggedIn() && !menuVisible" class="perfil-toggle-wrapper" (click)="toggleSidebar()" tabindex="0">
   <img [src]="usuario()?.imgPerfil || 'assets/default-user.png'" class="perfil-icono" alt="Perfil"/>
   <h2 class="nombre-usuario">{{ usuario()?.nombre }}</h2>
-</div>
+</div> -->
 
-<app-sidebar *ngIf="menuVisible" @fadeSlideInOut ></app-sidebar>
+<!-- <app-sidebar *ngIf="menuVisible" @fadeSlideInOut ></app-sidebar> -->
 
 
-<div class="contenedor-xpress">
+<!-- <div class="contenedor-xpress">
   <app-xpress-auctions (abrirDetalle)="abrirDetalle($event)"></app-xpress-auctions>
-</div>
+</div><br>
 <div class="contenedor-premium">
   <app-premium-auctions (abrirDetalle)="abrirDetalle($event)"></app-premium-auctions>
 </div>
 <div class="contenedor-generales">
   <app-search-auctions *ngIf="terminoBusqueda" [terminoBusqueda]="terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-search-auctions>
   <app-general-auctions *ngIf="!terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-general-auctions>
-</div>
+</div> -->
 
 
-<div class="vertical-wrapper-derecha">
+<!-- <div class="vertical-wrapper-derecha">
   <ng-container *ngIf="!isLoggedIn(); else loggedIn">
     <app-login (mostrarRegistro)="abrirRegistroModal()"></app-login>
   </ng-container>
   <ng-template #loggedIn>
     <app-followed-auctions (abrirDetalle)="abrirDetalle($event)"></app-followed-auctions>
   </ng-template>
+</div> -->
+<div class="row m-auto  h-100">
+  <div class="col-sm-2 pt-2">
+    <aside class="sidebar ms-3">
+      <div *ngIf="showingInAside === 'menu'" [class]="'fast-animation animate__animated ' + clasesAside.one">
+         <div class="profile" *ngIf="isLoggedIn()">
+            <img src="tony.png" alt="Usuario">
+            <div class="name">{{usuario()?.nombre}}</div>
+        </div>
+        <div class="menu" *ngIf="isLoggedIn()">
+            <div class="menu-item active"><i class="fas fa-home"></i>Inicio</div>
+            <div class="menu-item" (click)="changeAside('following')"><i class="fas fa-star"></i>Seguidos</div>
+            <div class="menu-item"><i class="fas fa-trophy"></i>Ganadas</div>
+            <div class="menu-item" (click)="openModalCreateAuction()" ><i class="fas fa-plus-circle"></i>Crear Subasta</div>
+            <div class="menu-item" (click)="changeAside('notifications')"><i class="fas fa-bell"></i>Notificaciones</div>
+            <div class="menu-item" ><i class="fas fa-users"></i>Seguidores</div>
+            <div class="menu-item"><i class="fas fa-chart-bar"></i>Estadísticas</div>
+            <div class="menu-item"><i class="fas fa-gem"></i>Premium</div>
+            <div class="menu-item"><i class="fas fa-bolt"></i>Express</div>
+            <div class="menu-item"><i class="fas fa-wallet"></i>Wallet</div>
+            <div class="menu-item" (click)="openModalPoliticasFn()"><i class="fas fa-book" ></i>Politica de uso</div>
+            <hr>
+            <div class="menu-item" (click)="logout()"><i class="fas fa-power-off"></i>Cerrar sesion</div>
+        </div>
+      </div>
+      <form class="login-box p-3 rounded shadow mx-auto my-4" *ngIf="!isLoggedIn()">
+        <img src="iconos/logo-xuba.png" alt="XUBA Subastas" style="width: 80%;display: block;margin: auto;" />
+        <h4 class="mb-4 mt-2 text-center  fw-bold" style="color: #ec4899;font-size: 1rem;">Iniciar sesion</h4>
+        <div class="mb-3">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="tel" [(ngModel)]="loginForm.usuario" class="form-control form-control-lg" style="font-size: 0.8rem;" name="telefono" placeholder="Tu número" required>
+        </div>
+        <div class="mb-2">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" [(ngModel)]="loginForm.pass" class="form-control form-control-lg" style="font-size: 0.8rem;" name="password" placeholder="Contraseña" required>
+        </div>
+        <button type="submit" class="btn btn-xuba w-100 mb-3 fw-bold" (click)="onLogin()">Login</button>
+        <div class="text-center">
+          <a href="#" class="small text-decoration-none text-primary">¿Olvidaste tu contraseña?</a><br>
+          <a href="#" class="small text-decoration-none text-success">Regístrate</a>
+        </div>
+       
+        <!-- <div class="text-center text-muted mb-2">o</div>
+        <button type="button" class="btn btn-facebook w-100 mb-2">
+          <i class="bi bi-facebook me-2"></i> Iniciar sesión con Facebook
+        </button>
+        <button type="button" class="btn btn-google w-100">
+          <i class="bi bi-google me-2"></i> Iniciar sesión con Google
+        </button> -->
+      </form>
+      <div *ngIf="showingInAside === 'notifications'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+        <button class="btn btn-xuba w-100" (click)="backToMenuAside()">
+          <i class="fas fa-arrow-left"></i>&nbsp; volver
+        </button>
+        <div class="notificacion-item" *ngFor="let noti of notificaciones">
+          <strong class="text-dark"><i class="fas fa-bell"></i> Titulo notificacion test</strong> <br>
+            {{noti.descripcion}} <br> <br>
+          <small>12/07/2025</small>
+        </div>
+      </div>
+      <div *ngIf="showingInAside === 'following'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+        <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()">
+          <i class="fas fa-arrow-left"></i>&nbsp; volver
+        </button>
+        <div class="auction-card" *ngFor="let subasta of auctions">
+          <img [src]="subasta.url" alt="">
+          <div class="title">{{ subasta.caption }}</div>
+          <div class="desc">{{ toShort(subasta.descripcion)  }}</div>
+          <div class="price">${{ subasta.apuesta }} MXN</div>
+          <div class="timer">09:15:01</div>
+          <div class="actions">
+            <button title="Seguir"><i class="fas fa-heart"></i></button>
+            <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+            <button title="Compartir"><i class="fas fa-share"></i></button>
+          </div>
+          <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+            {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+          </div>
+        </div> 
+      </div>
+    </aside>
+  </div>
+  <div class="col-sm-10">
+    <div class="col-sm-12"> 
+      <app-xpress-auctions (abrirDetalle)="abrirDetalle($event)"></app-xpress-auctions>
+    </div>
+    <div class="col-sm-12"> 
+      <app-premium-auctions (abrirDetalle)="abrirDetalle($event)"></app-premium-auctions>
+      <br>
+      <!-- <br> -->
+    </div>
+    <div class="col-sm-12"> 
+      <app-search-auctions *ngIf="terminoBusqueda" [terminoBusqueda]="terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-search-auctions>
+      <app-general-auctions *ngIf="!terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-general-auctions>
+    </div>
+  </div>
+  <!-- <div class="col-sm-2 bg-info">
+    <ng-container *ngIf="!isLoggedIn(); else loggedIn">
+      <app-login (mostrarRegistro)="abrirRegistroModal()"></app-login>
+    </ng-container>
+    <ng-template #loggedIn>
+      <app-followed-auctions (abrirDetalle)="abrirDetalle($event)"></app-followed-auctions>
+    </ng-template>
+  </div> -->
 </div>
 
 <app-notifications *ngIf="mostrarNoti" class="overlay-notificaciones"></app-notifications>
@@ -101,3 +226,368 @@
   </div>
 </div>
 
+<div *ngIf="openModal" class="cart-modal-backdrop" (click)="closeModal()">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <app-loader *ngIf="loading"></app-loader>
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <!-- <i class="fas fa-shopping-cart "></i> -->
+        <span class="text-white" >Crear Nueva Subasta</span>
+      
+      </h3>
+      <button class="close-button" (click)="closeModal()">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      
+      <!-- <div class="empty-cart-message" >
+       Tarjetas:   4111111111111111    12   26    123
+
+        <i class="fas fa-shopping-cart fa-4x text-muted"></i>
+        <p>Tu carrito esta vacio</p>
+        <button class="btn btn-outline-primary" (click)="closeModal()">
+          Continuar comprando
+        </button>
+      </div> -->
+      <!-- <div class="tabs"> -->
+        <!-- <h3 class="titulo">CREAR UNA NUEVA SUBASTA</h3> -->
+        <div class="tab-buttons tab-button pt-0 pb-0">
+            <button class="tab-button" [class.active]="selectedTab === 0" (click)="selectedTab = 0">
+                Detalles del producto
+            </button>
+            <button class="tab-button" [class.active]="selectedTab === 1" (click)="selectedTab = 1">
+                Dimensiones del producto
+            </button>
+            <button class="tab-button" [class.active]="selectedTab === 2" (click)="selectedTab = 2">
+                Subir fotos
+            </button>
+            <button *ngIf="tipoSubasta === 'premium'" class="tab-button" [class.active]="selectedTab === 3" (click)="selectedTab = 3">
+              Pago
+            </button>
+        </div>
+        <!-- <hr> -->
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 0">
+            <!-- form-producto.component.html -->
+            <form class="form-productos pl-2 pr-2">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre del producto</label>
+                        <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" [(ngModel)]="subasta.descripcion" name="descripcion" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group ">
+                        <label for="precio">Precio</label>
+                        <input type="number" [(ngModel)]="subasta.precio" id="precio" name="precio" />
+                    </div>
+                    <div class="form-group ps-5">
+                        <label for="compraDirecta">Compra directa</label>
+                        <input class="form-check-input checkbox-lg" [(ngModel)]="subasta.compraDirecta" type="checkbox" name="compraDirecta" value="" id="checkboxGrande">
+
+                        <!-- <input type="checkbox" [(ngModel)]="subasta.compraDirecta" id="compraDirecta" name="compraDirecta" /> -->
+                    </div>
+                    <div class="form-group">
+                      <label for="compraDirecta">Es nuevo?</label>
+                      <input class="form-check-input checkbox-lg" [(ngModel)]="subasta.nuevo" type="checkbox" name="nuevo" value="" id="checkboxGrande">
+                      <!-- <label class="form-check-label" for="checkboxGrande">
+                        Acepto los términos y condiciones
+                      </label> -->
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="marca">Marca</label>
+                        <input type="text" [(ngModel)]="subasta.marca" id="marca" name="marca" />
+                    </div>
+                    <div class="form-group">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" [(ngModel)]="subasta.modelo" id="modelo" name="modelo" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cantidadPuja">Cantidad de puja</label>
+                        <input type="number" [(ngModel)]="subasta.valorOferta" id="cantidadPuja" name="cantidadPuja" />
+                    </div>
+                    <!-- <div class="form-group">
+                        <label for="tiempoActivo">Tiempo activo (100 hrs Max)</label>
+                        <input type="number" [(ngModel)]="subasta.horas" id="tiempoActivo" name="tiempoActivo" />
+                    </div> -->
+                </div>
+            </form>
+        </div>
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 1">
+            <form class="form-producto">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="peso">Peso (kg, Ej. 1, 5, 10, .5)</label>
+                        <input type="number" [(ngModel)]="subasta.peso" id="peso" name="peso" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="largo">Largo (cm)</label>
+                        <input type="number" [(ngModel)]="subasta.largo" id="largo" name="largo" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ancho">Ancho (cm)</label>
+                        <input type="number" [(ngModel)]="subasta.ancho" id="ancho" name="ancho" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="profundidad">Profundidad (cm)</label>
+                        <input type="number" [(ngModel)]="subasta.profundidad" id="profundidad" name="profundidad" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 2">
+            <!-- form-fotos-subasta.component.html -->
+            <div class="card-fotos">
+                <div class="label mb-3">Favor de cargar fotos reales de tu Producto</div>
+                <label class="cargar-foto-label">
+                    <input type="file" accept="image/*" multiple (change)="onFileChange($event)"
+                        [disabled]="subasta.imagenesPreview!.length >= 5" hidden />
+                    <span><i class="fas fa-image"></i> Cargar foto</span>
+                </label>
+                <div class="preview-list">
+                    <div class="preview-img" *ngFor="let img of subasta.imagenesPreview; let i = index">
+                        <img [src]="img.url" alt="Preview" />
+                        <button type="button" (click)="eliminarImagen(i)">×</button>
+                    </div>
+                </div>
+                <div class="max-fotos" *ngIf="subasta.imagenesPreview!.length >= 5">Máximo 5 fotos</div>
+            </div>
+    
+            <div class="tipo-subasta">
+                <label>
+                    <input type="radio" name="tipo" [(ngModel)]="subasta.premium" value="general" [(ngModel)]="tipoSubasta" /> General
+                </label>
+                <label>
+                    <input type="radio" name="tipo" [(ngModel)]="subasta.premium" value="premium" [(ngModel)]="tipoSubasta" /> Premium
+                </label>
+            </div>
+    
+            <div *ngIf="tipoSubasta === 'general'" class="descripcion-section">
+                <div class="desc-premium">
+                    <strong>Subasta General:</strong> Tu subasta se publicara con una duración de 100 horas
+                    <br>PRECIO: <strong class="price-subasta-free">GRATIS</strong>
+                </div>
+                <!-- <button class="btn-gradiente">Subir subasta</button> -->
+            </div>
+    
+            <div *ngIf="tipoSubasta === 'premium'" class="descripcion-section">
+                <div class="desc-premium">
+                    <strong>Subasta Premium:</strong> Tu producto tendrá mayor visibilidad y beneficios exclusivos.
+                    <br>PRECIO:<strong class="price-subasta-premium">&nbsp;${{precioSubastaPremium}} MXN</strong> 
+                </div>
+            </div>
+            <div class="form-group mt-3" *ngIf="tipoSubasta === 'premium'">
+              <label for="tiempoActivo">Tiempo activo (Entre 30 y 100 Hrs)</label>
+              <input type="number" [(ngModel)]="subasta.horas" id="tiempoActivo" name="tiempoActivo" />
+            </div>
+
+        </div>
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 3">
+          <div class="w-100 text-center">
+            <img src="images/visa.png" alt="" class="w-5 me-1">
+            <img src="images/mastercard.png" alt="" class="w-5 me-1">
+            <img src="images/amex.png" alt="" class="w-5">
+        </div>
+          <form class="form-productos pl-2 pr-2">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Tarjeta guardada</label>
+                    <!-- <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" /> -->
+                </div>
+            </div>
+            <div class="mb-2 label-final-price">
+              Total a Pagar: <strong>${{precioSubastaPremium}}</strong> 
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                  <label for="nombre">No. Tarjeta</label>
+                  <input type="text" [(ngModel)]="tarjeta.card_number" id="nombre" name="nocard" />
+              </div>
+          </div>
+           
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="precio">Expiracion (MM)</label>
+                    <input type="number" [(ngModel)]="tarjeta.expiration_month" id="precio" name="expm" />
+                </div>
+                <div class="form-group">
+                    <label for="compraDirecta">Expiracion (YY)</label>
+                    <input type="number" [(ngModel)]="tarjeta.expiration_year" id="precio" name="expy" />
+                </div>
+                <div class="form-group">
+                  <label for="compraDirecta">CCV</label>
+                  <input type="number" [(ngModel)]="tarjeta.cvv2" id="precio" name="ccv" />
+                </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                  <label for="marca">Nombre</label>
+                  <input type="text" [(ngModel)]="tarjeta.holder_name" id="marca" name="marca" />
+              </div>
+               <div class="form-group">
+                  <label for="marca">Apellido</label>
+                  <input type="text" [(ngModel)]="tarjeta.holder_lastname" id="marca" name="marca" />
+              </div>
+          </div>
+          <div class="form-row">
+              <div class="form-group">
+                  <label for="marca">Correo Electronico</label>
+                  <input type="text" [(ngModel)]="tarjeta.mail" id="marca" name="marca" />
+              </div>
+              <div class="form-group">
+                <label for="marca">Telefono</label>
+                <input type="text" [(ngModel)]="tarjeta.phone" id="marca" name="marca" />
+            </div>
+          </div>
+          <div class="mb-2 text-center">
+            <span class="fw-bold label-secure"><i class="fas fa-lock"></i> Transacciones realizadas por </span>
+          </div>
+          <div class="w-100 text-center">
+            <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="OpenPay Logo" >
+          </div>
+          <hr>
+            <!-- <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Correo Electronico</label>
+                    <input type="text" [(ngModel)]="tarjeta.marca" id="marca" name="marca" />
+                </div>
+            </div> -->
+            <!-- <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Nombre</label>
+                    <input type="text" [(ngModel)]="tarjeta.holder_name" id="marca" name="nombre" />
+                </div>
+            </div> -->
+            <!-- <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Apellido</label>
+                    <input type="text" [(ngModel)]="subasta.marca" id="marca" name="marca" />
+                </div>
+            </div> -->
+            <!-- <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Telefono</label>
+                    <input type="text" [(ngModel)]="subasta.marca" id="marca" name="marca" />
+                </div>
+            </div> -->
+           
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+    
+      <!-- Botones para el paso del carrito -->
+      <div>
+        <button class="btn btn-dark" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button class="btn btn-success btn-add-cart"  (click)="nextStep()">
+          {{(selectedTab >=3 && tipoSubasta === 'premium') || (selectedTab >=2 && tipoSubasta !== 'premium') ? 'Subir subasta ':'Continuar ' }}
+          &nbsp; <i class="fas fa-arrow-right" [ngClass]="{'fa-arrow-right':(selectedTab <3 && tipoSubasta === 'premium') || (selectedTab <2 && tipoSubasta !== 'premium') , 'fa-upload': (selectedTab >=3 && tipoSubasta === 'premium') || (selectedTab >=2 && tipoSubasta !== 'premium') }"></i>
+        </button>
+      </div>     
+    </div>
+    <!-- </div> -->
+  </div>
+</div>
+<!-- ============= -->
+<!-- OTRO MODAL -->
+<!-- ============ -->
+
+<div *ngIf="openModalPoliticas" class="cart-modal-backdrop" (click)="closeModal()">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <!-- <i class="fas fa-shopping-cart "></i> -->
+        <span class="text-white" >Politicas de uso XUBA</span>
+      </h3>
+      <button class="close-button" (click)="closeModal()">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="policy-content px-2 py-3">
+        <h3 class="mb-3 text-center text-primary fw-bold">
+          Políticas de Uso
+        </h3>
+        <ol class="policy-list ps-3">
+          <li>
+            <strong>Registro de usuario:</strong><br>
+            Todos los usuarios deben proporcionar información verídica y actualizada al registrarse en la plataforma.
+          </li>
+          <br>
+          <li>
+            <strong>Confidencialidad:</strong><br>
+            La información personal de los usuarios será tratada con estricta confidencialidad conforme a nuestra política de privacidad.
+          </li><br>
+          <li>
+            <strong>Uso adecuado:</strong><br>
+            Está prohibido utilizar la plataforma para actividades ilícitas, fraudulentas o que atenten contra la moral y las buenas costumbres.
+          </li><br>
+          <li>
+            <strong>Propiedad intelectual:</strong><br>
+            Todo el contenido publicado en la plataforma debe respetar los derechos de autor y propiedad intelectual de terceros.
+          </li><br>
+          <li>
+            <strong>Responsabilidad de las ofertas:</strong><br>
+            Los usuarios son responsables de las ofertas realizadas y deben cumplir con los compromisos adquiridos en las subastas.
+          </li><br>
+          <li>
+            <strong>Comportamiento:</strong><br>
+            Se espera un trato respetuoso entre los usuarios. No se tolerarán insultos, amenazas o cualquier forma de acoso.
+          </li><br>
+          <li>
+            <strong>Suspensión de cuentas:</strong><br>
+            La plataforma se reserva el derecho de suspender o eliminar cuentas que incumplan estas políticas.
+          </li><br>
+          <li>
+            <strong>Modificaciones:</strong><br>
+            Las políticas de uso pueden ser modificadas en cualquier momento. Los cambios serán notificados oportunamente.
+          </li><br>
+          <li>
+            <strong>Soporte:</strong><br>
+            Para cualquier duda o inconveniente, los usuarios pueden contactar al equipo de soporte a través de los canales oficiales.
+          </li><br>
+          <li>
+            <strong>Aceptación:</strong><br>
+            El uso de la plataforma implica la aceptación total de estas políticas de uso.
+          </li>
+        </ol>
+        <div class="text-end mt-4">
+          <small class="" style="color:#bdc3c7;">Última actualización: julio 2025</small>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+    
+      <!-- Botones para el paso del carrito -->
+      <div>
+        <button class="btn btn-dark" (click)="closeModal()">
+          Cerrar
+        </button>
+        <!-- <button class="btn btn-success btn-add-cart"  (click)="nextStep()">
+         
+        </button> -->
+      </div>     
+    </div>
+    <!-- </div> -->
+  </div>
+</div>
