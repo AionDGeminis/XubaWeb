@@ -11,7 +11,8 @@ export class SignalRService {
     }
 
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl("http://173.208.155.152:8088/apuesta")
+      // .withUrl("http://173.208.155.152:8088/apuesta")
+      .withUrl("https://api.xuba.mx:8443/apuesta")
       .withAutomaticReconnect()
       .build();
 

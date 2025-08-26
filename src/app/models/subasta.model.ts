@@ -54,5 +54,7 @@ export interface ImagenSubasta {
     tiempoVence: string;
     vencida: boolean;
     nuevo: boolean;
+    venceSegundos?: number;
+    short_desc?: string;
   }
   

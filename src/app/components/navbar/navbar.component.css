@@ -17,30 +17,85 @@
   .logo {
     height: 45px; margin-left: 30px ;
   }
-
+  .v-c{
+    display: flex;
+  align-items: center;      /* centra vertical */
+  /* justify-content: center;  centra horizontal */
+  /* gap: 12px;                espacio entre ítems (opcional) */
+  /* min-height: 200px;        o min-height: 100vh para pantalla completa */
+  /* border: 1px solid #ddd; */
+  }
+  .fs1{
+    font-size: 0.7rem;
+  }
   .logo-link {
     display: inline-block;
   }
   
   .search-icon {
-    height: 40px; margin-right: 30px;
+    height: 40px; 
+    margin-right: 30px;
     cursor: pointer;
+  }
+
+  .title-detail{
+    /* display: flex;
+    align-items: center;
+    gap: 5px; */
+    width: 30%;
+    /* background: red; */
+    position:absolute;
+    font-size: 2em;
+    color: #fff;
+    left: 35%;
+    text-align: center;
+    /* justify-content: flex-end; */
   }
 
   .busqueda-container {
     display: flex;
     align-items: center;
     gap: 5px;
+    width: 80% !important;
+    /* background: pink; */
+    justify-content: flex-end;
+  }
+
+  .w-10{
+    width: 10% !important;
   }
   
   .campo-busqueda {
     padding: 6px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #fff;
+    border-radius: 20px 0px 0px 20px;
     outline: none;
     font-size: 14px;
+    margin-right: 0px;
+    width: 80%;
+    transition: width 0.3s ease;
+    background: transparent;
+    outline: none !important;
+    color:#fff;
   }
-  
+.campo-busqueda:focus{
+  border: 1px solid #fff;
+  caret-color: #000;
+}
+
+  .campo-busqueda::placeholder {
+    color: #fff;
+    font-style: italic;
+  }
+
+  .btn-r{
+    padding: 5.5px 10px;
+    border: none;
+    border-radius: 0px 20px 20px 0px;
+    background:#fff;
+  }
+
+
   .search-icon {
     height: 40px; margin-right: 30px;
     cursor: pointer;

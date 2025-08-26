@@ -1,8 +1,7 @@
 <div class="wrapper-generales">
-  <h2 class="titulo-generales" style="text-align: center; color: #616160; font-family: Gobold;" >
-    Xubastas Generales
+  <h2 class="" style="text-align: center; color: #616160; font-family: Gobold;font-size: 20px;" >
+    {{mainTitle}}
   </h2>
-  
     
   <div class="seguimiento-container">
     @if (generales.length > 0) {
@@ -36,18 +35,23 @@
                   </div>
                 </div>
             </div>
-           
+
+            Subasta texto largo
+           http://localhost:4200/subasta/7329/Subastas%20Premium
           </div>           -->
-          <div class="auction-card" (click)="abrirDetalleSubasta(subasta)">
+          <div class="auction-card" (click)="getDatosSubasta(subasta.id)">
             <img [src]="subasta.url" alt="">
               <div class="title">{{ subasta.caption }}</div>
               <div class="desc">{{ subasta.descripcion }}</div>
               <div class="price">${{ subasta.apuesta }} MXN</div>
-              <div class="timer">09:15:01</div>
+              <div class="timer">{{segundosATiempoString(subasta.venceSegundos!) }}</div>
               <div class="actions">
-                <button title="Seguir" (click)="toggleSeguida(subasta.id, $event)"><i class="fas fa-heart" [ngClass]="{'fa-heart': !isSeguida(subasta.id),'fa-bookmark': isSeguida(subasta.id)}"></i></button>
+                <button title="Seguir" (click)="toggleSeguida(subasta.id, $event)"><i class="fas fa-heart" [ngClass]="{'nofollowed-i': !isSeguida(subasta.id),'followed-i': isSeguida(subasta.id)}"></i></button>
                 <button title="Ofertar"><i class="fas fa-gavel"></i></button>
                 <button title="Compartir"><i class="fas fa-share"></i></button>
+              </div>
+              <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+                {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
               </div>
           </div> 
         }
@@ -59,5 +63,6 @@
     }  
   </div>
   </div>
+  <app-loader *ngIf="loading"></app-loader>
 
   

@@ -5,13 +5,14 @@ import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./components/navbar/navbar.component";
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PageblockComponent } from './components/pageblock/pageblock.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, CommonModule, 
-  NavbarComponent,  HttpClientModule ],
+  NavbarComponent,  HttpClientModule, PageblockComponent ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   encapsulation: ViewEncapsulation.None

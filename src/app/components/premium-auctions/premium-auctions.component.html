@@ -78,9 +78,10 @@
               <div class="title">{{ subasta.caption }}#{{subasta.id}}</div>
               <div class="desc">{{ subasta.descripcion }}</div>
               <div class="price">${{ subasta.apuesta }} MXN</div>
-              <div class="timer">{{subasta.tiempoVence}}</div>
+              <div class="timer"> {{segundosATiempoString(subasta.venceSegundos!) }}</div>
               <div class="actions">
-                <button title="Seguir" (click)="toggleSeguida(subasta.id, $event)"><i class="fas fa-heart" [ngClass]="{'fa-heart': !isSeguida(subasta.id),'fa-bookmark': isSeguida(subasta.id)}"></i></button>
+                <button title="Seguir" (click)="toggleSeguida(subasta.id, $event, subasta)">
+                  <i class="fas fa-heart" [ngClass]="{'nofollowed-i': !isSeguida(subasta.id),'followed-i': isSeguida(subasta.id)}"></i></button>
                 <button title="Ofertar"><i class="fas fa-gavel"></i></button>
                 <button title="Compartir"><i class="fas fa-share"></i></button>
               </div>
@@ -92,6 +93,7 @@
           </ng-template>
         </ng-container>
       </owl-carousel-o>
+      <app-loader *ngIf="loading"></app-loader>
     </div>
 
     

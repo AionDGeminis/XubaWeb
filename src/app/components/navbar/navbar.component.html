@@ -1,22 +1,71 @@
 <nav class="navbar">
+   <!-- <div class="navbar-logo" style="width: 100px; height: 100%; background: red;">
+
+   </div>
     <img src="logo.png" alt="Xuba Logo" class="logo" (click)="recargarPagina()" style="cursor: pointer;" />
+    C.P. 32594
+    <div class="title-detail" *ngIf="showTitleDetail">
+      <span>{{tituloDetalle}}</span>
+    </div>
     <div class="busqueda-container">
       <input
         *ngIf="mostrarBusqueda"
         #campoBusqueda
         type="text"
         class="campo-busqueda"
+        [ngClass]="{'opened': isOpened}"
         placeholder="Buscar..."
         [(ngModel)]="textoBusqueda"
         (keydown.enter)="buscar()"
       />
-    
-      <img
+     
+      <img *ngIf="!inPreregistro && showSearch"
         src="lupa.png"
         alt="Buscar"
         class="search-icon"
         (click)="toggleBusqueda()"
         
       />
+    </div> -->
+    <div class="row m-auto  text-white w-100 h-100" >
+      <div class="col-2 h-100 v-c ">
+        <img src="logo.png" alt="Xuba Logo" class="logo" (click)="recargarPagina()" style="cursor: pointer;" />
+      </div>
+      <div class="col-3 pt-3 fs1" *ngIf="isLoggedIn()">
+        <span></span><span>Enviar a {{usuario()!.nombre}}</span>
+        <br><i class="fas fa-map-marker-alt"></i>&nbsp; <span>C.P. xxxxx</span>
+      </div>
+      <div class="col-3 pt-2">
+        <div class="title-detail" *ngIf="showTitleDetail">
+          <span>{{tituloDetalle}}</span>
+        </div>
+      </div>
+      <div class="col-4 v-c text-center" *ngIf="!inPreregistro && showSearch">
+          <!-- <input type="text" style="margin: 0px !important;">
+          <button class="" (click)="buscar()"><i class="fas fa-search"></i></button> -->
+          <!--  -->
+          <div class="w-100">
+            <input
+            *ngIf="!mostrarBusqueda"
+            #campoBusqueda
+            type="text"
+            class="campo-busqueda "
+            placeholder="Buscar..."
+            [(ngModel)]="textoBusqueda"
+            (keydown.enter)="buscar()"
+          />
+          <button class=" w-10 btn-r" (click)="buscar()"><i class="fas fa-search"></i></button> 
+          </div>
+          <!-- <button class="btn ms-0 btn-info"><i class="fas fa-search"></i></button> -->
+         
+          <!-- <img *ngIf="!inPreregistro && showSearch"
+            src="lupa.png"
+            alt="Buscar"
+            class="search-icon"
+            (click)="toggleBusqueda()"
+            
+          /> -->
+
+      </div>
     </div>
   </nav>

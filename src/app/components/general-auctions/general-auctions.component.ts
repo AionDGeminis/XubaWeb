@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input  } from '@angular/core';
 import { AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';    
 import { CommonModule } from '@angular/common';
@@ -8,10 +8,12 @@ import { interval } from 'rxjs';
 import { ModalService } from '../../services/modal.service';
 import { AuthService } from '../../services/auth.service';
 import { AuctionService } from '../../services/auction.service';
+import { LoaderComponent } from '../loader/loader.component';
+import { SharedService } from '../../services/shared.service';
 
 @Component({
   selector: 'app-general-auctions',
-  imports: [CommonModule],
+  imports: [CommonModule, LoaderComponent],
   standalone: true,
   templateUrl: './general-auctions.component.html',
   styleUrl: './general-auctions.component.css'
@@ -20,42 +22,102 @@ import { AuctionService } from '../../services/auction.service';
 export class GeneralAuctionsComponent implements OnInit {
   generales: Subasta[] = [];
   auctionsId: number[] = [];
-
-  constructor(private subastaService:SubastasService, private modalService: ModalService,private router: Router, private authService: AuthService, private auctionService: AuctionService ){
+  private intervalId: any;
+  loading: boolean = false;
+  mainTitle: string = '';
+  constructor(private subastaService:SubastasService,private ss: SharedService, private modalService: ModalService,private router: Router, private authService: AuthService, private auctionService: AuctionService ){
     this.getSubastasSeguidas();  
   }
 
+  @Input() tipoSeccion = '';
+  
   @Output() abrirDetalle = new EventEmitter<{ subasta: Subasta, lista: Subasta[], origen: string }>();
+  
   ngOnInit(): void {
-    this.subastaService.getAuctions('todas').subscribe({
+    let tipoSubasta: any = 'todas' ;
+    switch(this.tipoSeccion){
+      case 'SubastasPremium':
+          this.mainTitle = 'Subastas PREMIUM';
+          tipoSubasta = 'premium';
+          break;
+      case 'SubastasExpress':
+          this.mainTitle = 'Subastas EXPRESS';
+          tipoSubasta = 'porvencer';
+          break;
+      default:
+          this.mainTitle = 'Subastas GENERALES';
+          tipoSubasta = 'todas';
+          break;
+        
+    }
+
+    this.subastaService.getAuctions(tipoSubasta).subscribe({
       next: (data) => {
         this.generales = data.map(subasta => ({
           ...subasta,
           tiempoVence: subasta.tiempoVence, // ya viene del backend como string HH:mm:ss
           vencida: false
         }));
-        interval(1000).subscribe(() => {
-          const ahora = new Date();
+        for(let p of this.generales){
+          p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);
+        }
+        this.setTimer(this.generales);
+        // interval(1000).subscribe(() => {
+        //   const ahora = new Date();
         
-          this.generales.forEach(subasta => {
-            subasta.tiempoVence = this.restarUnSegundo(subasta.tiempoVence);
+        //   this.generales.forEach(subasta => {
+        //     subasta.tiempoVence = this.restarUnSegundo(subasta.tiempoVence);
         
-            if (subasta.tiempoVence === '00:00:00' && !subasta.vencida) {
-              subasta.vencida = true;
+        //     if (subasta.tiempoVence === '00:00:00' && !subasta.vencida) {
+        //       subasta.vencida = true;
         
-              // Eliminar visualmente después de 1s (permite animación CSS)
-              setTimeout(() => {
-                this.generales = this.generales.filter(s => s !== subasta);
-              }, 1000);
-            }
-          });
-        });
+        //       // Eliminar visualmente después de 1s (permite animación CSS)
+        //       setTimeout(() => {
+        //         this.generales = this.generales.filter(s => s !== subasta);
+        //       }, 1000);
+        //     }
+        //   });
+        // });
         },
       error: (error) => {
         console.error('Error cargando subastas:', error);
       }    
     });
   }
+  
+  // verificarSiSiguiendo(): void {
+  //   const idUsuario = Number(this.authService.idUsuario);
+  //   this.subastaService.ConsultarSiSiguiendo(idUsuario, this.subasta.id)
+  //     .subscribe({
+  //       next: res => this.isFollowed = res === true,
+  //       // next: res => this.estaSiguiendo = res === true,
+  //       error: err => console.error('Error seguimiento:', err)
+  //     });
+  // }
+
+  setTimer(litaItems: any[]){
+    this.intervalId = setInterval(() => {
+      for(let item of litaItems){
+        if (item.venceSegundos > 0) {
+          item.venceSegundos--;
+        }
+      }
+    }, 1000);
+  }
+
+  tiempoStringASegundos(tiempo: string) {
+    const [h, m, s] = tiempo.split(':').map(Number);
+    return h * 3600 + m * 60 + s;
+  }
+  
+  // 2. Función para convertir segundos a "hh:mm:ss"
+  segundosATiempoString(segundos: number) {
+    const h = String(Math.floor(segundos / 3600)).padStart(2, '0');
+    const m = String(Math.floor((segundos % 3600) / 60)).padStart(2, '0');
+    const s = String(segundos % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+
   abrirModal(subasta: Subasta) {
     console.log('Subasta seleccionada:', subasta);
     //this.abrirDetalle.emit({ subasta,  origen: 'todas' });
@@ -125,10 +187,32 @@ export class GeneralAuctionsComponent implements OnInit {
     return n < 10 ? '0' + n : n.toString();
   }
 
-  abrirDetalleSubasta(subasta: Subasta): void {
-    // console.log('Subasta express seleccionada:', subasta);
-    this.router.navigate(['/subasta', subasta.id, 'Subastas Premium']);
+  // abrirDetalleSubasta(subasta: Subasta): void {
+  //   // console.log('Subasta express seleccionada:', subasta);
+  //   this.router.navigate(['/subasta', subasta.id, 'Subastas Premium']);
+  // }
+  getDatosSubasta(id: number){
+    this.loading = true;
+    this.subastaService.getAuctionById(id).subscribe({
+      next: (subasta) => {
+        let tiempoVence = subasta.tiempoVence?? '00:00:00';
+        let segundos: number, minutos: number, horas: number;
+        let _tiempoRestante = tiempoVence.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
+        console.log(_tiempoRestante);
+        this.loading = false;
+        if(_tiempoRestante > 0){
+          this.router.navigate(['/subasta', subasta.id, 'Generales']);
+        } else {
+          let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario:'comprador'});
+          let encoded = this.ss.encodeToBase64(dataParams);
+          this.router.navigate(['/subasta-terminada', encoded]);
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching auction details:', err);
+        this.loading = false;
+      }
+    })
   }
-
  
 }

@@ -18,18 +18,37 @@ export class SubastasService {
     const apiUrl = `${env.base_url}/subastas/${tipo}`; 
     return this.http.get<Subasta[]>(apiUrl, {headers:test_headers});
   }
+
+  getSubastasActivasVendedor(idVendedor: number){
+    let data = {idVendedor};
+    return this.http.post<Subasta[]>(`${env.base_url}/subastas/misSubastas`,data, {headers:test_headers});
+  }
+
+  getSubastasTerminadasVendedor(idVendedor: number){
+    return this.http.get<Subasta[]>(`${env.base_url}/subastas/subastasNoActivas/${idVendedor}`, {headers:test_headers});
+  }
+  getSubastasGanadas(idVendedor: number){
+    return this.http.get<Subasta[]>(`${env.base_url}/subastas/ConsultaMisSubastasGanadas/${idVendedor}`, {headers:test_headers}).pipe(map(res => res));
+  }
   
   getNotifications(idUsuario:number) {
     const apiUrl = `${env.base_url}/notificaciones/${idUsuario}`; 
+    return this.http.get(apiUrl,{headers:test_headers}).pipe(map(res => res));//this.http.get<Subasta[]>(apiUrl);
+  }
+  
+  getSeguidores(idUsuario:number) {
+    const apiUrl = `${env.base_url}/usuarios/ConsultarMisSeguidores/${idUsuario}`; 
     return this.http.get(apiUrl,{headers:test_headers}).pipe(map(res => res));//this.http.get<Subasta[]>(apiUrl);
   }
 
   getAuctionById(id: number): Observable<Subasta> {
     return this.http.get<Subasta>(`${env.base_url}/subastas/ConsultaSubataId/${id}`, {headers:test_headers}).pipe(map(res => res));
   }
+
   consultarGanador(idSubasta: number) {
     return this.http.get<any>(`${env.base_url}/subastas/ConsultaGanador/${idSubasta}`, {headers:test_headers}).pipe(map(res => res));
   }
+
 
   ConsultarSiSiguiendo(idUsuario: number, idSubasta: number) {
     return this.http.get<any>(`${env.base_url}/seguirSubasta/siguiendo/${idUsuario}/${idSubasta}`, {headers:test_headers});
@@ -41,8 +60,15 @@ export class SubastasService {
   }
 
   GenerarCargoSubastaPremium(dataCargo: any){
-    const apiBankUrl = 'http://173.208.155.152:8001/api/Cargos/GenerarCargo';
+    //https://banca.xuba.mx:9443/swagger/index.html    swagger
+    // const apiBankUrl = 'http://173.208.155.152:8001/api/Cargos/GenerarCargo';
+    const apiBankUrl = 'https://banca.xuba.mx:9443/api/Cargos/GenerarCargo';
     return this.http.post(apiBankUrl,dataCargo,{headers:test_headers}).pipe(map(res => res));
+  }
+
+  generarGuiaPaqueteria(data: any){
+    const apiPaqueteria = 'https://envios.xuba.mx:10443/api/DHL/Envio';
+    return this.http.post(apiPaqueteria,data,{headers:test_headers}).pipe(map(res => res));
   }
 
   seguirSubasta(idUsuario: number, idSubasta: string) {
@@ -69,6 +95,18 @@ export class SubastasService {
 
   GetHistorialEstatusSubasta(IdSubasta: number){
     return this.http.get(`${env.base_url}/subastas/historialSubasta/${IdSubasta}`, {headers:test_headers}).pipe(map(res => res));
+  }
+  
+  GetDireccionesUsuario(idUsuario: number, tipo: string){
+    return this.http.get(`${env.base_url}/direcciones/Consulta/${idUsuario}/${tipo}`, {headers:test_headers}).pipe(map(res => res));
+  }
+
+  guardarDireccion(data: any) {
+    return this.http.post(`${env.base_url}/direcciones/Registrar`,data,{headers:test_headers}).pipe(map(res => res));
+  }
+
+  editarDireccion(data: any) {
+    return this.http.put(`${env.base_url}/direcciones/EditarDireccion`,data,{headers:test_headers}).pipe(map(res => res));
   }
 
   buscarSubastas(termino: string): Observable<Subasta[]> {

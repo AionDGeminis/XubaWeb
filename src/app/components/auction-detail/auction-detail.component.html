@@ -3,29 +3,39 @@
     <!-- ... -->
      <h4 class="text-center mt-3 text-caption" style="font-size: 1rem;">XUBASTAS PREMIUM</h4>
     <div style="height: 90%; overflow-y: scroll; margin-top: 6%;">
-      <div class=" mb-4 mt-2 auction-card bg-gold"  *ngFor="let subasta of lista">
+      <div class=" mb-4 mt-2 auction-card border-gold text-gold" style="background: #1e272e !important;"  *ngFor="let subasta of listaPremium">
         <img [src]="subasta.url" alt="">
-          <div class="title">{{ subasta.caption }}</div>
-          <div class="desc">{{ toShort(subasta.descripcion)  }}</div>
+          <!-- <div class="title">{{ subasta.caption }}</div> -->
+          <!-- <div class="desc">{{ toShort(subasta.descripcion)  }}</div> -->
           <div class="price">${{ subasta.apuesta }} MXN</div>
-          <div class="timer">09:15:01</div>
+          <div class="timer">{{segundosATiempoString(subasta.venceSegundos!)}}</div>
+          <hr>
           <div class="actions">
-            <button title="Seguir"><i class="fas fa-heart"></i></button>
-            <button title="Ofertar"><i class="fas fa-gavel"></i></button>
-            <button title="Compartir"><i class="fas fa-share"></i></button>
+            <button title="Seguir" (click)="toggleSingleSeguida(subasta.id, $event)"><i class="fas fa-heart" [ngClass]="{'nofollowed-i': !isSingleSeguida(subasta.id),'followed-i': isSingleSeguida(subasta.id)}"></i></button>
+            <!-- <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+            <button title="Compartir"><i class="fas fa-share"></i></button> -->
+          </div>
+          <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+            {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
           </div>
       </div> 
     </div>
   </aside>
-  <div class="col-lg-8 ps-0" style="position: relative;height: 100%;overflow: hidden;">      
-    <img [src]="subasta.url" alt="Imagen de la subasta" style="height: 100%; display: block;margin:auto; overflow-y: hidden;" />
+  <div [class]="'col-lg-8 ps-0 fast-animation animate__animated ' + classAnimate.imageContainer"  style="position: relative;height: 100%;overflow: hidden;">      
+    <img [src]="subasta.mimagenesSubasta[currentIndexImage].url" [class]="'animate__animated ' + imageClassAnimated" alt="Imagen de la subasta" style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
     <div [class]="'auction-label-container-winner fast-animation animate__animated ' + animatedClass" *ngIf="usuarioMayor">
       {{usuarioMayor}} <span class="winner-span" >Va Ganando!</span>
     </div>
+    <div class="top-left-arrow">
+      <button class="btn btn-dark" (click)="irAAnterior()"><< Ant</button>
+    </div>
+    <div class="top-right-arrow">
+      <button class="btn btn-dark" (click)="irASiguiente()">Sig >></button>
+    </div>
     <div class="auction-actions-vertical" *ngIf="isLoggedIn()">
       <button class="action-btn" alt="Personalizado" (click)="openModal()"><i class="fas fa-handshake"></i></button>
-      <button class="action-btn" alt="Seguir"><i class="far fa-heart"></i></button>
-      <button class="action-btn"><i class="fas fa-cart-arrow-down"></i></button>
+      <button class="action-btn" (click)="toggleSeguir()" [ngClass]="{'marked': isFollowed}" alt="Seguir" ><i class="fas fa-heart"></i>  </button>
+      <button class="action-btn" *ngIf="subasta.compraDirecta"><i class="fas fa-cart-arrow-down"></i></button>
       <button class="action-btn"><i class="fas fa-share"></i></button>
     </div>
     <div class="auction-btn-container-bid">
@@ -34,8 +44,8 @@
     </div>
     <!-- <button class="btn-dark-yellow auction-main-btn">Apostar ahora</button> -->
   </div>
-  <aside class="col-lg-2 bg-clouds">
-    <div class="auction-info-card mb-4 mt-2 bg-light">
+  <aside class="col-lg-2 bg-light" style="overflow-y: hidden;height: calc(100vh - 70px)">
+    <div class="auction-info-card mb-3 mt-2 bg-light descripcion-container-aside">
       <div class="d-flex align-items-center mb-2">
         <!-- <img [src]="subasta.sellerAvatar" class="seller-avatar me-2" alt="Vendedor"> -->
         <div>
@@ -44,27 +54,34 @@
         </div>
       </div>
       <h2 class="auction-title-dark mb-2 text-caption">{{ subasta.caption }}#{{subasta.id}}</h2>
-      <div class="auction-desc-dark mb-3">{{ subasta.descripcion }}</div>
-      <div class="auction-meta-dark mb-3 pt-3">
-        <span [class]="'meta-chip-dark price-chip-dark w-100 bg-dark text-price pt-0 pb-0 fast-animation animate__animated '+ animatedClass">
-          <i class="fas fa-money-bill"></i> ${{ valorApuesta }}
-        </span>
+      <div class="auction-desc-dark mb-3">
+        {{ subasta.descripcion }}
       </div>
-      <!-- <div class="auction-meta-dark mb-3 text-center w-100">
-        <span class="meta-chip-dark time-chip-dark">
-          <i class="fas fa-clock"></i> 10:00:00
+      <!-- <div class="auction-meta-dark mb-3 pt-3 text-center">
+        <span [class]="'meta-chip-dark price-chip-dark w-100 bg-light  text-price pt-0 pb-0 fast-animation animate__animated '+ animatedClass">
+          <span class="price-lbl"><i class="fas fa-money-bill"></i> Oferta actual</span>
+          <br>
+          <span class="price-number">$1,{{ valorApuesta }}55,555.00</span>
         </span>
       </div> -->
+      <div class="text-price text-center">
+        <span class="price-lbl"><i class="fas fa-money-bill"></i> Oferta actual</span>
+        <br>
+        <span class="price-number">${{ valorApuesta }}</span>
+      </div>
+     
+
       <div class="w-100 text-dark text-center pt-5" style="font-size: 1.5rem;">
         <i class="fas fa-clock"></i> {{tiempoVence}}
       </div>
-      <!-- <div class="mb-3">
-        <span class="badge bg-dark-yellow text-dark">Ganando: Usuario prueba</span>
-      </div> -->
-      <!-- <form class="d-flex gap-2" >
-        <input type="number" class="form-control-dark" min="1000" placeholder="Tu apuesta"  name="customBid">
-        <button class="btn-dark-yellow" type="submit">Apostar</button>
-      </form> -->
+    </div>
+    <div class="auction-info-card mt-2 bg-light images-container pb-0">
+      <h5 class="text-center">Galeria</h5>
+      <!-- <div class="d-flex align-items-center mb-2"> -->
+        <img [src]="images.url" (click)="setIndexImage(i)" *ngFor="let images of subasta.mimagenesSubasta; let i = index;" class="w-20 mb-2" [ngClass]="{'active': currentIndexImage === i}" alt="">
+        <!-- <img [src]="images.url" *ngFor="let images of subasta.mimagenesSubasta" class="w-100" alt="">
+        <img [src]="images.url" *ngFor="let images of subasta.mimagenesSubasta" class="w-100" alt=""> -->
+      <!-- </div> -->
     </div>
   </aside>
 </div>

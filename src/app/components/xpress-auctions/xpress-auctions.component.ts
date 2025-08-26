@@ -29,25 +29,25 @@ export class XpressAuctionsComponent implements OnInit, AfterViewInit {
           tiempoVence: subasta.tiempoVence, // ya viene del backend como string HH:mm:ss
           vencida: false
         }));
-  
-
+        console.log('subastas express data: ')
+        console.log(data)
       // Actualiza el contador cada segundo
-      interval(1000).subscribe(() => {
-        const ahora = new Date();
-      
-        this.xpress.forEach(subasta => {
-          subasta.tiempoVence = this.restarUnSegundo(subasta.tiempoVence);
-      
-          if (subasta.tiempoVence === '00:00:00' && !subasta.vencida) {
-            subasta.vencida = true;
-      
-            // Eliminar visualmente después de 1s (permite animación CSS)
-            setTimeout(() => {
-              this.xpress = this.xpress.filter(s => s !== subasta);
-            }, 1000);
-          }
+        interval(1000).subscribe(() => {
+          const ahora = new Date();
+        
+          this.xpress.forEach(subasta => {
+            subasta.tiempoVence = this.restarUnSegundo(subasta.tiempoVence);
+        
+            if (subasta.tiempoVence === '00:00:00' && !subasta.vencida) {
+              subasta.vencida = true;
+        
+              // Eliminar visualmente después de 1s (permite animación CSS)
+              setTimeout(() => {
+                this.xpress = this.xpress.filter(s => s !== subasta);
+              }, 1000);
+            }
+          });
         });
-      });
     },
       error: (error) => {
         console.error('Error cargando subastas express:', error);
@@ -100,7 +100,7 @@ export class XpressAuctionsComponent implements OnInit, AfterViewInit {
   abrirModal(subasta: Subasta): void {
     console.log('Subasta express seleccionada:', subasta);
 
-    this.router.navigate(['/subasta', subasta.id, 'Subastas Express']);
+    this.router.navigate(['/subasta', subasta.id, 'SubastasExpress']);
    
   }
 

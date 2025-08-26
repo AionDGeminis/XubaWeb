@@ -1,0 +1,8 @@
+  <div class="admin-login-bg" *ngIf="showPage === true">
+    <form class="admin-login-form">
+      <h2>Ingresa la contraseña de administrador</h2>
+      <!-- <input type="text" placeholder="Usuario" autocomplete="username" required> -->
+      <input type="password" placeholder="Contraseña" name="pass" [(ngModel)]="pass" required>
+      <button  (click)="checkPasswordUser()">Continuar</button>
+    </form>
+  </div>

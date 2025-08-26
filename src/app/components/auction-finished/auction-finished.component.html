@@ -1,13 +1,558 @@
-<div class="container-fluid auction-finished-window py-4">
+<div *ngIf="!hasPermiso">
+    no tienes permiso para acceder a esta sección.
+</div>
+<app-loader *ngIf="loading"></app-loader>
+
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"> -->
+
+<ng-container *ngIf="isLoggedIn() && ganadorInfo && usuario()!.id === ganadorInfo.idComprador" >
+
+<div class="container-lg py-4 auction-summary">
+
+  <!-- Banner de estado -->
+  <div class="alert alert-success d-flex align-items-center gap-2 rounded-3 shadow-sm mb-4" role="alert">
+    <i class="fas fa-trophy fs-5"></i>
+    <div><strong>¡Felicidades!</strong> Has ganado la subasta.</div>
+    <span class="ms-auto text-nowrap small text-success-emphasis">
+      Vence en: <span class="fw-semibold">23h 12m</span>
+    </span>
+  </div>
+
+  <div class="row g-4">
+    <!-- Columna izquierda -->
+    <div class="col-12 col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <!-- Producto -->
+          <div class="d-flex flex-column flex-sm-row gap-3">
+            <img [src]="subasta.url" alt="Llavero Naruto" class="rounded object-fit-cover" style="width:160px;height:160px">
+            <div class="flex-grow-1">
+              <h5 class="mb-1">{{subasta.caption}}</h5>
+              <div class="text-muted small mb-2">
+                #{{subasta.id}} 
+                <!-- · Categoría: Coleccionables -->
+              </div>
+
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <img [src]="subasta.musuarios.imgPerfil" class="rounded-circle" style="width:28px;height:28px" alt="Profile Picture">
+                <a class="link-secondary text-decoration-none" href="#">{{subasta.musuarios.nombre}}&nbsp;{{subasta.musuarios.apellido}}</a>
+                <span class="badge bg-light text-dark">
+                  <i class="fas fa-star  text-warning"></i> {{subasta.musuarios.stars}}
+                </span>
+              </div>
+
+              <div class="text-muted small">
+                Envío desde Ciudad de México
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          
+ 
+          <!-- Resumen de costos -->
+          <div class="row gy-3 align-items-stretch">
+            <div class="col-12 col-md-6">
+              <ul class="list-unstyled mb-0">
+                <li class="d-flex justify-content-between py-1">
+                  <span class="text-muted">Precio del articulo</span>
+                  <strong>${{subasta.apuesta}} MXN</strong>
+                </li>
+                <li class="d-flex justify-content-between py-1">
+                  <span class="text-muted">Comisión de servicio</span>
+                  <strong>${{precioComision}} MXN</strong>
+                </li>
+                <li class="d-flex justify-content-between py-1">
+                  <span class="text-muted">Envío estimado</span>
+                  <strong>${{precioEnvio}} MXN</strong>
+                </li>
+              </ul>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="fw-semibold">Total a pagar</span>
+                  <span class="fs-4 fw-bold text-primary">${{precioTotal}} MXN</span>
+                </div>
+                <div class="small text-muted mt-1">Fecha límite: &nbsp; 22 ago 2025, 11:59 PM</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dirección seleccionada -->
+          <div class="mt-4 p-3 bg-body-tertiary rounded-3">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="fw-semibold mb-1"><i class="bi bi-geo-alt me-1"></i> Dirección de envío</div>
+                <div class="small text-muted">
+                  <!-- Av. Siempre Viva 742, Interior 5 · Col. Centro · CDMX · 06000 · Tel. 55-1234-5678 -->
+                  {{direccionEntrega.calle}}, {{direccionEntrega.numeroInterior}} · {{direccionEntrega.colonia}} · {{direccionEntrega.municipio}} · {{direccionEntrega.codigoPostal}} · Tel. {{direccionEntrega.telefono}} 
+                </div>
+              </div>
+              <button class="btn btn-sm btn-outline-secondary" (click)="fOpenModalDireccion()">
+                <i class="bi bi-pencil me-1"></i> Cambiar
+              </button>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <button class="btn btn-primary btn-lg flex-grow-1 bg-xuba" (click)="openModalPago()">
+              <i class="bi bi-credit-card-2-front me-2"></i>Pagar ahora
+            </button>
+            <!-- <button class="btn btn-outline-secondary">
+              <i class="bi bi-chat-dots me-1"></i> Mensaje al vendedor
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="bi bi-receipt me-1"></i> Ver factura
+            </button> -->
+          </div>
+         
+        </div>
+      </div>
+
+      <!-- Sugerencias (opcional) -->
+     
+
+    </div>
+
+    <!-- Columna derecha: Timeline -->
+    <div class="col-12 col-lg-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0">
+          <h6 class="mb-0">Historial de estatus</h6>
+        </div>
+        <div class="col-md-12" *ngIf="isLoggedIn() && ganadorInfo && usuario()!.id === ganadorInfo.idComprador">
+          <div class="card p-4 shadow-sm auction-status-track">
+            <h5 class="mb-4 fw-bold text-center">Historial de estatus</h5>
+            <ul class="status-track-list list-unstyled">
+              <li class="status-track-item" *ngFor="let item of listaEstatus;let i = index;" [ngClass]="{'status-current': i === 0}">
+                  <span class="status-dot"></span>
+                  <div class="status-content">
+                    <div class="status-main">
+                      <span class="status-label">{{item.desStatus}}</span>
+                      <span class="status-date">{{item.fecha}}</span>
+                    </div>
+                    <div class="status-main">
+                      <small class="desc">{{item.labelC}}</small>
+                    </div>
+                  </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- <div class="card-body">
+          <ol class="timeline list-unstyled">
+            <li class="timeline-item done">
+              <div class="timeline-dot"><i class="bi bi-play-fill"></i></div>
+              <div>
+                <div class="fw-semibold">Activa</div>
+                <div class="small text-muted">22 ago 2025, 10:54</div>
+              </div>
+            </li>
+            <li class="timeline-item done">
+              <div class="timeline-dot"><i class="bi bi-gavel"></i></div>
+              <div>
+                <div class="fw-semibold">Subasta aprobada</div>
+                <div class="small text-muted">22 ago 2025, 11:18</div>
+              </div>
+            </li>
+            <li class="timeline-item current">
+              <div class="timeline-dot pulse"></div>
+              <div>
+                <div class="fw-semibold text-primary">Pendiente de pago</div>
+                <div class="small text-muted">Ref: INV-552013</div>
+              </div>
+            </li>
+            <li class="timeline-item">
+              <div class="timeline-dot"><i class="bi bi-receipt"></i></div>
+              <div>
+                <div class="fw-semibold">Pagado</div>
+                <div class="small text-muted">22 ago 2025, 11:36</div>
+              </div>
+            </li>
+          </ol>
+        </div> -->
+        <!-- <div class="card-footer bg-white border-0">
+          <div class="small text-muted">
+            Método recomendado: Tarjeta • Comisión: $12.00 MXN
+          </div>
+        </div> -->
+      </div>
+
+      <!-- Info adicional -->
+      <div class="card border-0 shadow-sm mt-3">
+        <div class="card-body">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="fas fa-lock text-success"></i>
+            <div class="small">Compra protegida por XUBA</div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <i class="fas fa-truck text-primary"></i>
+            <div class="small">El vendedor envía 24–48h después del pago</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</ng-container>
+<ng-container *ngIf="!isLoggedIn() || ganadorInfo && usuario()!.id !== ganadorInfo.idComprador">
+
+<div class="container-lg py-4 auction-summary">
+
+  <!-- Banner de estado (subasta terminada) -->
+  <div class="alert alert-secondary d-flex align-items-center gap-2 rounded-3 shadow-sm mb-4" role="alert">
+    <i class="bi bi-info-circle-fill fs-5"></i>
+    <div>
+      <strong>Subasta finalizada.</strong> Este artículo ya no acepta ofertas.
+    </div>
+    <span class="ms-auto text-nowrap small text-secondary">
+      Terminó: <span class="fw-semibold">22 ago 2025, 11:36 PM</span>
+    </span>
+  </div>
+
+  <div class="row g-4">
+    <!-- Columna izquierda: Resumen del artículo -->
+    <div class="col-12 col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <!-- Producto -->
+          <div class="d-flex flex-column flex-sm-row gap-3">
+            <img [src]="subasta.url" alt="imagen subasta" class="rounded object-fit-cover" style="width:160px;height:160px">
+            <div class="flex-grow-1">
+              <h5 class="mb-1">{{subasta.caption}}</h5>
+              <div class="text-muted small mb-2">
+                 #{{subasta.id}}
+              </div>
+
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <img [src]="subasta.musuarios.imgPerfil" class="rounded-circle" style="width:28px;height:28px" alt="Profile Picture">
+                <a class="link-secondary text-decoration-none" href="#">{{subasta.musuarios.nombre}} {{subasta.musuarios.apellido}}</a>
+                <span class="badge bg-light text-dark">
+                  <i class="fas fa-star text-warning"></i> 4.8
+                </span>
+                <span class="text-muted small">· 125 ventas</span>
+              </div>
+
+              <div class="text-muted small">
+                Envío desde Ciudad de México
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <!-- Resumen de resultado (sin mostrar ganador) -->
+          <div class="row gy-3 align-items-stretch">
+            <div class="col-12 col-md-6">
+              <ul class="list-unstyled mb-0">
+                <li class="d-flex justify-content-between py-1">
+                  <span class="text-muted">Precio final </span>
+                  <strong>${{subasta.apuesta}} MXN</strong>
+                </li>
+                <li class="d-flex justify-content-between py-1">
+                  <span class="text-muted">Pujas totales</span>
+                  <strong>{{ganadorInfo.cantidadApuestas}}</strong>
+                </li>
+                <li class="d-flex justify-content-between py-1">
+                  <span class="text-muted">Incremento de puja</span>
+                  <strong>${{subasta.puja}} MXN</strong>
+                </li>
+              </ul>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="fw-semibold">Estado</span>
+                  <span class="badge bg-secondary-subtle text-secondary-emphasis">Finalizada</span>
+                </div>
+                <div class="small text-muted mt-1">Cerró el 22 ago 2025, 11:36 PM</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Llamadas a la acción para no ganador / no logueado -->
+          <!-- <div class="d-flex flex-wrap gap-2 mt-4">
+            <a class="btn btn-primary" href="#">
+              <i class="bi bi-search-heart me-2"></i> Ver subastas similares
+            </a>
+            <a class="btn btn-outline-secondary" href="#">
+              <i class="bi bi-bell me-1"></i> Crear alerta para artículos similares
+            </a>
+            <a class="btn btn-outline-secondary" href="#">
+              <i class="bi bi-person-check me-1"></i> Inicia sesión / Regístrate
+            </a>
+            <button class="btn btn-outline-secondary">
+              <i class="bi bi-share me-1"></i> Compartir
+            </button>
+          </div> -->
+
+          <!-- Descripción breve (opcional) -->
+          <div class="mt-4">
+            <h6 class="mb-2">Descripción</h6>
+            <p class="text-muted mb-0">
+              {{subasta.descripcion}}
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- Columna derecha: Información de subasta (pública) -->
+    <div class="col-12 col-lg-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0">
+          <h6 class="mb-0">Detalles de la subasta</h6>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled small mb-0">
+            <li class="d-flex justify-content-between py-1">
+              <span class="text-muted">Estado</span><span class="fw-semibold">Finalizada</span>
+            </li>
+            <li class="d-flex justify-content-between py-1">
+              <span class="text-muted">Precio final</span><span class="fw-semibold">${{subasta.apuesta}} MXN</span>
+            </li>
+            <li class="d-flex justify-content-between py-1">
+              <span class="text-muted">Pujas</span><span class="fw-semibold">{{ganadorInfo.cantidadApuestas}}</span>
+            </li>
+            <li class="d-flex justify-content-between py-1">
+              <span class="text-muted">Inicio</span><span>{{ganadorInfo.creado}}</span>
+            </li>
+            <li class="d-flex justify-content-between py-1">
+              <span class="text-muted">Cierre</span><span>22 ago 2025, 11:36 PM</span>
+            </li>
+            <li class="d-flex justify-content-between py-1">
+              <span class="text-muted">Ubicación</span><span>CDMX, México</span>
+            </li>
+            <!-- <li class="d-flex justify-content-between py-1">
+              <span class="text-muted">Devoluciones</span><span>7 días, comprador paga envío</span>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Más del vendedor -->
+      <div class="card border-0 shadow-sm mt-3">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="fw-semibold">Más de este vendedor</div>
+            <a class="small text-decoration-none" href="#">Ver todo</a>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="" class="rounded" style="width:56px;height:56px;object-fit:cover">
+            <div class="small">
+              <div class="fw-semibold">Audífonos gamer</div>
+              <div class="text-muted">Subasta · Termina en 5h</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2 mt-2">
+            <img src="https://images.unsplash.com/photo-1555617981-dac3880bde38?q=80&w=400&auto=format&fit=crop" alt="" class="rounded" style="width:56px;height:56px;object-fit:cover">
+            <div class="small">
+              <div class="fw-semibold">Figura coleccionable</div>
+              <div class="text-muted">Compra directa · $520</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info de confianza -->
+      <!-- <div class="card border-0 shadow-sm mt-3">
+        <div class="card-body">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-shield-check text-success"></i>
+            <div class="small">Compra protegida por SubastasX</div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-envelope-paper-heart text-primary"></i>
+            <div class="small">Crea una alerta y te avisamos de artículos similares</div>
+          </div>
+        </div>
+      </div> -->
+
+    </div>
+  </div>
+</div>
+</ng-container>
+
+
+
+
+
+
+<div *ngIf="openModalDireccion" class="cart-modal-backdrop" (click)="closeModalDireccion()">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white" >Seleccionar direccion de entrega</span>
+      </h3>
+      <button [disabled]="loading" class="close-button" (click)="closeModalDireccion()">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+        <app-loader *ngIf="loading"></app-loader>
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
+         
+          <form class="form-productos pl-2 pr-2">
+          
+            <div class="form-row mt-3">
+              <div class="form-group">
+                <label for="tiempoActivo">Direccion de entrega</label>
+                <small style="font-family: Arial, sans-serif;font-weight: 500;font-size: 0.95em;color:#57606f;">Seleccione la direccion donde recibira su producto</small>
+                <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="direccionEntrega">
+                  <option *ngFor="let item of direcciones" [ngValue]="item">{{item.calle}} {{item.numeroExt}} {{item.numeroInt}}, {{item.municipio}}</option>
+                </select>
+              </div>
+            </div>
+            <hr>
+           
+        </form>
+       
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+    
+      <div class="pb-3 pe-3">
+        <button [disabled]="loading" class="btn btn-dark me-2" (click)="closeModalDireccion()">
+          Cerrar
+        </button>
+      </div>     
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="openModal" class="cart-modal-backdrop" (click)="closeModal()">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white" >Pago de subasta</span>
+      </h3>
+      <button [disabled]="loading" class="close-button" (click)="closeModal()">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+        <!-- <app-loader *ngIf="loading"></app-loader> -->
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
+          <div class="w-100 text-center">
+              <img src="images/visa.png" alt="" class="w-5 me-1">
+              <img src="images/mastercard.png" alt="" class="w-5 me-1">
+              <img src="images/amex.png" alt="" class="w-5">
+          </div>
+          <form class="form-productos pl-2 pr-2">
+            <!-- <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Tarjeta guardada</label>
+                </div>
+            </div> -->
+            <div class="mb-2 label-final-price">
+              Total a Pagar: <strong>${{precioTotal}}</strong> 
+            </div>
+            <!-- <div class="form-row mt-3">
+              <div class="form-group">
+                <label for="tiempoActivo">Direccion de entrega</label>
+                <small style="font-family: Arial, sans-serif;font-weight: 500;font-size: 0.95em;color:#57606f;">Seleccione la direccion donde recibira su producto</small>
+                <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="direccionEntrega">
+                  <option *ngFor="let item of direcciones" [ngValue]="item">{{item.calle}} {{item.numeroExt}} {{item.numeroInt}}, {{item.municipio}}</option>
+                </select>
+              </div>
+            </div>
+            <hr> -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="tiempoActivo">Tarjetas guardadas</label>
+                <small style="font-family: Arial, sans-serif;font-weight: 500;font-size: 0.95em;color:#57606f;">Seleccione una tarjeta guardada</small>
+
+                <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="selectedCard" (change)="changeTarjetaSeleccionada()">
+                  <option *ngFor="let item of tarjetas" [ngValue]="item">{{item.card_number}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row mt-3">
+              <div class="form-group">
+                  <label for="nombre">No. Tarjeta</label>
+                  <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event, tarjeta.card_number)" maxlength="16" id="cardnumber" name="cardnumber" />
+              </div>
+            </div>
+           
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="precio">Expiracion (MM)</label>
+                    <input type="text" [(ngModel)]="tarjeta.expiration_month" (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expm" name="expm" />
+                </div>
+                <div class="form-group">
+                    <label for="compraDirecta">Expiracion (YY)</label>
+                    <input type="text" [(ngModel)]="tarjeta.expiration_year" (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expy" name="expy" />
+                </div>
+                <div class="form-group">
+                  <label for="compraDirecta">CCV</label>
+                  <input type="text" [(ngModel)]="tarjeta.cvv2"  (input)="onInput($event, tarjeta.cvv2)" maxlength="3"  id="ccv" name="ccv" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Nombre</label>
+                    <input type="text" [(ngModel)]="tarjeta.holder_name" id="marca" name="marca" />
+                </div>
+                 <div class="form-group">
+                    <label for="marca">Apellido</label>
+                    <input type="text" [(ngModel)]="tarjeta.holder_lastname" id="marca" name="marca" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Correo Electronico</label>
+                    <input type="text" [(ngModel)]="tarjeta.mail" id="marca" name="marca" />
+                </div>
+                <div class="form-group">
+                  <label for="marca">Telefono</label>
+                  <input type="text" [(ngModel)]="tarjeta.phone"  (input)="onInput($event, tarjeta.phone)" id="marca" name="marca" />
+              </div>
+            </div>
+        </form>
+        <div class="mb-2 text-center">
+          <span class="fw-bold label-secure"><i class="fas fa-lock"></i> Transacciones realizadas por </span>
+        </div>
+        <div class="w-100 text-center">
+          <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="OpenPay Logo" >
+        </div>
+        <hr>
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+    
+      <div class="pb-3 pe-3">
+        <button [disabled]="loading" class="btn btn-dark me-2" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button [disabled]="loading" class="btn btn-xuba btn-add-cart" (click)="procesarPago()">
+         <i class="fa fa-lock"></i> Procesa pago
+        </button>
+      </div>     
+    </div>
+  </div>
+</div>
+
+
+<!-- <div *ngIf="hasPermiso" class="container-fluid auction-finished-window py-4">
     <div class="row justify-content-center">
-      <!-- Columna principal -->
       <div class="col-md-7">
         <div class="card p-4 shadow-sm mb-3">
           <div class="w-100 text-center badge-common">
-            <span class="badge badge-ganador" *ngIf=" ganadorInfo &&usuario!.id === ganadorInfo.idComprador">
+
+            <span class="badge badge-ganador" *ngIf="isLoggedIn() && ganadorInfo && usuario()!.id === ganadorInfo.idComprador">
                 Felicidades, Has ganado la subasta!
             </span>
-            <span class="badge badge-common" *ngIf="ganadorInfo && usuario!.id !== ganadorInfo.idComprador">
+            <span class="badge badge-common" *ngIf="!isLoggedIn() || ganadorInfo && usuario()!.id !== ganadorInfo.idComprador">
                 Subasta Finalizada
             </span>
 
@@ -20,24 +565,46 @@
           </div>
           <h3 class="fw-bold mb-2">{{subasta.caption}}</h3>
           <p class="text-muted mb-3">{{subasta.descripcion}}</p>
-          <!-- <div class="mb-2">
-            <span class="badge bg-pink text-white px-3 py-2 fs-6">Estatus: {{subasta.estatus}}</span>
-          </div> -->
           <div class="mb-2 text-center">
             <span class="fw-bold label-price">Precio final: ${{subasta.apuesta}} MXN</span>
           </div>
           
           
           <hr>
-          <div class="w-100 text-center">
-             <span class="label label-info-status">La subasta esta terminada puede proceder al pago</span> 
-             <br><br>
-             <button class="btn bg-xuba w-50 mt-1" (click)="openModalPago()">Ventana de pago <i class="fas fa-credit-card"></i></button>
-          </div>
+          <ng-container *ngIf="tipoUsuario === 'comprador' ">
+            
+            <div class="w-100 text-center" *ngIf="ganadorInfo.estatus === estatusPendientePago && direcciones.length === 0">  
+              <span class="label label-info-status bg-danger">Para pagar debes agregar al menos una direccion de entrega</span> 
+              <br><br>
+              <button class="btn bg-xuba w-50 mt-1" (click)="openModalPago()">Ir a tu perfil <i class="fas fa-user"></i></button>
+            </div>
+
+            <div class="w-100 text-center" *ngIf="ganadorInfo.estatus === estatusPendientePago && direcciones.length > 0" >
+                <span class="label label-info-status">La subasta esta terminada puede proceder al pago</span> 
+                <br><br>
+                <button class="btn bg-xuba w-50 mt-1" (click)="openModalPago()">Ventana de pago <i class="fas fa-credit-card"></i></button>
+             </div>
+             <div class="w-100 text-center" *ngIf="ganadorInfo.estatus === estatusPagado">
+                <span class="label label-info-status">El vendedor esta preparando el envio de tu producto</span> 
+             </div>
+          </ng-container>
+
+          <ng-container *ngIf="tipoUsuario === 'vendedor' ">
+            <div class="w-100 text-center" *ngIf="ganadorInfo.estatus === estatusPendientePago">
+                <span class="label label-info-status">El tiempo ha finalizado esperando el pago del comprador</span> 
+            </div>
+            <div class="w-100 text-center" *ngIf="ganadorInfo.estatus === estatusPagado">
+                <span class="label label-info-status">El comprado ha hecho el pago, puedes proceder con el envio</span> 
+                <br><br>
+                <button class="btn bg-xuba w-50 mt-1" (click)="openModalPago()">Ventana envio <i class="fas fa-credit-card"></i></button>
+             </div>
+          
+          </ng-container>
+          
+        
         </div>
       </div>
-      <!-- Columna track de estatus 5523   6257   -->   
-      <div class="col-md-4">
+      <div class="col-md-4" *ngIf="isLoggedIn() && ganadorInfo && usuario()!.id === ganadorInfo.idComprador">
         <div class="card p-4 shadow-sm auction-status-track">
           <h5 class="mb-4 fw-bold text-center">Historial de estatus</h5>
           <ul class="status-track-list list-unstyled">
@@ -53,21 +620,6 @@
                   </div>
                 </div>
             </li>
-            <!-- <li class="status-track-item">
-              <span class="status-dot"></span>
-              <span class="status-label">Activo</span>
-              <span class="status-date">25 Jul 2025, 12:00</span>
-            </li>
-            <li class="status-track-item">
-              <span class="status-dot"></span>
-              <span class="status-label">Pendiente de pago</span>
-              <span class="status-date">27 Jul 2025, 18:05</span>
-            </li>
-            <li class="status-track-item">
-              <span class="status-dot"></span>
-              <span class="status-label">Pagado</span>
-              <span class="status-date">28 Jul 2025, 10:00</span>
-            </li> -->
           </ul>
         </div>
       </div>
@@ -87,7 +639,7 @@
       </div>
       
       <div class="modal-body">
-        <app-loader *ngIf="loading"></app-loader>
+          <app-loader *ngIf="loading"></app-loader>
           <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
             <div class="w-100 text-center">
                 <img src="images/visa.png" alt="" class="w-5 me-1">
@@ -98,31 +650,50 @@
               <div class="form-row">
                   <div class="form-group">
                       <label for="nombre">Tarjeta guardada</label>
-                      <!-- <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" /> -->
                   </div>
               </div>
               <div class="mb-2 label-final-price">
                 Total a Pagar: <strong>${{subasta.apuesta}}</strong> 
               </div>
+              <div class="form-row mt-3">
+                <div class="form-group">
+                  <label for="tiempoActivo">Direccion de entrega</label>
+                  <small style="font-family: Arial, sans-serif;font-weight: 500;font-size: 0.95em;color:#57606f;">Seleccione la direccion donde recibira su producto</small>
+                  <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="direccionEntrega">
+                    <option *ngFor="let item of direcciones" [ngValue]="item">{{item.calle}} {{item.numeroExt}} {{item.numeroInt}}, {{item.municipio}}</option>
+                  </select>
+                </div>
+              </div>
+              <hr>
               <div class="form-row">
                 <div class="form-group">
-                    <label for="nombre">No. Tarjeta</label>
-                    <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event)" maxlength="16" id="cardnumber" name="cardnumber" />
+                  <label for="tiempoActivo">Tarjetas guardadas</label>
+                  <small style="font-family: Arial, sans-serif;font-weight: 500;font-size: 0.95em;color:#57606f;">Seleccione una tarjeta guardada</small>
+
+                  <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="selectedCard" (change)="changeTarjetaSeleccionada()">
+                    <option *ngFor="let item of tarjetas" [ngValue]="item">{{item.card_number}}</option>
+                  </select>
                 </div>
-            </div>
+              </div>
+              <div class="form-row mt-3">
+                <div class="form-group">
+                    <label for="nombre">No. Tarjeta</label>
+                    <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event, tarjeta.card_number)" maxlength="16" id="cardnumber" name="cardnumber" />
+                </div>
+              </div>
              
               <div class="form-row">
                   <div class="form-group">
                       <label for="precio">Expiracion (MM)</label>
-                      <input type="number" [(ngModel)]="tarjeta.expiration_month" maxlength="2" id="expm" name="expm" />
+                      <input type="text" [(ngModel)]="tarjeta.expiration_month" (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expm" name="expm" />
                   </div>
                   <div class="form-group">
                       <label for="compraDirecta">Expiracion (YY)</label>
-                      <input type="number" [(ngModel)]="tarjeta.expiration_year" maxlength="2" id="expy" name="expy" />
+                      <input type="text" [(ngModel)]="tarjeta.expiration_year" (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expy" name="expy" />
                   </div>
                   <div class="form-group">
                     <label for="compraDirecta">CCV</label>
-                    <input type="number" [(ngModel)]="tarjeta.cvv2" id="ccv" name="ccv" />
+                    <input type="text" [(ngModel)]="tarjeta.cvv2"  (input)="onInput($event, tarjeta.cvv2)" maxlength="3"  id="ccv" name="ccv" />
                   </div>
               </div>
               <div class="form-row">
@@ -142,7 +713,7 @@
                   </div>
                   <div class="form-group">
                     <label for="marca">Telefono</label>
-                    <input type="text" [(ngModel)]="tarjeta.phone" id="marca" name="marca" />
+                    <input type="text" [(ngModel)]="tarjeta.phone"  (input)="onInput($event, tarjeta.phone)" id="marca" name="marca" />
                 </div>
               </div>
           </form>
@@ -157,7 +728,6 @@
       </div>
       <div class="modal-footer text-start">
       
-        <!-- Botones para el paso del carrito -->
         <div class="pb-3 pe-3">
           <button [disabled]="loading" class="btn btn-dark me-2" (click)="closeModal()">
             Cancelar
@@ -167,6 +737,5 @@
           </button>
         </div>     
       </div>
-      <!-- </div> -->
     </div>
-  </div>
+  </div> -->

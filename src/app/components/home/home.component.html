@@ -1,142 +1,36 @@
-<!-- <div class="vertical-wrapper-menu-izquierda">
-  <nav class="menu-izquierda">    
-    <ul>
-      <li (click)="recargarPagina()" class="icono-menu-item"
-      style="cursor: pointer;"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" class="icono-menu" >
-        <path d="M3 12l9-9 9 9v8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4H9v4a2 2 0 0 1-2 2H3z"/>
-      </svg>  Inicio</li>
-      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" class="icono-menu">
-     <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
-     <circle cx="12" cy="12" r="3"/>
-   </svg> Seguidos</li>
-      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" class="icono-menu">
-     <path d="M8 21h8"/>     <path d="M12 17v4"/>
-     <path d="M18 3H6v6a6 6 0 0 0 12 0V3z"/>
-     <path d="M4 7H2"/>     <path d="M22 7h-2"/>
-   </svg> Ganadas</li>
-      <li class="icono-menu-item" (click)="openModalCreateAuction()"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" class="icono-menu">
-     <circle cx="12" cy="12" r="10"/><path d="M12 8v8"/>
-     <path d="M8 12h8"/>
-   </svg>Crear Subasta</li>
-      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"  class="icono-menu" >
-     <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9z"/>
-     <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-   </svg> Notificaciones</li>
-      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" fill="none"
-        class="icono-menu">
-     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-     <circle cx="9" cy="7" r="4"/>
-     <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-     <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-   </svg> Seguidores</li>
-      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" fill="none"
-        class="icono-menu" >
-     <path d="M4 21V10"/>
-     <path d="M9 21V3"/>
-     <path d="M15 21V6"/>
-     <path d="M20 21V14"/>
-   </svg> Estadísticas</li>
-      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" class="icono-menu">
-     <path d="M12 1l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-8.5L2 8h7z"/>
-   </svg>
-    Premium</li>
-      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" class="icono-menu">
-     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-   </svg>
-    Express</li>
-      <li class="icono-menu-item"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24" class="icono-menu">
-     <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-     <path d="M16 3h-8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/>
-   </svg>
-    Wallet</li>
-    </ul>
-  </nav>
-</div> -->
-<!-- <div class="w-25">
-  <aside class="sidebar bg-info">
-    <div class="profile">
-        <img src="tony.png" alt="Usuario">
-        <div class="name">Antonio</div>
-    </div>
-    <div class="menu">
-        <div class="menu-item active"><i class="fas fa-home"></i>Inicio</div>
-        <div class="menu-item"><i class="fas fa-star"></i>Seguidos</div>
-        <div class="menu-item"><i class="fas fa-trophy"></i>Ganadas</div>
-        <div class="menu-item"><i class="fas fa-plus-circle"></i>Crear Subasta</div>
-        <div class="menu-item"><i class="fas fa-bell"></i>Notificaciones</div>
-        <div class="menu-item"><i class="fas fa-users"></i>Seguidores</div>
-        <div class="menu-item"><i class="fas fa-chart-bar"></i>Estadísticas</div>
-        <div class="menu-item"><i class="fas fa-gem"></i>Premium</div>
-        <div class="menu-item"><i class="fas fa-bolt"></i>Express</div>
-        <div class="menu-item"><i class="fas fa-wallet"></i>Wallet</div>
-    </div>
-  </aside>
-</div> -->
-
-
-<!-- <div *ngIf="isLoggedIn() && !menuVisible" class="perfil-toggle-wrapper" (click)="toggleSidebar()" tabindex="0">
-  <img [src]="usuario()?.imgPerfil || 'assets/default-user.png'" class="perfil-icono" alt="Perfil"/>
-  <h2 class="nombre-usuario">{{ usuario()?.nombre }}</h2>
-</div> -->
-
-<!-- <app-sidebar *ngIf="menuVisible" @fadeSlideInOut ></app-sidebar> -->
-
-
-<!-- <div class="contenedor-xpress">
-  <app-xpress-auctions (abrirDetalle)="abrirDetalle($event)"></app-xpress-auctions>
-</div><br>
-<div class="contenedor-premium">
-  <app-premium-auctions (abrirDetalle)="abrirDetalle($event)"></app-premium-auctions>
-</div>
-<div class="contenedor-generales">
-  <app-search-auctions *ngIf="terminoBusqueda" [terminoBusqueda]="terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-search-auctions>
-  <app-general-auctions *ngIf="!terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-general-auctions>
-</div> -->
-
-
-<!-- <div class="vertical-wrapper-derecha">
-  <ng-container *ngIf="!isLoggedIn(); else loggedIn">
-    <app-login (mostrarRegistro)="abrirRegistroModal()"></app-login>
-  </ng-container>
-  <ng-template #loggedIn>
-    <app-followed-auctions (abrirDetalle)="abrirDetalle($event)"></app-followed-auctions>
-  </ng-template>
-</div> -->
 <div class="row m-auto  h-100">
   <div class="col-sm-2 pt-2">
     <aside class="sidebar ms-3">
       <div *ngIf="showingInAside === 'menu'" [class]="'fast-animation animate__animated ' + clasesAside.one">
          <div class="profile" *ngIf="isLoggedIn()">
-            <img src="tony.png" alt="Usuario">
+            <img [src]="usuario()?.imgPerfil || 'assets/default-avatar.png'" alt="Usuario">
             <div class="name">{{usuario()?.nombre}}</div>
         </div>
+
+        <!-- =============  MENU ASIDE  =============  -->
+        <!-- ========================================  -->
         <div class="menu" *ngIf="isLoggedIn()">
-            <div class="menu-item active"><i class="fas fa-home"></i>Inicio</div>
-            <div class="menu-item" (click)="changeAside('following')"><i class="fas fa-star"></i>Seguidos</div>
-            <div class="menu-item"><i class="fas fa-trophy"></i>Ganadas</div>
+            <div class="menu-item" (click)="changeHomeIndex(0)" [ngClass]="{'active': currentHomeIndex === 0}"><i class="fas fa-home"></i>Inicio</div>
+            <div class="menu-item" (click)="openProfilePage()"><i class="fas fa-user"></i>Perfil</div>
+            <div class="menu-item" (click)="changeAside('following')"><i class="fas fa-heart"></i>S. Seguidas</div>
+            <div class="menu-item" (click)="changeAside('winner')"><i class="fas fa-trophy"></i>S. Ganadas</div>
             <div class="menu-item" (click)="openModalCreateAuction()" ><i class="fas fa-plus-circle"></i>Crear Subasta</div>
-            <div class="menu-item" (click)="changeAside('notifications')"><i class="fas fa-bell"></i>Notificaciones</div>
-            <div class="menu-item" ><i class="fas fa-users"></i>Seguidores</div>
-            <div class="menu-item"><i class="fas fa-chart-bar"></i>Estadísticas</div>
-            <div class="menu-item"><i class="fas fa-gem"></i>Premium</div>
-            <div class="menu-item"><i class="fas fa-bolt"></i>Express</div>
+            <div class="menu-item" (click)="changeAside('notifications')"><i class="fas fa-bell"></i>  Notificaciones <span class="notificaciones-count">{{totalNotificaciones}}</span> </div>
+            <div class="menu-item" (click)="changeAside('followers')"><i class="fas fa-users"></i>Seguidores</div>
+            <!-- <div class="menu-item"><i class="fas fa-chart-bar"></i>Estadísticas</div> -->
+            <div class="menu-item" (click)="changeHomeIndex(1)" [ngClass]="{'active': currentHomeIndex === 1}"><i class="fas fa-gem"></i>Premium</div>
+            <div class="menu-item" (click)="changeHomeIndex(2)" [ngClass]="{'active': currentHomeIndex === 2}"><i class="fas fa-bolt"></i>Express</div>
             <div class="menu-item"><i class="fas fa-wallet"></i>Wallet</div>
             <div class="menu-item" (click)="openModalPoliticasFn()"><i class="fas fa-book" ></i>Politica de uso</div>
             <hr>
             <div class="menu-item" (click)="logout()"><i class="fas fa-power-off"></i>Cerrar sesion</div>
         </div>
       </div>
+
+      <!-- =============  FORMULARIO DE LOGIN  =============  -->
+      <!-- ========================================  -->
       <form class="login-box p-3 rounded shadow mx-auto my-4" *ngIf="!isLoggedIn()">
+        <app-loader *ngIf="loading"></app-loader>
         <img src="iconos/logo-xuba.png" alt="XUBA Subastas" style="width: 80%;display: block;margin: auto;" />
         <h4 class="mb-4 mt-2 text-center  fw-bold" style="color: #ec4899;font-size: 1rem;">Iniciar sesion</h4>
         <div class="mb-3">
@@ -152,35 +46,52 @@
           <a href="#" class="small text-decoration-none text-primary">¿Olvidaste tu contraseña?</a><br>
           <a href="#" class="small text-decoration-none text-success">Regístrate</a>
         </div>
-       
-        <!-- <div class="text-center text-muted mb-2">o</div>
-        <button type="button" class="btn btn-facebook w-100 mb-2">
-          <i class="bi bi-facebook me-2"></i> Iniciar sesión con Facebook
-        </button>
-        <button type="button" class="btn btn-google w-100">
-          <i class="bi bi-google me-2"></i> Iniciar sesión con Google
-        </button> -->
       </form>
+    
+      <!-- =============  SECCION DE NOTIFICACIONES  =============  -->
+      <!-- ========================================  -->
       <div *ngIf="showingInAside === 'notifications'" [class]="'fast-animation animate__animated ' + clasesAside.two">
-        <button class="btn btn-xuba w-100" (click)="backToMenuAside()">
-          <i class="fas fa-arrow-left"></i>&nbsp; volver
-        </button>
-        <div class="notificacion-item" *ngFor="let noti of notificaciones">
-          <strong class="text-dark"><i class="fas fa-bell"></i> Titulo notificacion test</strong> <br>
-            {{noti.descripcion}} <br> <br>
-          <small>12/07/2025</small>
-        </div>
+        <ng-container *ngIf="loadingNotificaciones">
+          <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones" style="height: 80px;">
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!loadingNotificaciones">
+          <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">NOTIFICACIONES</h5>
+          <button class="btn btn-xuba w-100" (click)="backToMenuAside()">
+            <i class="fas fa-arrow-left"></i>&nbsp; volver
+          </button>
+          <div  class="notificacion-item" *ngFor="let noti of notificaciones" (click)="getDatosSubasta(noti.msubastas.id)">
+            <strong class="text-dark"><i class="fas fa-bell"></i> Titulo notificacion test</strong> <br>
+              {{noti.descripcion}} <br> <br>
+            <small>12/07/2025</small>
+          </div>
+        </ng-container>
       </div>
+
+      <!-- =============  SECCION DE SUBASTAS SEGUIDAS  =============  -->
+      <!-- ========================================  -->
       <div *ngIf="showingInAside === 'following'" [class]="'fast-animation animate__animated ' + clasesAside.two">
-        <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()">
-          <i class="fas fa-arrow-left"></i>&nbsp; volver
-        </button>
-        <div class="auction-card" *ngFor="let subasta of auctions">
+        <ng-container *ngIf="loadingNotificaciones">
+          <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones" style="height: 80px;">
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!loadingNotificaciones">
+          <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">SUBASTAS SEGUIDAS</h5>
+          <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
+            <i class="fas fa-arrow-left"></i>&nbsp; volver
+          </button>
+        <div class="auction-card" *ngFor="let subasta of auctions" (click)="abrirDetalleSubasta(subasta)">
           <img [src]="subasta.url" alt="">
           <div class="title">{{ subasta.caption }}</div>
           <div class="desc">{{ toShort(subasta.descripcion)  }}</div>
           <div class="price">${{ subasta.apuesta }} MXN</div>
-          <div class="timer">09:15:01</div>
+          <div class="timer">{{segundosATiempoString(subasta.venceSegundos!)}}</div>
           <div class="actions">
             <button title="Seguir"><i class="fas fa-heart"></i></button>
             <button title="Ofertar"><i class="fas fa-gavel"></i></button>
@@ -190,24 +101,115 @@
             {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
           </div>
         </div> 
+        </ng-container>
+      </div>
+
+
+      <!-- =============  SECCION DE SUBASTAS GANADAS  =============  -->
+      <!-- ========================================  -->
+      <div *ngIf="showingInAside === 'winner'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+        <ng-container *ngIf="loadingNotificaciones">
+          <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones" style="height: 80px;">
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!loadingNotificaciones">
+          <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">SUBASTAS GANADAS</h5>
+          <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()" >
+            <i class="fas fa-arrow-left"></i>&nbsp; volver
+          </button>
+          <div class="auction-card" *ngFor="let subasta of auctionsWin" (click)="abrirDetalleSubasta(subasta)">
+          <img [src]="subasta.url" alt="">
+          <div class="title">{{ subasta.caption }}</div>
+          <div class="desc">{{ toShort(subasta.descripcion)  }}</div>
+          <div class="price">${{ subasta.apuesta }} MXN</div>
+          <!-- <div class="timer">{{subasta.tiempoVence}}</div> -->
+          <div class="actions">
+            <button title="Seguir"><i class="fas fa-heart"></i></button>
+            <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+            <button title="Compartir"><i class="fas fa-share"></i></button>
+          </div>
+          <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+            {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+          </div>
+        </div> 
+        </ng-container>
+      </div>
+
+
+      <!-- =============  SECCION DE SEGUIDORES  =============  -->
+      <!-- ========================================  -->
+      <div *ngIf="showingInAside === 'followers'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+        <ng-container *ngIf="loadingNotificaciones">
+          <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones" style="height: 80px;">
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!loadingNotificaciones">
+          <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">SEGUIDORES</h5>
+
+          <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
+            <i class="fas fa-arrow-left"></i>&nbsp; volver
+          </button>
+          <div class="followers-list">
+            <div class="follower-card"  *ngFor="let f of followers"  (click)="openUserPage(f.id)">
+              <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
+              <div class="follower-info">
+                <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
+                <div class="follower-nickname">{{f.usuario ?? 'ND'}}</div>
+                <div class="follower-email">{{f.correo}}</div>
+              </div>
+            </div>
+            <!-- <div class="follower-card" (click)="openUserPage(null)">
+              <img class="follower-avatar" src="https://placehold.co/48x48" alt="Foto de usuario">
+              <div class="follower-info">
+                <div class="follower-name">Ana López</div>
+                <div class="follower-nickname">anita</div>
+                <div class="follower-email">ana.lopezemail.com</div>
+              </div>
+            </div> -->
+            <!-- Más usuarios aquí -->
+          </div>
+        </ng-container>
       </div>
     </aside>
   </div>
-  <div class="col-sm-10">
+  
+  <div class="col-sm-10" *ngIf="currentHomeIndex === 0">
+    <app-loader *ngIf="loading"></app-loader>
     <div class="col-sm-12"> 
       <app-xpress-auctions (abrirDetalle)="abrirDetalle($event)"></app-xpress-auctions>
     </div>
     <div class="col-sm-12"> 
       <app-premium-auctions (abrirDetalle)="abrirDetalle($event)"></app-premium-auctions>
       <br>
-      <!-- <br> -->
     </div>
     <div class="col-sm-12"> 
       <app-search-auctions *ngIf="terminoBusqueda" [terminoBusqueda]="terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-search-auctions>
       <app-general-auctions *ngIf="!terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-general-auctions>
     </div>
   </div>
-  <!-- <div class="col-sm-2 bg-info">
+  <div class="col-sm-10" *ngIf="currentHomeIndex === 1">
+    <app-loader *ngIf="loading"></app-loader>
+    <div class="col-sm-12 mt-3"> 
+      <app-search-auctions [tipoSeccion]="'SubastasPremium'" *ngIf="terminoBusqueda" [terminoBusqueda]="terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-search-auctions>
+      <app-general-auctions [tipoSeccion]="'SubastasPremium'" *ngIf="!terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-general-auctions>
+    </div>
+  </div>
+  <div class="col-sm-10" *ngIf="currentHomeIndex === 2">
+    <app-loader *ngIf="loading"></app-loader>
+    <div class="col-sm-12 mt-3"> 
+      <app-search-auctions [tipoSeccion]="'SubastasExpress'" *ngIf="terminoBusqueda" [terminoBusqueda]="terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-search-auctions>
+      <app-general-auctions [tipoSeccion]="'SubastasExpress'" *ngIf="!terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-general-auctions>
+    </div>
+  </div>
+</div>
+<!-- <div class="col-sm-2 bg-info">
     <ng-container *ngIf="!isLoggedIn(); else loggedIn">
       <app-login (mostrarRegistro)="abrirRegistroModal()"></app-login>
     </ng-container>
@@ -215,8 +217,6 @@
       <app-followed-auctions (abrirDetalle)="abrirDetalle($event)"></app-followed-auctions>
     </ng-template>
   </div> -->
-</div>
-
 <app-notifications *ngIf="mostrarNoti" class="overlay-notificaciones"></app-notifications>
 
 <div class="registro-modal-overlay" *ngIf="mostrarRegistro">
@@ -241,24 +241,13 @@
     </div>
     
     <div class="modal-body">
-      
-      <!-- <div class="empty-cart-message" >
-       Tarjetas:   4111111111111111    12   26    123
 
-        <i class="fas fa-shopping-cart fa-4x text-muted"></i>
-        <p>Tu carrito esta vacio</p>
-        <button class="btn btn-outline-primary" (click)="closeModal()">
-          Continuar comprando
-        </button>
-      </div> -->
-      <!-- <div class="tabs"> -->
-        <!-- <h3 class="titulo">CREAR UNA NUEVA SUBASTA</h3> -->
         <div class="tab-buttons tab-button pt-0 pb-0">
             <button class="tab-button" [class.active]="selectedTab === 0" (click)="selectedTab = 0">
                 Detalles del producto
             </button>
             <button class="tab-button" [class.active]="selectedTab === 1" (click)="selectedTab = 1">
-                Dimensiones del producto
+                Datos de envio
             </button>
             <button class="tab-button" [class.active]="selectedTab === 2" (click)="selectedTab = 2">
                 Subir fotos
@@ -317,11 +306,18 @@
                         <label for="cantidadPuja">Cantidad de puja</label>
                         <input type="number" [(ngModel)]="subasta.valorOferta" id="cantidadPuja" name="cantidadPuja" />
                     </div>
-                    <!-- <div class="form-group">
+               
+                </div>
+                <!-- <div class="form-row">
+                    <div class="form-group">
+                        <label for="cantidadPuja">Cantidad de puja</label>
+                        <input type="number" [(ngModel)]="subasta.valorOferta" id="cantidadPuja" name="cantidadPuja" />
+                    </div>
+                    <div class="form-group">
                         <label for="tiempoActivo">Tiempo activo (100 hrs Max)</label>
                         <input type="number" [(ngModel)]="subasta.horas" id="tiempoActivo" name="tiempoActivo" />
-                    </div> -->
-                </div>
+                    </div>
+                </div> -->
             </form>
         </div>
         <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 1">
@@ -350,6 +346,15 @@
                         <input type="number" [(ngModel)]="subasta.profundidad" id="profundidad" name="profundidad" />
                     </div>
                 </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="tiempoActivo">Direccion de Envio</label>
+                    <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="subasta.idDireccion">
+                      <option value="">Direccion desde la que se enviara </option>
+                      <option *ngFor="let item of direccionesEnvioUsuario" [value]="item.id">{{item.calle}} {{item.numeroExt}} {{item.numeroInt}}, {{item.municipio}}</option>
+                    </select>
+                  </div>
+                </div>
             </form>
         </div>
         <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 2">
@@ -358,24 +363,24 @@
                 <div class="label mb-3">Favor de cargar fotos reales de tu Producto</div>
                 <label class="cargar-foto-label">
                     <input type="file" accept="image/*" multiple (change)="onFileChange($event)"
-                        [disabled]="subasta.imagenesPreview!.length >= 5" hidden />
+                        [disabled]="imagesPreview!.length >= 5" hidden />
                     <span><i class="fas fa-image"></i> Cargar foto</span>
                 </label>
                 <div class="preview-list">
-                    <div class="preview-img" *ngFor="let img of subasta.imagenesPreview; let i = index">
+                    <div class="preview-img" *ngFor="let img of imagesPreview; let i = index">
                         <img [src]="img.url" alt="Preview" />
                         <button type="button" (click)="eliminarImagen(i)">×</button>
                     </div>
                 </div>
-                <div class="max-fotos" *ngIf="subasta.imagenesPreview!.length >= 5">Máximo 5 fotos</div>
+                <div class="max-fotos" *ngIf="imagesPreview!.length >= 5 && tipoSubasta === 'general'">Máximo 5 fotos</div>
             </div>
     
             <div class="tipo-subasta">
                 <label>
-                    <input type="radio" name="tipo" [(ngModel)]="subasta.premium" value="general" [(ngModel)]="tipoSubasta" /> General
+                    <input type="radio" name="tipo"  value="general" [(ngModel)]="tipoSubasta" /> General
                 </label>
                 <label>
-                    <input type="radio" name="tipo" [(ngModel)]="subasta.premium" value="premium" [(ngModel)]="tipoSubasta" /> Premium
+                    <input type="radio" name="tipo" value="premium" [(ngModel)]="tipoSubasta" /> Premium
                 </label>
             </div>
     
@@ -406,11 +411,20 @@
             <img src="images/amex.png" alt="" class="w-5">
         </div>
           <form class="form-productos pl-2 pr-2">
-            <div class="form-row">
+            <!-- <div class="form-row">
                 <div class="form-group">
                     <label for="nombre">Tarjeta guardada</label>
-                    <!-- <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" /> -->
+                    <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" />
                 </div>
+            </div> -->
+            <div class="form-row">
+              <div class="form-group">
+                <label for="tiempoActivo">Tarjetas guardadas</label>
+                <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="selectedCard" (change)="changeTarjetaSeleccionada()">
+                  <option value="null">Seleccionar tarjeta</option>
+                  <option *ngFor="let item of tarjetas" [ngValue]="item">{{item.card_number}}</option>
+                </select>
+              </div>
             </div>
             <div class="mb-2 label-final-price">
               Total a Pagar: <strong>${{precioSubastaPremium}}</strong> 

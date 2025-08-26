@@ -9,9 +9,13 @@ const AuthorizateToken = localStorage.getItem("1ZvMlZhUnGFMWhVU");
 //1ZvMlZhUnGFMWhVU = 'UVhWMGFGUnZhMlZ1'  reverse
 
 export const environment = {
+  //Swagger
+  //https://api.xuba.mx:8443/swagger/index.html
 
-  base_url:'http://173.208.155.152:8088/api',
-  token_url:'http://173.208.155.152:8088/api/login/authenticate',
+  // base_url:'https://api.xuba.mx:8443/api',
+  base_url:'https://api.xuba.mx:8443/api',
+  // base_url:'https://173.208.155.152:8088/api',
+  token_url:'https://api.xuba.mx:8443/api/login/authenticate',
 //   image_url:'http://173.208.155.152:8088/api/'
 
 };

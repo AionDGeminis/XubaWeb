@@ -386,3 +386,12 @@
     color:#3c40c6 ;
     font-size: 0.9em;
   }
+
+  .alert-success{
+    background: #1dd1a1;
+    color: #006266;
+  }
+
+  .small{
+    font-size: 0.8em;
+  }

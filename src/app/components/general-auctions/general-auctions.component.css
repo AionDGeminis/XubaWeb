@@ -194,12 +194,43 @@
   font-size: 0.9rem;
   margin: 1rem 1rem 0.2rem 1rem;
 }
+.auction-card .title {
+  /* font-size: 0.93rem;
+  color: var(--muted);
+  margin: 0 1rem 0.2rem 1rem; */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  position: relative;
+  min-height: calc(1em * 2); /* 3 líneas mínimo */
+  line-height: 1.2em;
+}
 
-.auction-card .desc {
+
+/* .auction-card .desc {
   font-size: 0.8rem;
   color: var(--muted);
   margin: 0 1rem 0.2rem 1rem;
+} */
+
+.auction-card .desc {
+  /* font-size: 0.93rem;
+  color: var(--muted);
+  margin: 0 1rem 0.2rem 1rem; */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  position: relative;
+  min-height: calc(1em * 3); /* 3 líneas mínimo */
+  line-height: 1.2em;
 }
+
 
 .auction-card .price {
   color: var(--secondary);
@@ -238,3 +269,30 @@
   background: #f3eaff;
 }
 
+
+.ribbon-label{
+  width: 120%;
+  padding: 5px 0px;
+  /* background: #ff7675; */
+  text-align: center;
+  position:absolute;
+  right:-0.8em;
+  bottom: -0.8em;
+  color: #fff;
+  transform: rotate(-30deg) translateX(30%) translateY(80%);
+  font-size: 0.7em;
+  /* transform: rotate(-25deg); */
+}
+.ribbon-label-nuevo{
+  background: #1B1464;
+}
+.ribbon-label-usado{
+  background: #ff7675;
+}
+.nofollowed-i{
+  color:#95a5a6 ;
+}
+
+.followed-i {
+  color: #e84393;
+}

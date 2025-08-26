@@ -40,6 +40,10 @@
     transition: transform 0.3s, box-shadow 0.3s;
   }
   
+  .fast-animation {
+    animation-duration: 0.3s !important;
+  }
+  
   /* Animación al pasar el mouse */
   .tarjeta-general:hover {
     transform: translateY(-5px);

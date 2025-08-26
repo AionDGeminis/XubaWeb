@@ -1,8 +1,8 @@
-<div class="wrapper-busqueda">  
+<div class="wrapper-busqueda fast-animation animate__animated animate__fadeInRight">  
 
 <div class="header-busqueda">
   <h2 style="text-align: center; margin-top: 10px; color: #616160 ; font-family: Gobold;" >Xubastas relacionadas con... {{ terminoBusqueda }}</h2>
-  <button class="btn-regresar" (click)="volverAGenerales()">Regresar a Subastas Generales</button>
+  <button class="btn-regresar" (click)="volverAGenerales()">Regresar a {{tipoTitulo}}</button>
 </div>
   
   <div class="seguimiento-container">
@@ -14,13 +14,13 @@
             <img [src]="subasta.url" alt="Producto" class="imagen-general" />
             <div class="contenido-general">
               <div class="detalle-general">
-                <h4>{{ subasta.caption }}</h4>
+                <h4>{{ subasta.caption }}#{{subasta.id}}</h4>
                 <p class="descripcion-limitada">{{ subasta.descripcion }}</p>
-                <h6>Subasta inicia</h6>
+                <!-- <h6>Subasta inicia</h6> -->
                 <strong>${{ subasta.apuesta }} mxn</strong>
                 <p class="hora-restante">{{ subasta.tiempoVence }}</p>
               </div>
-              <div class="opciones-general">
+              <!-- <div class="opciones-general">
                 <div class="opciones-item-general">
                   <img src="iconos/megusta.png" alt="Seguir" class="opcionesimg-general" />
                   <span>Seguir Subasta</span>
@@ -33,7 +33,7 @@
                   <img src="iconos/compartir.png" alt="Compartir" class="opcionesimg-general" />
                   <span>Compartir</span>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         }

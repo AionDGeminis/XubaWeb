@@ -1,0 +1,975 @@
+<div class="profile-container  fast-animation  animate__animated animate__fadeInRight">
+  <app-loader *ngIf="allLoading"></app-loader>
+    <!-- Panel izquierdo: Foto y datos básicos -->
+    <div class="profile-sidebar" style="position: relative;">
+      <app-loader *ngIf="loading"></app-loader>
+      <div class="profile-avatar" > 
+        <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
+      </div>
+      <!-- <button class="btn btn-sm btn-light btn-circle" style="position: absolute;right: 28%"><i class="fas fa-camera"></i></button> -->
+      
+      <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: 28%">
+        <input type="file" accept="image/*"  (change)="onFileChange($event)" hidden />
+        <i class="fas fa-camera"></i>
+      </label>
+
+      <h2>{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h2>
+      <p class="profile-role">{{infoUsuario.usuario ?? 'ND'}}</p>
+      <p class="profile-email">{{infoUsuario.correo}}</p>
+      <!-- <button class="btn-edit-photo"><i class="fas fa-file-image"></i> Cambiar foto</button> -->
+      <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()"><i class="fas fa-upload"></i> Guardar cambio</button>
+    </div>
+  
+    <!-- Panel derecho: Información editable -->
+    <div class="profile-main">
+      <div class="w-100">
+        <button class="btn-tab w-25" (click)="setCurrentTab(0)" [ngClass]="{'active': tabIndex === 0}">General</button>
+        <button class="btn-tab w-25" (click)="setCurrentTab(1)" [ngClass]="{'active': tabIndex === 1}">Mis Xubastas</button>
+        <button class="btn-tab w-25" (click)="setCurrentTab(3)" [ngClass]="{'active': tabIndex === 3}">Cuentas y Wallet</button>
+        <button class="btn-tab w-25" (click)="setCurrentTab(2)" [ngClass]="{'active': tabIndex === 2}">Estadisticas</button>
+      </div>
+      <!-- Datos personales -->
+      <ng-container *ngIf="tabIndex === 0">
+        <div class="profile-card" style="position: relative;">
+          <app-loader *ngIf="loading"></app-loader>
+          <h3>Datos personales</h3>
+          <form>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input class="i-disable" type="text" [(ngModel)]="infoUsuario.nombre" name="nombre" disabled>
+              </div>
+              <div class="form-group">
+                <label>Apellido</label>
+                <input type="text" [(ngModel)]="infoUsuario.apellido" name="apellido" disabled>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Usuario</label>
+                <input type="text" [(ngModel)]="infoUsuario.usuario" name="usuario" disabled>
+              </div>
+              <div class="form-group">
+                <label>Teléfono</label>
+                <input type="text" [(ngModel)]="infoUsuario.telefono" name="telefono">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="flex:1;">
+                <label>Correo electrónico</label>
+                <input type="text" [(ngModel)]="infoUsuario.correo" name="correo">
+              </div>
+              <div class="form-group">
+                <label>Cambiar Password</label>
+                <input type="password" [(ngModel)]="editInfoUsuario.contra" name="contra">
+              </div>
+            </div>
+            <button class="btn-xuba btn-pill" (click)="saveInfoChange()">Guardar cambios</button>
+          </form>
+        </div>
+    
+        <!-- Direcciones -->
+        <div class="profile-card">
+          <!-- <h3>Direcciones de envío y entrega</h3> -->
+          <div class="header-row">
+            <h3>
+              <i class="fas fa-map" ></i> 
+              Direcciones de envio y entrega
+            </h3>
+            <button  class="btn-secondary" (click)="openModal('direccion')"> <i class="fas fa-plus"></i> Direccion</button>
+          </div>
+          <hr>
+          <table class="table table-striped w-100">
+            <tr>
+              <th>Direccion</th>
+              <th>Tipo</th>
+              <th>Default</th>
+              <th>Acciones</th>
+            </tr>
+            <tr *ngFor="let d of direcciones">
+              <td class="w-70 bbtd tddir">{{d.calle}} #{{d.numeroExt}}, {{d.municipio}}</td>
+              <td class="w-10 bbtd"><span [ngClass]="{'label-tdent': d.tipo === 'entrega', 'label-tdenv': d.tipo === 'envio'}">{{d.tipo}}</span></td>
+              <td class="w-10 bbtd text-center">
+                <span class="label" [ngClass]="{'label-default': d.predeterminada}">
+                   {{d.predeterminada ? 'SI' : 'NO'}}
+                </span>
+               
+              </td>
+              <td class="w-10 text-center bbtd">
+                <button class="btn btn-sm bg-info text-white me-1" (click)="openEditModal('direccion', direccion, d)"><i class="fas fa-edit"></i> </button>
+                <button class="btn btn-sm bg-danger text-white"><i class="fas fa-trash"></i> </button>
+              </td>
+            </tr>
+          </table>
+
+          <!-- <ul class="address-list">
+            <li *ngFor="let d of direcciones">
+              {{d.calle}} #{{d.numeroExt}}, {{d.municipio}}  <span [ngClass]="{'label-tdent': d.tipo === 'entrega', 'label-tdenv': d.tipo === 'envio'}">{{d.tipo}}</span>
+              <span>
+                <button class="btn-link">Editar</button>
+                <button class="btn-link">Eliminar</button>
+              </span>
+            </li>
+          </ul> -->
+          <!-- <button class="btn-secondary" (click)="openModal('direccion')">Agregar nueva dirección</button> -->
+        </div>
+    
+        <!-- Reclamos abiertos -->
+        <div class="profile-card">
+          <h3>Reclamos abiertos</h3>
+          <ul class="claim-list">
+            <li>
+              #1234 - Producto no recibido
+              <span>
+                <button class="btn-link">Ver</button>
+                <button class="btn-link">Cerrar</button>
+              </span>
+            </li>
+            <li>
+              #1235 - Daño en el envío
+              <span>
+                <button class="btn-link">Ver</button>
+                <button class="btn-link">Cerrar</button>
+              </span>
+            </li>
+          </ul>
+          <button class="btn-secondary">Crear nuevo reclamo</button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="tabIndex === 1">
+        <div class="profile-card">
+          <h3>Mis subastas creadas</h3>
+          <hr>
+          <div class="w-100 mb-2">
+            <button class="btn-tab w-50 bg-tab-xubastas" [ngClass]="{'active': tabSubastasIndex === 0}" (click)="setCurrentTabSubastas(0)">Activas</button>
+            <button class="btn-tab w-50 bg-tab-xubastas" [ngClass]="{'active': tabSubastasIndex === 1}" (click)="setCurrentTabSubastas(1)">Terminadas</button>
+          </div>
+          <table class="table table-striped w-100 text-center">
+
+            <ng-container *ngIf="tabSubastasIndex === 0">
+              <tr>
+                <th>Img</th>
+                <th>Titulo</th>
+                <th>Descripcion</th>
+                <th>Precio</th>
+                <th>Tiempo</th>
+              </tr>
+              <tr class="w-100 row-selectable" *ngFor="let subasta of subastasActivas" (click)="openSubastaDetalle(subasta)">
+                <td class="w-20" style="width:100px">
+                  <img [src]="subasta.url" (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
+                </td>
+                <td class="w-20 td-caption">{{subasta.caption}}</td>
+                <td class="w-20 td-desc">{{subasta.short_desc}}</td>
+                <td class="w-20">${{subasta.apuesta}}</td>
+                <td class="w-20">{{segundosATiempoString(subasta.venceSegundos!)}}</td>
+              </tr>
+            </ng-container>
+            
+            <ng-container *ngIf="tabSubastasIndex === 1">
+              <tr>
+                <th>Img</th>
+                <th>Titulo</th>
+                <th class="w-40">Descripcion</th>
+                <th>Precio</th>
+                
+              </tr>
+              <tr class="w-100 row-selectable" *ngFor="let subasta of subastasInactivas">
+                <td class="w-20" style="width:50px !important">
+                  <img [src]="subasta.url" class="d-block img-fluid img-auct" alt="Auction Image">
+                </td>
+                <td class="w-20 td-caption">{{subasta.caption}}</td>
+                <td class="w-40 td-desc">{{subasta.short_desc}}</td>
+                <td class="w-20">${{subasta.apuesta}}</td>
+              </tr>
+            </ng-container>
+          </table>
+        </div>
+      </ng-container>
+
+
+      <ng-container *ngIf="tabIndex === 2">
+        <div class="row m-auto w-100">
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-3">
+    <h3 class="mb-0">Panel de estadísticas</h3>
+    <span class="ms-auto text-muted small">
+      Última actualización: 11/08/2025, 10:15 AM
+    </span>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card shadow-sm h-100 bg1">
+        <div class="card-body d-flex align-items-center">
+          <div class="kpi-icon bg-primary-subtle text-primary me-3">
+            <i class="fas fa-gavel"></i>
+          </div>
+          <div class="text-white">
+            <div class=" small">Subastas creadas</div>
+            <div class="fs-4 fw-semibold">18</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card shadow-sm h-100 bg2">
+        <div class="card-body d-flex align-items-center">
+          <div class="kpi-icon bg-success-subtle text-success me-3">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="text-white">
+            <div class=" small">Creadas ganadas</div>
+            <div class="fs-4 fw-semibold">9</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card shadow-sm h-100 bg3">
+        <div class="card-body d-flex align-items-center">
+          <div class="kpi-icon bg-warning-subtle text-warning me-3">
+            <i class="fas fa-award"></i>
+          </div>
+          <div class="text-white">
+            <div class=" small">Has ganado</div>
+            <div class="fs-4 fw-semibold">5</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card shadow-sm h-100 bg4">
+        <div class="card-body d-flex align-items-center">
+          <div class="kpi-icon bg-danger-subtle text-danger me-3">
+            <i class="fas fa-hand-point-up"></i>
+          </div>
+          <div class="text-white">
+            <div class=" small">Has participado</div>
+            <div class="fs-4 fw-semibold">22</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-lg-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header bg-xuba1 text-white" >Resumen</div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Activas</span>
+            <span class="fw-semibold">4</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Promedio vistas</span>
+            <span class="fw-semibold">128</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Promedio pujas</span>
+            <span class="fw-semibold">7.4</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="text-muted">Favoritos recibidos</span>
+            <span class="fw-semibold">63</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-8">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header bg-xuba1 text-white d-flex align-items-center">
+          <span>Top subastas </span>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="text-truncate me-3">
+                <span class="fw-semibold">MacBook Pro 14” M3 2023</span>
+                <!-- <span class="badge ms-2 bg-success">active</span> -->
+              </div>
+              <div class="small text-muted me-3">
+                23 pujas • 12 favs • 980 vistas
+              </div>
+              <!-- <div style="min-width: 220px;">
+                <div class="progress" role="progressbar" aria-label="Engagement">
+                  <div class="progress-bar" style="width: 82%;">
+                    82%
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="text-truncate me-3">
+                <span class="fw-semibold">Colección comics edición limitada</span>
+                <!-- <span class="badge ms-2 bg-secondary">finished</span> -->
+              </div>
+              <div class="small text-muted me-3">
+                11 pujas • 5 favs • 420 vistas
+              </div>
+              <!-- <div style="min-width: 220px;">
+                <div class="progress" role="progressbar" aria-label="Engagement">
+                  <div class="progress-bar" style="width: 56%;">
+                    56%
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+
+          <div class="mb-0">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="text-truncate me-3">
+                <span class="fw-semibold">Silla ergonómica oficina</span>
+                <!-- <span class="badge ms-2 bg-secondary">finished</span> -->
+              </div>
+              <div class="small text-muted me-3">
+                3 pujas • 2 favs • 210 vistas
+              </div>
+              <!-- <div style="min-width: 220px;">
+                <div class="progress" role="progressbar" aria-label="Engagement">
+                  <div class="progress-bar" style="width: 22%;">
+                    22%
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="card shadow-sm">
+    <div class="card-header d-flex align-items-center">
+      <span>Detalle por subasta</span>
+      <div class="ms-auto small text-muted">
+        Total: 3
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Subasta</th>
+            <th class="text-center">Vistas</th>
+            <th class="text-center">Pujas</th>
+            <th class="text-center">Favoritos</th>
+            <th class="text-center">Seguidores</th>
+            <th class="text-center">Preguntas</th>
+            <th class="text-center">Conv.</th>
+            <th class="text-center">Estado</th>
+            <th class="text-end">Fin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="max-width: 280px;">
+              <div class="fw-semibold text-truncate">
+                <a href="/auctions/AUC-101">MacBook Pro 14” M3 2023</a>
+              </div>
+              <div class="small text-muted text-truncate">
+                Electrónica
+              </div>
+            </td>
+            <td class="text-center">980</td>
+            <td class="text-center">23</td>
+            <td class="text-center">12</td>
+            <td class="text-center">8</td>
+            <td class="text-center">3</td>
+            <td class="text-center">
+              <span class="badge bg-info-subtle text-info">76%</span>
+            </td>
+            <td class="text-center">
+              <span class="badge bg-success">active</span>
+            </td>
+            <td class="text-end">
+              20/08/2025
+            </td>
+          </tr>
+
+          <tr>
+            <td style="max-width: 280px;">
+              <div class="fw-semibold text-truncate">
+                <a href="/auctions/AUC-099">Colección comics edición limitada</a>
+              </div>
+              <div class="small text-muted text-truncate">
+                Coleccionables • Ganador: martin89 por $350
+              </div>
+            </td>
+            <td class="text-center">420</td>
+            <td class="text-center">11</td>
+            <td class="text-center">5</td>
+            <td class="text-center">4</td>
+            <td class="text-center">2</td>
+            <td class="text-center">
+              <span class="badge bg-info-subtle text-info">41%</span>
+            </td>
+            <td class="text-center">
+              <span class="badge bg-secondary">finished</span>
+            </td>
+            <td class="text-end">
+              14/07/2025
+            </td>
+          </tr>
+
+          <tr>
+            <td style="max-width: 280px;">
+              <div class="fw-semibold text-truncate">
+                <a href="/auctions/AUC-095">Silla ergonómica oficina</a>
+              </div>
+              <div class="small text-muted text-truncate">
+                Hogar
+              </div>
+            </td>
+            <td class="text-center">210</td>
+            <td class="text-center">3</td>
+            <td class="text-center">2</td>
+            <td class="text-center">1</td>
+            <td class="text-center">0</td>
+            <td class="text-center">
+              <span class="badge bg-info-subtle text-info">14%</span>
+            </td>
+            <td class="text-center">
+              <span class="badge bg-secondary">finished</span>
+            </td>
+            <td class="text-end">
+              25/06/2025
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="p-3 text-muted">No hay más subastas.</div>
+  </div> -->
+</div>
+        </div>
+      </ng-container>
+      
+
+      <ng-container *ngIf="tabIndex === 3">
+        <div class="profile-card">
+          <div class="header-row">
+            <h3>
+              <i class="fas" [ngClass]="{'fa-lock': tabCuentasIndex === 1, 'fa-user': tabCuentasIndex === 0,}"></i> 
+              {{tabCuentasIndex === 0 ? 'Cuentas para recibir pagos' : 'Tarjetas (Guardada localmente)'}} 
+            </h3>
+            <button *ngIf="tabCuentasIndex === 0 " [disabled]="cuentasClabe.length > 0" class="btn-secondary" [ngClass]="{'disable': cuentasClabe.length > 0}" (click)="openModal('clabe')"> <i class="fas fa-plus"></i> Cuenta</button>
+            <button *ngIf="tabCuentasIndex === 1" class="btn-secondary" (click)="openModal('tarjeta')"> <i class="fas fa-plus"></i> Tarjeta</button>
+          </div>
+          <hr>
+          <div class="w-100">
+            <button class="btn-tab w-50 bg-tab-xubastas" [ngClass]="{'active': tabCuentasIndex === 0}" (click)="setCurrentCuentaIndex(0)">Cuentas</button>
+            <button class="btn-tab w-50 bg-tab-xubastas" [ngClass]="{'active': tabCuentasIndex === 1}" (click)="setCurrentCuentaIndex(1)">Tarjetas</button>
+          </div>
+          <table class="table table-striped w-100 mt-3">
+           
+            <ng-container *ngIf="tabCuentasIndex === 0">
+              <tr>
+                <!-- <th>Banco</th> -->
+                <th>CLABE Interbancaria</th>
+                <!-- <th>Titular</th> -->
+                <th class="text-end">Acciones</th>
+              </tr>
+              <tr *ngFor="let cc of cuentasClabe">
+                <!-- <td class="w-20 bbtd tddir">BBVA</td> -->
+                <td class="w-30 bbtd">{{cc.cuentaClabe}}</td>
+                <!-- <td class="w-30 bbtd">Freddy Villegas Glz.</td> -->
+                <td class="w-10 text-end bbtd">
+                  <button class="btn btn-sm btn-info me-1"><i class="fas fa-edit"></i> </button>
+                  <!-- <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> </button> -->
+                </td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="tabCuentasIndex === 1">
+              <tr>
+                <th>Tarjeta</th>
+                <th>Fecha vence</th>
+                <th>Titular</th>
+                <!-- <th>Acciones</th> -->
+              </tr>
+              <tr *ngFor="let t of tarjetas">
+                <td>{{t.card_number}}</td>
+                <td>{{t.expiration_month}}/{{t.expiration_year}}</td>
+                <td>{{t.holder_name}} {{t.holder_lastname}}</td>
+              </tr>
+            </ng-container>
+          
+          </table>
+          <h5 *ngIf="tabCuentasIndex === 0" class="disclaim">Solo puedes agregar una CLABE, no se puede eliminar, solo editar.</h5>
+        </div>
+
+        <div class="profile-card">
+          <div class="header-row">
+            <h3>Wallet</h3>
+            <!-- <button class="btn-secondary" (click)="openModalFn()">Agregar nueva dirección</button> -->
+          </div>
+          <hr>
+         <!-- <div>
+          <div class="table-container"> -->
+            <table class="styled-table w-100">
+              <thead>
+                <tr class="th-wallet">
+                  <th>Folio</th>
+                  <th >Item</th>
+                  <th>Cantidad</th>
+                  <th>Fecha</th>
+                  <!-- <th>TRANSACTION</th> -->
+                  <th>Estatus Pago</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let wp of walletPagos">
+                  <td class="invoice f-arial">#{{wp.folio}}</td>
+                  <td class="client" colspan="2">
+                    <img class="avatar" [src]="wp.item.img" alt="Alexandra Della">
+                    <div>
+                      <div class="client-name f-arial">{{wp.item.name}}</div>
+                      <div class="client-email f-arial">#{{wp.item.id}}</div>
+                    </div>
+                  </td>
+                  <td class="amount f-arial">${{wp.totalRecibir}} MXN</td>
+                  <td class="date f-arial">{{wp.fecha | date:'yyyy-MM-dd, hh:mm a'}}</td>
+                  <!-- <td class="transaction f-arial">#SDEG4589SE1E</td> -->
+                  <td>
+                    <span class="badge f-arial" 
+                      [ngClass]="{'badge-success': wp.estatusClave === 'PDO', 'badge-warning': wp.estatusClave === 'PPR'}"
+                    >
+                      {{wp.estatus}}
+                    </span>
+                  </td>
+                  <td >
+                    <button class="action-btn" (click)="openModal('wallet', selectedWallet, wp)"><i class="fas fa-eye"></i></button>
+                  </td>
+                </tr>
+               
+                <!-- <tr>
+                  <td class="invoice">#987456</td>
+                  <td class="client" colspan="2">
+                    <span class="avatar avatar-initials">N</span>
+                    <div>
+                      <div class="client-name">Nancy Elliot</div>
+                      <div class="client-email">nancy.elliotutlook.com</div>
+                    </div>
+                  </td>
+                  <td class="amount">$120.50 USD</td>
+                  <td class="date">2023-05-20, 12:23PM</td>
+                  <td class="transaction">#SDEG4589SE1E</td>
+                  <td>
+                    <span class="badge badge-warning">Unpaid</span>
+                  </td>
+                  <td class="actions">
+                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn"><span>&#8942;</span></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="invoice">#741258</td>
+                  <td class="client" colspan="2">
+                    <img class="avatar" src="https://randomuser.me/api/portraits/women/65.jpg" alt="Green Cute">
+                    <div>
+                      <div class="client-name">Green Cute</div>
+                      <div class="client-email">green.cuteoutlook.com</div>
+                    </div>
+                  </td>
+                  <td class="amount">$300.00 USD</td>
+                  <td class="date">2023-01-02, 10:36AM</td>
+                  <td class="transaction">#SDEG4589SE1E</td>
+                  <td>
+                    <span class="badge badge-success">Completed</span>
+                  </td>
+                  <td class="actions">
+                    <button class="action-btn"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn"><span>&#8942;</span></button>
+                  </td>
+                </tr> -->
+              </tbody>
+            </table>
+          <!-- </div>
+         </div> -->
+        </div>
+      </ng-container>
+     
+  
+      <!-- Subastas dadas de alta -->
+      <!-- <div class="profile-card">
+        <h3>Subastas creadas</h3>
+        <ul class="auction-list">
+          <li>
+            Subasta #A001 - Lote de libros antiguos
+            <span>
+              <button class="btn-link">Ver</button>
+              <button class="btn-link">Editar</button>
+            </span>
+          </li>
+          <li>
+            Subasta #A002 - Colección de monedas
+            <span>
+              <button class="btn-link">Ver</button>
+              <button class="btn-link">Editar</button>
+            </span>
+          </li>
+        </ul>
+        <button class="btn-secondary">Crear nueva subasta</button>
+      </div> -->
+    </div>
+  </div>
+
+
+
+<!-- ========================= -->
+<!-- ===== MODALES =========== -->
+<!-- ========================= -->
+
+  <div *ngIf="isModalOpen.direccion" class="cart-modal-backdrop" (click)="closeModal('direccion')">
+    <div class="cart-modal-container" (click)="onContentClick($event)">
+    <app-loader *ngIf="loading"></app-loader>
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >Agregar direccion</span>
+        </h3>
+        <button [disabled]="loading" class="close-button" (click)="closeModal('direccion')">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+          
+          <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
+           
+            <form class="form-productos pl-2 pr-2">
+              <!-- <div class="form-row">
+                  <div class="form-group">
+                      <label for="nombre">Tarjeta guardada</label>
+                      <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" />
+                  </div>
+              </div> -->
+              <div class="mb-2 label-final-price">
+                <!-- Total a Pagar: <strong>${{direccion.apuesta}}</strong>  -->
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Calle</label>
+                    <input type="text" [(ngModel)]="direccion.calle"  maxlength="16" id="calle" name="calle" />
+                </div>
+            </div>
+             
+              <div class="form-row">
+                  <div class="form-group">
+                    <label for="compraDirecta">Numero exterior</label>
+                    <input type="text" [(ngModel)]="direccion.numeroExt"  id="numeroExt" name="numeroExt" />
+                  </div>
+                  <div class="form-group">
+                      <label for="precio">Numero interior</label>
+                      <input type="text" [(ngModel)]="direccion.numeroInt" id="numeroInt" name="numeroInt" />
+                  </div>
+              </div>
+              
+              <div class="form-row">
+                    <div class="form-group">
+                      <label for="marca">Codigo Postal</label>
+                      <input type="text" [(ngModel)]="direccion.codigoPostal" (input)="onInput($event, direccion.codigoPostal, checkCodigoPostal)" maxlength="5" id="codigoPostal" name="codigoPostal" />
+                  </div>
+                  <div class="form-group" *ngIf="hasColonias">
+                      <label for="marca">Colonia</label>
+                      <select class="form-select" [(ngModel)]="selectedColonia" (change)="setSelectedColonia()" name="colonias">
+                        <option value="null">Seleccionar colonia</option>
+                        <option [ngValue]="c" *ngFor="let c of listaColonias">{{c.d_asenta}}</option>
+                      </select>
+                  </div>
+                  <div class="form-group" *ngIf="!hasColonias || manualColonia">
+                      <label for="marca">Colonia</label>
+                      <input type="text" [(ngModel)]="direccion.colonia" id="colonia" name="colonia" />
+                  </div>
+                 
+              </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="marca">Entre calles</label>
+                      <input type="text" [(ngModel)]="direccion.callesCruzan" id="callesCruzan" name="callesCruzan" />
+                  </div>
+              </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="marca">Estado</label>
+                      <input type="text" [(ngModel)]="direccion.estado" id="estado" name="estado" />
+                  </div>
+                  <div class="form-group">
+                    <label for="marca">Municipio</label>
+                    <input type="text" [(ngModel)]="direccion.municipio" id="municipio" name="municipio" />
+                </div>
+              </div>
+              Tipo <br>
+              <button class="btn-option me-3" [ngClass]="{'active': direccion.tipo === 'entrega'}" (click)="setTipoDireccion('entrega')">Entrega</button>
+              <button class="btn-option me-3" [ngClass]="{'active': direccion.tipo === 'envio'}" (click)="setTipoDireccion('envio')">Envio</button>
+              <button class="btn-option" *ngIf="!isEdit" [ngClass]="{'active': direccion.tipo === 'ambos'}" (click)="setTipoDireccion('ambos')">Ambos</button>
+              <!-- <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Tipo</label>
+                    <button class="btn btn-check" >Entrega</button>
+                    <button class="btn btn-check" >Envio</button>
+
+                </div>
+                
+            </div> -->
+            
+            <div class="form-row mt-4">
+              <div class="form-group">
+                  <label for="marca">Predeterminada</label>
+                  <div class="form-check form-switch" >
+                    <input class="form-check-input" name="predeterminada" type="checkbox" id="switch1" [(ngModel)]="direccion.predeterminada">
+                    <label class="form-check-label" for="switch1"></label>
+                  </div>
+              </div>
+           
+          </div>
+            <!-- <div class="form-check form-switch" >
+              <input class="form-check-input" type="checkbox" id="switch1" [(ngModel)]="direccion.predeterminada">
+              <label class="form-check-label" for="switch1">Predeterminada</label>
+            </div> -->
+          </form>
+        
+          <hr>
+        </div>
+      </div>
+      <div class="modal-footer text-start">
+      
+        <!-- Botones para el paso del carrito -->
+        <div class="pb-3 pe-3">
+          <button [disabled]="loading" class="btn btn-dark btn-pill me-2" (click)="closeModal('direccion')">
+            Cancelar
+          </button>
+          <button [disabled]="loading" *ngIf="!isEdit" class="btn btn-xuba btn-pill " (click)="saveDireccion()">
+           <i class="fa fa-save"></i> Guardar
+          </button>
+          <button [disabled]="loading" *ngIf="isEdit"  class="btn btn-xuba btn-pill " (click)="saveEditDireccion()">
+           <i class="fa fa-save"></i> Guardar
+          </button>
+        </div>     
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+
+
+  <div *ngIf="isModalOpen.clabe" class="cart-modal-backdrop" (click)="closeModal('clabe')">
+    <div class="cart-modal-container" (click)="onContentClick($event)">
+    <app-loader *ngIf="loading"></app-loader>
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >Agregar Cuenta CLABE</span>
+        </h3>
+        <button [disabled]="loading" class="close-button" (click)="closeModal('clabe')">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+          
+          <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
+           
+            <form class="form-productos pl-2 pr-2">
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="precio">CLABE Interbancaria</label>
+                      <input type="text" [(ngModel)]="cuentaClabeUsuario.cuentaClabe" id="clabe" name="clabe" />
+                  </div>
+              </div>
+          </form>
+          
+        </div>
+      </div>
+      <div class="modal-footer text-start">
+        <!-- Botones del footer -->
+        <div class="pb-3 pe-3">
+          <button [disabled]="loading" class="btn btn-xuba-cancel me-2" (click)="closeModal('clabe')">
+            Cancelar
+          </button>
+          <button [disabled]="loading" class="btn btn-xuba btn-add-cart" (click)="saveCuentaClabe()">
+           <i class="fa fa-save"></i> Guardar
+          </button>
+        </div>     
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+
+
+  <div *ngIf="isModalOpen.wallet" class="cart-modal-backdrop" (click)="closeModal('wallet')">
+    <div class="cart-modal-container" (click)="onContentClick($event)">
+    <app-loader *ngIf="loading"></app-loader>
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >Resumen</span>
+        </h3>
+        <button [disabled]="loading" class="close-button" (click)="closeModal('wallet')">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+          
+          <div class="tab-content fast-animation  animate__animated animate__fadeIn" >
+           
+            <div class="invoice-detail-container">
+              <div class="text-end">
+                <div class="invoice-item-id">FOLIO#{{selectedWallet.id}}</div>
+              </div>
+              <div class="invoice-header">
+                <div>
+                  <div class="invoice-item-name">{{selectedWallet.item.name}}</div>
+                  <div class="invoice-item-id">#{{selectedWallet.item.id}}</div>
+                </div>
+                <div class="invoice-date">{{ selectedWallet.fecha | date:'yyyy-MM-dd, HH:mm' }}</div>
+              </div>
+            <hr>
+              <div class="invoice-amount">
+                <span class="label">Valor final:</span>
+                <span class="value">${{selectedWallet.precio}}</span>
+              </div>
+            
+              <div class="invoice-retentions">
+                <div class="retention-title">Retenciones</div>
+                <div class="retention-row" *ngFor="let ret of selectedWallet.retenciones">
+                  <span class="retention-name">{{ret.name}}</span>
+                  <span class="retention-value">${{ret.valor}}</span>
+                </div>
+                <!-- <div class="retention-row">
+                  <span class="retention-name">ISR (20%)</span>
+                  <span class="retention-value">$340</span>
+                </div>
+                <div class="retention-row">
+                  <span class="retention-name">XUBA (8%)</span>
+                  <span class="retention-value">$150</span>
+                </div> -->
+              </div>
+            
+              <div class="invoice-total f-low">
+                <span class="label">Saldo negativo:</span>
+                <span class="value">${{selectedWallet.saldoNegativo}}</span>
+              </div>
+              <div class="invoice-total f-low">
+                <span class="label">Cargo por flete:</span>
+                <span class="value">${{selectedWallet.flete}}</span>
+              </div> <hr>
+              <div class="invoice-total">
+                <span class="label text-dark total-title">Total a recibir:</span>
+                <span class="label-price">${{selectedWallet.totalRecibir}}</span>
+              </div>
+            
+              <div class="invoice-status-row">
+                <span class="invoice-status" [ngClass]="{'badge-success': selectedWallet.estatusClave === 'PDO', 'badge-warning': selectedWallet.estatusClave === 'PPR'}">
+                  {{selectedWallet.estatus}}
+                </span>
+              </div>
+            </div>
+        
+          <hr>
+        </div>
+      </div>
+      <div class="modal-footer text-start">
+      
+        <!-- Botones para el paso del carrito -->
+        <div class="pb-3 pe-3">
+          <button [disabled]="loading" class="btn btn-xuba-cancel me-2" (click)="closeModal('wallet')">
+            Cerrar
+          </button>
+          <!-- <button [disabled]="loading" class="btn btn-xuba btn-add-cart" (click)="saveDireccion()">
+           <i class="fa fa-save"></i> Guardar
+          </button> -->
+        </div>     
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+
+
+  <div *ngIf="isModalOpen.tarjeta" class="cart-modal-backdrop" (click)="closeModal('tarjeta')">
+    <div class="cart-modal-container" (click)="onContentClick($event)">
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >Agregar tarjeta</span>
+        </h3>
+        <button [disabled]="loading" class="close-button" (click)="closeModal('tarjeta')">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+          <app-loader *ngIf="loading"></app-loader>
+          <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
+            <!-- <div class="w-100 text-center">
+                <img src="images/visa.png" alt="" class="w-5 me-1">
+                <img src="images/mastercard.png" alt="" class="w-5 me-1">
+                <img src="images/amex.png" alt="" class="w-5">
+            </div> -->
+            <form class="form-productos pl-2 pr-2">
+              <div class="form-row mt-3">
+                <div class="form-group">
+                    <label for="nombre">No. Tarjeta</label>
+                    <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event, tarjeta.card_number)" maxlength="16" id="cardnumber" name="cardnumber" />
+                </div>
+              </div>
+             
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="precio">Expiracion (MM)</label>
+                      <input type="text" [(ngModel)]="tarjeta.expiration_month" (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expm" name="expm" />
+                  </div>
+                  <div class="form-group">
+                      <label for="compraDirecta">Expiracion (YY)</label>
+                      <input type="text" [(ngModel)]="tarjeta.expiration_year" (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expy" name="expy" />
+                  </div>
+              </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="marca">Nombre</label>
+                      <input type="text" [(ngModel)]="tarjeta.holder_name" id="marca" name="marca" />
+                  </div>
+                   <div class="form-group">
+                      <label for="marca">Apellido</label>
+                      <input type="text" [(ngModel)]="tarjeta.holder_lastname" id="marca" name="marca" />
+                  </div>
+              </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="marca">Correo Electronico</label>
+                      <input type="text" [(ngModel)]="tarjeta.mail" id="marca" name="marca" />
+                  </div>
+                  <div class="form-group">
+                    <label for="marca">Telefono</label>
+                    <input type="text" [(ngModel)]="tarjeta.phone" id="marca" name="marca"  (input)="onInput($event, tarjeta.phone)" />
+                </div>
+              </div>
+          </form>
+          <div class="mb-2 text-center">
+            <i class="fas fa-lock"></i> Estos datos se guardan unicamente en el dispositivo actual
+            <!-- <span class="fw-bold label-secure"><i class="fas fa-lock"></i> Transacciones realizadas por </span> -->
+          </div>
+          <div class="w-100 text-center">
+            <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="OpenPay Logo" >
+          </div>
+          <hr>
+        </div>
+      </div>
+      <div class="modal-footer text-start">
+      
+        <!-- Botones para el paso del carrito -->
+        <div class="pb-3 pe-3">
+          <button [disabled]="loading" class="btn btn-pill btn-dark me-2" (click)="closeModal('tarjeta')">
+            Cancelar
+          </button>
+          <button [disabled]="loading" class="btn btn-pill btn-xuba btn-add-cart" (click)="saveTarjeta()">
+           <i class="fa fa-lock"></i> Guardar
+          </button>
+        </div>     
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
