@@ -27,23 +27,32 @@
         
       />
     </div> -->
-    <div class="row m-auto  text-white w-100 h-100" >
+    <div class="row m-auto d-none d-sm-flex  text-white w-100 h-100" >
       <div class="col-2 h-100 v-c ">
         <img src="logo.png" alt="Xuba Logo" class="logo" (click)="recargarPagina()" style="cursor: pointer;" />
       </div>
-      <div class="col-3 pt-3 fs1" *ngIf="isLoggedIn()">
-        <span></span><span>Enviar a {{usuario()!.nombre}}</span>
-        <br><i class="fas fa-map-marker-alt"></i>&nbsp; <span>C.P. xxxxx</span>
+      <div class="col-3 v-c fs1" *ngIf="isLoggedIn()">
+        <button *ngIf="showTitleDetail" class="btn btn-outline-light btn-sm" (click)="backToPage()">
+          <i class="fas fa-arrow-left"></i> regresar
+        </button>
+        <div *ngIf="!showTitleDetail">
+          <span></span><span>Enviar a {{usuario() ? usuario()!.nombre:''}}</span>
+          <br><i class="fas fa-map-marker-alt"></i>&nbsp; <span>C.P. {{usuario() ? usuario()!.codigoPostal:''}}</span>
+        </div>
       </div>
       <div class="col-3 pt-2">
         <div class="title-detail" *ngIf="showTitleDetail">
           <span>{{tituloDetalle}}</span>
         </div>
       </div>
+      <div class="col-4 v-c text-center fs1"  *ngIf="showTitleDetail">
+        <div class="w-100">
+          <span></span><span>Enviar a {{usuario() ? usuario()!.nombre: ''}}</span>
+          <!-- <span></span><span>Enviar a {{usuario()!.nombre}}</span> -->
+          <br><i class="fas fa-map-marker-alt"></i>&nbsp; <span>C.P. {{usuario() ? usuario()!.codigoPostal:''}}</span>
+        </div>
+      </div>
       <div class="col-4 v-c text-center" *ngIf="!inPreregistro && showSearch">
-          <!-- <input type="text" style="margin: 0px !important;">
-          <button class="" (click)="buscar()"><i class="fas fa-search"></i></button> -->
-          <!--  -->
           <div class="w-100">
             <input
             *ngIf="!mostrarBusqueda"
@@ -56,16 +65,872 @@
           />
           <button class=" w-10 btn-r" (click)="buscar()"><i class="fas fa-search"></i></button> 
           </div>
-          <!-- <button class="btn ms-0 btn-info"><i class="fas fa-search"></i></button> -->
-         
-          <!-- <img *ngIf="!inPreregistro && showSearch"
-            src="lupa.png"
-            alt="Buscar"
-            class="search-icon"
-            (click)="toggleBusqueda()"
-            
-          /> -->
-
+      </div>
+    </div>
+    <!-- =================================== -->
+    <!-- =================================== -->
+    <div class="row m-auto d-flex d-sm-none  text-white w-100 h-100">
+      <div class="col-2 h-100 v-c">
+        <button class="btn btn-sm trs text-white" (click)="fnToggleMenu()">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      <div class="col-2 v-c">
+        <button *ngIf="showBack" class="btn  btn-sm" (click)="backToPage()">
+          <i class="fas fa-arrow-left text-white"></i> 
+        </button>
+      </div>
+      <div class="col-4 h-100 v-c ">
+        <img src="logo.png" alt="Xuba Logo" class="logo-xs" (click)="recargarPagina()" style="cursor: pointer;" />
+      </div>
+      <div class="col-4 h-100 v-c t-end">
+        <button class="btn btn-sm trs text-white " (click)="goToSearch()">
+          <i class="fas fa-search"></i>
+        </button>
       </div>
     </div>
   </nav>
+
+  <div  *ngIf="isOpenHiddenMenu" class="w-100 h-100 backdrop">
+    <div [class]="'hidden-menu ' + classMenu">
+      <div *ngIf="showingInAside === 'menu'" [class]="'fast-animation animate__animated ' + clasesAside.one">
+        <div class="profile pt-2" *ngIf="isLoggedIn()">
+            <img [src]="usuario()?.imgPerfil || 'assets/default-avatar.png'" alt="Usuario">
+            <div class="name">
+              {{usuario()?.nombre}}  &nbsp; &nbsp;
+              <button class="btn btn-sm btn-dark btn-pill" (click)="openProfilePage()">
+                ver perfil &nbsp; <i class="fas fa-user"></i>
+              </button>
+            </div>
+        </div>
+        <div class="menu px-3" *ngIf="!isLoggedIn()">
+          <app-loader *ngIf="loading"></app-loader>
+          <img src="iconos/logo-xuba.png" class="d-none d-sm-block" alt="XUBA Subastas" style="width: 80%;display: block;margin: auto;" />
+          <h4 class="mb-4 mt-4 text-center  fw-bold" style="color: #ec4899;font-size: 1rem;">Iniciar sesion</h4>
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="tel" [(ngModel)]="loginForm.usuario" class="form-control form-control-lg" style="font-size: 0.8rem;" name="telefono" placeholder="Tu número" required>
+          </div>
+          <div class="mb-2">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" [(ngModel)]="loginForm.pass" class="form-control form-control-lg" style="font-size: 0.8rem;" name="password" placeholder="Contraseña" required>
+          </div>
+          <button type="submit" class="btn btn-xuba w-100 mb-3 fw-bold" (click)="onLogin()">Login</button>
+          <div class="text-center">
+            <a href="#" class="small text-decoration-none text-primary">¿Olvidaste tu contraseña?</a><br>
+            <a href="#" class="small text-decoration-none text-success">Regístrate</a>
+          </div>
+        </div>
+        <div class="menu px-3" *ngIf="isLoggedIn()">
+          <!-- <div class="menu-item" title="Inicio"  [ngClass]="{'active': currentHomeIndex === 0}"><i class="fas fa-home"></i>Inicio</div> -->
+          <!-- <div class="menu-item" title="Perfil" ><i class="fas fa-user"></i>Perfil</div> -->
+          <div class="menu-item" title="Subastas seguidas" (click)="changeAside('following')"><i class="fas fa-heart"></i>S. Seguidas</div>
+          <div class="menu-item" title="Subastas ganadas" (click)="changeAside('winner')" ><i class="fas fa-trophy"></i>S. Ganadas</div>
+          <div class="menu-item highlight" title="Crear Subasta" (click)="openModalCreateAuction()" ><i class="fas fa-plus-circle text-white"></i>Crear Subasta</div>
+          <div class="menu-item" title="Lista de notificaciones" (click)="changeAside('notifications')"><i class="fas fa-bell"></i>  Notificaciones <span class="notificaciones-count">{{totalNotificaciones}}</span> </div>
+          <div class="menu-item" title="Personas que te siguen"  (click)="changeAside('followers')"><i class="fas fa-users"></i>Seguidores</div>
+          <div class="menu-item" title="Vendedores que sigues"  (click)="changeAside('following-seller')"><i class="fas fa-clipboard-list"></i>V. Seguidos</div>
+          <!-- <div class="menu-item"><i class="fas fa-chart-bar"></i>Estadísticas</div> -->
+          <!-- <div class="menu-item" title="Subastas Premium" [ngClass]="{'active': currentHomeIndex === 1}"><i class="fas fa-gem"></i>Premium</div> -->
+          <!-- <div class="menu-item" title="Subastas Express"  [ngClass]="{'active': currentHomeIndex === 2}"><i class="fas fa-bolt"></i>Express</div> -->
+          <!-- <div class="menu-item" ><i class="fas fa-wallet"></i>Wallet</div> -->
+          <div class="menu-item" title="Ver politicas de uso" (click)="openModalPoliticasFn()"><i class="fas fa-book" ></i>Politica de uso</div>
+          <div class="menu-item" title="Informacion de contacto" (click)="changeAside('contact')"><i class="fas fa-phone"  ></i>Contacto</div>
+          <hr style="margin: 0;padding: 0;">
+          <div class="menu-item" title="Cerrar sesion" (click)="logout()"><i class="fas fa-power-off"></i>Cerrar sesion</div>
+        </div>
+      </div>
+  
+       <!-- =============  SECCION DE SUBASTAS SEGUIDAS  =============  -->
+        <!-- ========================================  -->
+        <div *ngIf="showingInAside === 'following'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+          <ng-container *ngIf="loadingNotificaciones">
+            <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones" style="height: 80px;">
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!loadingNotificaciones">
+            <div class="py-2 px-3">
+              <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">SUBASTAS SEGUIDAS</h5>
+              <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
+                <i class="fas fa-arrow-left"></i>&nbsp; volver
+              </button>
+            <div class="auction-card" *ngFor="let subasta of auctions">
+              <img [src]="subasta.url" alt="">
+              <div class="title">{{ subasta.caption }}</div>
+              <div class="desc">{{ toShort(subasta.descripcion)  }}</div>
+              <div class="price">{{ toCurrency(subasta.apuesta) }}</div>
+              <div class="timer">{{segundosATiempoString(subasta.venceSegundos!)}}</div>
+              <div class="actions">
+                <button title="Seguir"><i class="fas fa-heart"></i></button>
+                <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+                <button title="Compartir"><i class="fas fa-share"></i></button>
+              </div>
+              <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+                {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+              </div>
+            </div> 
+            </div>
+        
+          </ng-container>
+        </div>
+  
+        <!-- =============  SECCION DE SUBASTAS GANADAS  =============  -->
+        <!-- ========================================  -->
+        <div *ngIf="showingInAside === 'winner'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+          <ng-container *ngIf="loadingNotificaciones">
+            <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones" style="height: 80px;">
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!loadingNotificaciones">
+            <div class="py-2 px-3">
+              <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">SUBASTAS GANADAS</h5>
+              <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()" >
+                <i class="fas fa-arrow-left"></i>&nbsp; volver
+              </button>
+              <div class="auction-card" *ngFor="let subasta of auctionsWin" (click)="abrirDetalleSubasta(subasta)">
+                <br>
+                <img [src]="subasta.url" alt="">
+                <div class="title">{{ subasta.caption }}</div>
+                <div class="desc">{{ toShort(subasta.descripcion)  }}</div>
+                <div class="price mb-3">{{ toCurrency(subasta.apuesta) }}</div>
+                <!-- <br> -->
+                <!-- <div class="timer">{{subasta.tiempoVence}}</div> -->
+                <!-- <div class="actions" style=""> 
+                  <div class="w-75 bg-dark text-white">
+                    {{subasta.estatus}}
+                  </div> -->
+                  <!-- <button title="Seguir"><i class="fas fa-heart"></i></button>
+                  <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+                  <button title="Compartir"><i class="fas fa-share"></i></button> -->
+                <!-- </div> -->
+                <div class="ribbon-status" >
+                  Estatus: <span class="badge badge-status" style="font-size: 0.8em;">{{ subasta.estatus }}</span>
+                </div>
+                <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+                  {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+                </div>
+              </div> 
+            </div>
+            
+          </ng-container>
+        </div>
+  
+        <div *ngIf="showingInAside === 'notifications'" [class]="'w-100  fast-animation animate__animated ' + clasesAside.two">
+          <ng-container *ngIf="loadingNotificaciones">
+            <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones" style="height: 80px;">
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!loadingNotificaciones">
+            <div class="py-2 px-3">
+            <h5 class="text-center" style="color: #ffffff; font-family: Gobold;font-size: 0.9em;">NOTIFICACIONES</h5>
+            <div class="w-100 text-center mb-2">
+              <button class="btn btn-xuba w-75" (click)="backToMenuAside()">
+                <i class="fas fa-arrow-left"></i>&nbsp; volver
+              </button>
+            </div>
+            <div class="notification-list">
+              <!-- Ítem 1 -->
+              <div class="notification-item noleida" [ngClass]="{'noleida': noti.activa}" *ngFor="let noti of notificaciones; let i = index;" (click)="abrirDetalleSubasta(noti.msubastas)">
+                <div class="notification-icon">
+                  <i [class]="noti.icono"></i>
+                </div>
+                <div class="notification-content f-arial" >
+                  <!-- <span class="account-name">Account Name</span> -->
+                  <p class="action-title f-arial">{{noti.titulo}}</p>
+                  <p class="action-desc f-arial">{{noti.descripcion}}</p>
+                  <span class="time-frame f-arial">{{getTiempoRelativo(noti.fecha, noti.horaServidor)}}</span>
+                  <!-- {{noti.fecha}}  -->
+                </div>
+              </div>
+
+            </div>
+            <!-- <div class="notification n-superada">
+              <div class="content">
+                <div class="name" style="font-size:0.8em">
+                  <i class="fas fa-gavel"></i>&nbsp; Oferta Superada
+                </div>
+                <div class="message" style="font-size:0.9em">tu oferta en la subasta prueba ha sido superada</div>
+                <small style="font-size:0.7em">12/07/2025</small>
+              </div>
+            </div>
+            <div class="notification n-terminada">
+              <div class="content">
+                <div class="name" style="font-size:0.8em">
+                  <i class="fas fa-hourglass-end"></i>&nbsp; Subasta terminada
+                </div>
+                <div class="message" style="font-size:0.9em">El tiempo de la subasta prueba nombre subasta ha finalizado</div>
+                <small style="font-size:0.7em">12/07/2025</small>
+              </div>
+            </div>
+            <div class="notification n-ganador">
+              <div class="content">
+                <div class="name" style="font-size:0.8em">
+                  <i class="fas fa-trophy"></i>&nbsp; Ganador
+                </div>
+                <div class="message" style="font-size:0.9em">Felicidades, has ganado la subasta nombre prueba ejemplo</div>
+                <small style="font-size:0.7em">12/07/2025</small>
+              </div>
+            </div>
+            <div class="notification n-aprobada">
+              <div class="content">
+                <div class="name" style="font-size:0.8em">
+                  <i class="fas fa-badge-check"></i>&nbsp; Subasta Aprobada
+                </div>
+                <div class="message" style="font-size:0.9em">Tu subasta nombre ejemplo ha sido aprobada</div>
+                <small style="font-size:0.7em">12/07/2025</small>
+              </div>
+            </div>
+            <div class="notification n-cancelada">
+              <div class="content">
+                <div class="name" style="font-size:0.8em">
+                  <i class="fas fa-calendar-times"></i>&nbsp; Subasta Cancelada
+                </div>
+                <div class="message" style="font-size:0.9em">La subasta ha sido cancelada</div>
+                <small style="font-size:0.7em;color:#fff">12/07/2025</small>
+              </div>
+            </div> -->
+            </div>
+          </ng-container>
+        </div>
+  
+          <!-- =============  SECCION DE SEGUIDORES  =============  -->
+        <!-- ========================================  -->
+        <div *ngIf="showingInAside === 'followers'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+          <ng-container *ngIf="loadingNotificaciones">
+            <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones" style="height: 80px;">
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+          </ng-container>
+  
+          <ng-container *ngIf="!loadingNotificaciones">
+            <div class="py-2 px-3">
+              <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">SEGUIDORES</h5>
+  
+              <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
+                <i class="fas fa-arrow-left"></i>&nbsp; volver
+              </button>
+              <div class="followers-list">
+                <div class="follower-card"  *ngFor="let f of followers"  (click)="openUserPage(f.id)">
+                  <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
+                  <div class="follower-info">
+                    <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
+                    <div class="follower-nickname">{{f.usuario ?? 'ND'}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+       
+       
+        <!-- =============  SECCION DE Vendedores seguidos  =============  -->
+        <!-- ========================================  -->
+        <div *ngIf="showingInAside === 'following-seller'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+          <ng-container *ngIf="loadingNotificaciones">
+            <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones" style="height: 80px;">
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
+              &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+          </ng-container>
+  
+          <ng-container *ngIf="!loadingNotificaciones">
+            <div class="py-2 px-3">
+              <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">VENDEDORES SEGUIDOS</h5>
+              <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
+                <i class="fas fa-arrow-left"></i>&nbsp; volver
+              </button>
+              <div class="followers-list">
+                <div class="follower-card"  *ngFor="let f of favoritos"  (click)="openUserPage(f.id)">
+                  <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
+                  <div class="follower-info">
+                    <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
+                    <div class="follower-nickname">{{f.usuario ?? 'ND'}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+  
+         <!-- =============  SECCION DE Contacto =============  -->
+        <!-- ========================================  -->
+        <div *ngIf="showingInAside === 'contact'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+         
+          <ng-container>
+            <div class="py-2 px-3">
+              <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">INFORMACION DE CONTACTO</h5>
+              <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()" >
+                <i class="fas fa-arrow-left"></i>&nbsp; volver
+              </button>
+              <div class="auction-card p-3" >
+                <!-- <br> -->
+                <p class="text-muted text-left small">
+                  <span class="text-primary"><i class="fas fa-map-marker-alt"></i> Direccion</span><br>
+                  Cd. Juarez, Chihuahua, Mexico candelilla #9314, Infonavit ampliación aeropuerto 32665
+                </p>
+                <p class="text-muted text-left small">
+                  <span class="text-primary"><i class="fas fa-phone"></i> Telefono</span><br>
+                  6564185727
+                </p>
+                <p class="text-muted text-left small">
+                  <span class="text-primary"><i class="fas fa-envelope"></i> Correo</span><br>
+                  {{emailContacto}}
+                </p>
+              </div> 
+            </div> 
+          </ng-container>
+        </div>
+    </div>
+  </div>
+  
+
+
+
+
+<div *ngIf="openModal" class="cart-modal-backdrop" >
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <app-loader *ngIf="loading"></app-loader>
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <!-- <i class="fas fa-shopping-cart "></i> -->
+        <span class="text-white" >Crear Nueva Subasta</span>
+      
+      </h3>
+      <button class="close-button" (click)="closeModal()">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+
+        <div class="tab-buttons tab-button pt-0 pb-0" *ngIf="selectedTab !== -1">
+            <button class="tab-button" [class.active]="selectedTab === 0" (click)="selectedTab = 0">
+                Detalles del producto
+            </button>
+            <button class="tab-button" [class.active]="selectedTab === 1" (click)="selectedTab = 1">
+                Datos de envio
+            </button>
+            <button class="tab-button" [class.active]="selectedTab === 2" (click)="selectedTab = 2">
+                Subir fotos
+            </button>
+            <button *ngIf="tipoSubasta === 'premium'" class="tab-button" [class.active]="selectedTab === 3" (click)="selectedTab = 3">
+              Pago
+            </button>
+        </div>
+        <!-- <hr> -->
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === -1">
+          <div class="policy-content before-sell">
+            <h5>Prohibiciones y politicas de venta</h5>
+            1- Se prohíbe cualquier artículo regulado por la Ley Federal de Armas de Fuego y Explosivos:
+<br>
+Armas de fuego de cualquier tipo
+Municiones, cartuchos, cargadores y proyectiles
+Explosivos, detonadores, granadas, pólvora
+Armas de uso exclusivo del Ejército, Armada o Fuerza Aérea
+Armas modificadas, artesanales o con números de serie alterados
+<br> <br>
+1. Drogas, estupefacientes y sustancias ilícitas
+Totalmente prohibidos conforme a la Ley General de Salud y el Código Penal Federal:
+Drogas ilegales (cocaína, metanfetamina, fentanilo, etc.)
+Sustancias psicotrópicas sin autorización
+Precursores químicos
+Cannabis fuera del marco legal autorizado
+Accesorios para consumo o distribución (pipetas, prensas, kits)
+2
+
+<hr>
+
+1. Medicamentos y productos para la salud sin autorización
+Prohibidos por representar un riesgo grave a la salud:
+Medicamentos controlados o que requieran receta médica
+Medicamentos sin registro sanitario de COFEPRIS
+Medicamentos falsificados, alterados o caducos
+Dispositivos médicos no certificados
+Insumos médicos de procedencia desconocida
+3
+
+<hr>
+
+1. Animales, fauna protegida y productos derivados
+Prohibidos por leyes ambientales y tratados internacionales:
+Animales en peligro de extinción
+Fauna silvestre sin permisos oficiales
+Pieles, colmillos, marfil, huesos, caparazones
+Productos elaborados con especies protegidas
+4
+
+<hr>
+
+1. Bienes arqueológicos, históricos y culturales
+Totalmente prohibidos:
+Piezas arqueológicas prehispánicas
+Arte sacro antiguo o religioso protegido
+Objetos históricos protegidos por el INAH
+Bienes culturales extraídos o comercializados ilegalmente
+4
+
+<hr>
+
+1. Productos robados o de procedencia ilícita
+No se permiten artículos que:
+Sean robados o saqueados
+No cuenten con comprobante de propiedad
+Tengan origen ilegal o fraudulento
+Presenten precios que indiquen procedencia ilícita
+(Responsabilidad civil y penal conforme al Código de Comercio y legislación penal)
+5
+
+<hr>
+
+1. Productos falsificados o que violen propiedad intelectual
+Prohibidos por leyes de derechos de autor y marcas:
+Productos pirata
+Réplicas vendidas como originales
+Uso no autorizado de marcas registradas
+Software, licencias o contenidos ilegales
+6
+
+<hr>
+
+1. Documentos oficiales y artículos gubernamentales
+No se permite subastar:
+Identificaciones oficiales (INE, pasaporte, licencias)
+Documentos gubernamentales
+Sellos, placas, hologramas, formatos oficiales
+Uniformes o insignias oficiales de uso restringido
+5
+
+<hr>
+
+1. Servicios o artículos destinados a actividades ilegales
+Prohibidos sin excepción:
+Servicios de hacking, fraude o espionaje
+Venta de cuentas robadas, datos personales
+Documentos falsos
+Servicios para evadir la ley o autoridades
+2
+
+<hr>
+
+1. Otros artículos prohibidos por seguridad y ética
+Artículos que fomenten violencia, odio o delitos
+Productos peligrosos sin certificación
+Material que represente riesgo para usuarios
+Cualquier artículo cuya venta sea ilegal en México
+7
+
+<hr>
+
+⚠️ Cláusula de reserva
+Xuba Subastas ( comercio subastero del norte )se reserva el derecho de retirar cualquier publicación, suspender cuentas o colaborar con autoridades cuando un artículo:
+Sea ilegal
+Vulnere derechos de terceros
+Represente riesgo legal, sanitario o de seguridad.
+        
+           
+          </div>
+        </div>
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 0">
+            <!-- form-producto.component.html -->
+            <form class="form-productos pl-2 pr-2">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre del producto</label>
+                        <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" [(ngModel)]="subasta.descripcion" name="descripcion" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="precio">Precio</label>
+                        <input type="number" [(ngModel)]="subasta.precio" id="precio" name="precio" />
+                    </div>
+                    <div class="form-group">
+                        <label for="compraDirecta">Compra directa</label>
+                        <input class="form-check-input checkbox-lg" [(ngModel)]="subasta.compraDirecta" type="checkbox" name="compraDirecta" value="" id="checkboxGrande">
+
+                        <!-- <input type="checkbox" [(ngModel)]="subasta.compraDirecta" id="compraDirecta" name="compraDirecta" /> -->
+                    </div>
+                    <div class="form-group">
+                      <label for="compraDirecta">Es nuevo?</label>
+                      <input class="form-check-input checkbox-lg" [(ngModel)]="subasta.nuevo" type="checkbox" name="nuevo" value="" id="checkboxGrande">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="marca">Marca</label>
+                        <input type="text" [(ngModel)]="subasta.marca" id="marca" name="marca" />
+                    </div>
+                    <div class="form-group">
+                        <label for="modelo">Modelo</label>
+                        <input type="text" [(ngModel)]="subasta.modelo" id="modelo" name="modelo" />
+                    </div>
+                </div>
+                <!-- <div class="form-row" *ngIf="subasta.precio && subasta.precio > 0">
+                    <div class="form-group">
+                        <label for="cantidadPuja">Incremento de oferta</label>
+                        <select class="form-select" name="incrementoOferta" [(ngModel)]="porcentajeIncremento" id="incremento" (change)="calcularAumentoOferta()">
+                          <option value="5">5%</option>
+                          <option value="7">7%</option>
+                          <option value="10">10%</option>
+                          <option value="15">15%</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                      <label > Valor del cada incremento </label>
+                      <label >  ${{subasta.valorOferta}} </label>
+                  </div>
+                </div> -->
+            </form>
+        </div>
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 1">
+            <form class="form-producto">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="peso">Peso (kg, Ej. 1, 5, 10, .5)</label>
+                        <input type="number" [(ngModel)]="subasta.peso" id="peso" name="peso" />
+                    </div>
+                </div>
+               
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="largo">Largo (cm)</label>
+                        <input type="number" [(ngModel)]="subasta.largo" id="largo" name="largo" />
+                    </div>
+                    <img src="images/b-largo.png" style="width: 150px;display: block;margin: auto;" alt="">
+
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ancho">Alto (cm)</label>
+                        <input type="number" [(ngModel)]="subasta.ancho" id="ancho" name="ancho" />
+                    </div>
+                    <img src="images/b-alto.png" style="width: 150px;display: block;margin: auto;" alt="">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="profundidad">Profundidad (cm)</label>
+                        <input type="number" [(ngModel)]="subasta.profundidad" id="profundidad" name="profundidad" />
+                    </div>
+                    <img src="images/b-profundidad.png" style="width: 150px;display: block;margin: auto;" alt="">
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="tiempoActivo">Direccion de Envio</label>
+                    <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="subasta.idDireccion">
+                      <!-- <option value="">Direccion desde la que se enviara </option> -->
+                      <option *ngFor="let item of direccionesEnvioUsuario" [value]="item.id">{{item.calle}} {{item.numeroExt}} {{item.numeroInt}}, {{item.municipio}}</option>
+                    </select>
+                  </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 2">
+            <!-- form-fotos-subasta.component.html -->
+            <div class="card-fotos">
+                <div class="label mb-3">Favor de cargar fotos reales de tu Producto</div>
+                <label class="cargar-foto-label">
+                    <input type="file" accept="image/*" multiple (change)="onFileChange($event)"
+                        hidden />
+                    <span><i class="fas fa-image"></i> Cargar foto</span>
+                </label>
+                <div class="preview-list">
+                    <div class="preview-img" *ngFor="let img of imagesPreview; let i = index">
+                        <img [src]="img.url" alt="Preview" />
+                        <button type="button" (click)="eliminarImagen(i)">×</button>
+                    </div>
+                </div>
+                <div class="max-fotos" *ngIf="imagesPreview!.length >= 5 && tipoSubasta === 'general'">Máximo 5 fotos</div>
+            </div>
+    
+            <div class="tipo-subasta">
+                <label>
+                    <input type="radio" name="tipo" (change)="setValorHoras()"  value="general" [(ngModel)]="tipoSubasta" /> General
+                </label>
+                <label>
+                    <input type="radio" name="tipo"  (change)="setValorHoras()"  value="premium" [(ngModel)]="tipoSubasta" /> Premium
+                </label>
+            </div>
+    
+            <div *ngIf="tipoSubasta === 'general'" class="descripcion-section">
+                <div class="desc-premium">
+                    <strong>Subasta General:</strong> Tu subasta se publicara con una duración de 100 horas
+                    <br>PRECIO: <strong class="price-subasta-free">GRATIS</strong>
+                </div>
+                <!-- <button class="btn-gradiente">Subir subasta</button> -->
+            </div>
+    
+            <div *ngIf="tipoSubasta === 'premium'" class="descripcion-section">
+                <div class="desc-premium">
+                    <strong>Subasta Premium:</strong> Tu producto tendrá mayor visibilidad y beneficios exclusivos.
+                    <br>PRECIO:<strong class="price-subasta-premium">&nbsp;${{precioSubastaPremium}} MXN</strong> 
+                </div>
+            </div>
+            <!-- <div class="form-group mt-3" *ngIf="tipoSubasta === 'premium'">
+              <label for="tiempoActivo">Tiempo activo (Entre 30 y 100 Hrs)</label>
+              <input type="number" [(ngModel)]="subasta.horas" id="tiempoActivo" name="tiempoActivo" />
+            </div> -->
+            <div class="form-row pt-3"  *ngIf="tipoSubasta === 'premium'">
+              <div class="form-group ">
+                <label for="tiempoActivo">Tiempo activo (Entre 30 y 100 Hrs)</label>
+                <input type="number" [ngClass]="{'has-error': subasta.horas! < 30 || subasta.horas! > 100}" [(ngModel)]="subasta.horas" id="tiempoActivo" name="tiempoActivo" />
+              </div>
+              <div class="form-group ">
+                <label for="tiempoActivo">Incremento de oferta</label>
+                <input type="number" [ngClass]="{'has-error': !subasta.precio || subasta.valorOferta! <= 0 || subasta.valorOferta! > subasta.precio!}"  [(ngModel)]="subasta.valorOferta" id="tiempoActivo" name="tiempoActivo" />
+              </div>
+            
+          </div>
+          <div class="form-row pt-3"   *ngIf="subasta.precio && subasta.precio > 0">
+            <div class="form-group">
+              <label for="cantidadPuja">Valor inicial (% del precio)</label>
+              <select class="form-select" name="incrementoOferta" [(ngModel)]="porcentajeValorInicial" id="incremento" (change)="calcularValorInicial()">
+                <option value="5">5%</option>
+                <option value="7">7%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+              </select>
+          </div>
+            <div class="form-group">
+              <label > Valor inicial cantidad </label>
+              <label >  ${{subasta.apuesta}} </label>
+            </div>
+          </div>
+
+        </div>
+       
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" *ngIf="selectedTab === 3">
+          <ng-container *ngIf="terminosRevisados">
+            <div class="w-100 text-center">
+              <img src="images/visa.png" alt="" class="w-5 me-1">
+              <img src="images/mastercard.png" alt="" class="w-5 me-1">
+              <img src="images/amex.png" alt="" class="w-5">
+            </div>
+         
+          
+            <form class="form-productos pl-2 pr-2">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="tiempoActivo">Tarjetas guardadas</label>
+                  <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="selectedCard" (change)="changeTarjetaSeleccionada()">
+                    <option value="null">Seleccionar tarjeta</option>
+                    <option *ngFor="let item of tarjetas" [ngValue]="item">{{item.card_number}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-2 label-final-price">
+                Total a Pagar: <strong>${{precioSubastaPremium}}</strong> 
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                    <label for="nocard">No. Tarjeta</label>
+                    <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event, tarjeta.card_number)" maxlength="16" id="nocard" name="nocard" />
+                </div>
+            </div>
+             
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="precio">Expiracion (MM)</label>
+                      <input type="text" [(ngModel)]="tarjeta.expiration_month" (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expiracionm" name="expiracionm" />
+                  </div>
+                  <div class="form-group">
+                      <label for="compraDirecta">Expiracion (YY)</label>
+                      <input type="text" [(ngModel)]="tarjeta.expiration_year" (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expiraciony" name="expiraciony" />
+                  </div>
+                  <div class="form-group">
+                    <label for="compraDirecta">CCV</label>
+                    <input type="text" [(ngModel)]="tarjeta.cvv2" (input)="onInput($event, tarjeta.expiration_year)" maxlength="4"  id="ccv" name="ccv" />
+                  </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre(s)</label>
+                    <input type="text" [(ngModel)]="tarjeta.holder_name" id="nombre" name="nombre" />
+                </div>
+                 <div class="form-group">
+                    <label for="apellido">Apellido(s)</label>
+                    <input type="text" [(ngModel)]="tarjeta.holder_lastname" id="apellido" name="apellido" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="correo">Correo Electronico</label>
+                    <input type="text" [(ngModel)]="tarjeta.mail" id="correo" name="correo" />
+                </div>
+                <div class="form-group">
+                  <label for="telefono">Telefono</label>
+                  <input type="text" [(ngModel)]="tarjeta.phone" id="telefono" name="telefono" />
+              </div>
+            </div>
+            <div class="mb-2 text-center">
+              <span class="fw-bold label-secure"><i class="fas fa-lock"></i> Transacciones realizadas por </span>
+            </div>
+            <div class="w-100 text-center">
+              <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="Openpay Logo" >
+            </div>
+            <hr>
+          </form>
+          </ng-container>
+          <ng-container *ngIf="!terminosRevisados">
+            <div class="policy-container">
+              <div class="policy-content">
+                <h2>Políticas de Uso del Procesador de Pagos</h2>
+                <p>
+                  Estas políticas establecen los términos bajo los cuales los usuarios pueden realizar pagos
+                  a través del procesador. Al continuar, aceptas que los datos proporcionados son verídicos,
+                  y que cumplirás con las condiciones establecidas.
+                </p>
+            
+                <p>
+                  El uso del servicio implica la aceptación de nuestras normas de seguridad, privacidad,
+                  y prevención de fraude. Queda prohibido el uso para fines ilícitos o no autorizados.
+                </p>
+            
+                <p>
+                  Si tienes dudas o necesitas asistencia, contacta con soporte al correo
+                  <strong>soporteprocesador.com</strong>.
+                </p>
+            
+                <div class="policy-accept">
+                  <label>
+                    <input type="checkbox" id="acceptPolicy" [(ngModel)]="aceptarTerminos">
+                    He leído y acepto las políticas de uso.
+                  </label>
+                  <button id="btnAccept" [disabled]="!aceptarTerminos" (click)="acceptTerms()">Aceptar y continuar</button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+      <div *ngIf="selectedTab === -1">
+        <label>
+          <input type="checkbox" id="acceptPolicy" [(ngModel)]="aceptarTerminosCrearSubasta">
+          He leído y acepto las políticas de uso.
+        </label> <br>
+        <small class="f-arial f-vsmall">
+          El uso de la plataforma y la aceptación de este anuncio es aceptar las medidas estrictas que contamos para hacer uso de esta.
+        </small>
+      </div>
+      <!-- Botones para el paso del carrito -->
+      <div>
+        <button class="btn btn-dark" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button class="btn btn-success btn-add-cart"  (click)="nextStep()">
+          {{(selectedTab >=3 && tipoSubasta === 'premium') || (selectedTab >=2 && tipoSubasta !== 'premium') ? 'Subir subasta ':'Continuar ' }}
+          &nbsp; <i class="fas fa-arrow-right" [ngClass]="{'fa-arrow-right':(selectedTab <3 && tipoSubasta === 'premium') || (selectedTab <2 && tipoSubasta !== 'premium') , 'fa-upload': (selectedTab >=3 && tipoSubasta === 'premium') || (selectedTab >=2 && tipoSubasta !== 'premium') }"></i>
+        </button>
+      </div>     
+    </div>
+    <!-- </div> -->
+  </div>
+  <form id="payment-form">
+    <input type="hidden" name="deviceIdHiddenFieldName" id="device-session-id" />
+  </form>
+</div>
+
+
+
+<div *ngIf="openModalPoliticas" class="cart-modal-backdrop">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <!-- <i class="fas fa-shopping-cart "></i> -->
+        <span class="text-white" >Politicas de uso XUBA</span>
+      </h3>
+      <button class="close-button" (click)="closeModal()">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="policy-content px-2 py-3">
+        <h3 class="mb-3 text-center text-primary fw-bold">
+          Políticas de Uso
+        </h3>
+        <ol class="policy-list ps-3">
+          <li>
+            <strong>Registro de usuario:</strong><br>
+            Todos los usuarios deben proporcionar información verídica y actualizada al registrarse en la plataforma.
+          </li>
+          <br>
+          <li>
+            <strong>Confidencialidad:</strong><br>
+            La información personal de los usuarios será tratada con estricta confidencialidad conforme a nuestra política de privacidad.
+          </li><br>
+          <li>
+            <strong>Uso adecuado:</strong><br>
+            Está prohibido utilizar la plataforma para actividades ilícitas, fraudulentas o que atenten contra la moral y las buenas costumbres.
+          </li><br>
+          <li>
+            <strong>Propiedad intelectual:</strong><br>
+            Todo el contenido publicado en la plataforma debe respetar los derechos de autor y propiedad intelectual de terceros.
+          </li><br>
+          <li>
+            <strong>Responsabilidad de las ofertas:</strong><br>
+            Los usuarios son responsables de las ofertas realizadas y deben cumplir con los compromisos adquiridos en las subastas.
+          </li><br>
+          <li>
+            <strong>Comportamiento:</strong><br>
+            Se espera un trato respetuoso entre los usuarios. No se tolerarán insultos, amenazas o cualquier forma de acoso.
+          </li><br>
+          <li>
+            <strong>Suspensión de cuentas:</strong><br>
+            La plataforma se reserva el derecho de suspender o eliminar cuentas que incumplan estas políticas.
+          </li><br>
+          <li>
+            <strong>Modificaciones:</strong><br>
+            Las políticas de uso pueden ser modificadas en cualquier momento. Los cambios serán notificados oportunamente.
+          </li><br>
+          <li>
+            <strong>Soporte:</strong><br>
+            Para cualquier duda o inconveniente, los usuarios pueden contactar al equipo de soporte a través de los canales oficiales.
+          </li><br>
+          <li>
+            <strong>Procesador de pagos:</strong><br>
+            Las transacciones serán efectuadas mediante la pasarela de Openpay..
+          </li><br>
+          <li>
+            <strong>Aceptación:</strong><br>
+            El uso de la plataforma implica la aceptación total de estas políticas de uso.
+          </li>
+        </ol>
+        <div class="text-end mt-4">
+          <small class="" style="color:#bdc3c7;">Última actualización: julio 2025</small>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+    
+      <!-- Botones para el paso del carrito -->
+      <div>
+        <button class="btn btn-dark" (click)="closeModal()">
+          Cerrar
+        </button>
+        <!-- <button class="btn btn-success btn-add-cart"  (click)="nextStep()">
+         
+        </button> -->
+      </div>     
+    </div>
+    <!-- </div> -->
+  </div>
+</div>

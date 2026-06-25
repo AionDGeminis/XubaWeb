@@ -21,7 +21,8 @@ export class PageblockComponent  implements OnInit{
   ngOnInit(): void {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
+      .subscribe((event: any) => {
+      // .subscribe((event: NavigationEnd) => {
         // Guarda la URL actual
         const currentPage = event.urlAfterRedirects;
         this.showPage = this.checkDataUSer(currentPage);
@@ -35,14 +36,14 @@ export class PageblockComponent  implements OnInit{
       show = false;
     } else {
       let hasAccess = localStorage.getItem('ZGF0YVVzZXJBY2Nlc3M=');
-      console.log('datauserAccess')
-      console.log(hasAccess)
+      // console.log('datauserAccess')
+      // console.log(hasAccess)
       if(hasAccess && hasAccess !== null && hasAccess === '=M1UFN0QB9lUFNVV'){
         show = false;
       }
     }
-    console.log('Mostrar pagina?:')
-    console.log(show)
+    // console.log('Mostrar pagina?:')
+    // console.log(show)
     return show;
   }
 

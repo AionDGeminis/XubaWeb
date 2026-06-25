@@ -1,0 +1,1280 @@
+<app-loader *ngIf="loading" [texto]="textoLoading"></app-loader>
+
+<div class="container-lg py-4 auction-summary">
+    <div  class="alert winner-bg d-flex text-success-emphasis align-items-center gap-2 rounded-3 mb-4" role="alert" style="border: none;">
+        <i class="fas fa-trophy fs-5"></i>
+        <div><strong>¡Felicidades!</strong> Has ganado la subasta!.</div>
+        <span class="ms-auto text-nowrap small text-success-emphasis">
+          Vence en: <span class="">23h 12m</span>
+        </span>
+    </div>
+
+    <div class="row g-4" style="position: relative;">
+        <div class="col-12 col-lg-8">
+          <div class="card border-0 shadow-sm">
+             <div class="card-body p-4">
+              <div class="d-flex flex-column flex-sm-row gap-3">
+                <img [src]="subasta!.url" alt="subasta" class="rounded object-fit-cover" style="width:160px;height:160px">
+                <div class="flex-grow-1">
+                  <h5 class="mb-1">{{subasta!.caption}}</h5>
+                  <div class="text-muted small mb-2">
+                    #{{subasta!.id}} 
+                  </div>
+    
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <img [src]="subasta!.musuarios.imgPerfil" class="rounded-circle" style="width:28px;height:28px" alt="Profile Picture">
+                    <a class="link-secondary text-decoration-none" href="#">{{subasta!.musuarios.usuario}}</a>
+                    <span class="badge bg-light text-dark">
+                      <i class="fas fa-star  text-warning"></i> {{subasta!.musuarios.stars}}
+                    </span>
+                  </div>
+    
+                  <div class="text-muted small">
+                    Envío desde {{subasta!.direccion.municipio}}, {{subasta!.direccion.estado}}
+                  </div>
+                </div>
+              </div>
+    
+              <hr class="my-4">
+    
+
+              <div  *ngIf="isInList(ganadorInfo.claveEstatus,['ACT','FIN','MNA', 'PGA','PPV'])" class="row gy-3 align-items-stretch">
+                <div class="col-12 col-md-6">
+                  <ul class="list-unstyled mb-0">
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Precio final del articulo</span>
+                      <strong>${{subasta!.apuesta}} MXN</strong>
+                    </li>
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Envío estimado</span>
+                      <strong>-- No disponible --</strong>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fw-semibold">Total por pagar &nbsp;</span>
+                      <span class="fs-4 fw-bold text-primary">  -- No disponible --  </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'ACT' || ganadorInfo.claveEstatus === 'FIN'">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center">
+                      <span class="alert bg-label-xuba2 text-white">Subasta terminada, esperando seguimiento del vendedor</span>
+                    </div>  
+                  </div>
+                </div>
+                <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'MNA'">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center">
+                      <span class="alert bg-label-xuba2 text-white">La subasta finalizo pero no se alcanzo el precio minimo, esperando la decision del vendedor</span>
+                    </div>  
+                  </div>
+                </div>
+                <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'PGA'">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <!-- <div class="d-flex justify-content-center align-items-center"> -->
+                        <div class="alert bg-label-xuba5 text-white mt-2" style="position: relative;overflow: hidden;"> 
+                            El vendedor te mando una nueva oferta de compra Por: &nbsp;
+                            <span class="fs-5 fw-bold" style="color:#1B1464"> {{toCurrency(getLastOferta())}} MXN</span> 
+                            <i class="fas fa-comments-dollar fa-4x" style="position: absolute;right:-5px;bottom:-10px;opacity: 0.5;"></i>
+                        </div>
+                        <div class="w-100 text-center">
+                            <h5>¿Como desea continuar?</h5>
+                            <br>
+                            <!-- <button class="btn bg-xuba me-1" (click)="aceptarOfertaActual()"><i class="fas fa-handshake"></i> Aceptar precio</button> -->
+                            <button class="btn bg-xuba3 ms-1 me-1" (click)="AceptarOfertaGanador()"><i class="fas fa-hand-holding-usd"></i> Aceptar Oferta</button>
+                            <button *ngIf="ganadorInfo.ofertas && ganadorInfo.ofertas.length < 3" class="btn bg-xuba2 ms-1 me-1" (click)="contraOfertar()"><i class="fas fa-hand-holding-usd"></i> ContraOfertar</button>
+                            <button class="btn btn-danger ms-1 me-1" (click)="rechazarOfertaGanador()"> <i class="fas fa-stop-circle"></i> Rechazar Oferta</button>
+                        </div>
+                    <!-- </div>   -->
+                  </div>
+                </div>
+                <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'PPV'">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <!-- <div class="d-flex justify-content-center align-items-center"> -->
+                        <div class="alert bg-label-xuba4 text-white mt-2 py-4" style="position: relative;"> 
+                            Has enviado una contraoferta al vendedor, en espera de la respuesta... &nbsp;
+                            <i class="fas fa-hourglass-half fa-4x" style="position: absolute;right:-5px;bottom:-5px;opacity: 0.5;"></i>
+                        </div>
+                        <!-- <div class="w-100 text-center">
+                            <h5>¿Como desea continuar?</h5>
+                            <br>
+                            <button class="btn bg-xuba3 ms-1 me-1" (click)="AceptarOfertaGanador()"><i class="fas fa-hand-holding-usd"></i> Aceptar Oferta</button>
+                            <button class="btn bg-xuba2 ms-1 me-1" (click)="contraOfertar()"><i class="fas fa-hand-holding-usd"></i> ContraOfertar</button>
+                            <button class="btn btn-danger ms-1 me-1" (click)="rechazarOfertaGanador()"> <i class="fas fa-stop-circle"></i> Rechazar Oferta</button>
+                        </div> -->
+                    <!-- </div>   -->
+                  </div>
+                </div>
+              </div>
+
+              <div   *ngIf="isInList(ganadorInfo.claveEstatus,['RGA'])" class="row gy-3 align-items-stretch">
+                <div class="col-12 col-md-6">
+                  <ul class="list-unstyled mb-0">
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Precio final del articulo</span>
+                      <strong>${{subasta!.apuesta}} MXN</strong>
+                    </li>
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Envío estimado</span>
+                      <strong>-- No disponible --</strong>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fw-semibold">Total por pagar &nbsp;</span>
+                      <span class="fs-4 fw-bold text-primary">  -- No Aplica --  </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'RGA'">
+                  <div class="bg-light  rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center">
+                      <div class="alert bg-label-xuba2 text-white w-100">La subasta ha concluido.</div>
+                    </div>  
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div  *ngIf="subasta && ganadorInfo && ganadorInfo.claveEstatus === 'PGA'" class="row gy-3 align-items-stretch">
+                <div class="col-12 col-md-6">
+                  <ul class="list-unstyled mb-0">
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Precio del articulo</span>
+                      <strong>${{subasta!.apuesta}} MXN</strong>
+                    </li>
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Envío estimado</span>
+                      <strong>${{tipoEnvioSeleccionado? tipoEnvioSeleccionado.precio:0}} MXN</strong>
+                    </li>
+                   
+                    <li class="d-flex justify-content-between py-1">
+                     <select class="form-select" [(ngModel)]="tipoEnvioSeleccionado" name="tipoEnvio" (change)="changeTipoEnvio()">
+                        <option [ngValue]="te" *ngFor="let te of listaTiposEnvio">{{te.nombreProducto}}&nbsp;&nbsp;-&nbsp;&nbsp;{{te.precio}} MXN</option>
+                     </select>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fw-semibold">Total por pagar</span>
+                      <span class="fs-4 fw-bold text-primary">${{precioTotal}} MXN</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="bg-xuba rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center">
+                      <span class="">En espera del vendedor, para confirmar el precio final de la subasta</span>
+                    </div>  
+                  </div>
+                </div>
+              </div> -->
+    
+              <div  *ngIf="subasta && ganadorInfo && ganadorInfo.claveEstatus === 'PTP'" class="row gy-3 align-items-stretch">
+                <div class="col-12 col-md-6">
+                  <ul class="list-unstyled mb-0">
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Precio del articulo</span>
+                      <strong>${{precioActualSubasta}} MXN</strong>
+                      <!-- <strong>${{subasta!.apuesta}} MXN</strong> -->
+                    </li>
+                  
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Envío estimado</span>
+                      <strong>${{tipoEnvioSeleccionado? tipoEnvioSeleccionado.precio:0}} MXN</strong>
+                    </li>
+                   
+                    <li class="d-flex justify-content-between py-1">
+                     <select class="form-select" [(ngModel)]="tipoEnvioSeleccionado" name="tipoEnvio" (change)="changeTipoEnvio()">
+                        <option [ngValue]="te" *ngFor="let te of listaTiposEnvio">{{te.nombreProducto}}&nbsp;&nbsp;-&nbsp;&nbsp;{{te.precio}} MXN</option>
+                     </select>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fw-semibold">Total a pagar</span>
+                      <span class="fs-4 fw-bold text-primary">
+                        <!-- ${{precioTotal}} MXN -->
+                        {{ toCurrency(precioTotal) !== '$0.00' ?  toCurrency(precioTotal):' -- ND --'}}  {{ toCurrency(precioTotal) !== '$0.00' ?  'MXN':''}}
+                      </span>
+                    </div>
+                    <div class="small text-muted mt-1">Fecha límite: &nbsp; 22 ago 2025, 11:59 PM</div>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="mt-4 p-3 bg-body-tertiary rounded-3"  *ngIf="subasta && ganadorInfo && ganadorInfo.claveEstatus === 'PTP'">
+                <div class="d-flex justify-content-between align-items-start" *ngIf="listaDireccionesEntrega && listaDireccionesEntrega.length > 0">
+                  <div class="w-100">
+                    <div class="fw-semibold mb-1"><i class="bi bi-geo-alt me-1"></i> Dirección de entrega</div>
+                
+                    <select class="form-select w-100"  name="direccionenv" id="envio" [(ngModel)]="miDireccionEntrega" (change)="changeDireccion()">
+                      <option *ngFor="let item of listaDireccionesEntrega" [ngValue]="item">
+                        {{item.calle}}, {{item.numeroInterior}} · {{item.colonia}} · {{item.municipio}} · {{item.codigoPostal}} · Tel. {{item.telefono}} 
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-start" *ngIf="listaDireccionesEntrega && listaDireccionesEntrega.length === 0">
+                  <div class="w-100">
+                    <div class="fw-semibold mb-1"><i class="bi bi-geo-alt me-1"></i>- Ninguna direccion encontrada - </div>
+                    <p style="font-family: Arial, sans-serif;font-size: 0.9em;">Agregue al menos una direccion para continuar [Perfil > Direcciones >  + Direccion]</p>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="d-flex flex-wrap gap-2 mt-4" *ngIf="ganadorInfo.claveEstatus === 'PTP' && listaDireccionesEntrega && listaDireccionesEntrega.length > 0">
+                <button class="btn btn-primary btn-lg flex-grow-1 bg-xuba" (click)="openModalPago()">
+                <!-- <button class="btn btn-primary btn-lg flex-grow-1 bg-xuba" (click)="openModalPago()"> -->
+                  <i class="fas fa-money-check me-2"></i>Pagar ahora
+                </button>
+              </div>
+              <div class="d-flex flex-wrap gap-2 mt-4" *ngIf="listaDireccionesEntrega && listaDireccionesEntrega.length === 0 && isInList(ganadorInfo.claveEstatus,['PTP']) ">
+                <button class="btn btn-primary btn-lg flex-grow-1 bg-xuba" >
+                  <i class="fas fa-map-marker-alt"></i> Agregar  Direccion
+                </button>
+              </div>
+             <!-- PEdir a alex que guarde el precio de compra y precio ttoal para mostrar -->
+              <div class="row gy-3 align-items-stretch" *ngIf="isInList(ganadorInfo.claveEstatus,['PDO', 'ENV', 'REC', 'RCC','RCM'])"  >
+                <div class="col-12 col-md-6">
+                  <ul class="list-unstyled mb-0">
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Precio final </span>
+                      <strong>${{subasta!.apuesta}} MXN</strong>
+                    </li>
+                    <li class="d-flex justify-content-between py-1">
+                        <span class="text-muted">Precio de envio</span>
+                        <strong>${{subasta!.puja}} MXN</strong>
+                      </li>
+                    <li class="d-flex justify-content-between py-1">
+                      <span class="text-muted">Total pagado</span>
+                      <strong>{{ganadorInfo.cantidadApuestas}}</strong>
+                    </li>
+                   
+                  </ul>
+                </div>
+                <div class="col-12 col-md-6">
+                  <div class="mt-1">
+                    <h6 class="mb-2">Descripción</h6>
+                    <p class="text-muted mb-0 t-desc">
+                      {{subasta!.descripcion}}
+                    </p>
+                  </div>
+                </div>
+                <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'PDO'">
+                    <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                      <!-- <div class="d-flex justify-content-center align-items-center"> -->
+                          <div class="alert bg-label-xuba4 text-white mt-2 py-4" style="position: relative;"> 
+                            El pago de la subasta se ha realizado correctamente, en espera del vendedor a que proceda con el envio del producto.
+                              <i class="fas fa-hourglass-half fa-4x" style="position: absolute;right:-5px;bottom:-5px;opacity: 0.5;"></i>
+                          </div>
+                    </div>
+                  </div>
+                <!-- <div class="col-12 col-md-12" *ngIf="ganadorInfo.claveEstatus === 'PDO'">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fw-semibold text-primary">Subasta Pagada</span>
+                    </div>
+                    <div class="small2 text-muted mt-1" >
+                     El pago de la subasta se ha realizado correctamente, en espera del vendedor a que proceda con el envio del producto.
+                    </div>
+                   
+                  </div>
+                </div>  -->
+                <div class="col-12 col-md-12" *ngIf="ganadorInfo.claveEstatus === 'ENV'">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fw-semibold text-primary">Producto en camino</span>
+                      <!-- <span class="badge bg-info text-dark">{{ganadorInfo.estatus}}</span> -->
+                    </div>
+                    <div class="small2 text-muted mt-1" >
+                     El vendedor ha enviado tu producto, puedes revisar el historial de seguimiento, para localizar tu Producto
+                     <h5 class="mt-4 guia-title">Numero de guia</h5>
+                     <span class="guia">{{ganadorInfo.numGuia}}</span> <br>
+                     <button class="btn mt-2 btn-primary btn-lg flex-grow-1 bg-xuba w-100" (click)="marcarProductoRecibido()">
+                        <i class="fas fa-truck me-2" ></i>Marcar como recibido
+                      </button>
+                    </div>
+                   
+                  </div>
+                </div>
+                <!-- <div class="col-12 col-md-12" *ngIf="ganadorInfo.claveEstatus === 'REC'">
+                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="fw-semibold text-success">Producto recibido</span>
+                    </div>
+                    <div class="small2 text-muted mt-1" >
+                     El producto ha sido entregado en tu ubicacion correctamente
+                    </div>
+                   
+                  </div>
+                </div> -->
+                <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'REC'">
+                    <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                      <!-- <div class="d-flex justify-content-center align-items-center"> -->
+                          <div class="alert bg-label-xuba4 text-white mt-2"> 
+                             El producto ha sido entregado &nbsp;
+                             <i class="fas fa-box fa-3x" style="position: absolute;right:3px;bottom:3px;opacity: 0.5;"></i>
+
+                          <!-- <span class="fs-5 fw-bold text-primary"> {{toCurrency(subasta!.precio)}} MXN</span>  -->
+                          </div>
+                          <div class="w-100 text-center">
+                              <span class="fs-2 text-primary">Puedes marcar como correcta la recepcion, o abrir una reclamo si tiene algun detalle </span>
+                              <br><br>
+                              <!-- <button class="btn bg-xuba me-1" (click)="aceptarOfertaActual()"><i class="fas fa-handshake"></i> Aceptar precio</button> -->
+                              <button class="btn bg-xuba3 btn-pill ms-1 me-1 mb-2" (click)="ConfirmarCorrectaRecepcion()"><i class="fas fa-thumbs-up"></i> Correcta recepcion</button>
+                              <button class="btn bg-label-xuba2 btn-pill text-white ms-1 me-1" (click)="setOpenModal('disputa')"> <i class="fas fa-ticket-alt"></i> Abrir reclamo</button>
+                          </div>
+                      <!-- </div>   -->
+                    </div>
+                  </div>
+                <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'RCC'">
+                    <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                      <!-- <div class="d-flex justify-content-center align-items-center"> -->
+                          <div class="alert bg-label-xuba3 text-white mt-2"> 
+                             Producto recibido correctamente <br>
+                             <span class="small">Proceso finalizado</span>
+                             <i class="fas fa-check fa-3x" style="position: absolute;right:10px;top:10px;opacity: 0.5;"></i>
+
+                          <!-- <span class="fs-5 fw-bold text-primary"> {{toCurrency(subasta!.precio)}} MXN</span>  -->
+                          </div>
+                        
+                      <!-- </div>   -->
+                    </div>
+                  </div>
+                <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'RCM' && informacionReclamo.cvStatus !== 'ENT'">
+                    <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                      <!-- <div class="d-flex justify-content-center align-items-center"> -->
+                          <div class="alert bg-label-xuba1 text-white mt-2"> 
+                             Producto en Reclamo - {{informacionReclamo!.desStatus}} <br>
+                             <!-- <span class="small">Proceso finalizado</span> -->
+                             <i class="fas fa-ticket-alt fa-4x" style="position: absolute;right:10px;top:0px;opacity: 0.5;"></i>
+
+                          <!-- <span class="fs-5 fw-bold text-primary"> {{toCurrency(subasta!.precio)}} MXN</span>  -->
+                          </div>
+                          <div>
+                            <!-- <span>Puedes revisar el estatus de tu reclamo al dar click al boton</span> -->
+                            <br>
+                            <div class="w-100 text-center">
+                                <button class="btn btn-sm bg-label-xuba4 text-white px-4 py-2 btn-pill mb-2" (click)="setOpenModal('detalleReclamo')" style="position: relative;">
+                                    Ver detalles del reclamo 
+                                    <div class="not-circle">
+                                        2
+                                    </div>
+                                </button>
+                                <button class="btn btn-sm bg-label-xuba2 text-white px-4 py-2 btn-pill ms-2" style="position: relative;">
+                                    Terminar reclamo
+                                </button>
+                            </div>
+                          </div>
+                      <!-- </div>   -->
+                    </div>
+                  </div>
+               
+                  <div class="col-12"  *ngIf="ganadorInfo.claveEstatus === 'RCM'  && informacionReclamo.cvStatus === 'ENT'">
+                    <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                      <!-- <div class="d-flex justify-content-center align-items-center"> -->
+                          <div class="alert bg-label-xuba2 text-white mt-2"> 
+                             Producto en Reclamo - CERRADO <br>
+                             <!-- <span class="small">Proceso finalizado</span> -->
+                             <i class="fas fa-ticket-alt fa-4x" style="position: absolute;right:10px;top:0px;opacity: 0.5;"></i>
+
+                          <!-- <span class="fs-5 fw-bold text-primary"> {{toCurrency(subasta!.precio)}} MXN</span>  -->
+                          </div>
+                          <div>
+                            <!-- <span>Puedes revisar el estatus de tu reclamo al dar click al boton</span> -->
+                            <div class="text-center   radius1 py-2 text-dark w-100">
+                             El reclamo se ha terminado, pronto se emitira el reembolso a tu cuenta.                        
+                            </div>
+                          </div>
+                      <!-- </div>   -->
+                    </div>
+                  </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="col-12 col-lg-4 bg-dark" style="height: 70vh">
+            sd
+        </div> -->
+    
+        <div class="col-12 col-lg-4" style="height: 80%;">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+              <h6 class="mb-0">Historial de estatus</h6>
+            </div>
+            <!-- <div class="card-body bg-info" style="height: 50% !important;">
+                df
+            </div> -->
+
+            <div class="col-md-12 h-50" >
+              <div class="card p-4 shadow-sm auction-status-track">
+                <h5 class="mb-4 fw-bold text-center">Historial de estatus</h5>
+                <div class="w-100" style="height: 50vh !important;overflow-y: scroll;">
+                    <ul class="status-track-list list-unstyled">
+                        <li class="status-track-item" *ngFor="let item of listaHistorialEstatusProducto;let i = index;" [ngClass]="{'status-current': i === 0}">
+                            <span class="status-dot"></span>
+                            <div class="status-content">
+                              <div class="status-main">
+                                <span class="status-label">{{item.desStatus}}</span>
+                                <!-- <span class="status-date">{{toDateFormat( item.fecha)}}</span> -->
+                              </div>
+                              
+                              <div class="status-main">
+                                <!-- {{item.cveStatus }} {{ganadorInfo.numGuia}} -->
+                                <small *ngIf="item.cveStatus !== 'ENV'" class="desc">{{item.labelC}}</small>
+                               
+                                <div class="historial-envios" *ngIf="item.cveStatus === 'ENV'">
+                                  <p *ngFor="let seg of listaSeguimiento">
+                                    {{seg.description}}
+                                    <span class="status-date text-dark">{{toDateFormat( seg.date)}}</span>
+                                  </p>
+                                </div>
+                              </div>
+                              <small class="f-date">{{toDateFormat( item.fecha)}}</small>
+                            </div>
+                        </li>
+                      </ul>
+                </div>
+              
+              </div>
+            </div>
+           
+          </div>
+    
+          <div class="card border-0 shadow-sm mt-3">
+            <div class="card-body">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fas fa-lock text-success"></i>
+                <div class="small">Compra protegida por XUBA</div>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-truck text-primary"></i>
+                <div class="small">El vendedor envía 24–48h después del pago</div>
+              </div>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+
+</div>
+
+
+<div *ngIf="url3DS" class="iframe-container">
+  <iframe [src]="url3DS | safeUrl" width="100%" height="450" frameborder="0"></iframe>
+</div>
+
+<!-- ===================== -->
+<!-- DISTINTOS MODALES     -->
+<!-- ===================== -->
+<ng-container *ngIf="showComprobante">
+    <iframe id="iframeprint" style="display:none">
+    </iframe>
+    
+    <div  [class]="'loading-container fast-animation  animate__animated ' + classComprobanteModal" >
+        <div class="container-tools">
+            <div class="ct-header text-end">
+                <button class="button-close" (click)="closeComprobante()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="ct-content">
+                <div id="printContainer" class="printMainContainer" 
+                style="width:100%; max-width:21cm; margin:0 auto; min-height:24cm;color:#000;font-family: Arial, Helvetica, sans-serif;
+                border:1px solid #fff;position: relative;" >
+                    
+  
+                <div class="receipt" role="document" aria-label="Comprobante de pago">
+                  <!-- Header -->
+                  <div class="receipt__header" >
+                    <div class="receipt__logo" aria-hidden="true">
+                      <!-- Reemplaza por <img src="tu-logo.svg"> si quieres -->
+                      <img style="width:64px;height: auto;" src="data:image/png;base64,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" alt="Xuba Logo" class="logo" />
+                      <!-- <img src="logo.png" alt="Xuba Logo" class="logo" /> -->
+  
+                    </div>
+                
+                    <div class="receipt__title" style="flex: 1;">
+                      <h2 >Comprobante de pago</h2>
+                      <p id="company-name" >Xuba — Tu plataforma de subastas</p>
+                    </div>
+                
+                    <div class="receipt__meta">
+                      <div style="margin-bottom:8px;">
+                        <span id="tx-status" class="badge badge--success" >{{modeloComprobante.estatus}}</span>
+                      </div>
+                      <div class="small">Fecha</div>
+                      <div style="font-weight:600" id="tx-date">{{modeloComprobante.fecha}}</div>
+                    </div>
+                  </div>
+                
+                  <!-- Summary: Billing & Transaction -->
+                  <div class="receipt__summary">
+                    <div>
+                      <div class="summary-card">
+                        <div class="summary-card__row">
+                          <div class="summary-card__label">Transacción</div>
+                          <div class="summary-card__value"><span id="tx-id">{{modeloComprobante.idTransaction}}</span></div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                          <div class="summary-card__label">Método de pago</div>
+                          <div class="summary-card__value" id="payment-method">{{modeloComprobante.metodoPago}}</div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                          <div class="summary-card__label">Cliente</div>
+                          <div class="summary-card__value" id="buyer-name">{{modeloComprobante.cliente}}</div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                          <div class="summary-card__label">Correo</div>
+                          <div class="summary-card__value" id="buyer-email">{{modeloComprobante.correo}}</div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                          <div class="summary-card__label">No. Orden</div>
+                          <div class="summary-card__value" id="order-id">{{modeloComprobante.ordenXuba}}</div>
+                        </div>
+                      </div>
+                    </div>
+                
+                    <div>
+                      <div class="summary-card">
+                        <div style="text-align:center; margin-bottom:8px;">
+                          <div style="font-size:13px; color:var(--muted)">Monto cobrado</div>
+                          <div style="font-size:28px; color:#111827; font-weight:800;" id="amount-total">${{modeloComprobante.total}}</div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                          <div class="summary-card__label">Moneda</div>
+                          <div class="summary-card__value">MXN</div>
+                        </div>
+                <br><br>
+                        <!-- <div class="summary-card__row">
+                          <div class="summary-card__label">Comisión</div>
+                          <div class="summary-card__value" id="fee-amount">$30.76</div>
+                        </div>-->
+                
+                        <div class="summary-card__row">
+                          <div class="summary-card__label">Numero de Autorizacion</div>
+                          <div class="summary-card__value small" id="external-ref">{{modeloComprobante.noAutorizacion}}</div>
+                        </div> 
+                      </div>
+                    </div>
+                  </div>
+                
+                  <!-- Items -->
+                  <table class="items" aria-describedby="items-desc">
+                    <thead>
+                      <tr>
+                        <th>Artículo</th>
+                        <th style="width:120px; text-align:right">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div class="item__name" id="item-name">{{modeloComprobante.nombreArticulo}}</div>
+                          <div class="item__meta" id="item-meta">{{modeloComprobante.descripcion}}</div>
+                        </td>
+                        <td style="text-align:right" id="item-subtotal">${{modeloComprobante.subtotal}}</td>
+                      </tr>
+                      <!-- Si hay más items repetir filas -->
+                    </tbody>
+                  </table>
+                
+                  <!-- Totals -->
+                  <div class="totals" aria-hidden="true">
+                    <div class="totals__inner" role="group" aria-label="Totales">
+                      <div class="totals__row">
+                        <div>Subtotal</div>
+                        <div id="subtotal-amount">${{modeloComprobante.subtotal}}</div>
+                      </div>
+                      <div class="totals__row">
+                        <div>Envío</div>
+                        <div id="shipping-amount">${{modeloComprobante.envio}}</div>
+                      </div>
+                      <!-- <div class="totals__row">
+                        <div>Impuesto</div>
+                        <div id="tax-amount">$0.00</div>
+                      </div> -->
+                      <div class="totals__row total">
+                        <div>Total</div>
+                        <div id="grand-total">${{modeloComprobante.total}}</div>
+                      </div>
+                    </div>
+                  </div>
+                
+                  <!-- Footer -->
+                  <div class="receipt__footer">
+                    <div class="support">
+                      <div>
+                        <div style="font-weight:700; color:#111827">Contacto de soporte</div>
+                        <div class="small">soportexubastas.example • +52 55 1234 5678</div>
+                      </div>
+                    </div>
+                
+                    <div class="small" style="text-align:right; max-width:60%;">
+                      <div><strong></strong> Pago procesado por Openpay.</div>
+                      <div style="margin-top:6px; color:var(--muted)">Guarda este comprobante para cualquier aclaración. ID de transacción: <span id="tx-id-footer">{{modeloComprobante.idTransaction}}</span></div>
+                    </div>
+                  </div>
+                </div> 
+              </div>
+            </div>
+            <div class="ct-footer text-center pt-1">
+                <!-- <button class="btn btn-light me-2" (click)="print()">
+                  <i class="fas fa-print" ></i> Imprimir comprobante
+                </button> -->
+                <button class="btn btn-danger" (click)="downloadComprobante()">
+                  <i class="fas fa-file-pdf"></i> Guardar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+  </ng-container>
+  
+
+
+<div *ngIf="openModal" class="cart-modal-backdrop" >
+    <div class="cart-modal-container" (click)="onContentClick($event)">
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >Pago de subasta</span>
+        </h3>
+        <button [disabled]="loading" class="close-button" (click)="closeModal()">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+          <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
+           
+          <ng-container *ngIf="terminosRevisados">
+            <div class="w-100 text-center tw:flex tw:justify-center ">
+              <img src="images/visa.png" alt="" class="w-5 me-1">
+              <img src="images/mastercard.png" alt="" class="w-5 ">
+          </div>
+          <div class="disclaimer p-1 text-center mt-2 mb-2">
+            Por el momento solo se permite el pago con tarjetas de debito
+          </div>
+          <form class="form-productos pl-2 pr-2">
+
+            <div class="mb-2 label-final-price">
+              Total a Pagar: <strong>${{precioTotal}}</strong> 
+            </div>
+ 
+            <div class="form-row">
+              <div class="form-group">
+                <!-- <label for="tiempoActivo">Tarjetas guardadas</label> -->
+                <small style="font-family: Arial, sans-serif;font-weight: 500;font-size: 0.95em;color:#57606f;">Seleccione una tarjeta guardada</small>
+
+                <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="selectedCard" (change)="changeTarjetaSeleccionada()">
+                  <ng-container  *ngFor="let item of tarjetas">
+                      <option *ngIf="item.id" [ngValue]="item">
+                      {{item.brand}} - {{item.card_number}} -  {{item.holder_name}} {{item.holder_lastname}} 
+                      </option>
+                      <hr *ngIf="!item.id">
+                      <option *ngIf="!item.id" [ngValue]="item">
+                        --- Usar nueva tarjeta ---
+                      </option>
+                  </ng-container>
+                  
+                 
+<!--                  
+                  <option [ngValue]="getNewCardModel()">
+                   --- Usar nueva tarjeta ---
+                  </option> -->
+                </select>
+              
+              </div>
+             
+            </div>
+            <div class="form-row mt-3">
+              <div class="form-group">
+                  <label for="nombre">No. Tarjeta</label>
+                  <input type="text" [disabled]="selectedCard.id" [ngClass]="{'disabled-in': selectedCard.id, 'bg-white':!selectedCard.id}" [(ngModel)]="tarjeta.card_number" (input)="onInput($event, tarjeta.card_number)" maxlength="16" id="cardnumber" name="cardnumber" />
+              </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="precio">Expiracion (MM)</label>
+                    <input type="text" [disabled]="selectedCard.id" [ngClass]="{'disabled-in': selectedCard.id, 'bg-white':!selectedCard.id}" [(ngModel)]="tarjeta.expiration_month" (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expm" name="expm" />
+                </div>
+                <div class="form-group">
+                    <label for="compraDirecta">Expiracion (YY)</label>
+                    <input type="text" [disabled]="selectedCard.id" [ngClass]="{'disabled-in': selectedCard.id, 'bg-white':!selectedCard.id}" [(ngModel)]="tarjeta.expiration_year" (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expy" name="expy" />
+                </div>
+                <div class="form-group">
+                  <label for="compraDirecta">CCV</label>
+                  <input type="text" class="bg-white" [(ngModel)]="tarjeta.cvv2"  (input)="onInput($event, tarjeta.cvv2)" maxlength="4"  id="ccv" name="ccv" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre(s)</label>
+                    <input type="text"  class="bg-white" [(ngModel)]="tarjeta.holder_name" id="holder_name" name="holder_name" />
+                </div>
+                 <div class="form-group">
+                    <label for="apellido">Apellido(s)</label>
+                    <input type="text" class="bg-white" [(ngModel)]="tarjeta.holder_lastname" id="holder_lastname" name="holder_lastname" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="mail">Correo Electronico</label>
+                    <input type="text"  class="bg-white" [(ngModel)]="tarjeta.mail" id="mail" name="mail" />
+                </div>
+                <div class="form-group">
+                  <label for="telefono">Telefono</label>
+                  <input type="text" class="bg-white" [(ngModel)]="tarjeta.phone"  (input)="onInput($event, tarjeta.phone)" id="phone" name="phone" />
+              </div>
+            </div>
+        </form>
+        <div class="mb-2 text-center">
+          <span class="fw-bold label-secure"><i class="fas fa-lock"></i> Transacciones realizadas via: </span>
+        </div>
+        <div class="w-100 text-center">
+          <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="Openpay Logo" >
+        </div>
+          </ng-container>
+          <ng-container *ngIf="!terminosRevisados">
+            <div class="policy-container">
+              <div class="policy-content">
+                <h2>Políticas de Uso del Procesador de Pagos</h2>
+                <p>
+                  Estas políticas establecen los términos bajo los cuales los usuarios pueden realizar pagos
+                  a través del procesador. Al continuar, aceptas que los datos proporcionados son verídicos,
+                  y que cumplirás con las condiciones establecidas.
+                </p>
+            
+                <p>
+                  El uso del servicio implica la aceptación de nuestras normas de seguridad, privacidad,
+                  y prevención de fraude. Queda prohibido el uso para fines ilícitos o no autorizados.
+                </p>
+            
+                <p>
+                  Si tienes dudas o necesitas asistencia, contacta con soporte al correo
+                  <strong>soporteprocesador.com</strong>.
+                </p>
+            
+                <div class="policy-accept">
+                  <label>
+                    <input type="checkbox" id="acceptPolicy" [(ngModel)]="aceptarTerminos">
+                    He leído y acepto las políticas de uso.
+                  </label>
+                  <button id="btnAccept" [disabled]="!aceptarTerminos" (click)="acceptTerms()">Aceptar y continuar</button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          
+          <hr>
+        </div>
+        <form id="payment-form">
+          <input type="hidden" name="deviceIdHiddenFieldName" id="device-session-id" />
+        </form>
+      </div>
+      <div class="modal-footer text-start">
+      
+        <div class="pb-3 pe-3">
+          <button [disabled]="loading" class="btn btn-dark me-2" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button *ngIf="terminosRevisados" [disabled]="loading" class="btn btn-xuba btn-add-cart" (click)="procesarPago()">
+           <i class="fa fa-lock"></i> Procesa pago
+          </button>
+        </div>     
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isModalOpen.nuevaOferta" class="modal-backdrop" >
+    <div class="modal-container" (click)="onContentClick($event)">
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >Nueva oferta de compra</span>
+        </h3>
+        <button  class="close-button" (click)="setCloseModal('nuevaOferta')">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body"> 
+        <div class="tab-content text-start fast-animation  animate__animated animate__fadeInRight" >
+            <form class="form-productos pl-2 pr-2">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="oferta">Oferta actual: </label>
+                        <label class="price" for="oferta">{{toCurrency(getLastOferta())}} MXN</label>
+                        <!-- <input type="text" [(ngModel)]="nuevaOfertaModel.oferta" (input)="onInput($event, nuevaOfertaModel.oferta)" id="oferta" name="oferta" /> -->
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="oferta">Nueva Oferta</label>
+                        <input type="text" [(ngModel)]="nuevaOfertaModel.oferta" (input)="onInput($event, nuevaOfertaModel.oferta)" id="oferta" name="oferta" />
+                    </div>
+                </div>
+                <!-- <div class="form-row">
+                    <div class="form-group">
+                        <label for="confirmar">Confirmar Oferta</label>
+                        <input type="text" [(ngModel)]="nuevaOfertaModel.confirmarOferta" (input)="onInput($event, nuevaOfertaModel.confirmarOferta)" id="confirmar" name="confirmar" />
+                    </div>
+                </div> -->
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer text-start">
+      
+        <!-- Botones para el paso del carrito -->
+        <div class="pb-3 pe-3 pt-2">
+          <button class="btn btn-danger btn-pill me-2" (click)="ofrecerNuevoPrecio()">
+            Enviar Contraoferta
+          </button>
+          <!-- <a [href]="selectedSubasta.urlGuia"  rel="noopener">Descargar</a> -->
+          <button class="btn btn-dark btn-pill me-2" (click)="setCloseModal('nuevaOferta')">
+            Cerrar
+          </button>
+        
+        </div>     
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+
+  <div *ngIf="isModalOpen.disputa" class="modal-backdrop" >
+    <div class="modal-container" (click)="onContentClick($event)">
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >Abrir nuevo reclamo</span>
+        </h3>
+        <button  class="close-button" (click)="setCloseModal('disputa')">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body"> 
+        <div class="tab-content text-start fast-animation  animate__animated animate__fadeInRight" >
+            <form class="form-productos pl-2 pr-2">
+                <div class="dispute-form-container">
+                    <form class="dispute-form">
+                      <div class="item-ref">
+                        <span class="item-ref" style="font-family: Arial, Helvetica, sans-serif !important;">Producto referencia {{subasta!.caption}}#{{subasta!.id}}</span>
+                        <div>
+                            
+                            <img style="width: 50px;" [src]="subasta!.url" alt="Imagen del producto">
+                            <span class="item-ref bold">{{subasta!.descripcion}}</span>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="form-group mt-3">
+                        <label for="type">Categoria</label>
+                        <select id="type" class="form-select" name="type" [(ngModel)]="reclamoModel.idCategoria">
+                          <option *ngFor="let cat of listaCategoriasDisputa" [value]="cat.id">{{cat.categoria}}</option>
+                       
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="subject">Asunto del reclamo</label>
+                        <input type="text" id="subject" name="subject" [(ngModel)]="reclamoModel.asunto" placeholder="Resumen del problema" required>
+                      </div>
+                  
+                      <div class="form-group mt-3">
+                        <label for="description">Descripción detallada</label>
+                        <textarea id="description" name="description" [(ngModel)]="reclamoModel.descripcion" placeholder="Explique con detalle el problema" rows="4" required></textarea>
+                      </div>
+                  
+                     
+                  
+                     
+                  
+                      <div class="form-group">
+                        <label for="attachments">Archivos adjuntos</label>
+                        <label class="cargar-foto-label w-25 d-sm-block d-none">
+                            <input type="file" accept="image/*" multiple (change)="onFileChange($event)"
+                                [disabled]="imagesPreview!.length >= 5" hidden />
+                            <span><i class="fas fa-image"></i> Seleccionar imagenes</span>
+                        </label>
+                        <label class="cargar-foto-label w-100 d-block d-sm-none">
+                            <input type="file" accept="image/*" multiple (change)="onFileChange($event)"
+                                [disabled]="imagesPreview!.length >= 5" hidden />
+                            <span><i class="fas fa-image"></i> Seleccionar imagenes</span>
+                        </label>
+                        <!-- <input type="file" id="attachments" name="attachments" multiple> -->
+                      </div>
+                      <div class="row">
+                        <div class="col-2" *ngFor="let im of imagesPreview">
+                            <img class="img-thumbnail" [src]="im" alt="Preview Image">
+                        </div>
+
+                      </div>
+                     
+                  
+                      <!-- <div class="form-group">
+                        <button type="submit" class="btn btn-danger btn-pill ">Enviar disputa</button>
+                      </div> -->
+                    </form>
+                  </div>
+            </form>
+        </div>
+      </div>
+      <div class="modal-footer text-start">
+      
+        <!-- Botones para el paso del carrito -->
+        <div class="pb-3 pe-3 pt-2">
+          <button class="btn btn-danger btn-pill me-2" (click)="saveReclamo()">
+            Crear Reclamo
+          </button>
+          <!-- <a [href]="selectedSubasta.urlGuia"  rel="noopener">Descargar</a> -->
+          <button class="btn btn-dark btn-pill me-2" (click)="setCloseModal('disputa')">
+            Cerrar
+          </button>
+        
+        </div>     
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+
+  <div *ngIf="isModalOpen.detalleReclamo" class="modal-backdrop" >
+    <div class="modal-container" (click)="onContentClick($event)">
+      <div class="modal-header bg-main-header text-white">
+        <!-- <h3 class="modal-title">
+          <span class="text-white" >Detalle de actualizaciones de reclamo</span>
+        </h3> -->
+        <!-- <div class="claim-header"> -->
+          <!-- {{informacionReclamo | json}} -->
+            <h2 style="font-size: 1em;">Reclamo #R-{{informacionReclamo.id}}             <span class="claim-status status-en-proceso">{{informacionReclamo.desStatus}}</span>
+            </h2>
+          <!-- </div> -->
+        <button  class="close-button" (click)="setCloseModal('detalleReclamo')">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body"> 
+        <div class="tab-content text-start fast-animation  animate__animated animate__fadeInRight" >
+            <div class="claim-modal-content">
+                <!-- <div class="claim-header">
+                  <h2>Reclamo #R-2025-001</h2>
+                  <span class="claim-status status-en-proceso">{{informacionReclamo.desStatus}}</span>
+                </div> -->
+              
+                <div class="claim-details">
+                  <div class="detail-row d-sm-none d-block">
+                    <button class="btn btn-pill bg-label-xuba4 px-2 py-1 text-white w-100" style="font-size: 1em;" (click)="setOpenModal('viewer')">
+                      ver evidencias <i class="fas fa-file-image"></i> 
+                    </button>
+                  </div>  
+                  <div class="detail-row">
+                    <span class="label">Producto:</span>
+                    <span class="value">{{subasta!.caption}}</span>
+                    <span class="value d-sm-block d-none">
+                      <button class="btn btn-pill bg-label-xuba4 px-2 py-1 text-white " style="font-size: 1em;" (click)="setOpenModal('viewer')">
+                        ver evidencias <i class="fas fa-file-image"></i> 
+                      </button>
+                    </span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="label">Fecha de inicio:</span>
+                    <span class="value">{{informacionReclamo.fechaApertura}}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="label">Tipo de reclamo:</span>
+                    <span class="value">{{informacionReclamo.categoria}}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="label">Motivo:</span>
+                    <span class="value">{{informacionReclamo.descripcion}}</span>
+                  </div>
+                </div>
+
+                <div *ngIf="informacionReclamo.idEstatus === 1">
+                    <div class="col-12">
+                        <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                              <div class="alert bg-label-xuba2 text-white mt-2"> 
+                                 En espera que un agente sea asignado para revisar tu caso
+                                 <i class="fas fa-user-clock fa-3x" style="position: absolute;right:10px;top:10px;opacity: 0.5;"></i>
+                              </div>
+                            </div>
+                      </div>
+                </div>
+              
+                <!-- =============== ESTATUS EN REVISION ================ -->
+                <div class="chat-section" *ngIf="informacionReclamo.idEstatus === 2">
+                  <div class="w-100 mb-2 d-none d-sm-block">
+                    <h5 style="font-size: 0.9em;">Chat de seguimiento</h5>
+                    <span style="font-size: 0.75em;">Participantes: </span> &nbsp;
+                    <span class="square-c me-2">Comprador (Yo)</span>
+                    <span class="square-v me-2">Vendedor</span>
+                    <span class="square-a">Agente Xuba</span>
+                  </div>
+                  <div class="w-100 mb-2 d-sm-none d-block">
+                    <h5 style="font-size: 0.9em;">Chat de seguimiento</h5>
+                    <span style="font-size: 0.75em;">Participantes: </span>
+                    <br>
+                    <span class="square-c me-2">Comprador (Yo)</span>
+                    <span class="square-v me-2">Vendedor</span>
+                    <span class="square-a">Agente Xuba</span>
+                  </div>
+                  <div class="messages-container" #messagesContainer >
+                    <div [class]="'message message-short align-right fast-animations  animate__animated ' + (i+1 === conversacion.length? newMessageClass:'') "  *ngFor="let msj of conversacion; let i = index;"
+                     [ngClass]="{
+                     'align-right msc': msj.tipoUsuario === 'Comprador' ||  msj.tipoUsuario === 'C', 
+                     'align-left msv': msj.tipoUsuario === 'Vendedor' ||  msj.tipoUsuario === 'V',
+                     'align-left msa': msj.tipoUsuario === 'XUBA' ||  msj.tipoUsuario === 'X'}">
+                          <div class="message-content">
+                            {{msj.mensaje}}
+                            <div class="w-100 text-end">
+                                <span class="timestamp" style="color: #2f3542;">{{msj.fecha}}</span>
+                            </div>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="message-input-section flex d-none d-sm-flex">
+                    <input type="text" class="w-90" [(ngModel)]="newReclamoMessage" (keydown.enter)="addNewMessage()"> &nbsp;
+                    <button class="message-send-btn bg-label-xuba1" (click)="addNewMessage()">
+                        <i class="fas  text-white" [ngClass]="{'fa-hourglass': sendingMessage, 'fa-paper-plane':!sendingMessage }"></i>
+                    </button>
+                  </div>
+                  <div class="message-input-section flex d-sm-none d-flex">
+                    <input type="text" class="w-90" [(ngModel)]="newReclamoMessage" (keydown.enter)="addNewMessage()"> &nbsp;
+                    <button class="message-send-btn bg-label-xuba1" (click)="addNewMessage()">
+                        <i class="fas  text-white" [ngClass]="{'fa-hourglass': sendingMessage, 'fa-paper-plane':!sendingMessage }"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ============= ESTATUS DE REEMBOLSO COMPLETO ================ -->
+                <div class="chat-section" *ngIf="(informacionReclamo.idEstatus === 3 || informacionReclamo.cvStatus === 'REE') && informacionReclamo.cvSubStatus !== 'RSR' ">
+                  <div class="w-100 mb-2">
+                    <h5 style="font-size: 0.9em;">Resolucion de agente</h5>
+                    <span style="font-size: 0.85em;color:#636e72;">El agente de xuba a tomado la siguiente resolucion sobre tu reclamo: </span> &nbsp;
+                    <span class="square-c me-2">Reembolso Total</span>
+                  </div>
+                  <hr>
+                  
+                  <div class="flex">
+                    <p *ngIf="subestatus !== 'PER'"><small>Tu reclamo ha procedido, en proceso de reembolso total.</small></p>
+                    <p *ngIf="subestatus === 'PER'"><small>Producto en camino, reembolso aun pendiente</small></p>
+                    <p *ngIf="subestatus !== 'PER'" style="font-family: Arial, Helvetica, sans-serif;font-weight: 100;font-size: 0.85em;"> - Para continuar debes hacer la devolucion del producto, asegurándote de que esté en las mismas condiciones en las que lo recibiste.</p>
+                    <ng-container *ngIf="subestatus === 'GRP'"> 
+                      <div class="text-center lbl-1">
+                        Esperando a que el vendedor confirme el pago del envio. 
+                        <div class="placeholder-label"></div>
+                        <div class="text-center small-txt">
+                          Una vez que el comprador confirme el pago de envio, aqui se mostrara la etiqueta que debes imprimir para realizar la devolución del producto.
+                        </div>
+                      </div>
+                    </ng-container>
+                    <!-- <ng-container *ngIf="subestatus === 'GRL'">
+                      <div class="text-center lbl-1">
+                        El vendedor ha confirmado el pago del envío. 
+                        <br>
+                        <button class="btn-pdf" (click)="setOpenModal('etiqueta')">
+                          <i class="fas fa-file-pdf fa-4x text-white"></i> <br>
+                          <span>Ver etiqueta</span> 
+                        </button>
+                        <div class="text-center small-txt">
+                          Puedes descargar e imprimir esta etiqueta.
+                        </div>
+                      </div>
+                    </ng-container> -->
+                    <ng-container *ngIf="subestatus === 'PER'">
+                      <div class="text-center lbl-1 badge w-100 bg-label-xuba4">
+                        El producto ha sido enviado, espera a que el vendedor confirme de recibido.
+                       
+                        <div class="text-center small-txt mt-2">
+                          una vez recibido se liberara tu reembolso.
+                        </div>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="subestatus === 'PRP'">
+                      <div class="text-center lbl-1 w-100 bg-light pt-2 pb-2">
+                       El producto ha sido entregado correctamente de regreso. <br>
+                       Se muestra el estatus actual de tu pago de reembolso.
+                       <br>
+                        <span class="text-center mt-2 badge bg-label-xuba2">
+                         Pago Pendiente <i class="fas fa-hourglass"></i>
+                        </span>
+                        <span class="text-center mt-2 badge bg-label-xuba1">
+                         Pago En proceso <i class="fas fa-cogs"></i>
+                        </span>
+                        <span class="text-center mt-2 badge bg-label-xuba6">
+                         Pagado <i class="fas fa-check"></i>
+                        </span>
+                      </div>
+                    </ng-container>
+                  
+                  
+                  </div>
+                </div>
+                
+                <div class="chat-section" *ngIf="(informacionReclamo.idEstatus === 1002 || informacionReclamo.cvStatus === 'ENP')">
+                  <div class="text-center lbl-1">
+                    El vendedor ha confirmado el pago del envío. 
+                    <br>
+                    <button class="btn-pdf" (click)="setOpenModal('etiqueta')">
+                      <i class="fas fa-file-pdf fa-4x text-white"></i> <br>
+                      <span>Ver etiqueta</span> 
+                    </button>
+                    <div class="text-center small-txt">
+                      Puedes descargar e imprimir esta etiqueta.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="" *ngIf="(informacionReclamo.idEstatus === 1003 || informacionReclamo.cvStatus === 'ENV')">
+                  <div class="text-center lbl-1 radius-1 p-2 text-white w-100 bg-label-xuba4">
+                    El producto ha sido enviado, espera a que el vendedor confirme de recibido.
+                   
+                    <div class="text-center small-txt mt-2 w-100">
+                      una vez recibido se liberara tu reembolso.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="chat-section" *ngIf="(informacionReclamo.idEstatus === 3 || informacionReclamo.cvStatus === 'REE') && informacionReclamo.cvSubStatus === 'RSR' ">
+                  <div class="text-center  bg-label-xuba1 radius1 py-2 text-white">
+                    Reclamo terminado <i class="fas fa-check"></i> <br /> Tu reembolso se ha proceso correctamente y se ha agregado a tu cartera digital.
+                  </div>  
+                </div>
+
+
+                <div class="chat-section" *ngIf="informacionReclamo.idEstatus === 4">
+                  <div class="w-100 mb-2">
+                    <h5 style="font-size: 0.9em;">Resolucion de agente</h5>
+                    <span style="font-size: 0.85em;color:#636e72;">El agente de xuba a tomado la siguiente resolucion sobre tu reclamo: </span> &nbsp;
+                    <span class="square-c me-2">No efectuado</span>
+                  </div>
+                  <hr>
+                  
+                  <div class="flex">
+
+                    <div class="badge bg-label-xuba2 w-100 lbl-1 py-2">Tu reclamo no ha procedido, por lo que que el reclamo se cerrara.</div>
+                    <!-- <p *ngIf="subestatus === 'PER'"><small>Producto en camino, reembolso aun pendiente</small></p>
+                    <p *ngIf="subestatus !== 'PER'" style="font-family: Arial, Helvetica, sans-serif;font-weight: 100;font-size: 0.85em;"> - Para continuar debes hacer la devolucion del producto, asegurándote de que esté en las mismas condiciones en las que lo recibiste.</p> -->
+                   
+                    <ng-container >
+                      <div class="text-start mt-2 small-txt2">
+                        Si crees que la decision no es valida, puedes volver a pedir una segunda revision. 
+                        <br>
+                        <div class="text-center pt-3">
+                          <button class="btn btn-pill bg-label-xuba1 px-3 py2 text-white" (click)="setOpenModal('etiqueta')">
+                            <i class="fas fa-hand-paper text-white"></i> 
+                            Solicitar segunda revision
+                          </button>
+                        </div>
+                       
+                        <!-- <div class="text-center small-txt">
+                          Puedes descargar e imprimir esta etiqueta.
+                        </div> -->
+                      </div>
+                    </ng-container>
+                   
+                   
+                  
+                  
+                  </div>
+                </div>
+            </div>
+        
+        </div>
+      </div>
+      <div class="modal-footer text-start">
+      
+        <!-- Botones para el paso del carrito -->
+        <div class="pb-3 pe-3 pt-2">
+          <button class="btn btn-info btn-pill me-2" (click)="nextEstatusReclamo()">
+            Siguiente
+          </button>
+          <!-- <button class="btn btn-info btn-pill me-2" (click)="setToProcesoTemporal()">
+            proceso
+          </button> -->
+          <!-- <a [href]="selectedSubasta.urlGuia"  rel="noopener">Descargar</a> -->
+          <button class="btn btn-danger btn-pill me-2" (click)="setCloseModal('detalleReclamo')">
+           <i class="fas fa-times"></i> Cerrar
+          </button>
+        
+        </div>     
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+
+  <div *ngIf="isModalOpen.etiqueta" class="modal-backdrop" >
+    <div class="modal-container" (click)="onContentClick($event)">
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >Etiqueta de envio</span>
+        </h3>
+        <button  class="close-button" (click)="setCloseModal('etiqueta')">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="tab-content bg-dark text-center fast-animation  animate__animated animate__fadeInRight" >
+              <iframe 
+                [src]="subasta!.urlGuia | safeUrl"
+                width="100%" 
+                height="600px">
+              </iframe>
+        </div>
+      </div>
+      <div class="modal-footer text-start">
+      
+        <div class="pb-3 pe-3 pt-2">
+          <button class="btn btn-danger btn-pill me-2" (click)="downloadPdf()">
+            Descargar PDF
+          </button>
+          <button class="btn btn-dark btn-pill me-2" (click)="setCloseModal('etiqueta')">
+            Cerrar
+          </button>
+        
+        </div>     
+      </div>
+    </div>
+  </div>
+
+  <app-fullscreen-modal *ngIf="isModalOpen.viewer"
+  (onCloseModal)="onCloseModal('viewer')"
+  [imageList]="informacionReclamo.imagenesReclamos"
+ ></app-fullscreen-modal>
+
+
+<!-- 
+  <div class="fullscreen-viewer" *ngIf="isModalOpen.viewer" (click)="setCloseModal('viewer')">
+    <button class="close-viewer" (click)="setCloseModal('viewer')">
+      <i class="fas fa-times"></i> 
+    </button>
+    
+    <button class="nav-btn prev" 
+            *ngIf="informacionReclamo.imagenesReclamos.length > 1"
+            (click)="navigateImage('prev', $event)"
+            [class.disabled]="currentImageIndex === 0">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    
+    <div class="viewer-content" (click)="$event.stopPropagation()">
+      <img [class]="'fast-animation  animate__animated ' + classNavigateImg" [src]="informacionReclamo.imagenesReclamos[currentImageIndex].url"  style="background: #bdc3c7;">
+    </div>
+    
+    <button class="nav-btn next" 
+            *ngIf="informacionReclamo.imagenesReclamos.length > 1"
+            (click)="navigateImage('next', $event)"
+            [class.disabled]="currentImageIndex === informacionReclamo.imagenesReclamos.length - 1">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div> -->

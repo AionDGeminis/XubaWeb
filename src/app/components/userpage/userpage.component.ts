@@ -40,6 +40,7 @@ export class UserpageComponent {
       // this.getSubastasUsuario();
       this.getInformacionUsuario(this.idUsuario);
     }
+    localStorage.removeItem('BCK-TO-PG');
     console.log(dataParams)
   }
 
@@ -59,7 +60,6 @@ export class UserpageComponent {
       },
       error: (err: any) => {
         this.allLoading = false;
-
           console.error('Error fetching user information:', err);
       }
     });
@@ -67,7 +67,8 @@ export class UserpageComponent {
 
   getSubastasUsuario(){
     this.allLoading = true;
-    this.subastasService.getSubastasActivasVendedor(this.idUsuario).subscribe({
+    // getSubastasUsuarioByEstatus(this.usuario()!.id, tipo)
+    this.subastasService.getSubastasUsuarioByEstatus(this.idUsuario, 'Activa').subscribe({
       next: (subastas) => {
         this.allLoading = false;
         this.subastasActivas = subastas;
@@ -133,8 +134,9 @@ export class UserpageComponent {
         let tiempoVence = subasta.tiempoVence?? '00:00:00';
         let _tiempoRestante = tiempoVence.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
         console.log(_tiempoRestante);
+        localStorage.setItem('BCK-TO-PG',`userpage/${this.idUsuario}`);
         if(_tiempoRestante > 0){
-          this.router.navigate(['/subasta', subasta.id, 'MyAuctionsPage']);
+          this.router.navigate(['/subasta-detalle', subasta.id, 'MyAuctionsPage']);
         } else {
           let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario:'vendedor'});
           let encoded = this.ss.encodeToBase64(dataParams);

@@ -18,6 +18,8 @@ export interface ImagenSubasta {
     stars: number;
     registrado: boolean;
     subastasActivas: number;
+    codigoPostal: string;
+    usuario: string;
   }
   
   export interface Subasta {
@@ -30,7 +32,7 @@ export interface ImagenSubasta {
     puja:number;
     apuesta: number;
     mimagenesSubasta: ImagenSubasta[];
-    mestatus:string;
+    mestatus:any;
     musuarios: Usuario;
     creado: string;
     dia: number;
@@ -56,5 +58,11 @@ export interface ImagenSubasta {
     nuevo: boolean;
     venceSegundos?: number;
     short_desc?: string;
+    direccion?: any;
+    peso: number;
+    largo: number;
+    ancho: number;
+    profundidad:number;
+    urlGuia: string;
   }
   

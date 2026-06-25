@@ -1,3 +1,5 @@
+<app-loader *ngIf="loading"></app-loader>
+
 <div class="preregistro-container" *ngIf="!isRegistered">
     <div class="hero-section">
       <img src="images/law.png" alt="Subasta" class="hero-img">
@@ -22,13 +24,38 @@
       <input type="text" placeholder="Usuario" name="usuario"  [(ngModel)]="formData.usuario">
       <div class="form-row">
         <div class="form-group">
+            <input type="text" placeholder="Telefono" name="telefono" maxlength="18" (input)="onInput($event, 'formData')"  [(ngModel)]="formData.telefono">              
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Confirmar Telefono" (paste)="$event.preventDefault()" name="ctelefono" maxlength="18" (input)="onInput($event, 'confirmar')"  [(ngModel)]="confirmar.telefono">              
+
+            <!-- <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo"> -->
+        </div>
+        
+     </div>
+      <div class="form-row">
+        <div class="form-group">
             <!-- <label for="marca">Marca</label> -->
-            <input type="text" placeholder="Telefono" name="telefono" maxlength="18" (input)="onInput($event)"  [(ngModel)]="formData.telefono">              
+            <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo">
+
+            <!-- <input type="text" placeholder="Telefono" name="telefono" maxlength="18" (input)="onInput($event)"  [(ngModel)]="formData.telefono">               -->
         </div>
         <div class="form-group">
             <!-- <label for="modelo">Modelo</label> -->
-            <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo">
+            <input type="email" placeholder="Confirmar Correo electrónico" (paste)="$event.preventDefault()" name="ccorreo"  [(ngModel)]="confirmar.correo">
+            <!-- <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo"> -->
         </div>
+
+     </div>
+     <h4 class="" style="font-size: 0.9em;">Me interesa</h4>
+     <div class="form-row">
+      
+      <label>
+        <input type="checkbox" name="icomprar" [(ngModel)]="intereses.comprar"> Comprar
+      </label>
+      <label>
+        <input type="checkbox" name="ivender" [(ngModel)]="intereses.vender"> Vender
+      </label>
      </div>
      <h5 style="font-size: 1em;">Fecha de Nacimiento</h5>
      <div class="form-row form-row-3">
@@ -51,7 +78,6 @@
                 <option *ngFor="let anio of anios" [value]="anio">{{anio}}</option>
             </select>        
         </div>
-        
      </div>
       <!-- <input type="text" placeholder="Telefono">      
       <input type="email" placeholder="Correo electrónico"> -->
@@ -63,10 +89,10 @@
         <option value="H">Hombre</option>
         <option value="M">Mujer</option>
       </select>
-      <label>
+      <!-- <label>
         <input type="checkbox"> Quiero recibir notificaciones y ofertas exclusivas
-      </label>
-      <button type="submit" (click)="onSubmit()">Preregistrarme</button>
+      </label> -->
+      <button class="glass-btn" type="button" (click)="onSubmit()">Preregistrarme</button>
     </form>
     <div class="benefits">
       <h3>¿Por qué preregistrarte?</h3>

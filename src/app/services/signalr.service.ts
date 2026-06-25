@@ -47,7 +47,6 @@ export class SignalRService {
       setTimeout(() => this.connectToSubasta(idSubasta, idUsuario, onNuevaApuesta), 2000);
     }
 
-   
   }
 
   public async leaveSubasta(idSubasta: string) {

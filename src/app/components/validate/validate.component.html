@@ -1,0 +1,55 @@
+<app-loader *ngIf="loading"></app-loader>
+
+<div class="email-validation-container">
+    <div class="validation-card" *ngIf="isInvalidOrExpired && !isLinkResent">
+        <img class="main-ico" src="images/error.png" alt="">
+      <h2 class="title mt-4">Validacion de cuenta</h2>
+
+      <p class="error-message">
+        Este enlace ha expirado o tiene informacion no valida.
+      </p>
+      <p class="ask-message">
+        ¿Deseas recibir un nuevo enlace a tu correo registrado?
+      </p>
+
+      <button class="btn btn-info" (click)="reenviarEnlaceDeValidacion()" >
+        Reenviar enlace de validacion
+      </button>
+  
+    </div>
+    <div class="validation-card" *ngIf="!isInvalidOrExpired && isValidateSuccess && !isLinkResent">
+      <img class="main-ico" src="images/success.png" alt="">
+      <h2 class="title mt-4">Validacion de cuenta</h2>
+      <p class="success-message">
+        Tu cuenta ha sido validada de forma correcta, ya puedes Xubastar.
+      </p>
+
+      <button class="btn btn-xuba" (click)="validarCuenta()">
+        Ir a Xuba
+      </button>
+    </div>
+    <div class="validation-card" *ngIf="!isInvalidOrExpired && !isValidateSuccess && !isLinkResent">
+        <img class="main-ico" src="images/law.png" alt="">
+      <h2 class="title mt-4">Validacion de cuenta</h2>
+      
+      <p class="description">
+        Haz clic en el botón para confirmar tu registro y activar tu cuenta.
+      </p>
+  
+      <button class="validate-btn" (click)="validarCuenta()">
+        Validar cuenta
+      </button>
+    </div>
+    <div class="validation-card" *ngIf="isLinkResent">
+        <img class="main-ico" src="images/sended.png" alt="">
+        <h2 class="title mt-4">Validacion de cuenta</h2>
+        <p class="success-message">
+            Se ha enviado un nuevo enlace de verificacion a tu correo registrado.
+        </p>
+  
+  
+      <button class="validate-btn" (click)="goHome()">
+        Volver a Xuba
+      </button>
+    </div>
+  </div>

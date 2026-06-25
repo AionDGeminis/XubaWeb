@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, effect } from '@angular/core';
 import { AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SubastasService } from '../../services/subastas.service';
@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { AuctionService } from '../../services/auction.service';
 import { SharedService } from '../../services/shared.service';
 import { LoaderComponent } from '../loader/loader.component';
+import { LocalSignalsService } from '../../services/localsignals.service';
 @Component({
   selector: 'app-premium-auctions',
   imports: [CommonModule, CarouselModule, LoaderComponent],
@@ -56,9 +57,20 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
   @Output() abrirDetalle = new EventEmitter<{ subasta: Subasta, lista: Subasta[], origen: string }>();
   @ViewChild('owlCar', { static: false }) owlCar!: CarouselComponent;
 
-  constructor(private subastaService:SubastasService,private router: Router, private authService: AuthService, private auctionService: AuctionService, private ss: SharedService){
+  constructor(private lss: LocalSignalsService, private subastaService:SubastasService,private router: Router, private authService: AuthService, private auctionService: AuctionService, private ss: SharedService){
     this.getSubastasSeguidas();
+    effect(() => {
+      if (this.lss.triggerFunctionID() > -1) {
+        // this.miFuncion();
+        // this.getSubastasSeguidas();
+        this.auctionsId = this.auctionsId.length > 0 ? this.auctionsId.filter(x => x !== this.lss.triggerFunctionID()): this.auctionsId;
+        this.lss.ejecutarFuncionByID(-1);
+        // this.lss.triggerFunction.set(false);
+      }
+    });
   }
+
+
   
   ngOnInit(): void {
     this.subastaService.getAuctions('premium').subscribe({
@@ -135,6 +147,7 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
         const idUsuario = usuario.id;
         this.auctionService.getAuctions(idUsuario).subscribe({
           next: (data) => {
+            console.log(data)
             this.auctionsId = data.map(subasta => subasta.id);
           },
           error: (error) => {
@@ -158,6 +171,17 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
     if(usuario){
       if(this.isSeguida(idSubasta)) {
       // this.auctionsId = this.auctionsId.filter(id => id !== idSubasta);
+        this.subastaService.dejarDeSeguirSubasta(usuario!.id, idSubasta.toString()).subscribe({
+          next: (data) => {
+            console.log('resultado seguir subasta');
+            console.log(data);
+            this.getSubastasSeguidas();
+            this.lss.ejecutarFuncion();
+          },
+          error: (error) => {
+            console.error('Error al agregar subasta seguida:', error);
+          }
+        })
       } else {
         console.log(usuario!.id);
         this.auctionsId.push(idSubasta);
@@ -166,6 +190,7 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
             console.log('resultado seguir subasta');
             console.log(data);
             this.getSubastasSeguidas();
+            this.lss.ejecutarFuncion();
           },
           error: (error) => {
             console.error('Error al agregar subasta seguida:', error);
@@ -174,7 +199,7 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
         // this.auctionsId.push(idSubasta);
       }
     }
-   
+  //  this.lss.ejecutarFuncion();
   }
   
   getTransform() {
@@ -255,7 +280,7 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
         console.log(_tiempoRestante);
         this.loading = false;
         if(_tiempoRestante > 0){
-          this.router.navigate(['/subasta', subasta.id, 'SubastasPremium']);
+          this.router.navigate(['/subasta-detalle', subasta.id, 'SubastasPremium']);
         } else {
           let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario:'comprador'});
           let encoded = this.ss.encodeToBase64(dataParams);
@@ -296,6 +321,10 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
     const m = String(Math.floor((segundos % 3600) / 60)).padStart(2, '0');
     const s = String(segundos % 60).padStart(2, '0');
     return `${h}:${m}:${s}`;
+  }
+
+  toCurrency(valor: number): string {
+    return this.ss.toCurrency(valor);
   }
 
 }

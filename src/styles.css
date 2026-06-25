@@ -1,4 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+/* @layer theme, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities); */
+
+/* @layer theme, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+ */
+
+ @import "tailwindcss" prefix(tw);
+
+
 @font-face {
   font-family: 'Montserrat';
   src: url('/fonts/Montserrat-Bold.otf') format('opentype');
@@ -41,3 +53,392 @@ body, html {
     margin: 0;
     padding: 0;
   }
+
+  .fast-animation {
+    animation-duration: 0.3s !important;
+  }
+
+  .index-on-top{
+    z-index: 3400 !important;
+  }
+
+
+
+
+.swal2-modal{
+  border-radius:0 !important;
+}
+.swal2-custom-warning{
+  background: #f59924 !important; 
+}
+.swal2-custom-success{
+  background: #2ecc71 !important; 
+  color:#fff;
+}
+.swal2-custom-info{
+  background: #3498db !important; 
+}
+
+.swal2-custom-danger{
+  background: #e74c3c !important; 
+}
+.swal2-custom-dark{
+  background: #1e272e !important; 
+}
+.swal2-custom-light{
+  background: #ecf0f1 !important; 
+}
+.swal2-custom-confirm{
+  /* background: #ecf0f1 !important;  */
+  background: linear-gradient(to top, #2d3436, #636e72);
+  border-radius: 8px !important;
+}
+
+
+
+.swal2-custom-warning h2,.swal2-custom-warning .swal2-icon,.swal2-custom-warning #swal2-content,
+.swal2-custom-success h2,.swal2-custom-success .swal2-icon,.swal2-custom-success #swal2-content,
+.swal2-custom-danger h2,.swal2-custom-danger .swal2-icon,.swal2-custom-danger #swal2-content,
+.swal2-custom-info h2,.swal2-custom-info .swal2-icon,.swal2-custom-info #swal2-content,
+.swal2-custom-confirm h2,.swal2-custom-confirm .swal2-icon,.swal2-custom-confirm #swal2-content,
+.swal2-custom-dark h2,.swal2-custom-dark .swal2-icon,.swal2-custom-dark #swal2-content{
+  color:#fff !important;
+}
+
+.swal2-html-container{
+  color: #fff !important;
+}
+
+.swal2-custom-warning .swal2-icon{
+  background: #c95620;
+  border:none;
+}
+.swal2-custom-success .swal2-icon div{
+  border-color:#fff !important;
+  border:none;
+}
+.swal2-custom-info .swal2-icon{
+  background: #0652DD;
+  border:none;
+}
+.swal2-custom-danger .swal2-icon{
+  /* background: #e74c3c; */
+  background: #A30000;
+  border:none;
+}
+
+.swal2-custom-success .swal2-icon .swal2-success-line-tip,.swal2-custom-success .swal2-icon .swal2-success-line-long{
+  background: #fff !important;
+  /* border-color:#fff !important; */
+  /* border:none; */
+}
+/* .swal2-show-warning .swal2-header{
+  background: #f39c12 !important; 
+} */
+
+.swal2-custom-warning .swal2-styled{
+  /* color:#000 !important; */
+}
+.swal2-popup .swal2-styled{
+  width:150px;
+  border-radius:20px !important;
+}
+.swal2-popup .swal2-styled:focus {
+  box-shadow: none !important;
+}
+
+
+:root {
+  --primary: rgb(30, 144, 255);
+  --secondary: rgb(195, 66, 132);
+  --bg: #f7f7fa;
+  --card: #fff;
+  --text: #222;
+  --muted: #888;
+  --accent: rgb(195, 66, 132);
+  --radius: 18px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+
+
+.followers-list {
+  max-width: 420px;
+  margin: 32px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.follower-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #0001;
+  padding: 16px 20px;
+  transition: box-shadow 0.2s;
+}
+
+.follower-card:hover {
+  box-shadow: 0 4px 24px #0002;
+}
+
+.follower-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 18px;
+  border: 2px solid #eee;
+}
+
+.follower-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.follower-name {
+  font-weight: 600;
+  font-size: 0.8em;
+  color: #222;
+}
+
+.follower-nickname {
+  color: #888;
+  font-size: 0.7em;
+}
+
+.follower-email {
+  color: #555;
+  font-size: 0.7em;
+  word-break: break-all;
+}
+
+
+
+.auction-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 15px;
+  margin-left:5px;
+}
+.auction-card:hover{
+  cursor: pointer;
+}
+.auction-card img {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  display: block;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.auction-card .title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 1rem 1rem 0.2rem 1rem;
+}
+
+.auction-card .desc {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0 1rem 0.2rem 1rem;
+}
+
+.auction-card .price {
+  color: var(--secondary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin: 0 1rem 0.2rem 1rem;
+}
+
+.auction-card .timer {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 600;
+  margin: 0 1rem 0.3rem 1rem;
+}
+
+.auction-card .actions {
+  display: flex;
+  gap: 1.1rem;
+  margin: 0 1rem;
+  margin-top: 0.3rem;
+}
+
+.auction-card .actions button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  border-radius: 50%;
+  padding: 0.3rem;
+}
+
+.auction-card .actions button:hover {
+  color: var(--secondary);
+  background: #f3eaff;
+}
+
+.btn-xuba{
+  background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
+  color: #fff;
+}
+
+
+
+
+
+.notification-list {
+  max-height: 100%;
+  overflow-y: auto;
+  border-radius: 4px;
+}
+
+/* Estilo de la barra de desplazamiento */
+.notification-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+  background: #cccccc;
+  border-radius: 10px;
+}
+
+/* Ítem individual */
+.notification-item {
+  display: flex;
+  padding: 15px 20px;
+  border-bottom: 1px solid #dcdde1;
+  border-top: 1px solid #dcdde1;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background-color: #BFF0F2;
+}
+
+/* Iconos y Colores */
+.notification-icon {
+  margin-right: 15px;
+  font-size: 20px;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 2px;
+}
+
+.icon-yellow { color: #d4af37; }
+.icon-green { color: #4db6ac; }
+.icon-blue { color: #64b5f6; }
+
+/* Contenido de texto */
+.notification-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-name {
+  font-size: 12px;
+  color: #bbbbbb;
+  margin-bottom: 2px;
+}
+
+.action-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #444444;
+  margin: 0;
+}
+
+.action-desc {
+  font-size: 14px;
+  color: #666666;
+  margin: 0;
+}
+
+.time-frame {
+  font-size: 12px;
+  color: #999999;
+  margin-top: 5px;
+}
+
+/* Ajuste para los iconos si no usas una librería de fuentes */
+.notification-icon i {
+  font-style: normal;
+}
+
+.f-arial{
+  font-family: Arial, sans-serif !important;
+}
+
+.noleida{
+  background: #dff9fb;
+}
+
+
+
+
+
+
+
+
+/* [data-theme="dark"] {
+  --bg: #0f0f13;
+  --bg2: #1a1a24;
+  --text: #ffffff;
+  --text2: rgba(255,255,255,0.45);
+  --card: rgba(255,255,255,0.06);
+  --card-border: rgba(255,255,255,0.1);
+  --timer-bg: rgba(255,255,255,0.08);
+  --thumb-bg: rgba(255,255,255,0.06);
+  --openpay-bg: rgba(255,255,255,0.95);
+}
+
+[data-theme="light"] {
+  --bg: #f0f2f8;
+  --bg2: #e4e7f0;
+  --text: #111111;
+  --text2: rgba(0,0,0,0.45);
+  --card: rgba(255,255,255,0.75);
+  --card-border: rgba(0,0,0,0.1);
+  --timer-bg: rgba(0,0,0,0.06);
+  --thumb-bg: rgba(0,0,0,0.05);
+  --openpay-bg: #ffffff;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+} */

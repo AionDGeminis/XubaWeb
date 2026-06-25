@@ -2,7 +2,9 @@ export enum AuctionClaveStatus {
     SinEstatus = 'SST', 
     Activa = 'ACT',    
     Finalizada = 'FIN',
+    MinimoNoAlcanzado = 'MNA',
     PropuestaGanador = 'PGA',
+    PropuestaVendedor = 'PPV',
     RechazoGanador = 'RGA',
     AceptadoGanador = 'AGA', 
     PropuestaSiguiente = 'PSI',    
@@ -13,5 +15,32 @@ export enum AuctionClaveStatus {
     PendientePago = 'PTP',    
     PreparacionEnvio = 'PEV',
     Enviado = 'ENV',
-    Recibido = 'REC'
+    Recibido = 'REC',
+    RecepcionCorrecta = 'RCC',
+    Reclamo = 'RCM'
   }
+// export enum AuctionClaveStatus2 {
+//     SinEstatus = 'SST', 
+//     Activa = 'ACT',    
+//     Finalizada = 'FIN',
+//     MinimoNoAlcanzado = 'MNA',
+//     PropuestaPrecio = 'PPR',
+//     PropuestaRechazada = 'PRA',
+//     PendientePago = 'PTP',
+//     Pagado = 'PDO', 
+//     Enviado = 'ENV',
+//     Recibido = 'REC',
+//     NoEfectuada = 'NEF',
+//     // PropuestaGanador = 'PGA',
+//     // RechazoGanador = 'RGA',
+//     // AceptadoGanador = 'AGA', 
+//     // PropuestaSiguiente = 'PSI',    
+//     // AceptadoSiguiente = 'ASI',
+//     // RechazadoSiguiente = 'RSI',
+//     // NoEfectuada = 'NEF',
+//     // Pagado = 'PDO', 
+//     // PendientePago = 'PTP',    
+//     // PreparacionEnvio = 'PEV',
+//     // Enviado = 'ENV',
+//     // Recibido = 'REC'
+//   }

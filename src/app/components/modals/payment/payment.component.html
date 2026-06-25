@@ -1,0 +1,139 @@
+<div class="cart-modal-backdrop" >
+    <div class="cart-modal-container" >
+      <div class="modal-header bg-main-header text-white">
+        <h3 class="modal-title">
+          <span class="text-white" >{{titulo}}</span>
+        </h3>
+        <button class="close-button" (click)="closeModal()">
+          <span class="text-white">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body" #modalBody>
+          <!-- <app-loader *ngIf="loading"></app-loader> -->
+          <ng-container *ngIf="condicionesAceptadas">
+            <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
+              <div class="w-100 text-center">
+                  <img src="images/visa.png" alt="" class="w-5 me-1">
+                  <img src="images/mastercard.png" alt="" class="w-5 me-1">
+                  <!-- <img src="images/amex.png" alt="" class="w-5"> -->
+              </div>
+              <div class="disclaimer p-1 text-center mt-2 mb-2">
+                Por el momento solo se permite el pago con tarjetas de debito
+              </div>
+              <form class="form-productos pl-2 pr-2">
+    
+                <div class="mb-2 label-final-price">
+                  Total a Pagar: <strong>${{totalPago}}</strong> 
+                </div>
+     
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="tiempoActivo">Tarjetas guardadas</label>
+                    <small style="font-family: Arial, sans-serif;font-weight: 500;font-size: 0.95em;color:#57606f;">Seleccione una tarjeta guardada</small>
+    
+                    <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="selectedCard" (change)="changeTarjetaSeleccionada()">
+                      <option *ngFor="let item of tarjetas" [ngValue]="item">{{item.card_number}} -  {{item.holder_name}} {{item.holder_lastname}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row mt-3">
+                  <div class="form-group">
+                      <label for="nombre">No. Tarjeta</label>
+                      <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event, tarjeta.card_number)" maxlength="16" id="cardnumber" name="cardnumber" />
+                  </div>
+                </div>
+               
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="precio">Expiracion (MM)</label>
+                        <input type="text" [(ngModel)]="tarjeta.expiration_month" (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expm" name="expm" />
+                    </div>
+                    <div class="form-group">
+                        <label for="compraDirecta">Expiracion (YY)</label>
+                        <input type="text" [(ngModel)]="tarjeta.expiration_year" (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expy" name="expy" />
+                    </div>
+                    <div class="form-group">
+                      <label for="compraDirecta">CCV</label>
+                      <input type="text" [(ngModel)]="tarjeta.cvv2"  (input)="onInput($event, tarjeta.cvv2)" maxlength="4"  id="ccv" name="ccv" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" [(ngModel)]="tarjeta.holder_name" id="holder_name" name="holder_name" />
+                    </div>
+                     <div class="form-group">
+                        <label for="apellido">Apellido</label>
+                        <input type="text" [(ngModel)]="tarjeta.holder_lastname" id="holder_lastname" name="holder_lastname" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mail">Correo Electronico</label>
+                        <input type="text" [(ngModel)]="tarjeta.mail" id="mail" name="mail" />
+                    </div>
+                    <div class="form-group">
+                      <label for="telefono">Telefono</label>
+                      <input type="text" [(ngModel)]="tarjeta.phone"  (input)="onInput($event, tarjeta.phone)" id="phone" name="phone" />
+                  </div>
+                </div>
+            </form>
+            <div class="mb-2 text-center">
+              <span class="fw-bold label-secure"><i class="fas fa-lock"></i> Transacciones realizadas via: </span>
+            </div>
+            <div class="w-100 text-center">
+              <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="Openpay Logo" >
+            </div>
+            <hr>
+          </div>
+          </ng-container>
+          <ng-container *ngIf="!condicionesAceptadas">
+            <div class="policy-container">
+              <div class="policy-content">
+                <h2>Políticas de Uso del Procesador de Pagos</h2>
+                <p>
+                  Estas políticas establecen los términos bajo los cuales los usuarios pueden realizar pagos
+                  a través del procesador. Al continuar, aceptas que los datos proporcionados son verídicos,
+                  y que cumplirás con las condiciones establecidas.
+                </p>
+            
+                <p>
+                  El uso del servicio implica la aceptación de nuestras normas de seguridad, privacidad,
+                  y prevención de fraude. Queda prohibido el uso para fines ilícitos o no autorizados.
+                </p>
+            
+                <p>
+                  Si tienes dudas o necesitas asistencia, contacta con soporte al correo
+                  <strong>soporteprocesador.com</strong>.
+                </p>
+            
+                <div class="policy-accept">
+                  <label>
+                    <input type="checkbox" id="acceptPolicy" [(ngModel)]="confirmarCondicion">
+                    He leído y acepto las políticas de uso.
+                  </label>
+                  <button id="btnAccept" [disabled]="!confirmarCondicion" (click)="acceptTerms()">Aceptar y continuar</button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          
+          
+      </div>
+      <div class="modal-footer text-start">
+      
+        <div class="pb-3 pe-3">
+          <button  class="btn btn-dark me-2" (click)="closeModal()">
+            Cancelar
+          </button>
+          <button [disabled]="!condicionesAceptadas" class="btn btn-xuba btn-add-cart" (click)="onProcesarPago()">
+           <i class="fa fa-lock"></i> Procesa pago
+          </button>
+        </div>     
+      </div>
+    </div>
+  </div>
+  <app-loader *ngIf="loading" [texto]="textoLoading"></app-loader>
+
+  <!-- http://localhost:4200/subasta-terminada/eyJpZFN1YmFzdGEiOjEyNDEyLCJ0aXBvVXN1YXJpbyI6InZlbmRlZG9yIn0%3D -->

@@ -1,0 +1,446 @@
+ <div class="redirect-container" *ngIf="jsonParams && jsonParams.mtap">
+    <h2 class="redirect-title">Serás redirigido para validar tu identidad</h2>
+    <p class="redirect-message mt-2">Por favor, no cierres esta ventana. La autenticación comenzará en breve.</p>
+  
+    <div class="countdown mt-3">
+      Redirigiendo en <span id="countdown-number">{{redirectAutoTime}}</span> segundos...
+    </div>
+  
+    <div class="payment-logos mt-3">
+      <img src="images/openpay-logo.png" alt="openpay" />
+      <img src="images/3dsecure.png" alt="3dsecure" />
+    </div>
+  </div>
+
+  <div class="redirect-container-resp" *ngIf="jsonParams && !jsonParams.mtap">
+
+    <!-- <h2 class="redirect-title">Validando el estatus de tu cargo</h2>
+    <p class="redirect-message mt-2">Por favor, no cierres esta ventana aun.</p> -->
+  
+    <!-- <div class="countdown mt-3">
+      Redirigiendo en <span id="countdown-number">{{redirectAutoTime}}</span> segundos...
+    </div>
+   -->
+   <!-- <div class="row m-auto w-100 text-center pt-3">
+        <div class="col-sm-12">
+            <button class="btn btn-warning btn-pill mb-3 me-2" (click)="changeTemporalStatus('process')">
+                <i class="fas fas fa-sync"></i> Estatus proceso
+            </button>
+            <button class="btn btn-success btn-pill  mb-3 me-2" (click)="changeTemporalStatus('completed')">
+                <i class="fas fa-check"></i> Estatus completado
+            </button>
+            <button class="btn btn-danger btn-pill  mb-3" (click)="changeTemporalStatus('rejected')">
+                <i class="fas fa-times"></i> Estatus rechazado
+            </button>
+        </div>
+   </div> -->
+   <ng-container *ngIf="showContent.actualizando">
+    <div class="w-100 text-center mt-5 pt-3">
+        <h2 class="redirect-title">Cargo completado</h2>
+        <!-- <p class="redirect-message mt-2">Se estan actualizando informacion, espere un momento. -->
+            
+        <!-- </p> -->
+        <p class="redirect-message mt-2">Generando comprobante de pago, no cierre esta ventana aun.
+            
+        </p>
+      
+         <div class="countdown mt-3 mb-5">
+            <img src="images/loading1.svg" alt="">
+        <br>
+         Actualizando informacion...
+        </div>
+        <!-- <button class="btn btn-dark btn-pill  mb-3" (click)="volverAVentanaOrigen()">
+            <i class="fas fa-arrow-left"></i> Volver a subasta
+        </button> -->
+    </div>
+   </ng-container>
+
+   <ng-container *ngIf="showContent.nodisponible">
+    <div class="w-100 text-center mt-5 pt-3">
+        <h2 class="redirect-title">Informacion del cargo no disponible</h2>
+        <p class="redirect-message mt-2">
+           No se ha podido obtener el estatus actual del cargo
+            
+        </p>
+        <p class="redirect-message mt-2">
+            Puedes salir de esta ventana y verificar el estatus del pago en la ventana Mi Perfil.
+        </p>
+      
+         <div class="countdown mt-3 mb-5">
+            <!-- <img src="images/loading1.svg" alt="">
+            <br> -->
+         <!-- Validando informacion... -->
+        </div>
+        <button class="btn btn-dark btn-pill  mb-3" (click)="backHome()">
+            <i class="fas fa-arrow-left"></i> Salir a mi perfil
+        </button>
+    </div>
+    
+   </ng-container>
+   <ng-container *ngIf="showContent.waiting">
+    <div class="w-100 text-center">
+        <h2 class="redirect-title">Validando el estatus de tu cargo</h2>
+        <p class="redirect-message mt-2">Espera mientras se valida el estatus de tu cargo.
+            
+        </p>
+        <!-- <p class="redirect-message mt-2">Puedes salir de esta ventana y verificar el estatus del pago en la de Mi Perfil.
+            
+        </p> -->
+      
+         <div class="countdown mt-3 mb-5">
+            <img src="images/loading1.svg" alt="">
+        <br>
+         Validando informacion...
+        </div>
+        <!-- <button class="btn btn-dark btn-pill  mb-3" (click)="backHome()">
+            <i class="fas fa-arrow-left"></i> Volver a subasta
+        </button> -->
+    </div>
+    
+   </ng-container>
+   <ng-container *ngIf="showContent.success">
+    <div  [class]="'loading-container  d-none d-sm-flex fast-animation  animate__animated ' + classComprobanteModal" >
+        <div class="container-tools">
+            <div class="ct-content">
+                <div id="printContainer" class="printMainContainer" 
+                style="width:21cm; max-width:21cm; margin:0 auto; min-height:24cm;color:#000;font-family: Arial, Helvetica, sans-serif;
+                border:1px solid #fff;position: relative;" >
+                <div class="receipt" role="document" aria-label="Comprobante de pago">
+                <!-- Header -->
+                <div class="receipt__header" >
+                    <div class="receipt__logo" aria-hidden="true">
+                    <!-- Reemplaza por <img src="tu-logo.svg"> si quieres -->
+                    <app-logob64red></app-logob64red>
+                    <!-- <img src="logo.png" alt="Xuba Logo" class="logo" /> -->
+
+                    </div>
+                
+                    <div class="receipt__title" style="flex: 1;">
+                    <h2 >Comprobante de pago</h2>
+                    <p id="company-name" >Xuba — Tu plataforma de subastas</p>
+                    </div>
+                
+                    <div class="receipt__meta">
+                    <div style="margin-bottom:8px;">
+                        <span id="tx-status" class="badge badge--success" >{{modeloComprobante.estatus}}</span>
+                    </div>
+                    <div class="small">Fecha</div>
+                    <div style="font-weight:600" id="tx-date">{{toFormatDate(modeloComprobante.fecha) }}</div>
+                    </div>
+                </div>
+                
+                <!-- Summary: Billing & Transaction -->
+                <div class="receipt__summary">
+                    <div>
+                    <div class="summary-card">
+                        <div class="summary-card__row">
+                        <div class="summary-card__label">Transacción</div>
+                        <div class="summary-card__value"><span id="tx-id">{{modeloComprobante.idTransaction}}</span></div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                        <div class="summary-card__label">Método de pago</div>
+                        <div class="summary-card__value" id="payment-method">{{modeloComprobante.metodoPago}}</div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                        <div class="summary-card__label">Cliente</div>
+                        <div class="summary-card__value" id="buyer-name">{{modeloComprobante.cliente}}</div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                        <div class="summary-card__label">Correo</div>
+                        <div class="summary-card__value" id="buyer-email">{{modeloComprobante.correo}}</div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                        <div class="summary-card__label">No. Orden</div>
+                        <div class="summary-card__value" id="order-id">#{{modeloComprobante.ordenXuba}}</div>
+                        </div>
+                    </div>
+                    </div>
+                
+                    <div>
+                    <div class="summary-card">
+                        <div style="text-align:center; margin-bottom:8px;">
+                        <div style="font-size:13px; color:var(--muted)">Monto cobrado</div>
+                        <div style="font-size:28px; color:#111827; font-weight:800;" id="amount-total">${{modeloComprobante.total}}</div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                        <div class="summary-card__label">Moneda</div>
+                        <div class="summary-card__value">MXN</div>
+                        </div>
+                <br><br>
+                        <!-- <div class="summary-card__row">
+                        <div class="summary-card__label">Comisión</div>
+                        <div class="summary-card__value" id="fee-amount">$30.76</div>
+                        </div>-->
+                
+                        <div class="summary-card__row">
+                        <div class="summary-card__label">Numero de Autorizacion</div>
+                        <div class="summary-card__value small" id="external-ref">{{modeloComprobante.noAutorizacion}}</div>
+                        </div> 
+                    </div>
+                    </div>
+                </div>
+                
+                <!-- Items -->
+                <table class="items" aria-describedby="items-desc">
+                    <thead>
+                    <tr>
+                        <th>Artículo</th>
+                        <th style="width:120px; text-align:right">Subtotal</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                        <div class="item__name" id="item-name">{{modeloComprobante.nombreArticulo}}</div>
+                        <div class="item__meta" id="item-meta">{{modeloComprobante.descripcion}}</div>
+                        </td>
+                        <td style="text-align:right" id="item-subtotal">${{modeloComprobante.subtotal}}</td>
+                    </tr>
+                    <!-- Si hay más items repetir filas -->
+                    </tbody>
+                </table>
+                
+                <!-- Totals -->
+                <div class="totals" aria-hidden="true">
+                    <div class="totals__inner" role="group" aria-label="Totales">
+                    <div class="totals__row">
+                        <div>Subtotal</div>
+                        <div id="subtotal-amount">${{modeloComprobante.subtotal}}</div>
+                    </div>
+                    <div class="totals__row">
+                        <div>Envío</div>
+                        <div id="shipping-amount">${{modeloComprobante.envio}}</div>
+                    </div>
+                    <!-- <div class="totals__row">
+                        <div>Impuesto</div>
+                        <div id="tax-amount">$0.00</div>
+                    </div> -->
+                    <div class="totals__row total">
+                        <div>Total</div>
+                        <div id="grand-total">${{modeloComprobante.total}}</div>
+                    </div>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <div class="receipt__footer">
+                    <div class="support">
+                    <div>
+                        <div style="font-weight:700; color:#111827">Contacto de soporte</div>
+                        <div class="small">soportexubastas.example • +52 55 1234 5678</div>
+                    </div>
+                    </div>
+                
+                    <div class="small" style="text-align:right; width:100%;">
+                    <div><strong></strong> Pago procesado por Openpay.</div>
+                    <div style="margin-top:6px; color:var(--muted)">Guarda este comprobante para cualquier aclaración. ID de transacción: <span id="tx-id-footer">{{modeloComprobante.idTransaction}}</span></div>
+                    </div>
+                </div>
+                </div> 
+            </div>
+            </div>
+            <!-- <div class="ct-footer text-center pt-1">
+                <button class="btn btn-danger" (click)="downloadComprobante()">
+                <i class="fas fa-file-pdf"></i> Guardar PDF
+                </button>
+            </div> -->
+        </div>
+        <div class="d-none d-sm-block" style="width: 20%;height: 100%;padding-top: 10px;padding-left: 10px;">
+            <button class="btn btn-danger mb-3 w-100" (click)="downloadComprobante()">
+                <i class="fas fa-file-pdf"></i> Guardar PDF
+            </button>
+            <button class="btn btn-dark w-100" (click)="backHome()">
+                <i class="fas fa-arrow-left"></i> Volver a Xuba
+            </button>
+        </div>
+
+     
+    </div>
+    <div class="w-100 h-100 d-block d-sm-none px-1 py-2">
+        <div class="receipt" role="document" aria-label="Comprobante de pago">
+            <div class="receipt__header" >
+                <div class="receipt__logo" aria-hidden="true">
+                <!-- Reemplaza por <img src="tu-logo.svg"> si quieres -->
+                <app-logob64red></app-logob64red>
+                <!-- <img src="logo.png" alt="Xuba Logo" class="logo" /> -->
+    
+                </div>
+            
+                <div class="receipt__title" style="flex: 1;">
+                <h2 style="font-size: 0.8em;">Comprobante de pago</h2>
+                <p id="company-name" style="font-size: 0.6em;" >Xuba — Tu plataforma de subastas</p>
+                </div>
+            
+                <div class="receipt__meta">
+                <div style="margin-bottom:8px;text-align: end;">
+                    <span id="tx-status" class="badge badge--success" >{{modeloComprobante.estatus}}</span>
+                </div>
+                <div class="small text-end">Fecha</div>
+                <div style="font-weight:600;font-size: 0.8em;text-align: end;" id="tx-date">
+                    {{toFormatDate(modeloComprobante.fecha) }}
+                </div>
+                </div>
+            </div>
+
+            <div class="receipt__summary">
+                <div>
+                <div class="summary-card">
+                    <div class="summary-card__row">
+                    <div class="summary-card__label">Transacción</div>
+                    <div class="summary-card__value"><span id="tx-id">{{modeloComprobante.idTransaction}}</span></div>
+                    </div>
+            
+                    <div class="summary-card__row">
+                    <div class="summary-card__label">Método de pago</div>
+                    <div class="summary-card__value" id="payment-method">{{modeloComprobante.metodoPago}}</div>
+                    </div>
+            
+                    <div class="summary-card__row">
+                    <div class="summary-card__label">Cliente</div>
+                    <div class="summary-card__value" id="buyer-name">{{modeloComprobante.cliente}}</div>
+                    </div>
+            
+                    <div class="summary-card__row">
+                    <div class="summary-card__label">Correo</div>
+                    <div class="summary-card__value" id="buyer-email">{{modeloComprobante.correo}}</div>
+                    </div>
+            
+                    <div class="summary-card__row">
+                    <div class="summary-card__label">No. Orden</div>
+                    <div class="summary-card__value" id="order-id">#{{modeloComprobante.ordenXuba}}</div>
+                    </div>
+                </div>
+                </div>
+                <div>
+                    <div class="summary-card">
+                        <div style="text-align:center; margin-bottom:8px;">
+                        <div style="font-size:13px; color:var(--muted)">Monto cobrado</div>
+                        <div style="font-size:28px; color:#111827; font-weight:800;" id="amount-total">${{modeloComprobante.total}}</div>
+                        </div>
+                
+                        <div class="summary-card__row">
+                        <div class="summary-card__label">Moneda</div>
+                        <div class="summary-card__value">MXN</div>
+                        </div>
+                        <br><br>
+                        <div class="summary-card__row">
+                        <div class="summary-card__label">Numero de Autorizacion</div>
+                        <div class="summary-card__value small" id="external-ref">{{modeloComprobante.noAutorizacion}}</div>
+                        </div> 
+                    </div>
+                    <table class="items mt-4" aria-describedby="items-desc">
+                        <thead>
+                        <tr>
+                            <th>Artículo</th>
+                            <th style="width:120px; text-align:right">Subtotal</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                            <div class="item__name" id="item-name">{{modeloComprobante.nombreArticulo}}</div>
+                            <div class="item__meta" id="item-meta">{{modeloComprobante.descripcion}}</div>
+                            </td>
+                            <td style="text-align:right" id="item-subtotal">${{modeloComprobante.subtotal}}</td>
+                        </tr>
+                        <!-- Si hay más items repetir filas -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- Totals -->
+                    <div class="totals" aria-hidden="true">
+                        <div class="totals__inner" role="group" aria-label="Totales">
+                        <div class="totals__row">
+                            <div>Subtotal</div>
+                            <div id="subtotal-amount">${{modeloComprobante.subtotal}}</div>
+                        </div>
+                        <div class="totals__row">
+                            <div>Envío</div>
+                            <div id="shipping-amount">${{modeloComprobante.envio}}</div>
+                        </div>
+                        <!-- <div class="totals__row">
+                            <div>Impuesto</div>
+                            <div id="tax-amount">$0.00</div>
+                        </div> -->
+                        <div class="totals__row total">
+                            <div>Total</div>
+                            <div id="grand-total">${{modeloComprobante.total}}</div>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="receipt__footer">
+                        <div class="support">
+                        <div>
+                            <div style="font-weight:700; color:#111827">Contacto de soporte</div>
+                            <div class="small">soportexubastas.example • +52 55 1234 5678</div>
+                        </div>
+                        </div>
+                    
+                        <div class="small" style="text-align:right; width:100%;">
+                        <div><strong></strong> Pago procesado por Openpay.</div>
+                        <div style="margin-top:6px; color:var(--muted)">Guarda este comprobante para cualquier aclaración. ID de transacción: <span id="tx-id-footer">{{modeloComprobante.idTransaction}}</span></div>
+                        </div>
+                    </div>
+                    <div class="w-100 pt-3">
+                        <button class="btn btn-danger mb-3 w-100" (click)="downloadComprobante()">
+                            <i class="fas fa-file-pdf"></i> Guardar PDF
+                        </button>
+                        <button class="btn btn-dark w-100" (click)="backHome()">
+                            <i class="fas fa-arrow-left"></i> Volver a Xuba
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+     
+    </div>
+   </ng-container>
+   <ng-container *ngIf="showContent.error">
+    <div class="payment-error-container">
+
+        <div class="payment-error-card">
+          <span class="icon px-2" style="position: relative;">
+            <i class="fas fa-times" style="font-size: 0.6em; position: absolute;left:0px;bottom:-2px;color: #662121"></i>
+            <i class="fas fa-credit-card fa-1x text-danger"></i>
+          </span>
+          
+          <h2>Hubo un problema con el pago</h2>
+          <p>No se generó ningún cargo. Por favor, verifica tu información o intenta nuevamente más tarde.</p>
+          <p>Puedes consultar con tu banco para mas informacion. <br>ID Transaccion: {{this.modeloComprobante.idTransaction}}</p>
+          <button class="btn-home" (click)="backHome()">Ir a mi perfil</button>
+        </div>
+      </div>      
+   </ng-container>
+   
+   <!-- <ng-container *ngIf="showContent.error_ap">
+    <div class="payment-error-container">
+
+        <div class="payment-error-card">
+          <span class="icon px-2" style="position: relative;">
+            <i class="fas fa-times" style="font-size: 0.6em; position: absolute;left:0px;bottom:-2px;color: #662121"></i>
+            <i class="fas fa-credit-card fa-1x text-danger"></i>
+          </span>
+          
+          <h2>{{tituloErrorGeneral}}</h2>
+          <p>Titulo</p>
+       
+          <button class="btn-home" (click)="backHome()">Volver a Xuba</button>
+        </div>
+      </div>      
+   </ng-container> -->
+   
+   
+
+    <div class="payment-logos d-none d-sm-flex mt-3">
+      <img src="images/openpay-logo.png" alt="openpay" />
+      <img src="images/3dsecure.png" alt="Mastercard" />
+    </div>
+  </div>
+
+  

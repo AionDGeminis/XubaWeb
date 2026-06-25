@@ -5,6 +5,7 @@ import { SubastasService } from '../../services/subastas.service';
 import { Subasta } from '../../models/subasta.model';
 import { interval } from 'rxjs';
 import { Router } from '@angular/router';    
+import { SharedService } from '../../services/shared.service';
 
 @Component({
   selector: 'app-xpress-auctions',
@@ -20,7 +21,7 @@ export class XpressAuctionsComponent implements OnInit, AfterViewInit {
   mostrarFlechaDerecha = true;
   xpress: Subasta[] = [];
   @Output() abrirDetalle = new EventEmitter<{ subasta: Subasta, lista: Subasta[], origen: string }>();
-  constructor(private subastaService:SubastasService,private router: Router){}
+  constructor(private subastaService:SubastasService,private router: Router, private ss: SharedService){}
   ngOnInit(): void {
     this.subastaService.getAuctions('porvencer').subscribe({
       next: (data) => {
@@ -48,6 +49,7 @@ export class XpressAuctionsComponent implements OnInit, AfterViewInit {
             }
           });
         });
+        this.xpress[0].premium = true;
     },
       error: (error) => {
         console.error('Error cargando subastas express:', error);
@@ -99,9 +101,11 @@ export class XpressAuctionsComponent implements OnInit, AfterViewInit {
   }
   abrirModal(subasta: Subasta): void {
     console.log('Subasta express seleccionada:', subasta);
+    this.router.navigate(['/subasta-detalle', subasta.id, 'SubastasExpress']);
+  }
 
-    this.router.navigate(['/subasta', subasta.id, 'SubastasExpress']);
-   
+  toCurrency(valor: number): string {
+    return this.ss.toCurrency(valor);
   }
 
 

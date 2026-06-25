@@ -67,7 +67,9 @@
   .btn-edit-photo:hover {
     background: #ffe3f0;
   }
-  
+  .f-arial{
+    font-family: Arial, sans-serif;
+  }
   .profile-main {
     flex: 1;
     padding: 40px 36px;
@@ -121,13 +123,26 @@
     color:#6e7b8a;
     font-size:18px;
   }
-  
+  .line-divider{
+    height: 3px;
+    /* background: #fff; */
+    background: linear-gradient(135deg, #D4367A 0%, #28AAE2 100%);
+
+    /* border-top: 1px solid #ced6e0;
+    border-bottom: 1px solid #ced6e0; */
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .bg-dark-l{
+    background: #ced6e0;
+  }
   /* Métricas */
   .pc-metrics{
     display:grid;
     grid-template-columns:1fr;
     gap:22px;
-    margin:32px 0 10px;
+    margin:20px 0 10px;
   }
   @media (min-width:680px){
     .pc-metrics{ grid-template-columns:1fr 1fr; }
@@ -135,7 +150,7 @@
   .pc-metric{
     border:2px dashed #e4e9f0;
     border-radius:12px;
-    padding:28px 18px;
+    padding:10px 5px;
     text-align:center;
   }
   .pc-value{

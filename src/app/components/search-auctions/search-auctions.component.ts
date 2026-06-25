@@ -75,7 +75,7 @@ export class SearchAuctionsComponent implements OnChanges, OnInit {
       console.log(_tiempoRestante);
       if(_tiempoRestante > 0){
         let tipoOrigen = this.tipoSeccion !== '' ? this.tipoSeccion : 'Generales';
-        this.router.navigate(['/subasta', subasta.id, tipoOrigen]);
+        this.router.navigate(['/subasta-detalle', subasta.id, tipoOrigen]);
       } else {
         let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario:'comprador'});
         let encoded = this.ss.encodeToBase64(dataParams);
@@ -83,6 +83,9 @@ export class SearchAuctionsComponent implements OnChanges, OnInit {
       }
         //console.log('Datos de la subasta:', subasta);
     });
+  }
+  toCurrency(valor: number): string {
+    return this.ss.toCurrency(valor);
   }
 
 }

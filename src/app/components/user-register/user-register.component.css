@@ -50,7 +50,9 @@
     display: inline-block;
     margin-top: 8px;
   }
-  
+  input::placeholder {
+    color: #8395a7;
+}
   .preregistro-form {
     display: flex;
     flex-direction: column;

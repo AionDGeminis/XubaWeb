@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>3D Secure Callback</title>
+    <script>
+      // Cuando el banco termine la autenticación, Openpay redirigirá aquí.
+      // La URL incluirá ?id=trn_xxx&status=completed o failed
+
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get('status');
+      const transactionId = params.get('id');
+
+      // Envía el resultado al parent (tu modal Angular)
+      window.parent.postMessage({ status, transactionId }, '*');
+    </script>
+  </head>
+  <body>
+    Procesando pago...
+  </body>
+</html>

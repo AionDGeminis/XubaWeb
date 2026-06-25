@@ -3,13 +3,18 @@ import { FormsModule } from '@angular/forms';
 import { SharedService } from '../../services/shared.service';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-user-register',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, LoaderComponent],
   templateUrl: './user-register.component.html',
   styleUrl: './user-register.component.css'
 })
+
+
+
 export class UserRegisterComponent {
 
   formData = {
@@ -21,9 +26,14 @@ export class UserRegisterComponent {
     contra: '',
     repcontra: '',
     genero: '',
-    fechaNacimiento: new Date()
+    fechaNacimiento: new Date(),
+    interes: ''
   };
-
+  confirmar = {
+    telefono: null,
+    correo: null
+  }
+  loading: boolean = false;
   mailSoporte = 'soporte@xuba.mx'
 
    //  var newUserData = {
@@ -46,8 +56,9 @@ export class UserRegisterComponent {
     {id:10,nom:'Octubre'},{id:11,nom:'Noviembre'}, {id:12,nom:'Diciembre'},
   ]
   anios = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i);
-  
-  constructor(private ss: SharedService, private auth: AuthService) {
+  intereses: any = {vender:false, comprar:false}
+
+  constructor(private ss: SharedService, private auth: AuthService, private router: Router) {
     console.log(this.dias)
     console.log(this.meses)
     console.log(this.anios)
@@ -55,51 +66,115 @@ export class UserRegisterComponent {
   }
 
   onSubmit(){
-    console.log(this.formData)
-    if(this.ss.isValidModel(this.formData, [])){
+    this.ss.showMessage('success','Registro exitoso<br />Revisar x')
+    // console.log(this.formData)
+    if(this.ss.isValidModel(this.formData, ['interes'])){
       if(!this.ss.isMailFormat(this.formData.correo)){
-        this.ss.showNotification('error','El correo no tiene un formato valido');
+        this.ss.showNotification('warning','El correo no tiene un formato valido');
+        return;
+      }
+      if(this.formData.telefono !== this.confirmar.telefono){
+        this.ss.showNotification('info','Los telefonos no coinciden');
+        return;
+      }
+      if(this.formData.correo !== this.confirmar.correo){
+        this.ss.showNotification('info','Los correos no coinciden');
         return;
       }
       if(this.formData.contra !== this.formData.repcontra){
-        this.ss.showNotification('error','Las contrasenas no coinciden');
+        this.ss.showNotification('warning','Las contrasenas no coinciden');
         return;
       }
       if(!this.ss.isValidModel(this.fechaNacimiento, [])){
-        this.ss.showNotification('error','Fecha de nacimiento incompleta');
+        this.ss.showNotification('warning','Fecha de nacimiento incompleta');
         return;
         // let fechaNac = new Date(this.fechaNacimiento.anio!, this.fechaNacimiento.mes! - 1, this.fechaNacimiento.dia!);
-        // console.log(fechaNac);
+        // console.log(fechaNac); 6567418523
       }
+      if(!this.intereses.comprar && !this.intereses.vender){
+        this.ss.showNotification('warning','Seleccione alguna opcion de interes');
+        return;
+      }
+      if(this.ss.isMailFormat(this.formData.nombre)){
+        this.ss.showNotification('warning','Tu nombre no puede tener formato de correo', 4000);
+        return;
+      }
+      if(this.ss.isMailFormat(this.formData.usuario)){
+        this.ss.showNotification('warning','El nombre de usuario no puede tener formato de correo', 4000);
+        return;
+      }
+      if(this.formData.usuario.includes('arroba') || this.formData.usuario.includes('punto') || this.formData.usuario.includes('@') || this.formData.usuario.includes('.')){
+        this.ss.showNotification('warning','El nombre de usuario contiene texto no permitido');
+        return;
+      }
+      this.formData.interes = this.intereses.comprar && this.intereses.vender ? 'ambos': this.intereses.comprar? 'comprar':'vender'
+      // console.log(this.formData)
       this.formData.fechaNacimiento = new Date(this.fechaNacimiento.anio!, this.fechaNacimiento.mes! - 1, this.fechaNacimiento.dia!)
+      this.loading = true;
       this.auth.registerUser(this.formData).subscribe({
         next: (response) => {
-          console.log('Registration response:', response);
+      //     console.log('Registration response:', response);
+          this.loading = false;
           this.isRegistered = true;
+          this.tryLoginAfterRegister();
         },
         error: (err) => {
+          this.loading = false;
           console.error('Registration error:', err);
-          this.ss.showNotification('error', 'Error al registrar el usuario');
+          let errorText = err && err.error && err.error.mensaje ? err.error.mensaje:'Error al registrar usuario'
+          this.ss.showNotification('error', errorText,3500);
         }
       });
     } else {
       this.ss.showNotification('error','Por favor, complete todos los campos requeridos.');
       return;
     }
-    this.isRegistered = true;
-   
-    console.log(this.fechaNacimiento)
-    console.log( this.ss.isValidModel(this.fechaNacimiento, []))
-    if(this.ss.isValidModel(this.fechaNacimiento, [])){
-      let fechaNac = new Date(this.fechaNacimiento.anio!, this.fechaNacimiento.mes! - 1, this.fechaNacimiento.dia!);
-      console.log(fechaNac);
-    }
   }
 
-  onInput(event: any) {
+  tryLoginAfterRegister() {
+    // if (!this.loginForm.usuario ||  this.loginForm.usuario.trim() === '' || !this.loginForm.pass || this.loginForm.pass.trim() === '') {
+    //   this.ss.showNotification('error', 'Informacion incorrecta');
+    //   return;
+    // }
+
+    // const { telefono, contra } = this.loginForm.value;
+
+    const correo='';
+    // this.loading = true;
+    // this.auth.login(this.formData.telefono.trim(), this.formData.contra.trim(), this.formData.correo).subscribe({
+    //   next: (usuario: any) => {
+    //     // this.loading = false;÷
+    //     console.log('Login exitoso:', usuario);
+
+    //     this.auth.setUser(usuario); 
+        // this.ss.showNotification('success', 'Inicio de sesión exitoso');
+        this.ss.setLocalStorageEncodedKey('first_home', 'YES');
+        // setTimeout(() => {
+          // this.router.navigate(['/profile']);
+          this.router.navigate(['/home']);
+
+        // }, 250);
+        // this.conectarSignalR(this.usuario()!.id);
+    //   },
+    //   error: (err) => {
+    //     // this.loading = false;
+    //     console.error('Error en login:', err);
+    //     this.ss.showNotification('error', 'Error en el inicio de sesión');
+    //   }
+    // });
+  }
+
+
+  onInput(event: any, form: string) {
     // Solo deja los dígitos del 0 al 9
     const soloNumeros = event.target.value.replace(/[^0-9]/g, '');
-    this.formData.telefono = soloNumeros;
+    switch(form){
+      case 'formData':this.formData.telefono = soloNumeros;
+        break;
+      case 'confirmar':this.confirmar.telefono = soloNumeros;
+        break;
+    }
+    
     event.target.value = soloNumeros; // Actualiza el input si el usuario pegó algo no numérico
   }
 }

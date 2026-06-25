@@ -1,49 +1,48 @@
 <div class="profile-container  fast-animation  animate__animated animate__fadeInRight">
     <app-loader *ngIf="allLoading"></app-loader>
       <!-- Panel izquierdo: Foto y datos básicos -->
-      <div class="profile-sidebar" style="position: relative;">
+      <div class="profile-sidebar d-none d-sm-flex" style="position: relative;">
         <app-loader *ngIf="loading"></app-loader>
-        <div class="w-100 bg-xuba2 text-center pt-5">
+        <div class="w-100 bg-xuba2 text-center pt-5 pb-2">
             <div class="profile-avatar" > 
                 <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
             </div>
             <h4 class="fw-bold mt-3 mb-2 fs1">{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h4>
             <h5 class="user-calificacion"><span class="text-dark">[{{infoUsuario.usuario ?? 'ND'}}]</span> &nbsp; <i class="fas fa-star"></i> <span style="color: #bdc3c7;">{{infoUsuario.stars}}</span></h5>
-            <div class=" mb-4" style="color:#48dbfb;">{{infoUsuario.correo}}</div>
+            <!-- <div class=" mb-4" style="color:#48dbfb;">{{infoUsuario.correo}}</div> -->
         </div>
-      
+        
 
-        <div class="profile-card">
+
+        <div class="profile-card d-none">
          
             <div class="pc-info">
                 <div class="pc-row">
                     <i class="fas fa-map-pin"></i>
                     <div class="pc-info-content">
                     <span class="pc-info-label">Ubicacion</span>
-                    <span class="pc-info-value">Ciudad Juarez, Chih</span>
+                    <span class="pc-info-value">{{infoUsuario.direccion.municipio}}, {{infoUsuario.direccion.estado}}</span>
                     </div>
                 </div>
             </div>
             <div class="pc-metrics">
             <div class="pc-metric">
-                <div class="pc-value">125</div>
-                <div class="pc-label">Subastas</div>
+                <div class="pc-value">{{infoUsuario.datosSubastas.subastasCreadas}}</div>
+                <div class="pc-label">Subastas creadas</div>
             </div>
             <div class="pc-metric">
-                <div class="pc-value">350</div>
-                <div class="pc-label">En favoritos</div>
+                <div class="pc-value">{{infoUsuario.datosSubastas.subastasParticipantes}}</div>
+                <div class="pc-label">Subastas participadas</div>
             </div>
+      
             <div class="pc-metric pc-metric-wide">
-                <div class="pc-value">95</div>
-                <div class="pc-label">Subastas Participadas</div>
-            </div>
-            <div class="pc-metric pc-metric-wide">
-                <div class="pc-value">70</div>
+                <div class="pc-value">{{infoUsuario.datosSubastas.subastasGanadas}}</div>
                 <div class="pc-label">Subastas ganadas</div>
             </div>
             </div>
        
         </div>
+       
         <!-- <button class="btn btn-sm btn-light btn-circle" style="position: absolute;right: 28%"><i class="fas fa-camera"></i></button> -->
         
         <!-- <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: 28%">
@@ -56,6 +55,40 @@
         <!-- <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()"><i class="fas fa-upload"></i> Guardar cambio</button> -->
       </div>
     
+      <div class="row d-block d-sm-none">
+        <div class="w-100 bg-xuba2 text-center pt-5 pb-2">
+          <div class="profile-avatar" > 
+              <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
+          </div>
+          <h4 class="fw-bold mt-3 mb-2 fs1">{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h4>
+          <h5 class="user-calificacion"><span class="text-dark">[{{infoUsuario.usuario ?? 'ND'}}]</span> &nbsp; <i class="fas fa-star"></i> <span style="color: #bdc3c7;">{{infoUsuario.stars}}</span></h5>
+          <!-- <div class=" mb-4" style="color:#48dbfb;">{{infoUsuario.correo}}</div> -->
+        </div>
+        <div class="pc-info">
+          <div class="pc-row f-arial py-0 my-0 ps-3 pe-3">
+              <i class="fas fa-map-pin"></i>
+              <div class="pc-info-content">
+              <span class="pc-info-label">Ubicacion</span>
+              <span class="pc-info-value">{{infoUsuario.direccion.municipio}}, {{infoUsuario.direccion.estado}}</span>
+              </div>
+          </div>
+        </div>
+        <div class="pc-metrics">
+          <div class="pc-metric">
+              <div class="pc-value">{{infoUsuario.datosSubastas.subastasCreadas}}</div>
+              <div class="pc-label">Subastas creadas</div>
+          </div>
+          <div class="pc-metric">
+              <div class="pc-value">{{infoUsuario.datosSubastas.subastasParticipantes}}</div>
+              <div class="pc-label">Subastas participadas</div>
+          </div>
+    
+          <div class="pc-metric pc-metric-wide">
+              <div class="pc-value">{{infoUsuario.datosSubastas.subastasGanadas}}</div>
+              <div class="pc-label">Subastas ganadas</div>
+          </div>
+          </div>
+      </div>
       <!-- Panel derecho: Información editable -->
       <div class="profile-main">
         <!-- <div class="w-100">
@@ -65,13 +98,11 @@
           <button class="btn-tab" (click)="setCurrentTab(2)" [ngClass]="{'active': tabIndex === 2}">Estadisticas</button>
         </div> -->
         <!-- Datos personales -->
-        <ng-container *ngIf="tabIndex === 0">
-        
       
           <!-- Direcciones -->
           <div class="profile-card">
             <h3 class="fs1">Subastas activas</h3>
-            <table class="table table-striped w-100 text-center">
+            <table class="table table-striped w-100 text-center d-none d-sm-block">
 
                   <tr class="t-header bg-dark text-white">
                     <th>Img</th>
@@ -92,7 +123,46 @@
                 
               
               </table>
-  
+              <div class="w-100 d-sm-none d-block">
+                <!-- <ng-container *ngIf="tabCuentasIndex === 1"> -->
+                  <div class="w-100" *ngFor="let subasta of subastasActivas | paginate: { itemsPerPage: pageSize, currentPage: page }" (click)="openSubastaDetalle(subasta)">
+                    <div class="row">
+                      <div class="col-5 f-arial">Img</div>
+                      <div class="col-7 bg-dark-l">
+                        <img [src]="subasta.url" (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-5 f-arial">Titulo</div>
+                      <div class="col-7">
+                        {{subasta.caption}}#{{subasta.id}}
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-5 f-arial">Descripcion</div>
+                      <div class="col-7">{{subasta.short_desc}}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-5 f-arial">Precio</div>
+                      <div class="col-7">${{subasta.apuesta}}</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-5 f-arial">Tiempo</div>
+                      <div class="col-7">
+                        {{segundosATiempoString(subasta.venceSegundos!)}}
+                      </div>
+                    </div>
+                 
+                    <!-- <div class="row">
+                      <div class="col-5">Tiempo</div>
+                      <div class="col-7">{{segundosATiempoString(subasta.tiempoVence!)}}</div>
+                    </div> -->
+                    <div class="line-divider">
+                      <!-- &nbsp; -->
+                    </div>
+                  </div>
+                <!-- </ng-container> -->
+              </div>
             <!-- <ul class="address-list">
               <li *ngFor="let d of direcciones">
                 {{d.calle}} #{{d.numeroExt}}, {{d.municipio}}  <span [ngClass]="{'label-tdent': d.tipo === 'entrega', 'label-tdenv': d.tipo === 'envio'}">{{d.tipo}}</span>
@@ -112,8 +182,6 @@
         >
         </pagination-controls>
           <!-- Reclamos abiertos -->
-        
-        </ng-container>
     
       </div>
     </div>

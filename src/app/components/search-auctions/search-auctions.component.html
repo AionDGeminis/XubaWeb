@@ -17,7 +17,7 @@
                 <h4>{{ subasta.caption }}#{{subasta.id}}</h4>
                 <p class="descripcion-limitada">{{ subasta.descripcion }}</p>
                 <!-- <h6>Subasta inicia</h6> -->
-                <strong>${{ subasta.apuesta }} mxn</strong>
+                <strong>{{ toCurrency(subasta.apuesta) }}</strong>
                 <p class="hora-restante">{{ subasta.tiempoVence }}</p>
               </div>
               <!-- <div class="opciones-general">

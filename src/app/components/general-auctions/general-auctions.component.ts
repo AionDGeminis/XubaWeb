@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input  } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, effect  } from '@angular/core';
 import { AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';    
 import { CommonModule } from '@angular/common';
@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { AuctionService } from '../../services/auction.service';
 import { LoaderComponent } from '../loader/loader.component';
 import { SharedService } from '../../services/shared.service';
+import { LocalSignalsService } from '../../services/localsignals.service';
 
 @Component({
   selector: 'app-general-auctions',
@@ -25,8 +26,20 @@ export class GeneralAuctionsComponent implements OnInit {
   private intervalId: any;
   loading: boolean = false;
   mainTitle: string = '';
-  constructor(private subastaService:SubastasService,private ss: SharedService, private modalService: ModalService,private router: Router, private authService: AuthService, private auctionService: AuctionService ){
+  constructor(private lss: LocalSignalsService, private subastaService:SubastasService,private ss: SharedService, private modalService: ModalService,private router: Router, private authService: AuthService, private auctionService: AuctionService ){
     this.getSubastasSeguidas();  
+    effect(() => {
+      console.log(this.lss.triggerFunctionID!())
+      if (this.lss.triggerToogleFollowedG() > -1) {
+        // this.miFuncion();
+        // this.getSubastasSeguidas();
+        console.log('quitar de seguidos')
+        //this.getSubastasSeguidas();  
+        this.auctionsId = this.auctionsId.length > 0 ? this.auctionsId.filter(x => x !== this.lss.triggerToogleFollowedG()): this.auctionsId;
+        this.lss.toogleFollowedIDG(-1);
+        // this.lss.triggerFunction.set(false);
+      }
+    });
   }
 
   @Input() tipoSeccion = '';
@@ -37,15 +50,15 @@ export class GeneralAuctionsComponent implements OnInit {
     let tipoSubasta: any = 'todas' ;
     switch(this.tipoSeccion){
       case 'SubastasPremium':
-          this.mainTitle = 'Subastas PREMIUM';
+          this.mainTitle = 'Xubastas PREMIUM';
           tipoSubasta = 'premium';
           break;
       case 'SubastasExpress':
-          this.mainTitle = 'Subastas EXPRESS';
+          this.mainTitle = 'Xubastas EXPRESS';
           tipoSubasta = 'porvencer';
           break;
       default:
-          this.mainTitle = 'Subastas GENERALES';
+          this.mainTitle = 'Xubastas GENERALES';
           tipoSubasta = 'todas';
           break;
         
@@ -122,7 +135,7 @@ export class GeneralAuctionsComponent implements OnInit {
     console.log('Subasta seleccionada:', subasta);
     //this.abrirDetalle.emit({ subasta,  origen: 'todas' });
     //this.modalService.abrir(subasta);
-    this.router.navigate(['/subasta', subasta.id, 'Subastas Generales']);
+    this.router.navigate(['/subasta-detalle', subasta.id, 'Subastas Generales']);
   }
 
   getSubastasSeguidas(){
@@ -152,6 +165,17 @@ export class GeneralAuctionsComponent implements OnInit {
     const usuario = this.authService.currentUser();
     if(usuario){
        if (this.isSeguida(idSubasta)) {
+        this.subastaService.dejarDeSeguirSubasta(usuario!.id, idSubasta.toString()).subscribe({
+          next: (data) => {
+            console.log('resultado seguir subasta');
+            console.log(data);
+            this.getSubastasSeguidas();
+            this.lss.ejecutarFuncion();
+          },
+          error: (error) => {
+            console.error('Error al agregar subasta seguida:', error);
+          }
+        })
       // this.auctionsId = this.auctionsId.filter(id => id !== idSubasta);
       } else {
         console.log(usuario!.id);
@@ -160,6 +184,7 @@ export class GeneralAuctionsComponent implements OnInit {
             console.log('resultado seguir subasta');
             console.log(data);
             this.getSubastasSeguidas();
+            this.lss.ejecutarFuncion();
           },
           error: (error) => {
             console.error('Error al agregar subasta seguida:', error);
@@ -201,7 +226,7 @@ export class GeneralAuctionsComponent implements OnInit {
         console.log(_tiempoRestante);
         this.loading = false;
         if(_tiempoRestante > 0){
-          this.router.navigate(['/subasta', subasta.id, 'Generales']);
+          this.router.navigate(['/subasta-detalle', subasta.id, 'Generales']);
         } else {
           let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario:'comprador'});
           let encoded = this.ss.encodeToBase64(dataParams);
@@ -214,5 +239,10 @@ export class GeneralAuctionsComponent implements OnInit {
       }
     })
   }
+
+  toCurrency(valor: number): string {
+    return this.ss.toCurrency(valor);
+  }
+
  
 }
