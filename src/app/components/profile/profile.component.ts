@@ -547,12 +547,29 @@ export class ProfileComponent implements OnInit {
   }
 
   saveDireccion(){
+      console.log('ENTRO A SAVE DIRECCION');
     console.log(this.direccion)
    this.direccion.idUsuario = this.usuario()!.id;
-   if(!this.ss.isValidModel(this.direccion, ['numeroInt', 'tipo'])){
-     this.ss.showNotification('warning', 'Por favor, complete todos los campos requeridos');
-     return;
-   }
+   if (!this.ss.isValidModel(this.direccion, ['numeroInt', 'tipo', 'callesCruzan', 'descripcionDomicilio',  'tipoDomicilio', 'quienRecibe', 'correo', 'telefono'])) {
+  this.ss.showNotification('warning', 'Por favor, complete todos los campos requeridos');
+  return;
+}
+   this.loading =true ;
+   this.subastasService.guardarDireccion(this.direccion).subscribe(
+    (response:any) => {
+      console.log(response);
+      this.loading =false;
+      this.ss.showNotification('success', 'Direccion  agregada correctamente');
+      this.getDirecciones(this.usuario()!.id);
+      this.initDireccion();
+      this.closeModal('direccion');
+    },
+    (error: any) => {
+      this.ss.showNotification('error', 'Se produjo un error al guardar la direccion');
+      console.error(error);
+      this.loading = false;
+    }
+   )
   }
 
   saveEditDireccion(){
@@ -2458,6 +2475,7 @@ export class ProfileComponent implements OnInit {
       
     this.isEdit = false;
     this.isModalOpen[key] = true;
+    this.loading = false;
     // if(key === 'tarjeta' && !this.isEditCard){
       // this.initFormTarjeta();
     // }

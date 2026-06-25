@@ -1548,17 +1548,19 @@
       </div>
       <div class="modal-footer text-start">
       
-        <div class="pb-3 pe-3">
-          <button [disabled]="loading" class="btn btn-dark btn-pill me-2" (click)="closeModal('direccion')">
-            Cancelar
-          </button>
-          <button [disabled]="loading" *ngIf="!isEdit" class="btn btn-xuba btn-pill " (click)="saveDireccion()">
-           <i class="fa fa-save"></i> Guardar
-          </button>
-          <button [disabled]="loading" *ngIf="isEdit"  class="btn btn-xuba btn-pill " (click)="saveEditDireccion()">
-           <i class="fa fa-save"></i> Guardar
-          </button>
-        </div>     
+        <div class="modal-footer text-start">
+          <div class="pb-3 pe-3">
+            <button [disabled]="loading" type="button" class="btn btn-dark btn-pill me-2" (click)="closeModal('direccion')">
+              Cancelar
+            </button>
+            <button [disabled]="loading" *ngIf="!isEdit" type="button" class="btn btn-xuba btn-pill" (click)="saveDireccion()">
+             <i class="fa fa-save"></i> Guardar
+            </button>
+            <button [disabled]="loading" *ngIf="isEdit" type="button" class="btn btn-xuba btn-pill" (click)="saveEditDireccion()">
+              <i class="fa fa-save"></i> Guardar
+            </button>
+          </div>     
+        </div>
       </div>
     </div>
   </div>
