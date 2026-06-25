@@ -1,0 +1,99 @@
+.login-container {
+  width: 240px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.logo img {
+  width: 120px;
+  margin-bottom: 20px;
+}
+
+.login-form input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.btn-login {
+  background-color: #f45da2;
+  color: white;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.links {
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+.links a {
+  text-decoration: none;
+  color: #666;
+  margin: 0 5px;
+}
+
+.social-login button {
+  width: 100%;
+  margin: 5px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.btn-facebook {
+ 
+  background: transparent;
+  color: #666;
+}
+
+.btn-facebook img{
+  width: 20px;
+}
+
+.btn-google {
+ 
+  background: transparent;
+  color: #666
+}
+
+.btn-google img{
+  width: 20px;
+}
+
+.create-private-auction {
+  margin-top: 30px;
+}
+
+.btn-private-auction {
+  background: linear-gradient(to right, #f45da2, #3eb2ff);
+  color: white;
+  font-size: 18px;
+  border: none;
+  padding: 14px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  text-align: left;
+  margin-bottom: 10px;
+}

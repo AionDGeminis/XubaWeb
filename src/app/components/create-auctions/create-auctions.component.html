@@ -1,0 +1,128 @@
+<div class="tabs">
+    <h3 class="titulo">CREAR UNA NUEVA SUBASTA</h3>
+    <div class="tab-buttons tab-button">
+        <button class="tab-button" [class.active]="selectedTab === 0" (click)="selectedTab = 0">
+            Detalles del producto
+        </button>
+        <button class="tab-button" [class.active]="selectedTab === 1" (click)="selectedTab = 1">
+            Dimensiones del producto
+        </button>
+        <button class="tab-button" [class.active]="selectedTab === 2" (click)="selectedTab = 2">
+            Subir fotos
+        </button>
+    </div>
+    <div class="tab-content" *ngIf="selectedTab === 0">
+        <!-- form-producto.component.html -->
+        <form class="form-producto">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre del producto</label>
+                    <input type="text" id="nombre" name="nombre" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group precio-group">
+                    <label for="precio">Precio</label>
+                    <input type="number" id="precio" name="precio" />
+                </div>
+                <div class="form-group compra-directa-group">
+                    <label for="compraDirecta">Compra directa</label>
+                    <input type="checkbox" id="compraDirecta" name="compraDirecta" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="marca">Marca</label>
+                    <input type="text" id="marca" name="marca" />
+                </div>
+                <div class="form-group">
+                    <label for="modelo">Modelo</label>
+                    <input type="text" id="modelo" name="modelo" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cantidadPuja">Cantidad de puja</label>
+                    <input type="number" id="cantidadPuja" name="cantidadPuja" />
+                </div>
+                <div class="form-group">
+                    <label for="tiempoActivo">Tiempo activo (100 hrs Max)</label>
+                    <input type="text" id="tiempoActivo" name="tiempoActivo" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="tab-content" *ngIf="selectedTab === 1">
+        <form class="form-producto">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="peso">Peso</label>
+                    <input type="text" id="peso" name="peso" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="largo">Largo</label>
+                    <input type="text" id="largo" name="largo" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ancho">Ancho</label>
+                    <input type="text" id="ancho" name="ancho" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="profundidad">Profundidad</label>
+                    <input type="number" id="profundidad" name="profundidad" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="tab-content" *ngIf="selectedTab === 2">
+        <!-- form-fotos-subasta.component.html -->
+        <div class="card-fotos">
+            <label class="cargar-foto-label">
+                <input type="file" accept="image/*" multiple (change)="onFileChange($event)"
+                    [disabled]="imagenes.length >= 5" hidden />
+                <span>Cargar foto</span>
+            </label>
+            <div class="preview-list">
+                <div class="preview-img" *ngFor="let img of imagenes; let i = index">
+                    <img [src]="img" alt="Preview" />
+                    <button type="button" (click)="eliminarImagen(i)">×</button>
+                </div>
+            </div>
+            <div class="max-fotos" *ngIf="imagenes.length >= 5">Máximo 5 fotos</div>
+        </div>
+
+        <div class="tipo-subasta">
+            <label>
+                <input type="radio" name="tipo" value="general" [(ngModel)]="tipoSubasta" /> General
+            </label>
+            <label>
+                <input type="radio" name="tipo" value="premium" [(ngModel)]="tipoSubasta" /> Premium
+            </label>
+        </div>
+
+        <div *ngIf="tipoSubasta === 'general'" class="descripcion-section">
+            <div class="desc-premium">
+                <strong>Subasta General:</strong> Solo se puede 100 horas, es gratis.
+            </div>
+            <button class="btn-gradiente">Subir subasta</button>
+        </div>
+
+        <div *ngIf="tipoSubasta === 'premium'" class="descripcion-section">
+            <div class="desc-premium">
+                <strong>Subasta Premium:</strong> Tu producto tendrá mayor visibilidad y beneficios exclusivos.
+            </div>
+        </div>
+    </div>
+</div>

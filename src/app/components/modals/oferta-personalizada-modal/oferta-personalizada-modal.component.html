@@ -1,0 +1,26 @@
+<div class="modal-container">
+    <h2>HACER OFERTA</h2>
+    <p>Oferta más alta: ${{valorApuesta}} mxn</p>
+  
+    <div class="timer">
+      Subasta termina en:<br />
+      <strong>{{ tiempoRestante }}</strong>
+    </div>
+  
+    <div class="buttons-rápidas">
+      <button (click)="sumarCantidad(50)">$50 MXN</button>
+      <button (click)="sumarCantidad(100)">$100 MXN</button>
+      <button (click)="sumarCantidad(1000)">$1000 MXN</button>
+    </div>
+  
+    <div class="otra-cantidad">
+      <label>OTRA CANTIDAD:</label>
+      <input type="number" [(ngModel)]="cantidad" placeholder="$" />
+    </div>
+  
+    <div class="acciones">
+      <button class="ofertar" (click)="emitirOferta()">OFERTAR</button>
+      <button class="cancelar" (click)="cancelar()">CANCELAR</button>
+    </div>
+  </div>
+  

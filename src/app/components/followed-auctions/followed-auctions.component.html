@@ -1,0 +1,34 @@
+<div class="seguimiento-container">
+  <!-- <h2 style="text-align: center; margin: 10px; font-family: Montserrat; color: #616160 ;" >Xubastas Seguidas</h2>   -->
+
+  <div class="tarjetas-container">
+    
+  
+    <div class="tarjeta" *ngFor="let subasta of auctions" (click)="abrirModal(subasta)" >
+        <img [src]="subasta.url" class="imagen-subasta" />
+  
+        <div class="detalle">
+          <h4>{{ subasta.caption }}</h4>
+          <p class="descripcion-limitada">{{ subasta.descripcion }}</p>
+          <p>Subasta inicia</p>
+          <strong>${{ subasta.apuesta }} mxn</strong>
+        </div>
+  
+        <div class="extras">          
+          <div class="contador-texto">
+            {{ subasta.vencida ? 'Finalizada' : subasta.tiempoVence }}
+          </div>
+          <div class="opciones">
+            <div class="opciones-item" [class.deshabilitado]="subasta.vencida">
+              <img src="iconos/megusta.png" alt="Seguir" class="opcionesimg" />
+              <span>Seguir Subasta</span>
+            </div>
+            <div class="opciones-item" [class.deshabilitado]="subasta.vencida">
+              <img src="iconos/puja.png" alt="Ofertar" class="opcionesimg" />
+              <span>Ofertar</span>
+            </div>
+          </div>
+        </div>
+      </div>    
+  </div>
+</div>

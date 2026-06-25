@@ -1,0 +1,694 @@
+<!-- <div class="row m-auto bg-light main-container-h">
+  
+  
+  <aside class="col-lg-2 bg-clouds d-sm-block d-none " style="height: 100%; ">
+     <h4 class="text-center mt-3 text-caption" style="font-size: 1rem;">XUBASTAS PREMIUM</h4>
+    <div style="height: 90%; overflow-y: scroll; margin-top: 6%;">
+
+          <div *ngFor="let subasta of listaPremium" (click)="getDatosSubasta(subasta.id)" class="auction-card text-gold border-gold2 shadow-gold">
+            <img [src]="subasta.url" alt="">
+            <div class="title">{{ subasta.caption }}#{{subasta.id}}</div>
+            <div class="price">{{toCurrency(subasta.apuesta) }} MXN</div>
+            <div class="timer"> {{segundosATiempoString(subasta.venceSegundos!) }}</div>
+            <div class="actions">
+              <button title="Seguir"  *ngIf="isLoggedIn() && this.usuario()!.id !== subasta.musuarios.id">
+                <i class="fas fa-heart" ></i>
+              </button>
+              <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+            </div>
+            <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+              {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+            </div>
+          </div> 
+    </div>
+  </aside>
+
+  <div [class]="'col-lg-8 d-sm-block d-none  ps-0 fast-animation animate__animated ' + classAnimate.imageContainer"  style="position: relative;height: 100%;overflow: hidden;">      
+    <img [src]="subasta.mimagenesSubasta[currentIndexImage].url" [class]="'animate__animated ' + imageClassAnimated" alt="Imagen de la subasta" style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
+    <div [class]="'auction-label-container-winner fast-animation animate__animated ' + animatedClass" *ngIf="usuarioMayor">
+      {{usuarioMayor}} <span class="winner-span" >Va Ganando!</span>
+    </div>
+
+    <div class="top-left-arrow">
+      <button class="btn btn-dark" (click)="irAAnterior()"><< Ant</button>
+    </div>
+    <div class="top-right-arrow">
+      <button class="btn btn-dark" (click)="irASiguiente()">Sig >></button>
+    </div>
+    
+    <div class="auction-actions-vertical" *ngIf="isLoggedIn()">
+      <button class="action-btn" title="Otra oferta" alt="Personalizado" (click)="openModal()"><i class="fas fa-handshake"></i></button>
+      <button class="action-btn"  *ngIf="isLoggedIn() && this.usuario()!.id !== this.subasta.musuarios.id" [title]="isFollowed? 'Dejar de seguir':'Seguir'" (click)="toggleSeguir()" [ngClass]="{'marked': isFollowed}" alt="Seguir" ><i class="fas fa-heart"></i>  </button>
+      <button class="action-btn" title="Compra directa" (click)="compraDirecta()"><i class="fas fa-cart-arrow-down"></i></button>
+      <button class="action-btn" title="Compartir"><i class="fas fa-share"></i></button>
+    </div>
+    <div class="auction-btn-container-bid">
+        <button *ngIf="isLoggedIn()" class="btn-bid-xuba auction-main-btn" (click)="realizarApuesta(siguienteApuesta, false)">Ofertar {{toCurrency(siguienteApuesta)}}</button>
+        <button *ngIf="!isLoggedIn()" class="btn-bid-xuba auction-main-btn" >Inicie Sesion para Ofertar</button>
+    </div>
+  </div>
+
+  <div [class]="'col-12  d-block d-sm-none bg-light h-100 m-auto w-100 fast-animation animate__animated ' + classAnimate.imageContainer" style="position: relative;padding: 0;">
+    <img [src]="subasta.mimagenesSubasta[currentIndexImage].url" [class]="'animate__animated ' + imageClassAnimated" alt="Imagen de la subasta" style="width: 100%;
+    height: 100%;object-fit: contain;object-position: center;" />
+    <div class="top-left-arrow">
+      <button class="btn btn-dark" (click)="irAAnterior()"><i class="fas fa-chevron-left"></i></button>
+    </div>
+    
+    <div [class]="'auction-label-container-winner-resp fast-animation animate__animated ' + animatedClass" *ngIf="usuarioMayor">
+      {{usuarioMayor}} <span class="winner-span" >Va Ganando!</span><br>
+      <span class="price-lbl" style="font-size: 0.7rem;"><i class="fas fa-money-bill"></i> Oferta actual</span>
+      <br>
+      <span class="price-number" style="font-size: 0.9rem;">{{toCurrency(valorApuesta) }}</span>
+    </div>
+
+    <div class="top-right-arrow-xs">
+      <button class="btn btn-dark" (click)="irASiguiente()"><i class="fas fa-chevron-right"></i> </button>
+    </div>
+    
+    <div class="auction-actions-vertical" *ngIf="isLoggedIn()">
+      <button class="action-btn" title="Otra oferta" alt="Personalizado" (click)="openModal()"><i class="fas fa-handshake"></i></button>
+      <button class="action-btn"  *ngIf="isLoggedIn() && this.usuario()!.id !== this.subasta.musuarios.id" [title]="isFollowed? 'Dejar de seguir':'Seguir'" (click)="toggleSeguir()" [ngClass]="{'marked': isFollowed}" alt="Seguir" ><i class="fas fa-heart"></i>  </button>
+      <button class="action-btn" title="Compra directa" (click)="compraDirecta()"><i class="fas fa-cart-arrow-down"></i></button>
+      <button class="action-btn" title="Compartir"><i class="fas fa-share"></i></button>
+    </div>
+    <div class="auction-btn-container-bid">
+        <button *ngIf="isLoggedIn()" class="btn-bid-xuba auction-main-btn" (click)="realizarApuesta(siguienteApuesta, false)">Ofertar {{toCurrency(siguienteApuesta)}}</button>
+        <button *ngIf="!isLoggedIn()" class="btn-bid-xuba auction-main-btn" >Inicie Sesion para Ofertar</button>
+    </div>
+
+    <div class="auction-timer-responsive">
+      <i class="fas fa-clock"></i> {{tiempoVence}}
+    </div>
+   
+    <div class="responsive-gallery text-center">
+      <img [src]="images.url" 
+          (click)="setIndexImage(i)" 
+          *ngFor="let images of subasta.mimagenesSubasta; let i = index;" 
+          class="h-100 mb-2 mini-img" 
+          [ngClass]="{'active current-img': currentIndexImage === i}" alt="">
+
+    </div>
+  </div>
+
+  <div class="col-12 h-auto bg-light  d-sm-none d-block">
+    <div class="auction-info-card mb-3 mt-2 bg-light descripcion-container-aside">
+      <div class="d-flex align-items-center mb-2">
+        <div class="w-100">
+            <small style="font-size: 12px;color:#747d8c">VENDIDO POR:</small>
+            <div class="seller-name text-dark" (click)="openUserPage(subasta.musuarios.id)">{{ subasta.musuarios.usuario}} <i class="fas fa-star" style="font-size: 13px; color: #f39c12;"></i> <span style="color:#636e72 ;">{{subasta.musuarios.stars}}</span>  </div>
+            <button *ngIf="isLoggedIn() && this.usuario()!.id !== this.subasta.musuarios.id" class="btn  btn-xs w-100" [disabled]="lockButton" [ngClass]="{'btn-fv': getSiguiendo(subasta.musuarios.id), 'btn-uv':!getSiguiendo(subasta.musuarios.id)}" (click)="toggleSeguirVendedor(subasta.musuarios.id)">
+              {{getSiguiendo(subasta.musuarios.id) ? 'Siguiendo':'Seguir'}} <i class="fas fa-bookmark"></i>
+            </button>
+         <br>
+          <small style="font-size: 10px;color:#353b48">Desde {{subasta.direccion? subasta.direccion.municipio:'' }}, {{subasta.direccion? subasta.direccion.estado:'' }}</small>
+        </div>
+      </div>
+      <hr>
+      <h2 class="auction-title-dark mb-2 text-caption">{{ subasta.caption }} </h2>
+      <h3 class="auction-title-dark " style="font-size: 0.7em;color:#636e72">#{{subasta.id}}</h3>
+      <div class="auction-desc-dark mb-3">
+        {{ subasta.descripcion }} 
+      </div>
+      <div class="text-price text-center w-100 d-none">
+        <span class="price-lbl" ><i class="fas fa-money-bill"></i> Oferta actual</span>
+        <br>
+        <span class="price-number">{{toCurrency(valorApuesta) }}</span>
+      </div>
+      <div class="w-100 text-dark text-center pt-5 d-none" style="font-size: 1.5rem;">
+        <i class="fas fa-clock"></i> {{tiempoVence}}
+      </div>
+    </div>
+
+    <div class="auction-info-card mt-1 pb-3 bg-light images-container pb-0">
+      <h5 style="font-size: 0.9em;" class="text-center">Costos de envio <i class="fas fa-truck"></i> </h5>
+      <button class="btn btn-sm btn-info w-100" (click)="openShippingPricesModal()">Ver precios</button>
+    </div>
+    <div class="auction-info-card mt-1 pb-3 bg-light images-container pb-0">
+      <button class="btn btn-sm btn-dark w-100" (click)="openModalBottom()">Xubastas premium</button>
+    </div>
+  </div>
+
+  <div class="bottom-modal-xs" *ngIf="showModalBottom">
+    <div [class]="'modal-xs fast-animation animate__animated animate__fadeInUp ' +classModalBottom">
+      <div class="w-100 d-flex v-c" style="justify-content: space-between;">      
+        <h5>Subastas premium</h5> 
+        <button class="p-0 btn-danger" (click)="closeModalBottom()" style="width: 30px;height: 30px;"><i class="fas fa-times"></i></button>
+      </div>
+      <div style="height: 90%; overflow-y: scroll; margin-top: 6%;">
+        <div  (click)="getDatosSubasta(subasta.id)" class=" mb-4 mt-2 auction-card border-gold text-gold"  *ngFor="let subasta of listaPremium">
+          <img [src]="subasta.url" alt="">
+       
+            <div class="price">${{ subasta.apuesta }} MXN</div>
+            <div class="timer">{{segundosATiempoString(subasta.venceSegundos!)}}</div>
+            <hr>
+            <div class="actions">
+            
+            </div>
+            <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+              {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+            </div>
+        </div> 
+      </div>
+    </div>
+
+  </div>
+
+  <aside class="col-lg-2 d-none d-sm-block bg-light" style="overflow-y: hidden;height: calc(100vh - 70px)">
+    
+    <div class="desc-box-seller">
+      <div class="card-shape ps-2 pe-2">
+        <div class="d-flex align-items-center mb-1">
+          <div class="w-100">
+              <small class="f-arial" style="font-size: 10px;color:#747d8c">VENDIDO POR:</small>
+              <div class="seller-name text-dark" (click)="openUserPage(subasta.musuarios.id)">{{ subasta.musuarios.usuario}} <i class="fas fa-star" style="font-size: 13px; color: #f39c12;"></i> <span style="color:#636e72 ;">{{subasta.musuarios.stars}}</span>  </div>
+              <button *ngIf="isLoggedIn() && this.usuario()!.id !== this.subasta.musuarios.id" class="btn  btn-xs w-100" [disabled]="lockButton" [ngClass]="{'btn-fv': getSiguiendo(subasta.musuarios.id), 'btn-uv':!getSiguiendo(subasta.musuarios.id)}" (click)="toggleSeguirVendedor(subasta.musuarios.id)">
+                {{getSiguiendo(subasta.musuarios.id) ? 'Siguiendo':'Seguir'}} <i class="fas fa-bookmark"></i>
+              </button>
+           <br>
+          
+            <small style="font-size: 10px;color:#353b48">Desde {{subasta.direccion? subasta.direccion.municipio:'' }}, {{subasta.direccion? subasta.direccion.estado :''}}</small>
+          
+          </div>
+        </div>
+      </div>
+     
+    </div>
+    <div class="desc-box-info mt-1">
+      <div class="card-shape ps-2 pe-2 pt-1">
+        <h2 class="auction-title-dark mb-2 text-caption">{{ subasta.caption }} </h2>
+        <h3 class="auction-title-dark " style="font-size: 0.7em;color:#636e72">#{{subasta.id}}</h3>
+        <div class="auction-desc-dark mb-1 f-arial">
+          {{ subasta.descripcion }} 
+        </div>
+        <div class="text-price text-center w-100">
+          <span class="price-lbl"><i class="fas fa-money-bill"></i> Oferta actual</span>
+          <br>
+          <span class="price-number">{{toCurrency(valorApuesta) }}</span>
+        </div>
+       
+  
+        <div class="w-100 text-dark text-center mb-2" style="font-size: 1.5rem;">
+          <i class="fas fa-clock"></i> {{tiempoVence}}
+        </div>
+        <div  class="protected text-center">
+          <hr>
+          <i class="fas fa-lock "></i> Toda tu informacion esta segura y protegida a traves de 
+          <br />
+          <img src="images/openpay-logo.png" class="d-none d-sm-block m-auto w-50 mt-1" alt="OpenPay Logo" >
+        </div>
+      </div>
+     
+      
+    </div>
+    <div class="desc-box-gallery mt-1">
+      <div class="card-shape ps-2 pe-2 images-container ">
+        <h5 class="text-center">Galeria</h5>
+        <img [src]="images.url" (click)="setIndexImage(i)" *ngFor="let images of subasta.mimagenesSubasta; let i = index;" class="w-20 mb-2" [ngClass]="{'active': currentIndexImage === i}" alt="">
+      </div>
+     
+    </div>
+    <div class="desc-box-shipping mt-1">
+      <div class="card-shape p-2">
+      <h5 style="font-size: 0.9em;" class="text-center">Costos de envio <i class="fas fa-truck"></i> </h5>
+      <button class="btn btn-sm btn-info w-100" (click)="openShippingPricesModal()">Ver precios</button>
+    </div>
+    </div>
+
+  </aside>
+</div>
+
+
+
+
+
+<div *ngIf="isModalOpen" class="cart-modal-backdrop">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white" >Enviar otra oferta</span>
+      </h3>
+      <button class="close-button" (click)="closeModal()">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
+            <form class="form-productos pl-2 pr-2">
+                <div class="form-row">
+                    <div class="form-group">
+                      <button class="btn btn-info mb-2" (click)="setApuestaPersonalizada(100)"><i class="fas fa-cash"></i> $100</button>
+                      <button class="btn btn-info mb-2" (click)="setApuestaPersonalizada(300)"><i class="fas fa-cash"></i> $300</button>
+                      <button class="btn btn-info"(click)="setApuestaPersonalizada(500)"><i class="fas fa-cash"></i> $500</button>
+                    
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cantidadPuja">OTRA OFERTA</label>
+                        <input type="number" [(ngModel)]="valorSubastaPersonalizada" id="cantidadPuja" name="cantidadPuja" />
+                    </div>
+               
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer text-start pb-3 pe-3">
+    
+      <div>
+        <button class="btn btn-dark me-2" (click)="closeModal()">
+          Cancelar
+        </button>
+        <button class="btn btn-xuba"  (click)="tryOfertaPersonalizada()">
+          <i class="fas fa-check"></i> Ofertar
+        </button>
+      </div>     
+    </div>
+  </div>
+</div> -->
+
+
+<div style="height: 94vh; display: flex; overflow: hidden; background: var(--bg); transition: background 0.3s;">
+
+  <!-- ══════════════ IZQUIERDA ══════════════ -->
+  <div style="width: 230px; flex-shrink: 0; display: flex; flex-direction: column; height: 100%; padding: 12px 10px; gap: 10px; border-right: 1px solid var(--border); overflow: hidden;">
+
+    <!-- Header + toggle -->
+    <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 4px 2px;">
+      <div>
+        <!-- <p class="gradient-text" style="font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">
+          Modo oscuro: {{isDarkMode? 'SI':'NO'}}
+        </p> -->
+        <!-- <p style="font-size: 10px; color: var(--text2); margin-top: 1px;">En vivo ahora</p> -->
+      </div>
+      <!-- Toggle dark/light -->
+      <!-- <div class="toggle-wrap" (click)="toggleTheme()">
+        <div class="toggle-track" [ngClass]="{'to-light': !isDarkMode, 'to-dark':isDarkMode}">
+          <div class="toggle-thumb"  [ngClass]="{'to-light': !isDarkMode, 'to-dark':isDarkMode}"></div>
+        </div>
+        <i id="theme-icon" class="fas" [ngClass]="{'fa-sun': !isDarkMode, 'fa-moon':isDarkMode}" style="font-size: 13px; color: var(--text2);"></i>
+      </div> -->
+    </div>
+
+    <!-- Ant / Sig -->
+    <div style="flex-shrink: 0; display: flex; gap: 6px;">
+      <button (click)="irAAnterior()" class="glass-btn" style="flex: 1; color: var(--text); border: none; border-radius: 10px; padding: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">
+        <i class="fas fa-chevron-left"></i> Ant
+      </button>
+      <button (click)="irASiguiente()" class="glass-btn" style="flex: 1; color: var(--text); border: none; border-radius: 10px; padding: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">
+        Sig <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Lista subastas — scroll solo aquí -->
+    <div class="scroll-thin" style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 2px;">
+
+      <!-- Card 1 -->
+      <div class="card-left glass" *ngFor="let subasta of listaPremium" (click)="getDatosSubasta(subasta.id)" style="flex-shrink: 0; border-radius: 14px; overflow: hidden; position: relative; border-color: rgba(236,72,153,0.35) !important;">
+        <!-- <div style="width: 100%; height: 5px; background: var(--bg2);"></div> -->
+         <img [src]="subasta.url" alt="">
+         <!-- <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+          {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+        </div> -->
+        <div class="ribbon" [ngClass]="{'ribbon-nuevo': subasta.nuevo, 'ribbon-usado':  !subasta.nuevo}"><span>
+          {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+        </span></div>
+        <div style="padding: 10px;">
+         
+          <p style="font-size: 12px; font-weight: 700; color: #ec4899;">{{ subasta.caption }}#{{subasta.id}}</p>
+          <p style="font-size: 13px; font-weight: 800; color: var(--text); margin: 3px 0;">{{toCurrency(subasta.apuesta) }} <span style="font-size: 10px; color: var(--text2);">MXN</span></p>
+          <span style="font-size: 12px; color: #38bdf8; font-weight: 700;"><i class="fas fa-clock" style="font-size: 10px;"></i> {{segundosATiempoString(subasta.venceSegundos!) }}</span>
+        </div>
+      </div>
+<!-- 
+      <div class="card-left glass" style="flex-shrink: 0; border-radius: 14px; overflow: hidden; position: relative;">
+        <div style="width: 100%; height: 110px; background: var(--bg2);"></div>
+        <div class="ribbon ribbon-nuevo"><span>Nuevo</span></div>
+        <div style="padding: 10px;">
+          <p style="font-size: 12px; font-weight: 700; color: #ec4899;">mclaren 750s#13406</p>
+          <p style="font-size: 13px; font-weight: 800; color: var(--text); margin: 3px 0;">$460,000.00 <span style="font-size: 10px; color: var(--text2);">MXN</span></p>
+          <span style="font-size: 12px; color: #38bdf8; font-weight: 700;"><i class="fas fa-clock" style="font-size: 10px;"></i> 00:45:12</span>
+        </div>
+      </div>
+
+
+      <div class="card-left glass" style="flex-shrink: 0; border-radius: 14px; overflow: hidden; position: relative;">
+        <div style="width: 100%; height: 110px; background: var(--bg2);"></div>
+        <div class="ribbon ribbon-premium"><span>Premium</span></div>
+        <div style="padding: 10px;">
+          <p style="font-size: 12px; font-weight: 700; color: #ec4899;">laptop#11290</p>
+          <p style="font-size: 13px; font-weight: 800; color: var(--text); margin: 3px 0;">$12,500.00 <span style="font-size: 10px; color: var(--text2);">MXN</span></p>
+          <span style="font-size: 12px; color: #38bdf8; font-weight: 700;"><i class="fas fa-clock" style="font-size: 10px;"></i> 01:45:30</span>
+        </div>
+      </div>
+
+
+      <div class="card-left glass" style="flex-shrink: 0; border-radius: 14px; overflow: hidden; position: relative;">
+        <div style="width: 100%; height: 110px; background: var(--bg2);"></div>
+        <div class="ribbon ribbon-usado"><span>Usado</span></div>
+        <div style="padding: 10px;">
+          <p style="font-size: 12px; font-weight: 700; color: #ec4899;">bicicleta#10021</p>
+          <p style="font-size: 13px; font-weight: 800; color: var(--text); margin: 3px 0;">$3,200.00 <span style="font-size: 10px; color: var(--text2);">MXN</span></p>
+          <span style="font-size: 12px; color: #38bdf8; font-weight: 700;"><i class="fas fa-clock" style="font-size: 10px;"></i> 03:22:05</span>
+        </div>
+      </div>
+
+
+      <div class="card-left glass" style="flex-shrink: 0; border-radius: 14px; overflow: hidden; position: relative;">
+        <div style="width: 100%; height: 110px; background: var(--bg2);"></div>
+        <div class="ribbon ribbon-nuevo"><span>Nuevo</span></div>
+        <div style="padding: 10px;">
+          <p style="font-size: 12px; font-weight: 700; color: #ec4899;">silla gamer#20045</p>
+          <p style="font-size: 13px; font-weight: 800; color: var(--text); margin: 3px 0;">$8,750.00 <span style="font-size: 10px; color: var(--text2);">MXN</span></p>
+          <span style="font-size: 12px; color: #38bdf8; font-weight: 700;"><i class="fas fa-clock" style="font-size: 10px;"></i> 02:15:00</span>
+        </div>
+      </div>
+
+      <div class="card-left glass" style="flex-shrink: 0; border-radius: 14px; overflow: hidden; position: relative;">
+        <div style="width: 100%; height: 110px; background: var(--bg2);"></div>
+        <div class="ribbon ribbon-premium"><span>Premium</span></div>
+        <div style="padding: 10px;">
+          <p style="font-size: 12px; font-weight: 700; color: #ec4899;">reloj rolex#30012</p>
+          <p style="font-size: 13px; font-weight: 800; color: var(--text); margin: 3px 0;">$95,000.00 <span style="font-size: 10px; color: var(--text2);">MXN</span></p>
+          <span style="font-size: 12px; color: #38bdf8; font-weight: 700;"><i class="fas fa-clock" style="font-size: 10px;"></i> 00:58:30</span>
+        </div>
+      </div>
+
+      <div class="card-left glass" style="flex-shrink: 0; border-radius: 14px; overflow: hidden; position: relative;">
+        <div style="width: 100%; height: 110px; background: var(--bg2);"></div>
+        <div class="ribbon ribbon-usado"><span>Usado</span></div>
+        <div style="padding: 10px;">
+          <p style="font-size: 12px; font-weight: 700; color: #ec4899;">cámara sony#40088</p>
+          <p style="font-size: 13px; font-weight: 800; color: var(--text); margin: 3px 0;">$22,300.00 <span style="font-size: 10px; color: var(--text2);">MXN</span></p>
+          <span style="font-size: 12px; color: #38bdf8; font-weight: 700;"><i class="fas fa-clock" style="font-size: 10px;"></i> 04:05:18</span>
+        </div>
+      </div>
+
+      <div class="card-left glass" style="flex-shrink: 0; border-radius: 14px; overflow: hidden; position: relative;">
+        <div style="width: 100%; height: 110px; background: var(--bg2);"></div>
+        <div class="ribbon ribbon-nuevo"><span>Nuevo</span></div>
+        <div style="padding: 10px;">
+          <p style="font-size: 12px; font-weight: 700; color: #ec4899;">drone dji#50033</p>
+          <p style="font-size: 13px; font-weight: 800; color: var(--text); margin: 3px 0;">$18,600.00 <span style="font-size: 10px; color: var(--text2);">MXN</span></p>
+          <span style="font-size: 12px; color: #38bdf8; font-weight: 700;"><i class="fas fa-clock" style="font-size: 10px;"></i> 05:30:44</span>
+        </div>
+      </div> -->
+
+    </div>
+  </div>
+
+  <!-- ══════════════ CENTRO ══════════════ -->
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+
+    <!-- Banner ganando -->
+    <div style="flex-shrink: 0; padding: 10px 16px;">
+      <div [class]="'glass glass-label fast-animation animate__animated ' + animatedClass" *ngIf="usuarioMayor" style="border-radius: 50px; padding: 10px 24px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span style="font-size: 14px; font-weight: 700; color: var(--text);"> {{usuarioMayor}}</span>
+        <span style="font-size: 14px; font-weight: 800; color: #ec4899;">Va Ganando! 🏆</span>
+      </div>
+    </div>
+
+    <!-- Imagen producto -->
+    <div style="flex: 1; min-height: 0; position: relative; margin: 0 16px;">
+      <div style="width: 100%; height: 90%; background: var(--bg2); border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+        <!-- <i class="fas fa-image" style="font-size: 48px; color: var(--text2);"></i> -->
+        <img [src]="subasta.mimagenesSubasta[currentIndexImage].url" [class]="'animate__animated ' + imageClassAnimated" alt="Imagen de la subasta" style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
+      </div>
+      <!-- <div style="width: 80%; height: 20%; background: var(--bg2); border-radius: 20px; display: flex; align-items: start; justify-content: center;margin: auto;overflow-y: hidden;"> -->
+        <!-- <i class="fas fa-image" style="font-size: 48px; color: var(--text2);"></i> -->
+        <!-- {{subasta.descripcion}} -->
+
+      <!-- </div> -->
+      <!-- <div class="glass" style="flex: 1; min-height: 0; border-radius: 16px; padding: 12px; display: flex; flex-direction: column;">
+        <h2 style="font-size: 14px; font-weight: 800; color: #ec4899; margin-bottom: 3px; line-height: 1.3; flex-shrink: 0;">{{subasta.caption}}</h2>
+        <p style="font-size: 10px; color: var(--text2); margin-bottom: 8px; flex-shrink: 0;">#{{subasta.id}}</p>
+        <div class="scroll-thin" style="flex: 1; min-height: 0; overflow-y: auto;">
+          <p style="font-size: 11px; color: var(--text2); line-height: 1.7;">
+            {{subasta.descripcion}}
+          </p>
+        </div>
+      </div> -->
+      <!-- <img [src]="subasta.mimagenesSubasta[currentIndexImage].url" [class]="'animate__animated ' + imageClassAnimated" alt="Imagen de la subasta" style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
+    <div [class]="'auction-label-container-winner fast-animation animate__animated ' + animatedClass" *ngIf="usuarioMayor">
+      {{usuarioMayor}} <span class="winner-span" >Va Ganando!</span>
+    </div> -->
+      <!-- Pantalla completa -->
+      <button class="glass" (click)="openModalViewer()" style="position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-expand"></i>
+      </button>
+      <!-- Acciones flotantes -->
+      <div style="position: absolute; right: 14px; bottom: 14px; display: flex; flex-direction: column; gap: 8px;">
+        <button class="glass" style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-share-alt"></i>
+        </button>
+        <button class="glass" style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-heart"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Botón ofertar -->
+    <div *ngIf="isLoggedIn()" style="flex-shrink: 0; padding: 12px 16px;">
+      <button class="btn-offer glass-btn" (click)="realizarApuesta(siguienteApuesta, false)" style="width: 100%; border: none; border-radius: 50px; padding: 16px; color: black; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px;">
+        <i class="fas fa-gavel" style="margin-right: 8px;"></i> Ofertar {{toCurrency(siguienteApuesta)}}
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════ DERECHA ══════════════ -->
+  <div style="width: 280px; flex-shrink: 0; height: 100%; display: flex; flex-direction: column; padding: 12px 10px; gap: 8px; border-left: 1px solid var(--border); overflow: hidden;">
+
+    <!-- Vendedor -->
+    <div class="glass" style="flex-shrink: 0; border-radius: 16px; padding: 12px;">
+      <p style="font-size: 9px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">Vendido por</p>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <!-- <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--thumb-bg); border: 1px solid var(--card-border); flex-shrink: 0;"></div> -->
+        <div style="flex: 1; text-align: left !important;">
+          <p class="" (click)="openUserPage(subasta.musuarios.id)" style="font-weight: 700; font-size: 13px; color: var(--text);">{{ subasta.musuarios.usuario}}</p>
+          <div style="display: flex; align-items: center; gap: 3px;">
+            <i class="fas fa-star" style="color: #f59e0b; font-size: 10px;"></i>
+            <span style="font-size: 11px; color: var(--text2);">{{ subasta.musuarios.stars}}.0</span>
+            &nbsp;
+            <i class="fas fa-eye"></i>
+            <span style="font-size: 11px; color: var(--text2);">1.5k</span>
+            &nbsp;
+            <i class="fas fa-gavel"></i>
+            <span style="font-size: 11px; color: var(--text2);">126</span>
+          </div>
+        </div>
+     
+     
+      </div>
+      <button class="w-100" *ngIf="isLoggedIn() && this.usuario()!.id !== this.subasta.musuarios.id"  [disabled]="lockButton" [ngClass]="{'btn-fv': getSiguiendo(subasta.musuarios.id), 'btn-uv':!getSiguiendo(subasta.musuarios.id)}" (click)="toggleSeguirVendedor(subasta.musuarios.id)" style="margin-left: auto; background: linear-gradient(to right, #ec4899, #8b5cf6); color: white; border: none; border-radius: 50px; padding: 6px 14px; font-size: 11px; font-weight: 600; cursor: pointer;">
+        <i class="fas" [ngClass]="{'fa-plus': !getSiguiendo(subasta.musuarios.id), 'fa-bookmark':getSiguiendo(subasta.musuarios.id)}"></i>  {{getSiguiendo(subasta.musuarios.id) ? 'Siguiendo':'Seguir'}} 
+      </button>
+      <p class="mt-2" style="font-size: 11px; color: var(--text2);">
+        <i class="fas fa-map-marker-alt" style="color: #ec4899; margin-right: 4px;"></i>
+        Desde {{subasta.direccion? subasta.direccion.municipio:'' }}, {{subasta.direccion? subasta.direccion.estado:'' }}
+      </p>
+    </div>
+
+    <!-- Nombre y descripción -->
+    <div class="glass" style="flex: 1; min-height: 0; border-radius: 16px; padding: 12px; display: flex; flex-direction: column;">
+      <h2 style="font-size: 14px; font-weight: 800; color: #ec4899; margin-bottom: 3px; line-height: 1.3; flex-shrink: 0;">{{subasta.caption}}</h2>
+      <p style="font-size: 10px; color: var(--text2); margin-bottom: 8px; flex-shrink: 0;">#{{subasta.id}}</p>
+      <div class="scroll-thin" style="flex: 1; min-height: 0; overflow-y: auto;">
+        <p style="font-size: 11px; color: var(--text2); line-height: 1.7;">
+          {{subasta.descripcion}}
+        </p>
+      </div>
+    </div>
+
+    <!-- Oferta y timer -->
+    <div class="glass" style="flex-shrink: 0; border-radius: 16px; padding: 12px; text-align: center;">
+      <p style="font-size: 11px; font-weight: 600; color: #38bdf8; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+        <i class="fas fa-gavel"></i> Oferta actual
+      </p>
+      <p style="font-size: 28px; font-weight: 900; color: #38bdf8; line-height: 1.1; margin-bottom: 8px;">{{toCurrency(valorApuesta) }}</p>
+      <div style="display: inline-flex; align-items: center; gap: 7px; background: var(--timer-bg); border-radius: 50px; padding: 6px 16px;">
+        <i class="fas fa-clock" style="color: var(--text2); font-size: 13px;"></i>
+        <span style="font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: 2px;">{{tiempoVence}}</span>
+      </div>
+    </div>
+
+    <!-- Openpay -->
+    <div style="flex-shrink: 0; background: var(--openpay-bg); border-radius: 16px; padding: 10px 14px; text-align: center;">
+      <p style="font-size: 10px; color: #555; margin-bottom: 5px;">
+        <i class="fas fa-lock" style="color: #6366f1; margin-right: 3px;"></i>
+        Compra segura y protegida a través de
+      </p>
+      <!-- <img src="images/openpay-logo.png" class="d-none d-sm-block m-auto w-50 mt-1" alt="OpenPay Logo" > -->
+
+      <img src="images/openpay-logo.png" alt="Openpay" style="height: 22px; margin: 0 auto; display: block;">
+    </div>
+
+    <!-- Galería -->
+    <div class="glass" style="flex: 0.35; min-height: 0; border-radius: 16px; padding: 12px; display: flex; flex-direction: column;">
+      <p style="font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 8px; flex-shrink: 0; display: flex; align-items: center; gap: 6px;">
+        <i class="fas fa-images" style="color: #ec4899;"></i> Galería
+      </p>
+      <!-- <div style="flex: 1; min-height: 0; background: var(--thumb-bg); border-radius: 10px; border: 1.5px solid rgba(236,72,153,0.5); margin-bottom: 8px; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-image" style="color: var(--text2); font-size: 24px;"></i>
+      </div> -->
+      <div style="display: flex; gap: 6px; flex-shrink: 0; overflow-x: scroll;">
+        <div class="thumb" *ngFor="let images of subasta.mimagenesSubasta; let i = index;" style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; flex-shrink: 0;">
+          <img [src]="images.url" (click)="setIndexImage(i)"  class="w-100 g-thumb" style="border-radius: 8px;flex-shrink: 0" [ngClass]="{'active': currentIndexImage === i}" alt="">
+        </div>
+        <!-- <div class="thumb" style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; border: 1.5px solid #ec4899; flex-shrink: 0;"></div>
+        <div class="thumb" style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; border: 1.5px solid #ec4899; flex-shrink: 0;"></div>
+        <div class="thumb" style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; border: 1.5px solid #ec4899; flex-shrink: 0;"></div>
+        <div class="thumb" style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; border: 1.5px solid #ec4899; flex-shrink: 0;"></div>
+        <div class="thumb" style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; border: 1.5px solid #ec4899; flex-shrink: 0;"></div>
+        <div class="thumb" style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; border: 1.5px solid #ec4899; flex-shrink: 0;"></div>
+        <div class="thumb" style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; border: 1.5px solid var(--card-border); flex-shrink: 0;"></div> -->
+      </div>
+    </div>
+
+    <!-- Costos de envío -->
+    <div class="glass" style="flex-shrink: 0; border-radius: 16px; padding: 12px;">
+      <p style="font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+        <i class="fas fa-truck" style="color: #ec4899;"></i> Costos de envío
+      </p>
+      <button *ngIf="isLoggedIn()" class="glass-btn"  (click)="openShippingPricesModal()" style="width: 100%; background: linear-gradient(to right, #38bdf8, #0ea5e9); color: white; border: none; border-radius: 50px; padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer;">
+        Ver precios
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<div *ngIf="showModalShippingPrices" class="cart-modal-backdrop">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white tw:text-base tw:font-light" >Precios de envio estimados</span>
+      </h3>
+      <button class="close-button" (click)="closeShippingPricesModal()">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+
+        <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
+            <form class="form-productos pl-2 pr-2">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        
+                        <ng-container *ngIf="direcciones.length > 0">
+                          <label for="cantidadPuja">Direccion de entrega</label>
+                          <select class="form-select f-arial tw:font-bold" name="direcionentrega" id="direcionentrega" style="color:#353b48 !important;padding-left: 10px; padding-top: 5px;padding-bottom: 5px;"
+                          [disabled]="loadingCotizacion" 
+                          [(ngModel)]="direccionEntrega" 
+                          (change)="changeDireccionEntrega()">
+                            <option *ngFor="let item of direcciones" [ngValue]="item" >
+                                {{item.calle}} {{item.numeroExt}} {{item.numeroInt}}, {{item.municipio}}
+                            </option>
+                          </select>
+                          <!-- <hr class="mt-3"> -->
+                          <ng-container *ngIf="loadingCotizacion">
+                            <div class="w-100 text-center px-2 py-2">
+                              <h4 style="font-size: 1em;">Cargando precios de envío...</h4>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngIf="!loadingCotizacion && listaTiposEnvio!.length > 0">
+                            <div  class="prices-shipping-container bg-dark text-white px-3 py-1 mb-1 mt-3">
+                              <span>Servicio</span>
+                              <span>Precio</span>
+                            </div>
+                            <div *ngFor="let envio of listaTiposEnvio" class="prices-shipping-container px-3 py-1 mb-1" c>
+                              <span class="shipname">{{envio.nombreProducto}}</span>
+                              <span class="shipprice">${{envio.precio}} MXN</span> 
+                            </div>
+                          </ng-container>
+                          <div class="tw:text-sm mt-3 text-center">
+                           <i class="fas fa-ruler"></i> Dimensiones del producto
+                           <br>
+                           <div class="row">
+                            <div class="col-sm-3 ">
+                               <div class="dims">Largo: [{{this.subasta!.largo}}cm]</div>
+                            </div>
+                            <div class="col-sm-3 "> <div class="dims">Alto: [{{this.subasta!.ancho}}cm]</div></div>
+                            <div class="col-sm-3 "> <div class="dims">Profundidad: [{{this.subasta!.profundidad}}cm]</div></div>
+                            <div class="col-sm-3 "> <div class="dims">Peso [{{this.subasta!.peso}}kg]</div></div>
+                            
+
+                           </div>
+                           <!-- <img src="images/dhl.png" class="tw:h-15 w-auto d-block m-auto" alt=""> -->
+                          </div>
+                          <div class="tw:text-sm mt-3 text-center">
+                           <i class="fas fa-shield-alt"></i> Servicio operado y garantizado por DHL Express.
+                           <img src="images/dhl.png" class="tw:h-15 w-auto d-block m-auto" alt="">
+                          </div>
+                          <ng-container *ngIf="!loadingCotizacion && listaTiposEnvio!.length === 0">
+                            <div class="w-100 text-center px-2 py-2">
+                              <h4 style="font-size: 1em;">
+                                No se pudo cargar ningun servicio de envio a la direccion seleccionada
+                              </h4>
+                            </div>
+                          </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="direcciones.length === 0">
+                          <div class="w-100 text-center px-2 py-2">
+                            <h4 style="font-size: 1.4em;">
+                             Ninguna direccion de entrega guardada
+                            </h4>
+                            <h5 style="font-size: 1.1em;color:#57606f">
+                              Por favor, agregue una dirección para cargar la cotizacion de envio.
+                            </h5>
+                          </div>
+                          <div class="w-100 text-center mt-2">
+                            <button class="btn btn-primary me-2 w-50 text-center" (click)="moveToProfile()">
+                              Ir a agregar dirección <i class="fas fa-arrow-right"></i>
+                            </button>
+                          </div>
+                        
+                        </ng-container>
+                        
+                      
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer text-start pb-3 pe-3">
+      <div>
+        <button class="btn btn-dark me-2" (click)="closeShippingPricesModal()">
+          Cerrar
+        </button>
+   
+      </div>     
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()">
+  <button class="close-viewer" (click)="closeModalViewer()">
+    <i class="fas fa-times"></i> 
+  </button>
+  
+  <button class="nav-btn prev" 
+          *ngIf="imagesListViewer.length > 1"
+          (click)="navigateImage('prev', $event)"
+          [class.disabled]="currentIndexImageViewer === 0">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+  
+  <div class="viewer-content" (click)="$event.stopPropagation()">
+    <img [class]="'fast-animation  animate__animated ' + classNavigateImg" [src]="imagesListViewer[currentIndexImageViewer].url"  style="background: #bdc3c7;">
+  </div>
+  
+  <button class="nav-btn next" 
+          *ngIf="imagesListViewer.length > 1"
+          (click)="navigateImage('next', $event)"
+          [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+</div>

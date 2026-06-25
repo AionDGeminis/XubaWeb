@@ -1,0 +1,23 @@
+<div class="fullscreen-viewer" (click)="closeModal()">
+    <button class="close-viewer" (click)="closeModal()">
+      <i class="fas fa-times"></i> 
+    </button>
+    
+    <button class="nav-btn prev" 
+            *ngIf="imageList.length > 1"
+            (click)="navigateImage('prev', $event)"
+            [class.disabled]="currentImageIndex === 0">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    
+    <div class="viewer-content" (click)="$event.stopPropagation()">
+      <img [class]="'fast-animation  animate__animated ' + classNavigateImg" [src]="imageList[currentImageIndex].url"  style="background: #bdc3c7;">
+    </div>
+    
+    <button class="nav-btn next" 
+            *ngIf="imageList.length > 1"
+            (click)="navigateImage('next', $event)"
+            [class.disabled]="currentImageIndex === imageList.length - 1">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>

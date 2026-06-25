@@ -1,0 +1,34 @@
+<aside class="sidebar"> 
+    <div class="avatar-container">
+      @if(usuario())
+      {
+        <img [src]="usuario()?.imgPerfil" alt="Avatar de usuario" class="avatar" />
+        <p class="username">{{ usuario()?.nombre }}</p>
+        <p class="userdate">Usuario desde {{ usuario()?.creado | date:"d 'de' MMMM 'del' y":"":"es" }} </p>
+      }
+     
+    </div>
+  
+    <nav class="nav-links">
+      @for (item of menuItems; track item) {
+        <a 
+        *ngIf="!item.accion" 
+        [routerLink]="item.ruta" 
+        class="nav-item">
+        <img [src]="item.icono" alt="{{ item.texto }}" class="icon-img" />
+        {{ item.texto }}
+      </a>
+  
+      <a 
+        *ngIf="item.accion === 'logout'" 
+        (click)="logout()" 
+        class="nav-item logout">
+        <img [src]="item.icono" alt="{{ item.texto }}" class="icon-img" />
+        {{ item.texto }}
+      </a>
+      }
+    </nav>
+    <div class="create-private-auction">
+      <button type="button" class="btn-private-auction">+Crear Xubasta Privada</button>
+    </div>
+  </aside>

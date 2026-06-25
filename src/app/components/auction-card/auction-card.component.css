@@ -1,0 +1,30 @@
+.card {
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    padding: 16px;
+    background: white;
+    text-align: center;
+  }
+  .card img {
+    width: 100%;
+    border-radius: 12px;
+  }
+  .actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 12px;
+  }
+  .btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .follow {
+    background-color: #f07;
+    color: white;
+  }
+  .offer {
+    background-color: #444;
+    color: white;
+  }

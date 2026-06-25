@@ -1,0 +1,27 @@
+<div *ngIf="!hasPermiso">
+    no tienes permiso para acceder a esta sección.
+</div>
+<app-loader *ngIf="loading" [texto]="textoLoading"></app-loader>
+
+<app-winner-view
+  *ngIf="isLoggedIn() && subasta && usuario()!.id !== subasta.musuarios.id && ganadorInfo && ganadorInfo.idComprador === usuario()!.id"
+  [isLoggedIn]="isLoggedIn"
+  [usuario]="usuario()"
+  [ganadorInfo]="ganadorInfo"
+  [subasta]="subasta" >
+</app-winner-view>
+
+<app-anyuser-view 
+  *ngIf="!isLoggedIn() || isLoggedIn() && subasta && usuario()!.id !== subasta.musuarios.id && ganadorInfo && ganadorInfo.idComprador !== usuario()!.id"
+  [ganadorInfo]="ganadorInfo"
+  [subasta]="subasta" >
+</app-anyuser-view> 
+
+<app-seller-view 
+  *ngIf="isLoggedIn() && subasta && usuario()!.id === subasta.musuarios.id"
+  [isLoggedIn]="isLoggedIn"
+  [usuario]="usuario"
+  [ganadorInfo]="ganadorInfo"
+  [subasta]="subasta" >
+</app-seller-view>
+<!-- <ng-container *ngIf="isLoggedIn() && ganadorInfo && usuario()!.id === ganadorInfo.idComprador" > -->

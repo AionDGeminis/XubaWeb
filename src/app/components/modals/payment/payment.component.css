@@ -1,0 +1,251 @@
+.cart-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); /* Para Safari */
+  }
+
+
+  .cart-modal-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .modal-header {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    background: linear-gradient(90deg, #f43f5e 0%, #ec4899 50%, #2563eb 100%);
+    /* color: #fff; */
+  }
+
+  .text-white{
+    color:#fff;
+  }
+  
+  .modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+  }
+  
+  .modal-title i {
+    margin-right: 10px;
+    color: #007bff;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+  }
+  
+  .close-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Cuerpo del modal */
+  .modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(90vh - 140px); /* Altura mu00e1xima restando header y footer */
+  }
+  
+  /* Mensaje de carrito vacu00edo */
+  .empty-cart-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+    text-align: center;
+    color: #6c757d;
+  }
+  
+  .empty-cart-message i {
+    margin-bottom: 20px;
+  }
+
+
+
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 160px;
+  }
+  
+  .full-width {
+    flex: 2;
+  }
+  
+  label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #333;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 1rem;
+    background: #f9fafb;
+    transition: border 0.2s;
+  }
+  
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  textarea:focus {
+    border-color: #2563eb;
+    outline: none;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+  
+  .precio-group {
+    flex: 2;
+  }
+  
+  .compra-directa-group {
+    display: flex;
+    align-items: flex-end;
+    flex: 1;
+    margin-left: 12px;
+  }
+  
+  .compra-directa-group label {
+    margin-bottom: 0;
+    margin-right: 8px;
+    font-weight: 400;
+  }
+  
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #2563eb;
+  }
+  
+  @media (max-width: 600px) {
+    .form-row {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-producto {
+      padding: 16px 8px;
+    }
+  }
+
+    
+  .w-5{width: 5%;}
+  .w-8{width: 8%;}
+  .w-10{width: 10%;}
+  .w-15{width:15%}
+  .w-70{width:70%}
+  .w-80{width:80%}
+  .w-90{width:90%}
+
+
+
+
+  .policy-container {
+    width: 100%;
+    /* max-width: 80%; */
+    margin: 20px auto;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .policy-content h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #222;
+  }
+  
+  .policy-content p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .policy-accept {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .policy-accept label {
+    font-size: 14px;
+    color: #222;
+    cursor: pointer;
+  }
+  
+  .policy-accept input[type="checkbox"] {
+    margin-right: 8px;
+  }
+  
+  .policy-accept button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .policy-accept button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .policy-accept button:hover:not(:disabled) {
+    background-color: #0056b3;
+  }

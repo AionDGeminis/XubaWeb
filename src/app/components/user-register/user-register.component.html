@@ -1,0 +1,126 @@
+<app-loader *ngIf="loading"></app-loader>
+
+<div class="preregistro-container" *ngIf="!isRegistered">
+    <div class="hero-section">
+      <img src="images/law.png" alt="Subasta" class="hero-img">
+      <div class="hero-content">
+        <h1>¡Preregístrate para la gran Xubasta!</h1>
+        <p>Personaliza tu experiencia y recibe acceso anticipado a las mejores ofertas.</p>
+        <div class="countdown">Falta <span id="dias"></span> muy poco para el lanzamiento</div>
+      </div>
+    </div>
+    <form class="preregistro-form">
+        <div class="form-row">
+            <div class="form-group">
+                <!-- <label for="marca">Marca</label> -->
+                <input type="text" placeholder="Nombre" name="nombre" [(ngModel)]="formData.nombre">            </div>
+            <div class="form-group">
+                <!-- <label for="modelo">Modelo</label> -->
+                <input type="text" placeholder="Apellido" name="apellido"  [(ngModel)]="formData.apellido">
+            </div>
+        </div>
+      <!-- <input type="text" placeholder="Nombre">
+      <input type="text" placeholder="Apellido"> -->
+      <input type="text" placeholder="Usuario" name="usuario"  [(ngModel)]="formData.usuario">
+      <div class="form-row">
+        <div class="form-group">
+            <input type="text" placeholder="Telefono" name="telefono" maxlength="18" (input)="onInput($event, 'formData')"  [(ngModel)]="formData.telefono">              
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Confirmar Telefono" (paste)="$event.preventDefault()" name="ctelefono" maxlength="18" (input)="onInput($event, 'confirmar')"  [(ngModel)]="confirmar.telefono">              
+
+            <!-- <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo"> -->
+        </div>
+        
+     </div>
+      <div class="form-row">
+        <div class="form-group">
+            <!-- <label for="marca">Marca</label> -->
+            <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo">
+
+            <!-- <input type="text" placeholder="Telefono" name="telefono" maxlength="18" (input)="onInput($event)"  [(ngModel)]="formData.telefono">               -->
+        </div>
+        <div class="form-group">
+            <!-- <label for="modelo">Modelo</label> -->
+            <input type="email" placeholder="Confirmar Correo electrónico" (paste)="$event.preventDefault()" name="ccorreo"  [(ngModel)]="confirmar.correo">
+            <!-- <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo"> -->
+        </div>
+
+     </div>
+     <h4 class="" style="font-size: 0.9em;">Me interesa</h4>
+     <div class="form-row">
+      
+      <label>
+        <input type="checkbox" name="icomprar" [(ngModel)]="intereses.comprar"> Comprar
+      </label>
+      <label>
+        <input type="checkbox" name="ivender" [(ngModel)]="intereses.vender"> Vender
+      </label>
+     </div>
+     <h5 style="font-size: 1em;">Fecha de Nacimiento</h5>
+     <div class="form-row form-row-3">
+        <div class="form-group">
+            <select class="form-select" [(ngModel)]="fechaNacimiento.dia" name="dia" >
+                <option value="null">Dia</option>
+                <option *ngFor="let dia of dias" [value]="dia">{{dia}}</option>
+              </select>
+                      
+        </div>
+        <div class="form-group">
+            <select class="form-select" [(ngModel)]="fechaNacimiento.mes" name="mes" >
+                <option value="null">Mes</option>
+                <option *ngFor="let mes of meses" [value]="mes.id">{{mes.nom}}</option>
+            </select>        
+        </div>
+        <div class="form-group">
+            <select class="form-select" [(ngModel)]="fechaNacimiento.anio" name="anio" >
+                <option value="null">Año</option>
+                <option *ngFor="let anio of anios" [value]="anio">{{anio}}</option>
+            </select>        
+        </div>
+     </div>
+      <!-- <input type="text" placeholder="Telefono">      
+      <input type="email" placeholder="Correo electrónico"> -->
+      <input type="password" placeholder="Contraseña" name="password"  [(ngModel)]="formData.contra">
+      <input type="password" placeholder="Confirmar Contraseña"  name="repassword" [(ngModel)]="formData.repcontra">
+      <!-- <input type="password" placeholder="Genero"> -->
+      <select class="form-select" [(ngModel)]="formData.genero" name="genero" >
+        <option value="">Genero</option>
+        <option value="H">Hombre</option>
+        <option value="M">Mujer</option>
+      </select>
+      <!-- <label>
+        <input type="checkbox"> Quiero recibir notificaciones y ofertas exclusivas
+      </label> -->
+      <button class="glass-btn" type="button" (click)="onSubmit()">Preregistrarme</button>
+    </form>
+    <div class="benefits">
+      <h3>¿Por qué preregistrarte?</h3>
+      <ul>
+        <li>Acceso anticipado a subastas exclusivas</li>
+        <li>Recibe un aviso cuando puedas comenzar a usar la aplicacion</li>
+        <li>Recibiras 3 subastas premium Gratis</li>
+      </ul>
+    </div>
+    <!-- <div class="testimonials">
+      <blockquote>“¡No puedo esperar para empezar a apostar!”</blockquote>
+      <blockquote>“Me encanta poder elegir mis categorías favoritas desde el inicio.”</blockquote>
+    </div> -->
+  </div>
+
+  <!-- <div class="preregistro-container" *ngIf="isRegistered"> -->
+    <div class="thankyou-container" *ngIf="isRegistered">
+        <div class="thankyou-card">
+          <div class="thankyou-icon">🎉</div>
+          <h1>¡Gracias por registrarte!</h1>
+          
+          <p>
+            Hemos recibido tu registro correctamente.<br><br>
+            Cuando la aplicación esté activa, recibirás una notificación por correo electrónico para que puedas comenzar a participar en las Xubastas.
+          </p>
+          <p class="thankyou-note">
+            Si tienes dudas, contáctanos en <a href="mailto:soporte@tusubasta.com">{{mailSoporte}}</a>
+          </p>
+        </div>
+      </div>
+  <!-- </div> -->

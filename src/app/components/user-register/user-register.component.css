@@ -1,0 +1,242 @@
+.preregistro-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px #0002;
+    padding: 0 0 32px 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  
+  .hero-section {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, #D4367A 0%, #28AAE2 100%);
+    color: #fff;
+    padding: 36px 32px 24px 32px;
+    border-radius: 18px 18px 0 0;
+    gap: 32px;
+  }
+  
+  .hero-img {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    background: #fff3;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px #0001;
+  }
+  
+  .hero-content h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.1em;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+  
+  .hero-content p {
+    margin: 0 0 12px 0;
+    font-size: 1.15em;
+    opacity: 0.95;
+  }
+  
+  .countdown {
+    background: #fff2;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 1.1em;
+    display: inline-block;
+    margin-top: 8px;
+  }
+  input::placeholder {
+    color: #8395a7;
+}
+  .preregistro-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: #fff;
+    margin: 32px auto 0 auto;
+    width: 60%;
+    padding: 28px 24px 20px 24px;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px #0001;
+    position: relative;
+    top: -40px;
+    z-index: 2;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 160px;
+  }
+  .form-row-3 .form-group {
+    min-width: 0; /* Permite que los 3 se ajusten mejor */
+    flex-basis: 0;
+  }
+  
+  
+  .preregistro-form input,
+  .preregistro-form select {
+    padding: 10px 12px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1em;
+    background: #fafbfc;
+    transition: border 0.2s;
+  }
+  
+  .preregistro-form input:focus,
+  .preregistro-form select:focus {
+    border: 1.5px solid #ee0979;
+    outline: none;
+  }
+  
+  .preregistro-form label {
+    font-size: 0.98em;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .preregistro-form button {
+    background: linear-gradient(90deg, #D4367A 0%, #28AAE2 100%);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 12px 0;
+    font-weight: 600;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.4s;
+  }
+  .preregistro-form button:hover {
+    background: linear-gradient(90deg, #28AAE2 0%, #D4367A 100%);
+  }
+  
+  .benefits, .testimonials {
+    max-width: 600px;
+    margin: 0 auto 0 auto;
+    background: #f7f8fa;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px #0001;
+    padding: 24px 24px 12px 24px;
+    margin-top: 18px;
+  }
+  
+  .benefits h3 {
+    margin-top: 0;
+    color: #ee0979;
+    font-size: 1.15em;
+    font-weight: 600;
+  }
+  
+  .benefits ul {
+    padding-left: 18px;
+    margin: 10px 0 0 0;
+    color: #444;
+    font-size: 1em;
+  }
+  
+  .testimonials blockquote {
+    margin: 12px 0 0 0;
+    padding-left: 16px;
+    border-left: 4px solid #ee0979;
+    color: #555;
+    font-style: italic;
+    background: #fff;
+    border-radius: 6px;
+    padding: 10px 16px;
+  }
+  
+  @media (max-width: 900px) {
+    .hero-section {
+      flex-direction: column;
+      text-align: center;
+      gap: 18px;
+      padding: 28px 10px 18px 10px;
+    }
+    .hero-img {
+      width: 120px;
+      height: 120px;
+    }
+    .preregistro-form {
+      max-width: 95vw;
+      padding: 18px 8px 12px 8px;
+      top: -20px;
+    }
+    .benefits, .testimonials {
+      max-width: 98vw;
+      padding: 14px 8px 8px 8px;
+    }
+  }
+
+
+
+
+
+
+  .thankyou-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, #D4367A 0%,  #28AAE2 100%);
+
+    /* background: linear-gradient(120deg, #ff6a00 0%, #ee0979 100%); */
+  }
+  
+  .thankyou-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px #0002;
+    padding: 48px 36px 36px 36px;
+    width: 50%;
+    text-align: center;
+  }
+  
+  .thankyou-icon {
+    font-size: 3.5em;
+    margin-bottom: 18px;
+  }
+  
+  .thankyou-card h1 {
+    margin: 0 0 16px 0;
+    color: #ee0979;
+    font-size: 2em;
+    font-weight: 700;
+  }
+  
+  .thankyou-card p {
+    color: #444;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+  
+  .thankyou-note {
+    font-size: 0.98em;
+    color: #888;
+    margin-top: 18px;
+  }
+  
+  .thankyou-note a {
+    color: #ee0979;
+    text-decoration: underline;
+  }
+
+  .w-30{
+    width: 30%;
+  }

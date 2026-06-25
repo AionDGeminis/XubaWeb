@@ -1,0 +1,32 @@
+<div class="w-100 h-100 bg-result fast-animation  animate__animated animate__fadeIn">
+    <div class="searcher p-3 pb-1 d-flex">
+        
+        <input (keydown.enter)="obtenerResultados()" [(ngModel)]="search" type="text" class="form-control mid-search" placeholder="Busqueda de xubastas">
+        <button (click)="obtenerResultados()" class="btn btn-xs btn-light mid-b-search"><i class="fas fa-search"></i> </button>
+    </div>
+    <div class="sugestions">
+
+    </div>
+    <div class="results p-2 bg-result">
+        <div class="item bg-light d-flex fast-animation animate__animated animate__fadeIn my-1" *ngFor="let subasta of resultados" (click)="toDetail(subasta)">
+            <div style="height: 60px;width: 20%;text-align: center;">
+                <img [src]="subasta.url" class="h-100"  alt="">
+            </div>
+            <div style="width: 80%;" class="descripcion-result px-2">
+                <span class="" >{{ subasta.caption }}#{{subasta.id}}</span> <br>
+                <span class="" >{{ subasta.short_desc }}</span> <br>
+                <div class="d-flex " style="justify-content:space-between;">
+                    <span class="item-price">{{ toCurrency(subasta.apuesta) }}</span>
+               
+                    <span class="item-time">{{ subasta.tiempoVence }}</span>
+                </div>
+                
+            </div>
+           
+        </div>
+    </div>
+    <app-loader *ngIf="loading"></app-loader>
+    <!-- <div class="h-100 w-100 bg-danger">
+       
+    </div> -->
+</div>

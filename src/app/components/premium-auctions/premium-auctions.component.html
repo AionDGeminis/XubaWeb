@@ -1,0 +1,115 @@
+<div class="mt-3 text-center">
+  <h2 class="" style="text-align: center; color: #616160; font-family: Gobold;font-size: 20px;" >
+    Xubastas PREMIUM
+  </h2>
+</div>
+<!-- <div class="barra-subastass"> -->
+    <!-- Flecha izquierda -->
+    <!-- <div
+      class="flecha-izquierda"
+      *ngIf="mostrarFlechaIzquierda"
+      (click)="scrollIzquierda(contenedorRef.nativeElement)"
+    >
+      <
+    </div> -->
+  
+    <!-- Contenedor de subastas -->
+    <!-- <div class="contenedor-items" 
+    #contenedor (scroll)="verificarScroll(contenedorRef.nativeElement)"> -->
+    <!-- <div class="premium-auctions-wrapper">
+      <div class="auctions-grid">
+        <div class="auction-card" *ngFor="let subasta of premium">
+        
+        
+          
+        
+          <img [src]="subasta.url" alt="">
+            <div class="title">{{ subasta.caption }}</div>
+            <div class="desc">{{ subasta.descripcion }}</div>
+            <div class="price">${{ subasta.apuesta }} MXN</div>
+            <div class="timer">09:15:01</div>
+            <div class="actions">
+              <button title="Seguir"><i class="fas fa-heart"></i></button>
+              <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+              <button title="Compartir"><i class="fas fa-share"></i></button>
+            </div>
+        </div> 
+      </div>
+    </div> -->
+    
+      <!-- <div class="tarjeta" *ngFor="let subasta of premium" (click)="abrirModal(subasta)" >
+        <img [src]="subasta.url" alt="Producto" class="imagen-subasta" />
+        <div class="detalle">
+            <h4>{{ subasta.caption }}</h4>
+            <p>Subasta empieza en ${{ subasta.apuesta }} mxn </p>            
+          </div>
+    
+          <div class="extras">            
+            <div class="opciones" >
+              <div class="opciones-item">
+                <img src="iconos/megusta.png" alt="Seguir" class="opcionesimg" />
+                <span>Seguir Subasta</span>
+              </div>
+              <div class="opciones-item">
+                <img src="iconos/puja.png" alt="Seguir" class="opcionesimg" />
+                <span>Ofertar</span>
+              </div>
+            </div>          
+          </div>
+      </div> -->
+    <!-- </div> -->
+  
+    <!-- Flecha derecha -->
+    <!-- <div
+      class="flecha-derecha"
+      *ngIf="mostrarFlechaDerecha"
+      (click)="scrollDerecha(contenedorRef.nativeElement)"
+    >
+      >
+    </div> -->
+    <div style="position: relative;">
+      <button class="btn btn-sm custom-arrow left-arrow" (click)="prev()">&lt;</button>
+      <button class="btn btn-sm custom-arrow right-arrow" (click)="next()">&gt;</button>
+        <owl-carousel-o [options]="customOptions" #owlCar>
+        <ng-container *ngFor="let subasta of premium">
+          <ng-template carouselSlide>
+            <div class="auction-card" (click)="abrirDetalleSubasta(subasta)">
+              <img [src]="subasta.url" alt="">
+              <div class="title">{{ subasta.caption }}#{{subasta.id}}</div>
+              <div class="desc">{{ subasta.descripcion }}</div>
+              <div class="price">{{toCurrency(subasta.apuesta) }} MXN</div>
+              <div class="timer"> {{segundosATiempoString(subasta.venceSegundos!) }}</div>
+              <div class="actions">
+                <button title="Seguir" (click)="toggleSeguida(subasta.id, $event, subasta)">
+                  <i class="fas fa-heart" [ngClass]="{'nofollowed-i': !isSeguida(subasta.id),'followed-i': isSeguida(subasta.id)}"></i>
+                </button>
+                <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+                <button title="Compartir"><i class="fas fa-share"></i></button>
+              </div>
+              <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+                {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+              </div>
+              <!-- <div class="ribbon-label">Nuevo</div> -->
+            </div> 
+          </ng-template>
+        </ng-container>
+      </owl-carousel-o>
+      <app-loader *ngIf="loading"></app-loader>
+    </div>
+
+    
+    <!-- <div class="carousel-container bg-info">
+      <button class="nav-btn left" (click)="prev()" [disabled]="currentIndex === 0">&#8592;</button>
+      
+      <div class="carousel-viewport">
+        <div class="carousel-track" [style.transform]="getTransform()" [style.transition]="transition">
+          <div class="card" *ngFor="let item of premium">
+            {{ item.caption }}
+          </div>
+        </div>
+      </div>
+      
+      <button class="nav-btn right" (click)="next()" [disabled]="currentIndex + visibleCount >= premium.length">&#8594;</button>
+    </div> -->
+  <!-- </div> -->
+ 

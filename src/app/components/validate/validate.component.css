@@ -1,0 +1,66 @@
+.email-validation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* background: linear-gradient(135deg, #0f172a, #1e293b); */
+    font-family: Arial, sans-serif;
+  }
+  
+  .validation-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  }
+  
+  .title {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #0f172a;
+  }
+  
+  .description {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 25px;
+  }
+  
+  .validate-btn {
+    background: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .validate-btn:hover {
+    background: #2563eb;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+  }
+  
+  .success-message {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #2ecc71;
+  }
+  .error-message {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #e74c3c;
+  }
+  .ask-message {
+    margin-top: 20px;
+    font-size: 1em;
+    color: #636e72;
+  }
+
+  .main-ico {
+    width: 50%;
+  }

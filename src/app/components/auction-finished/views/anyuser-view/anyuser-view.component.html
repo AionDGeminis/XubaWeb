@@ -1,0 +1,161 @@
+<div class="container-lg py-4 auction-summary">
+
+    <!-- Banner de estado (subasta terminada) -->
+    <div class="alert alert-secondary d-flex align-items-center gap-2 rounded-3 shadow-sm mb-4" role="alert">
+      <i class="bi bi-info-circle-fill fs-5"></i>
+      <div>
+        <strong>Subasta finalizada.</strong> Este artículo ya no acepta ofertas.
+      </div>
+      <span class="ms-auto text-nowrap small text-secondary">
+        Terminó: <span class="fw-semibold">22 ago 2025, 11:36 PM</span>
+      </span>
+    </div>
+  
+    <div class="row g-4">
+      <!-- Columna izquierda: Resumen del artículo -->
+      <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <!-- Producto -->
+            <div class="d-flex flex-column flex-sm-row gap-3">
+              <img [src]="subasta!.url" alt="imagen subasta" class="rounded object-fit-cover" style="width:160px;height:160px">
+              <div class="flex-grow-1">
+                <h5 class="mb-1">{{subasta!.caption}}</h5>
+                <div class="text-muted small mb-2">
+                   #{{subasta!.id}}
+                </div>
+  
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <img [src]="subasta!.musuarios.imgPerfil" class="rounded-circle" style="width:28px;height:28px" alt="Profile Picture">
+                  <a class="link-secondary text-decoration-none" href="#">{{subasta!.musuarios.nombre}} {{subasta!.musuarios.apellido}}</a>
+                  <span class="badge bg-light text-dark">
+                    <i class="fas fa-star text-warning"></i> 4.8
+                  </span>
+                  <span class="text-muted small">· 125 ventas</span>
+                </div>
+  
+                <div class="text-muted small">
+                  Envío desde Ciudad de México
+                </div>
+              </div>
+            </div>
+  
+            <hr class="my-4">
+  
+            <!-- Resumen de resultado (sin mostrar ganador) -->
+            <div class="row gy-3 align-items-stretch">
+              <div class="col-12 col-md-6">
+                <ul class="list-unstyled mb-0">
+                  <li class="d-flex justify-content-between py-1">
+                    <span class="text-muted">Precio final </span>
+                    <strong>${{subasta!.apuesta}} MXN</strong>
+                  </li>
+                  <li class="d-flex justify-content-between py-1">
+                    <span class="text-muted">Pujas totales</span>
+                    <strong>{{ganadorInfo.cantidadApuestas}}</strong>
+                  </li>
+                  <li class="d-flex justify-content-between py-1">
+                    <span class="text-muted">Incremento de puja</span>
+                    <strong>${{subasta!.puja}} MXN</strong>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">Estado</span>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis">Finalizada</span>
+                  </div>
+                  <div class="small text-muted mt-1">Cerró el 22 ago 2025, 11:36 PM</div>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Llamadas a la acción para no ganador / no logueado -->
+            <!-- <div class="d-flex flex-wrap gap-2 mt-4">
+              <a class="btn btn-primary" href="#">
+                <i class="bi bi-search-heart me-2"></i> Ver subastas similares
+              </a>
+              <a class="btn btn-outline-secondary" href="#">
+                <i class="bi bi-bell me-1"></i> Crear alerta para artículos similares
+              </a>
+              <a class="btn btn-outline-secondary" href="#">
+                <i class="bi bi-person-check me-1"></i> Inicia sesión / Regístrate
+              </a>
+              <button class="btn btn-outline-secondary">
+                <i class="bi bi-share me-1"></i> Compartir
+              </button>
+            </div> -->
+  
+            <!-- Descripción breve (opcional) -->
+            <div class="mt-4">
+              <h6 class="mb-2">Descripción</h6>
+              <p class="text-muted mb-0">
+                {{subasta!.descripcion}}
+              </p>
+            </div>
+          </div>
+        </div>
+  
+  
+      </div>
+  
+      <!-- Columna derecha: Información de subasta (pública) -->
+      <div class="col-12 col-lg-4">
+        <!-- <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white border-0">
+            <h6 class="mb-0">Detalles de la subasta</h6>
+          </div>
+          <div class="card-body">
+            <ul class="list-unstyled small mb-0">
+              <li class="d-flex justify-content-between py-1">
+                <span class="text-muted">Estado</span><span class="fw-semibold">Finalizada</span>
+              </li>
+              <li class="d-flex justify-content-between py-1">
+                <span class="text-muted">Precio final</span><span class="fw-semibold">${{ganadorInfo!.apuesta}} MXN</span>
+              </li>
+              <li class="d-flex justify-content-between py-1">
+                <span class="text-muted">Pujas</span><span class="fw-semibold">{{ganadorInfo.cantidadApuestas}}</span>
+              </li>
+              <li class="d-flex justify-content-between py-1">
+                <span class="text-muted">Inicio</span><span>{{ganadorInfo.creado}}</span>
+              </li>
+              <li class="d-flex justify-content-between py-1">
+                <span class="text-muted">Cierre</span><span>22 ago 2025, 11:36 PM</span>
+              </li>
+              <li class="d-flex justify-content-between py-1">
+                <span class="text-muted">Ubicación</span><span>CDMX, México</span>
+              </li>
+             
+            </ul>
+          </div>
+        </div> -->
+  
+        <!-- Más del vendedor -->
+        <div class="card border-0 shadow-sm mt-3">
+          <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <div class="fw-semibold">Más de este vendedor</div>
+              <a class="small text-decoration-none" href="#">Ver todo</a>
+            </div>
+            <div  *ngFor="let pr of listaOtrosProductos"  class="d-flex align-items-center gap-2 mb-3" (click)="goToDetail(pr.id)">
+              <img [src]="pr.url" alt="" class="rounded" style="width:56px;height:56px;object-fit:cover">
+              <!-- <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=400&auto=format&fit=crop" alt="" class="rounded" style="width:56px;height:56px;object-fit:cover"> -->
+              <div class="small">
+                <div class="fw-semibold">{{pr.caption}}</div>
+                <div class="text-muted small">Subasta · Termina en {{pr.tiempoVence}}</div>
+              </div>
+            </div>
+            <!-- <div class="d-flex align-items-center gap-2 mt-2">
+              <img src="https://images.unsplash.com/photo-1555617981-dac3880bde38?q=80&w=400&auto=format&fit=crop" alt="" class="rounded" style="width:56px;height:56px;object-fit:cover">
+              <div class="small">
+                <div class="fw-semibold">Figura coleccionable</div>
+                <div class="text-muted">Compra directa · $520</div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  </div>

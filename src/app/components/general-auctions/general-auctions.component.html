@@ -1,0 +1,92 @@
+<div class="wrapper-generales">
+  <h2 class="" style="text-align: center; color: #616160; font-family: Gobold;font-size: 20px;" >
+    {{mainTitle}}
+  </h2>
+    
+  <div class="seguimiento-container">
+    @if (generales.length > 0) {
+      <div class="contenedor-subastas-generales d-sm-grid d-none">
+        @for ( subasta of generales; track subasta.id) {
+          @let clase = subasta.vencida ? 'tarjeta-general fade-out' : 'tarjeta-general';
+            <!-- <div class="{{ clase }}" (click)="abrirModal(subasta)">
+            <img [src]="subasta.url" alt="Producto" class="imagen-general" />
+            <div class="contenido-general">
+              <div class="detalle-general">
+                <h4>{{ subasta.caption }}</h4>
+                <p class="descripcion-limitada">{{ subasta.descripcion }}</p>
+                <h6>Subasta inicia</h6>
+                <strong>${{ subasta.apuesta }} mxn</strong>
+                <p class="hora-restante">{{ subasta.tiempoVence }}</p>
+              </div>
+      
+              
+                <div class="opciones-general">
+                  <div class="opciones-item-general">
+                    <img src="iconos/megusta.png" alt="Seguir" class="opcionesimg-general" />
+                    <span>Seguir Subasta</span>
+                  </div>
+                  <div class="opciones-item-general">
+                    <img src="iconos/puja.png" alt="Ofertar" class="opcionesimg-general" />
+                    <span>Ofertar</span>
+                  </div>
+                  <div class="opciones-item-general">
+                    <img src="iconos/compartir.png" alt="Compartir" class="opcionesimg-general" />
+                    <span>Compartir</span>
+                  </div>
+                </div>
+            </div>
+
+            Subasta texto largo
+           http://localhost:4200/subasta/7329/Subastas%20Premium
+          </div>           -->
+          <div class="auction-card" (click)="getDatosSubasta(subasta.id)">
+            <img [src]="subasta.url" alt="">
+            <!-- {{subasta.musuarios.nombre}} -->
+              <div class="title">{{ subasta.caption }}#{{subasta.id}}</div>
+              <div class="desc">{{ subasta.descripcion }}</div>
+              <div class="price">{{ toCurrency(subasta.apuesta) }} MXN</div>
+              <div class="timer">{{segundosATiempoString(subasta.venceSegundos!) }}</div>
+              <div class="actions">
+                <button title="Seguir" (click)="toggleSeguida(subasta.id, $event)"><i class="fas fa-heart" [ngClass]="{'nofollowed-i': !isSeguida(subasta.id),'followed-i': isSeguida(subasta.id)}"></i></button>
+                <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+                <button title="Compartir"><i class="fas fa-share"></i></button>
+              </div>
+              <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+                {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+              </div>
+          </div> 
+        }
+      </div>
+
+      <div class="contenedor-subastas-generales-xs d-grid d-sm-none">
+        @for ( subasta of generales; track subasta.id) {
+          @let clase = subasta.vencida ? 'tarjeta-general fade-out' : 'tarjeta-general';
+    
+          <div class="auction-card" (click)="getDatosSubasta(subasta.id)">
+            <img [src]="subasta.url" alt="">
+            <!-- {{subasta.musuarios.nombre}} -->
+              <div class="title">{{ subasta.caption }}#{{subasta.id}}</div>
+              <div class="desc">{{ subasta.descripcion }}</div>
+              <div class="price">{{ toCurrency(subasta.apuesta) }} MXN</div>
+              <div class="timer">{{segundosATiempoString(subasta.venceSegundos!) }}</div>
+              <div class="actions">
+                <button title="Seguir" (click)="toggleSeguida(subasta.id, $event)"><i class="fas fa-heart" [ngClass]="{'nofollowed-i': !isSeguida(subasta.id),'followed-i': isSeguida(subasta.id)}"></i></button>
+                <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+                <button title="Compartir"><i class="fas fa-share"></i></button>
+              </div>
+              <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+                {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+              </div>
+          </div> 
+        }
+      </div>
+    } @else {
+      <div class="sin-subastas">
+        <p>No hay subastas disponibles por ahora.</p>
+      </div>
+    }  
+  </div>
+  </div>
+  <app-loader *ngIf="loading"></app-loader>
+
+  

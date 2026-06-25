@@ -1,0 +1,48 @@
+<div class="wrapper-busqueda fast-animation animate__animated animate__fadeInRight">  
+
+<div class="header-busqueda">
+  <h2 style="text-align: center; margin-top: 10px; color: #616160 ; font-family: Gobold;" >Xubastas relacionadas con... {{ terminoBusqueda }}</h2>
+  <button class="btn-regresar" (click)="volverAGenerales()">Regresar a {{tipoTitulo}}</button>
+</div>
+  
+  <div class="seguimiento-container">
+    @if (resultados.length > 0) {
+      <div class="contenedor-subastas-generales">
+        @for (subasta of resultados; track subasta.id) {
+          @let clase = subasta.vencida ? 'tarjeta-general fade-out' : 'tarjeta-general';
+          <div class="{{ clase }}" (click)="abrirModal(subasta)">
+            <img [src]="subasta.url" alt="Producto" class="imagen-general" />
+            <div class="contenido-general">
+              <div class="detalle-general">
+                <h4>{{ subasta.caption }}#{{subasta.id}}</h4>
+                <p class="descripcion-limitada">{{ subasta.descripcion }}</p>
+                <!-- <h6>Subasta inicia</h6> -->
+                <strong>{{ toCurrency(subasta.apuesta) }}</strong>
+                <p class="hora-restante">{{ subasta.tiempoVence }}</p>
+              </div>
+              <!-- <div class="opciones-general">
+                <div class="opciones-item-general">
+                  <img src="iconos/megusta.png" alt="Seguir" class="opcionesimg-general" />
+                  <span>Seguir Subasta</span>
+                </div>
+                <div class="opciones-item-general">
+                  <img src="iconos/puja.png" alt="Ofertar" class="opcionesimg-general" />
+                  <span>Ofertar</span>
+                </div>
+                <div class="opciones-item-general">
+                  <img src="iconos/compartir.png" alt="Compartir" class="opcionesimg-general" />
+                  <span>Compartir</span>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="sin-subastas">
+        <p>No hay resultados para tu búsqueda.</p>
+      </div>
+    }
+  </div>
+
+</div>

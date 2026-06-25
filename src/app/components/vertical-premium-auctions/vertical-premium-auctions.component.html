@@ -1,0 +1,46 @@
+<div class="seguimiento-container">
+    <h2 style="text-align: center; margin: 10px; font-family: Montserrat; color: #616160 ; " >Xubastas Premium</h2>  
+   
+    @if (auctions.length > 0) {
+        <div class="tarjetas-container">
+          @for ( subasta of auctions; track subasta.id) {
+            @let clase = subasta.vencida ? 'tarjeta-general fade-out' : 'tarjeta-general';
+            <div class="{{ clase }}" (click)="abrirModal(subasta)" >
+              <img [src]="subasta.url" alt="Producto" class="imagen-general" />
+              <div class="contenido-general">
+                <div class="detalle-general">
+                  <h4>{{ subasta.caption }}</h4>
+                  <p class="descripcion-limitada">{{ subasta.descripcion }}</p>
+                  <h6>Subasta inicia</h6>
+                  <strong>${{ subasta.apuesta }} mxn</strong>
+                  <p class="hora-restante">{{ subasta.tiempoVence }}</p>
+                </div>
+        
+                
+                  <div class="opciones-general">
+                    <div class="opciones-item-general">
+                      <img src="iconos/megusta.png" alt="Seguir" class="opcionesimg-general" />
+                      <span>Seguir Subasta</span>
+                    </div>
+                    <div class="opciones-item-general">
+                      <img src="iconos/puja.png" alt="Ofertar" class="opcionesimg-general" />
+                      <span>Ofertar</span>
+                    </div>
+                    <div class="opciones-item-general">
+                      <img src="iconos/compartir.png" alt="Compartir" class="opcionesimg-general" />
+                      <span>Compartir</span>
+                    </div>
+                  </div>
+              </div>
+             
+            </div>          
+          }
+        </div>
+      } @else {
+        <div class="sin-subastas">
+          <p>No hay subastas disponibles por ahora.</p>
+        </div>
+      }  
+
+</div>
+

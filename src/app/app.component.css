@@ -1,0 +1,17 @@
+body {
+    background-color: #ffffff;
+    margin: 0;
+    /* height: 100vh; */
+    /* background: linear-gradient(145deg, #ffc2de 0%, white 20%, white 40%, #ffc2de 100%); */
+    background-size: cover;
+  }
+    
+  .app-auction-detail {
+    position: fixed;
+    justify-content: center;
+    margin-top: 120px; 
+    z-index: 1001;
+    left: 50%;
+    width: 60%;
+    box-sizing: border-box;
+  }
