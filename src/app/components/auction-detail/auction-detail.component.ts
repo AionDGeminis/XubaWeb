@@ -72,6 +72,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   listaTiposEnvio: any[] = [];
   direcciones: any[] = [];
   direccionEntrega: any = {};
+  vistas: any = {};
+  vistasOfertas: any = {};
   loadingCotizacion: boolean = false;
   siguiendoVendedor: boolean = false;
   listaVendedoresSeguidos: any[] = [];
@@ -106,6 +108,9 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     console.log(id)
     this.getInitialData(id);
     this.isLoggedIn = computed(() => !!this.usuario());
+    this.vistas.idUsuario = this.usuario()!.id;
+    this.vistas.idSubasta = id;
+    this.getVistasOfertas();
     if(this.isLoggedIn()){
       this.getVendedoresSeguidos(this.usuario()!.id);
       // const id     = +this.route.snapshot.paramMap.get('id')!;
@@ -239,6 +244,14 @@ getVendedoresSeguidos(idUsuario: number){
     }
   });
 }
+
+getVistasOfertas(){
+    this.subastasService.registrarVista(this.vistas).subscribe({
+      next: (vistas: any) => {
+        this.vistasOfertas = vistas
+      }
+    })
+  }
 
 getSiguiendo(idVendedor: number){
   if(this.listaVendedoresSeguidos.length > 0){
@@ -742,6 +755,8 @@ ngAfterViewInit(): void {
       }, 
       error: err => console.error('Error al enviar apuesta:', err) 
     });
+
+    this.getVistasOfertas()
   }
   
   closeModalBottom(){
@@ -963,4 +978,5 @@ ngAfterViewInit(): void {
       }
     })
   }
+  
 }

@@ -220,6 +220,10 @@ export class SubastasService {
   updateSubastaRechazada(data: any){
     return this.http.post(`${env.base_url}/Subastas/EditarSubastaRechazada`, data, {headers: test_headers}).pipe(map(res => res));
   }
+
+  registrarVista(data: any) {
+    return this.http.post(`${env.base_url}/subastas/RegistrarVista`, data, {headers: test_headers}).pipe(map(res => res));
+}
   // @override
   // Future<List<UsuarioModel>> getListaVendedoresSeguidos(int id) async {
   //   try {
