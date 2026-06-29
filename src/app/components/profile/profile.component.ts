@@ -291,7 +291,7 @@ export class ProfileComponent implements OnInit {
       {label:'Por aprobar', tipo:'Por Aprobar',bg:'#30336b'},
       {label:'Por revisar', tipo:'Rechazada',bg:'#f39c12'},
       {label:'Canceladas por XUBA', tipo:'Cancelada',bg:'#141414'},
-      {label:'Canceladas por vendedor', tipo:'Cancelada por vendedor',bg:'#c0392b'}
+      {label:'Cancelada por vendedor', tipo:'Cancelada por vendedor',bg:'#c0392b'}
     ]
     selectedTipoSubasta: any = {}
     totalSubastasPorRevisar: number = 0;

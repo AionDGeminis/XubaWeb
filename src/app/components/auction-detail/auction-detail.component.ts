@@ -108,7 +108,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     console.log(id)
     this.getInitialData(id);
     this.isLoggedIn = computed(() => !!this.usuario());
-    this.vistas.idUsuario = this.usuario()!.id;
+    this.vistas.idUsuario = this.usuario()?.id ?? 0;
     this.vistas.idSubasta = id;
     this.getVistasOfertas();
     if(this.isLoggedIn()){
