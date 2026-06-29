@@ -290,7 +290,8 @@ export class ProfileComponent implements OnInit {
       {label:'Terminadas', tipo:'Finalizada',bg:'#74b9ff'},
       {label:'Por aprobar', tipo:'Por Aprobar',bg:'#30336b'},
       {label:'Por revisar', tipo:'Rechazada',bg:'#f39c12'},
-      {label:'Canceladas', tipo:'Cancelada',bg:'#c0392b'},
+      {label:'Canceladas por XUBA', tipo:'Cancelada',bg:'#141414'},
+      {label:'Canceladas por vendedor', tipo:'Cancelada por vendedor',bg:'#c0392b'}
     ]
     selectedTipoSubasta: any = {}
     totalSubastasPorRevisar: number = 0;
@@ -2193,22 +2194,22 @@ export class ProfileComponent implements OnInit {
 
  
   
-  //   onFileChange(event: any) {
-  //     const files = event.target.files;
-  //     if (files && files.length > 0) {
-  //       // for (let i = 0; i < files.length && this.subasta.mimagenesSubasta.length < 5; i++) {
-  //         const reader = new FileReader();
-  //         reader.onload = (e: any) => {
-  //           this.imageProfileSrc = e.target.result;
-  //           this.updatingImage = true;
-  //           // this.subasta.mimagenesSubasta.push({url: e.target.result});
-  //           // this.imagesPreview!.push({url: e.target.result});
-  //           // this.imagenes.push(e.target.result);
-  //         };
-  //         reader.readAsDataURL(files[0]);
-  //       // }
-  //     }
-  //   }
+    onFileChange(event: any) {
+      const files = event.target.files;
+       if (files && files.length > 0) {
+        //for (let i = 0; i < files.length && this.subasta.mimagenesSubasta.length < 5; i++) {
+         const reader = new FileReader();
+         reader.onload = (e: any) => {
+            this.imageProfileSrc = e.target.result;
+            this.updatingImage = true;
+           //this.subasta.mimagenesSubasta.push({url: e.target.result});
+           // this.imagesPreview!.push({url: e.target.result});
+            //this.imagenes.push(e.target.result);
+          };
+          reader.readAsDataURL(files[0]);
+          }
+      }
+    
 
   //   // onFileChangeEdit(event: any) {
   //   //   const files = event.target.files;
@@ -2259,33 +2260,33 @@ export class ProfileComponent implements OnInit {
   //     return _array;
   //   }
 
-  //   editImgPerfil(): void {
-  //     this.initFormFoto();
-  //     this.dataEditImg = {
-  //       fotoPerfil: this.getClearBase64(this.imageProfileSrc) ,
-  //       idUsuario:this.usuario()!.id,
-  //       fotoAnterior:this.usuario()!.imgPerfil
-  //     }
-  //     this.loading = true;
-  //     this.authService.actualizarFotoPerfilUsuario(this.dataEditImg).subscribe({
-  //       next: (response: any) => {
-  //         this.loading = false;
-  //         console.log('Profile image updated successfully', response);
-  //         this.usuario()!.imgPerfil = response.message;
-  //         this.ss.showNotification('success','Foto actualizada correctamente');
-  //         this.authService.setUser(this.usuario()!);
-  //       },
-  //       error: (error) => {
-  //         this.loading = false;
-  //         console.error('Error updating profile image', error);
-  //       }
-  //     });
+     editImgPerfil(): void {
+       //this.initFormFoto();
+      this.dataEditImg = {
+       fotoPerfil: this.getClearBase64(this.imageProfileSrc) ,
+       idUsuario:this.usuario()!.id,
+        fotoAnterior:this.usuario()!.imgPerfil
+      }
+     this.loading = true;
+       this.authService.actualizarFotoPerfilUsuario(this.dataEditImg).subscribe({
+         next: (response: any) => {
+           this.loading = false;
+           console.log('Profile image updated successfully', response);
+           this.usuario()!.imgPerfil = response.message;
+           this.ss.showNotification('success','Foto actualizada correctamente');
+           this.authService.setUser(this.usuario()!);
+       },
+         error: (error) => {
+           this.loading = false;
+           console.error('Error updating profile image', error);
+         }
+       });
 
-  //     // this.usuario()!.imgPerfil = this.imageProfileSrc;
-  //     // console.log(this.usuario())
-  //     // console.log(this.dataEditImg)
+       // this.usuario()!.imgPerfil = this.imageProfileSrc;
+     // console.log(this.usuario())
+       // console.log(this.dataEditImg)
 
-  //   }
+     }
 
  
   //   toCurrency(valor: number): string {

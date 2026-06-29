@@ -5,17 +5,17 @@
       <div class="profile-avatar" > 
         <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
       </div>
-      <!-- <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: 28%">
+      <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: 28%">
         <input type="file" accept="image/*"  (change)="onFileChange($event)" hidden />
         <i class="fas fa-camera"></i>
-      </label> -->
+      </label>
 
       <h2>{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h2>
       <p class="profile-role">{{infoUsuario.usuario ?? 'ND'}}</p>
       <p class="profile-email">{{infoUsuario.correo}}</p>
-      <!-- <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
+       <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
         <i class="fas fa-upload"></i> Guardar cambio
-      </button> -->
+      </button> 
 
       <div class="requisitos-container w-100 mt-3">
         <h5 class="f-arial f-10">Requisitos para xubastar</h5>

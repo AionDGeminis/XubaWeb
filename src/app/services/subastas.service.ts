@@ -224,6 +224,12 @@ export class SubastasService {
   registrarVista(data: any) {
     return this.http.post(`${env.base_url}/subastas/RegistrarVista`, data, {headers: test_headers}).pipe(map(res => res));
 }
+editarFotoPerfil(data: any) { 
+  return this.http.post(`${env.base_url}/usuarios/EditarFotoPerfil`, data, { headers: test_headers }).pipe(map(res => res));
+}
+cancelarSubastaVendedor(data: any) {
+  return this.http.post(`${env.base_url}/subastas/CancelarSubastaVendedor`, data, { headers: test_headers }).pipe(map(res => res));
+}
   // @override
   // Future<List<UsuarioModel>> getListaVendedoresSeguidos(int id) async {
   //   try {

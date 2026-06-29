@@ -8,10 +8,11 @@ import { SharedService } from '../../services/shared.service';
 import { AuctionService } from '../../services/auction.service';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { Subasta } from '../../models/subasta.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-my-auction-detail',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './my-auction-detail.component.html',
   styleUrl: './my-auction-detail.component.css'
 })
@@ -19,6 +20,9 @@ export class MyAuctionDetailComponent {
   subasta: Subasta | any = {};
   indexCurrentImage: number = 0;
   listaImagenes: any[] = [];
+  mostrarModalCancelar = false;
+  motivoCancelacion = '';
+  subastaCancelada = false;
   private intervalId: any;
  constructor( private route: ActivatedRoute,
   private router: Router,
@@ -106,5 +110,46 @@ formatTimeString(total: number): string {
   const m = Math.floor((total % 3600) / 60);
   const s = total % 60;
   return [h, m, s].map(n => String(n).padStart(2, '0')).join(':');
+}
+abrirModalCancelar() {
+  this.mostrarModalCancelar = true;
+}
+
+cerrarModalCancelar() {
+  this.mostrarModalCancelar = false;
+  this.motivoCancelacion = '';
+}
+
+confirmarCancelacion() {
+
+  const usuario = this.authService.currentUser();
+
+  const data = {
+    idSubasta: this.subasta.id,
+    idUsuario: usuario?.id,
+    motivo: this.motivoCancelacion
+  };
+
+  console.log('Datos enviados:', data);
+
+  this.subastasService.cancelarSubastaVendedor(data).subscribe({
+    next: (res: any) => {
+      console.log('Respuesta del servidor:', res);
+
+      // Cambiar el estatus en la vista
+      this.subasta.estatus = 'Cancelada';
+
+      // Ocultar el botón "Cancelar Subasta"
+      this.subastaCancelada = true;
+
+      this.toastr.success('Subasta cancelada correctamente');
+      this.cerrarModalCancelar();
+      clearInterval(this.intervalId);
+    },
+    error: (err) => {
+      console.error(err);
+      this.toastr.error('No se pudo cancelar la subasta');
+    }
+  });
 }
 }
