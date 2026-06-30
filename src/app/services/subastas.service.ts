@@ -41,10 +41,12 @@ export class SubastasService {
     return this.http.get<Subasta[]>(`${env.base_url}/subastas/ConsultaMisSubastasGanadas/${idVendedor}`, {headers:test_headers}).pipe(map(res => res));
   }
   
-  getNotifications(idUsuario:number) {
-    const apiUrl = `${env.base_url}/notificaciones/${idUsuario}`; 
-    return this.http.get(apiUrl,{headers:test_headers}).pipe(map(res => res));//this.http.get<Subasta[]>(apiUrl);
-  }
+getNotifications(idUsuario: number, pagina: number = 1) {
+  const apiUrl = `${env.base_url}/notificaciones/ConsultarMisNotificaciones?idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get(apiUrl, { headers: test_headers })
+    .pipe(map(res => res));
+}
 
   marcarVistaNotificacion(idNotificacion:number) {
     const apiUrl = `${env.base_url}/notificaciones/VerNotificacion/`; 

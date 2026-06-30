@@ -154,6 +154,12 @@ export class HomeComponent implements OnInit {
   showingInAside = 'menu';
   clasesAside = {one:'', two:''}
   notificaciones: any[] = [];
+  paginaNotificaciones = 1;
+  cargandoMasNotificaciones = false;
+  hayMasNotificaciones = true;
+  pagina = 1;
+  cargandoMas = false;
+  hayMas = true;
   imagesPreview: any[] = [];
   itemsLoaderNotificaciones: any = [1,2,3,4,5,6,7,8];
   loginForm: any = {usuario:null, pass: null};
@@ -743,22 +749,81 @@ export class HomeComponent implements OnInit {
     return `hace ${dias} d`;
   }
 
-  getNotificaciones(){
-    this.loadingNotificaciones = true;
-    let userData = this.authService.getUserData();
-    this.subastaService.getNotifications(userData.id).subscribe({
-      next: (data: any) => { 
-        console.log('Notificaciones cargadas:', data);
-        this.notificaciones = data;
-        this.loadingNotificaciones = false;
-      },
-      error: (err) =>{ 
-        console.error('Error al cargar notificaciones', err)
-        this.loadingNotificaciones = false;
-      }
-    });
+ getNotificaciones(reset: boolean = false) {
+
+  if (this.cargandoMasNotificaciones || !this.hayMasNotificaciones) {
+    return;
   }
 
+  if (reset) {
+    this.paginaNotificaciones = 1;
+    this.notificaciones = [];
+    this.hayMasNotificaciones = true;
+  }
+
+  this.cargandoMasNotificaciones = true;
+  this.loadingNotificaciones = true;
+
+  const userData = this.authService.getUserData();
+
+  console.log('Solicitando página:', this.paginaNotificaciones);
+
+  this.subastaService.getNotifications(
+    userData.id,
+    this.paginaNotificaciones
+  ).subscribe({
+
+    next: (data: any) => {
+
+      console.log('Página recibida:', this.paginaNotificaciones);
+      console.log('Cantidad recibida:', data.length);
+      console.log('Datos:', data);
+
+      if (data.length < 10) {
+        this.hayMasNotificaciones = false;
+      }
+
+      this.notificaciones.push(...data);
+
+      console.log('Total de notificaciones:', this.notificaciones.length);
+
+      this.paginaNotificaciones++;
+
+      console.log('Siguiente página:', this.paginaNotificaciones);
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasNotificaciones = false;
+    },
+
+    error: (err) => {
+
+      console.error('Error obteniendo notificaciones:', err);
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasNotificaciones = false;
+    }
+
+  });
+
+}
+onScrollNotifications(event: any) {
+
+  const element = event.target;
+
+  console.log(
+    "scrollTop:", element.scrollTop,
+    "clientHeight:", element.clientHeight,
+    "scrollHeight:", element.scrollHeight
+  );
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  if (alFinal) {
+    console.log("Pidiendo página", this.paginaNotificaciones);
+    this.getNotificaciones();
+  }
+}
   getMisSeguidores(){
     this.loadingNotificaciones = true;
     let userData = this.authService.getUserData();
@@ -803,7 +868,7 @@ export class HomeComponent implements OnInit {
     switch(option){
       case 'following': this.getSubastasSeguidas();
         break;
-      case 'notifications': this.getNotificaciones();
+      case 'notifications': this.getNotificaciones(true);
         break;
       case 'winner': this.getSubastasGanadas();
         break;

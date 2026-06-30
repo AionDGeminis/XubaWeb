@@ -1181,6 +1181,23 @@
                 <hr>
                 <div class="form-row">
                   <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text"
+                     [(ngModel)]="datosFiscales.nombreComercial"
+                     name="nomcomercial">
+                  </div>
+                </div>
+                <div class="form-row" *ngIf="datosFiscales.tipoPersona === 'sin datos fiscales'">
+                  <div class="form-group">
+                    <label>CURP</label>
+                    <input type="text"
+                    [(ngModel)]="datosFiscales.curp"
+                    name="curp">
+                  </div>
+                </div>
+                <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
+                <div class="form-row">
+                  <div class="form-group">
                     <label>Pais</label>
                     <select class="form-select" [(ngModel)]="datosFiscales.pais" name="pais" >
                       <option value="MEXICO">Mexico</option>
@@ -1188,13 +1205,7 @@
                     </select>
                   </div>
                 </div>
-                  <div class="form-row" >
-                    <div class="form-group">
-                      <label>Nombre {{datosFiscales.tipoPersona !== 'sin datos fiscales' ? 'Registrado':''}}</label>
-                      <input type="text" [(ngModel)]="datosFiscales.nombreComercial" name="nomcomercial" >
-                    </div>
-                  
-                  </div>
+                
                   <div class="form-row" *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
                     <div class="form-group">
                       <label>RFC</label>
@@ -1216,12 +1227,6 @@
                         <option *ngFor="let uso of listaUsoCfdi" [value]="uso.usoCfdi">{{uso.descripcion}}</option>
 
                       </select>
-                    </div>
-                  </div>
-                  <div class="form-row" *ngIf="datosFiscales.tipoPersona === 'sin datos fiscales'">
-                    <div class="form-group">
-                      <label>CURP</label>
-                      <input type="text" [(ngModel)]="datosFiscales.curp" name="curp" >
                     </div>
                   </div>
                   <div class="form-row">
@@ -1320,7 +1325,7 @@
                       </label>
                     </div>
                   </div>
-                 
+                 </div>
                   <div class="w-100 text-center mt-3 mb-3">
                     <button class="btn-xuba btn-pill" (click)="saveInformacionFiscal()">Guardar cambios</button> 
                   </div>

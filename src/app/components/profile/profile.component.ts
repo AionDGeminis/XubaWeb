@@ -1108,6 +1108,7 @@ export class ProfileComponent implements OnInit {
     let upd = {
       idUsuario: this.infoUsuario.id,
       nombre: this.datosFiscales.nombreComercial,
+      curp: this.datosFiscales.curp,
       razonSocial: this.datosFiscales.nombreComercial,
       regimenFiscal: this.datosFiscales.regimenFiscal,
       paginaWeb: this.datosFiscales.sitioWeb,
@@ -1172,7 +1173,7 @@ export class ProfileComponent implements OnInit {
       this.datosFiscales.nombreComercial = data.datosFiscales.nombre;
       //this.datosFiscales.sitioWeb = data.datosFiscales.,
       this.datosFiscales.rfc = data.datosFiscales.rfc;
-      // this.datosFiscales.curp = data.datosFiscales.,
+      this.datosFiscales.curp = data.datosFiscales;
       // this.datosFiscales.fechaNacimiento = data.datosFiscales.,
       this.datosFiscales.calle = data.datosFiscales.calle;
       this.datosFiscales.noExterior = data.datosFiscales.numeroExterior;

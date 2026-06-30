@@ -71,7 +71,7 @@ s
               <i class="fas fa-arrow-left"></i>&nbsp; volver
             </button>
           </div>
-          <div class="notification-list">
+          <div class="notification-list" (scroll)="onScrollNotifications($event)" style="height:700px; overflow-y:auto;">
             <!-- Ítem 1 -->
             <div class="notification-item noleida" [ngClass]="{'noleida': noti.activa}" *ngFor="let noti of notificaciones; let i = index;" (click)="marcarNotificacionAbrir(noti, noti.msubastas)">
               <div class="notification-icon">
