@@ -160,6 +160,12 @@ export class HomeComponent implements OnInit {
   pagina = 1;
   cargandoMas = false;
   hayMas = true;
+  paginaSubastas = 1;
+  cargandoMasSubastas = false;
+  hayMasSubastas = true;
+  paginaSubastasGanadas = 1;
+  cargandoMasSubastasGanadas = false;
+  hayMasSubastasGanadas = true;
   imagesPreview: any[] = [];
   itemsLoaderNotificaciones: any = [1,2,3,4,5,6,7,8];
   loginForm: any = {usuario:null, pass: null};
@@ -1160,42 +1166,98 @@ onScrollNotifications(event: any) {
     })
   }
 
-  getSubastasSeguidas(){
-      const usuario = this.authService.currentUser();
-    
-        if (usuario) {
-          const idUsuario = usuario.id;
-          this.loadingNotificaciones = true;
-        this.auctionService.getAuctions(idUsuario).subscribe({
-           next: (data) => {
-              this.auctions = data.map(subasta => ({
-                ...subasta,
-                tiempoVence: subasta.tiempoVence ?? '00:00:00',
-                vencida: false,
-                venceSegundos: this.tiempoStringASegundos(subasta.tiempoVence)
-              }));
-              this.loadingNotificaciones = false;
-              this.auctionsId = data.map(subasta => subasta.id);
-              this.setTimer(this.auctions);
-              // this.temporizadorSub = interval(1000).subscribe(() => {
-              //   this.auctions.forEach(subasta => {
-              //     subasta.tiempoVence = this.restarUnSegundo(subasta.tiempoVence);
-    
-              //     if (subasta.tiempoVence === '00:00:00' && !subasta.vencida) {
-              //       subasta.vencida = true;
-              //     }
-              //   });
-              // });
-            },
-            error: (error) => {
-              this.loadingNotificaciones = false;
-              console.error('Error cargando subastas:', error);
-            }
-          });
-      } else {
-        console.warn('Usuario no logueado, no se cargan subastas seguidas');
-      }
+  getSubastasSeguidas(reset: boolean = false) {
+
+  if (this.cargandoMasSubastas || !this.hayMasSubastas) {
+    return;
   }
+
+  if (reset) {
+    this.paginaSubastas = 1;
+    this.auctions = [];
+    this.hayMasSubastas = true;
+  }
+
+  const usuario = this.authService.currentUser();
+
+  if (!usuario) {
+    console.warn('Usuario no logueado, no se cargan subastas seguidas');
+    return;
+  }
+
+  this.cargandoMasSubastas = true;
+  this.loadingNotificaciones = true;
+
+  const idUsuario = usuario.id;
+
+  console.log('Solicitando página:', this.paginaSubastas);
+
+  this.auctionService.getAuctions(idUsuario, this.paginaSubastas).subscribe({
+
+    next: (data) => {
+
+      console.log('Página recibida:', this.paginaSubastas);
+      console.log('Cantidad recibida:', data.length);
+
+      if (data.length < 10) {
+        this.hayMasSubastas = false;
+      }
+
+      const nuevasSubastas = data.map(subasta => ({
+        ...subasta,
+        tiempoVence: subasta.tiempoVence ?? '00:00:00',
+        vencida: false,
+        venceSegundos: this.tiempoStringASegundos(subasta.tiempoVence)
+      }));
+
+      this.auctions.push(...nuevasSubastas);
+
+      this.auctionsId = this.auctions.map(subasta => subasta.id);
+
+      this.setTimer(this.auctions);
+
+      this.paginaSubastas++;
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasSubastas = false;
+
+      console.log('Total subastas:', this.auctions.length);
+      console.log('Siguiente página:', this.paginaSubastas);
+
+    },
+
+    error: (error) => {
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasSubastas = false;
+
+      console.error('Error cargando subastas:', error);
+
+    }
+
+  });
+
+}
+onScrollSubastas(event: any) {
+
+  const element = event.target;
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  console.log({
+    scrollTop: element.scrollTop,
+    clientHeight: element.clientHeight,
+    scrollHeight: element.scrollHeight,
+    alFinal
+  });
+
+  if (alFinal) {
+    console.log('Pidiendo página', this.paginaSubastas);
+    this.getSubastasSeguidas();
+  }
+
+}
 
   setTimer(litaItems: any[]){
     this.seguidasIntervalID = setInterval(() => {
@@ -1248,31 +1310,83 @@ onScrollNotifications(event: any) {
     // this.idSubastaConectada = nuevoId;
   }
 
-  getSubastasGanadas(){
-    const usuario = this.authService.currentUser();
-      if (usuario) {
-        this.loadingNotificaciones = true;
-        const idUsuario = usuario.id;
-      this.subastaService.getSubastasGanadas(idUsuario).subscribe({
-         next: (data) => {
-            this.auctionsWin = data;
-            this.loadingNotificaciones = false;
-          },
-          error: (error) => {
-            this.loadingNotificaciones = false;
-            console.error('Error cargando subastas:', error);
-          }
-        });
-    } else {
-      console.warn('Usuario no logueado, no se cargan subastas seguidas');
+ getSubastasGanadas(reset: boolean = false) {
+
+  if (this.cargandoMasSubastasGanadas || !this.hayMasSubastasGanadas) {
+    return;
+  }
+
+  if (reset) {
+    this.paginaSubastasGanadas = 1;
+    this.auctionsWin = [];
+    this.hayMasSubastasGanadas = true;
+  }
+
+  const usuario = this.authService.currentUser();
+
+  if (!usuario) {
+    console.warn('Usuario no logueado, no se cargan subastas ganadas');
+    return;
+  }
+
+  this.loadingNotificaciones = true;
+  this.cargandoMasSubastasGanadas = true;
+
+  const idUsuario = usuario.id;
+
+  console.log('Solicitando página:', this.paginaSubastasGanadas);
+
+  this.subastaService.getSubastasGanadas(
+    idUsuario,
+    this.paginaSubastasGanadas
+  ).subscribe({
+
+    next: (data) => {
+
+      console.log('Página recibida:', this.paginaSubastasGanadas);
+      console.log('Cantidad recibida:', data.length);
+      console.log(data)
+
+      if (data.length < 10) {
+        this.hayMasSubastasGanadas = false;
+      }
+
+      this.auctionsWin.push(...data);
+
+      this.paginaSubastasGanadas++;
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasSubastasGanadas = false;
+
+      console.log('Total:', this.auctionsWin.length);
+    },
+
+    error: (error) => {
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasSubastasGanadas = false;
+
+      console.error('Error cargando subastas:', error);
+
     }
+
+  });
+
+}
+
+onScrollSubastasGanadas(event: any) {
+
+  const element = event.target;
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  if (alFinal) {
+    console.log('Pidiendo página', this.paginaSubastasGanadas);
+    this.getSubastasGanadas();
   }
 
-  inListSeguidas(idSubasta: number){
-    let isFollowed = this.auctionsId.includes(idSubasta);
-    return isFollowed;
-  }
-
+}
   onFileChange(event: any) {
     const files = event.target.files;
     let maxFileCount = this.tipoSubasta === 'general' ? 5 : 100;

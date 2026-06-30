@@ -178,6 +178,7 @@ s
           <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
+          <div class="auction-list" (scroll)="onScrollSubastas($event)"style="height:700px; overflow-y:auto;">
         <div class="auction-card" [class]="'fast-animation animate__animated '" [ngClass]="{'animate__fadeOutLeft': splicingIndex === i}" *ngFor="let subasta of auctions;let i = index;" (click)="abrirDetalleSubasta(subasta)">
           <img [src]="subasta.url" alt="">
           <div class="title">{{ subasta.caption }}#{{subasta.id}}</div>
@@ -193,6 +194,7 @@ s
             {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
           </div>
         </div> 
+        </div>
         </ng-container>
       </div>
 
@@ -212,6 +214,7 @@ s
           <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()" >
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
+          <div class="auction-list" style="height:700px; overflow-y:auto;"(scroll)="onScrollSubastasGanadas($event)">
           <div class="auction-card" *ngFor="let subasta of auctionsWin" (click)="abrirDetalleSubasta(subasta)">
             <br>
             <img [src]="subasta.url" alt="">
@@ -235,6 +238,7 @@ s
               {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
             </div>
           </div> 
+        </div>
         </ng-container>
       </div>
 

@@ -37,9 +37,13 @@ export class SubastasService {
     return this.http.get<Subasta[]>(`${env.base_url}/subastas/misSubastas/${idUsuario}/${tipo}`, {headers:test_headers});
   }
 
-  getSubastasGanadas(idVendedor: number){
-    return this.http.get<Subasta[]>(`${env.base_url}/subastas/ConsultaMisSubastasGanadas/${idVendedor}`, {headers:test_headers}).pipe(map(res => res));
-  }
+  getSubastasGanadas(idUsuario: number, pagina: number = 1) {
+  const apiUrl =
+    `${env.base_url}/subastas/ConsultaMisSubastasGanadas?idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get<Subasta[]>(apiUrl, { headers: test_headers })
+    .pipe(map(res => res));
+}
   
 getNotifications(idUsuario: number, pagina: number = 1) {
   const apiUrl = `${env.base_url}/notificaciones/ConsultarMisNotificaciones?idUsuario=${idUsuario}&pagina=${pagina}`;

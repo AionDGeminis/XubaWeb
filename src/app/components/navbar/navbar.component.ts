@@ -343,13 +343,9 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  backToPage(){
-    let pageTo = localStorage.getItem('BCK-TO-PG') ?? 'home';
-
-    this.router.navigate(
-      [`/${pageTo}`],
-    );
-  }
+  backToPage() {
+  window.history.back();
+}
 
   openUserPage(user: any){
     this.fnToggleMenu();
