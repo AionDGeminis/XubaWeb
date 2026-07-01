@@ -57,10 +57,13 @@ getNotifications(idUsuario: number, pagina: number = 1) {
     return this.http.put(apiUrl, {id: idNotificacion},{headers:test_headers}).pipe(map(res => res));//this.http.get<Subasta[]>(apiUrl);
   }
   
-  getSeguidores(idUsuario:number) {
-    const apiUrl = `${env.base_url}/usuarios/ConsultarMisSeguidores/${idUsuario}`; 
-    return this.http.get(apiUrl,{headers:test_headers}).pipe(map(res => res));//this.http.get<Subasta[]>(apiUrl);
-  }
+  getSeguidores(idUsuario: number, pagina: number = 1) {
+  const apiUrl =
+    `${env.base_url}/usuarios/ConsultarMisSeguidores?idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get(apiUrl, { headers: test_headers })
+    .pipe(map(res => res));
+}
 
   getAuctionById(id: number): Observable<Subasta> {
     return this.http.get<Subasta>(`${env.base_url}/subastas/ConsultaSubataId/${id}`, {headers:test_headers}).pipe(map(res => res));
@@ -173,9 +176,12 @@ getNotifications(idUsuario: number, pagina: number = 1) {
     return this.http.post(`${env.base_url}/subastas/RegistrarOferta`, data, {headers:test_headers}).pipe(map(res => res));
   }
 
-  GetVendedoresSeguidos(idUsuario: number){
-    return this.http.get(`${env.base_url}/seguirVendedor/${idUsuario}`, {headers:test_headers}).pipe(map(res => res));
-  }
+ GetVendedoresSeguidos(idUsuario: number, pagina: number = 1) {
+  const apiUrl = `${env.base_url}/seguirVendedor/ConsultarVendedoresSeguidos?idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get<any[]>(apiUrl, { headers: test_headers })
+    .pipe(map((res: any) => res));
+}
 
   seguirVendedor(data: any){
     return this.http.post(`${env.base_url}/seguirVendedor/Seguir`,data, {headers:test_headers}).pipe(map(res => res));

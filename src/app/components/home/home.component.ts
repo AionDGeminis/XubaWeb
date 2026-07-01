@@ -166,6 +166,12 @@ export class HomeComponent implements OnInit {
   paginaSubastasGanadas = 1;
   cargandoMasSubastasGanadas = false;
   hayMasSubastasGanadas = true;
+  paginaSeguidores = 1;
+  cargandoMasSeguidores = false;
+  hayMasSeguidores = true;
+  paginaVendedoresFavoritos = 1;
+  cargandoMasVendedoresFavoritos = false;
+  hayMasVendedoresFavoritos = true;
   imagesPreview: any[] = [];
   itemsLoaderNotificaciones: any = [1,2,3,4,5,6,7,8];
   loginForm: any = {usuario:null, pass: null};
@@ -768,7 +774,7 @@ export class HomeComponent implements OnInit {
   }
 
   this.cargandoMasNotificaciones = true;
-  this.loadingNotificaciones = true;
+  //this.loadingNotificaciones = true;
 
   const userData = this.authService.getUserData();
 
@@ -797,7 +803,7 @@ export class HomeComponent implements OnInit {
 
       console.log('Siguiente página:', this.paginaNotificaciones);
 
-      this.loadingNotificaciones = false;
+      //this.loadingNotificaciones = false;
       this.cargandoMasNotificaciones = false;
     },
 
@@ -830,37 +836,131 @@ onScrollNotifications(event: any) {
     this.getNotificaciones();
   }
 }
-  getMisSeguidores(){
-    this.loadingNotificaciones = true;
-    let userData = this.authService.getUserData();
-    this.subastaService.getSeguidores(userData.id).subscribe({
-      next: (data: any) => { 
-        console.log('seguidos cargadas:', data);
-        this.followers = data;
-        this.loadingNotificaciones = false;
-      },
-      error: (err) =>{ 
-        console.error('Error al cargar seguidores', err)
-        this.loadingNotificaciones = false;
-      }
-    });
+  getMisSeguidores(reset: boolean = false) {
+
+  if (this.cargandoMasSeguidores || !this.hayMasSeguidores) {
+    return;
   }
 
-  getVendedoresFavoritos(){
-    this.loadingNotificaciones = true;
-    let userData = this.authService.getUserData();
-    this.subastaService.GetVendedoresSeguidos(userData.id).subscribe({
-      next: (data: any) => { 
-        console.log('favoritos  obtenidos:', data);
-        this.favoritos = data;
-        this.loadingNotificaciones = false;
-      },
-      error: (err) =>{ 
-        console.error('Error al cargar seguidores', err)
-        this.loadingNotificaciones = false;
-      }
-    });
+  if (reset) {
+    this.paginaSeguidores = 1;
+    this.followers = [];
+    this.hayMasSeguidores = true;
   }
+
+  //this.loadingNotificaciones = true;
+  this.cargandoMasSeguidores = true;
+
+  const userData = this.authService.getUserData();
+
+  console.log('Solicitando página:', this.paginaSeguidores);
+
+  this.subastaService.getSeguidores(
+    userData.id,
+    this.paginaSeguidores
+  ).subscribe({
+
+    next: (data: any) => {
+
+      console.log('Página recibida:', this.paginaSeguidores);
+      console.log('Cantidad recibida:', data.length);
+
+      if (data.length < 10) {
+        this.hayMasSeguidores = false;
+      }
+
+      this.followers.push(...data);
+
+      this.paginaSeguidores++;
+
+     // this.loadingNotificaciones = false;
+      this.cargandoMasSeguidores = false;
+    },
+
+    error: (err) => {
+
+      console.error('Error al cargar seguidores', err);
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasSeguidores = false;
+    }
+
+  });
+
+}
+onScrollSeguidores(event: any) {
+
+  const element = event.target;
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  if (alFinal) {
+    console.log('Pidiendo página', this.paginaSeguidores);
+    this.getMisSeguidores();
+  }
+
+}
+
+  getVendedoresFavoritos(reset: boolean = false) {
+
+  if (this.cargandoMasVendedoresFavoritos || !this.hayMasVendedoresFavoritos) {
+    return;
+  }
+
+  if (reset) {
+    this.paginaVendedoresFavoritos = 1;
+    this.favoritos = [];
+    this.hayMasVendedoresFavoritos = true;
+  }
+
+  this.cargandoMasVendedoresFavoritos = true;
+ // this.loadingNotificaciones = true;
+
+  let userData = this.authService.getUserData();
+
+  this.subastaService.GetVendedoresSeguidos(
+    userData.id,
+    this.paginaVendedoresFavoritos
+  ).subscribe({
+
+    next: (data: any) => {
+
+      if (data.length < 10) {
+        this.hayMasVendedoresFavoritos = false;
+      }
+
+      this.favoritos.push(...data);
+
+      this.paginaVendedoresFavoritos++;
+
+      //this.loadingNotificaciones = false;
+      this.cargandoMasVendedoresFavoritos = false;
+    },
+
+    error: (err) => {
+
+      console.error('Error al cargar vendedores favoritos', err);
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasVendedoresFavoritos = false;
+    }
+
+  });
+
+}
+onScrollVendedoresFavoritos(event: any) {
+
+  const element = event.target;
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  if (alFinal) {
+    this.getVendedoresFavoritos();
+  }
+
+}
 
   changeHomeIndex(index: number){
     this.currentHomeIndex = index;
@@ -1186,7 +1286,7 @@ onScrollNotifications(event: any) {
   }
 
   this.cargandoMasSubastas = true;
-  this.loadingNotificaciones = true;
+ // this.loadingNotificaciones = true;
 
   const idUsuario = usuario.id;
 
@@ -1218,7 +1318,7 @@ onScrollNotifications(event: any) {
 
       this.paginaSubastas++;
 
-      this.loadingNotificaciones = false;
+     // this.loadingNotificaciones = false;
       this.cargandoMasSubastas = false;
 
       console.log('Total subastas:', this.auctions.length);
@@ -1329,7 +1429,7 @@ onScrollSubastas(event: any) {
     return;
   }
 
-  this.loadingNotificaciones = true;
+  //this.loadingNotificaciones = true;
   this.cargandoMasSubastasGanadas = true;
 
   const idUsuario = usuario.id;
@@ -1355,7 +1455,7 @@ onScrollSubastas(event: any) {
 
       this.paginaSubastasGanadas++;
 
-      this.loadingNotificaciones = false;
+      //this.loadingNotificaciones = false;
       this.cargandoMasSubastasGanadas = false;
 
       console.log('Total:', this.auctionsWin.length);
