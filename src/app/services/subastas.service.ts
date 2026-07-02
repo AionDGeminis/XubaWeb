@@ -15,10 +15,19 @@ export class SubastasService {
 
   constructor(private http: HttpClient) {}
   
-  getAuctions(tipo: 'porvencer' | 'premium' | 'todas'): Observable<Subasta[]> {
-    const apiUrl = `${env.base_url}/subastas/${tipo}`; 
-    return this.http.get<Subasta[]>(apiUrl, {headers:test_headers});
-  }
+getAuctions(
+  tipo: 'porvencer' | 'premium' | 'todas',
+  idUsuario: number = 0,
+  pagina: number = 1
+): Observable<Subasta[]> {
+
+  const apiUrl =
+    `${env.base_url}/subastas/ConsultarSubastas?tipo=${tipo}&idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get<Subasta[]>(apiUrl, {
+    headers: test_headers
+  });
+}
 
   GetXubastasUsuarioPerfil(tipo: string, userId: number){
     return this.http.get<any>(`${env.base_url}/subastas/consultarMisSubastasParticipadasGanadas`, {params:{tipo,idUsuario: userId}, headers:test_headers});
