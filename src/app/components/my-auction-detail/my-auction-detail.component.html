@@ -1,320 +1,871 @@
-<div class="tw:max-w-7xl tw:mx-auto tw:p-6">
-    <!-- Header de la subasta -->
-    <div class="tw:bg-white tw:rounded-3xl tw:shadow-lg tw:p-8 tw:mb-6">
-      <div class="tw:flex tw:items-start tw:justify-between tw:mb-4">
+<div class="container-fluid py-4">
+
+  <!-- ======================================== -->
+  <!-- ENCABEZADO: "Tu Subasta ha concluido"   -->
+  <!-- ======================================== -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body d-flex flex-wrap justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <div class="bg-success rounded-circle d-flex justify-content-center align-items-center me-3"
+          style="width:55px;height:55px;">
+          <i class="fa fa-check text-white fs-3"></i>
+        </div>
         <div>
-          <span class="tw:inline-block tw:bg-gradient-to-r tw:from-pink-500 tw:to-purple-600 tw:text-white tw:text-sm tw:font-bold tw:px-4 tw:py-1 tw:rounded-full tw:mb-3">
-            <!-- MI SUBASTA -->
-            {{subasta.estatus}}
-          </span>
-          <h1 class="tw:text-3xl tw:font-bold tw:text-gray-800">{{this.subasta.caption}}#{{this.subasta.id}}</h1>
-          <p class="tw:text-gray-600 tw:mt-2">
-            {{this.subasta.descripcion}}
-          </p>
-        </div>
-        <div class="tw:text-right">
-          <div class="tw:text-sm tw:text-gray-500 tw:mb-1">Tiempo restante</div>
-          <!-- <div class="tw:text-4xl tw:font-bold tw:text-blue-600">00:00:00</div> -->
-          <div class="tw:text-4xl tw:font-bold tw:text-blue-600">{{subasta?  formatTimeString(subasta.remaining) :'--:--:--'}}</div>
+          <h3 class="fw-bold mb-1">Tu Subasta ha concluido.</h3>
+          <small class="text-muted">{{ subasta.estatus || 'Esperando la confirmación de pago del comprador' }}</small>
         </div>
       </div>
-  
-      <div class="tw:grid tw:grid-cols-1 md:tw:grid-cols-3 tw:gap-6 tw:mt-6">
-        <!-- Imagen del producto -->
-        <!-- <div class="tw:col-span-1">
-          <img src="placeholder-image.jpg" alt="Producto" class="tw:w-full tw:h-64 tw:object-cover tw:rounded-2xl tw:shadow-md">
-        </div>
-   -->
-
-   <div class="tw:col-span-1">
-    <!-- Imagen principal -->
-    <div class="tw:mb-3">
-      <!-- <img src="imagen-principal.jpg" alt="Producto Principal" class="tw:w-full tw:h-64 tw:object-cover tw:rounded-2xl tw:shadow-md"> -->
-      <img [src]="listaImagenes[indexCurrentImage].url" alt="Producto Principal" class="tw:w-full tw:h-64 tw:object-cover tw:rounded-2xl tw:shadow-md">
-    </div>
-    
-    <!-- Miniaturas -->
-    <div class="tw:flex tw:gap-2 tw:justify-start">
-      <!-- Imagen 1 - Activa -->
-      <div *ngFor="let image of listaImagenes" class="tw:w-16 tw:h-16 tw:rounded-lg tw:overflow-hidden tw:cursor-pointer tw:border-3 tw:border-pink-500 tw:shadow-md tw:transition-all tw:duration-300 hover:tw:scale-105">
-        <img [src]="image.url" alt="Miniatura 1" class="tw:w-full tw:h-full tw:object-cover">
+      <div class="text-end mt-2 mt-md-0">
+        <small class="text-muted">Terminó</small><br>
+        <strong>{{ subasta.fechaFin || '22 Ago 2025, 11:36 PM' }}</strong>
       </div>
-      
-      <!-- <div class="tw:w-16 tw:h-16 tw:rounded-lg tw:overflow-hidden tw:cursor-pointer tw:border-2 tw:border-gray-200 tw:shadow-sm tw:transition-all tw:duration-300 hover:tw:scale-105 hover:tw:border-pink-300">
-        <img src="imagen-2.jpg" alt="Miniatura 2" class="tw:w-full tw:h-full tw:object-cover">
-      </div>
-      
-      <div class="tw:w-16 tw:h-16 tw:rounded-lg tw:overflow-hidden tw:cursor-pointer tw:border-2 tw:border-gray-200 tw:shadow-sm tw:transition-all tw:duration-300 hover:tw:scale-105 hover:tw:border-pink-300">
-        <img src="imagen-3.jpg" alt="Miniatura 3" class="tw:w-full tw:h-full tw:object-cover">
-      </div>
-      
-      <div class="tw:w-16 tw:h-16 tw:rounded-lg tw:overflow-hidden tw:cursor-pointer tw:border-2 tw:border-gray-200 tw:shadow-sm tw:transition-all tw:duration-300 hover:tw:scale-105 hover:tw:border-pink-300">
-        <img src="imagen-4.jpg" alt="Miniatura 4" class="tw:w-full tw:h-full tw:object-cover">
-      </div>
-      
-      <div class="tw:w-16 tw:h-16 tw:rounded-lg tw:overflow-hidden tw:cursor-pointer tw:border-2 tw:border-gray-200 tw:shadow-sm tw:transition-all tw:duration-300 hover:tw:scale-105 hover:tw:border-pink-300">
-        <img src="imagen-5.jpg" alt="Miniatura 5" class="tw:w-full tw:h-full tw:object-cover">
-      </div> -->
     </div>
   </div>
-        <!-- Estadísticas principales -->
-        <div class="tw:col-span-2 tw:grid tw:grid-cols-2 md:tw:grid-cols-3 tw:gap-4">
-          <div class="tw:bg-gradient-to-br tw:from-pink-50 tw:to-pink-100 tw:rounded-2xl tw:p-4 tw:border tw:border-pink-200">
-            <div class="tw:text-sm tw:text-gray-600 tw:mb-1">Precio Inicial</div>
-            <div class="tw:text-2xl tw:font-bold tw:text-pink-600">$250.00 MXN</div>
+
+  <!-- ======================================== -->
+  <!-- GRID PRINCIPAL                           -->
+  <!-- ======================================== -->
+  <div class="row">
+
+    <!-- ====================================== -->
+    <!-- COLUMNA IZQUIERDA (7)                 -->
+    <!-- ====================================== -->
+    <div class="col-lg-7">
+
+      <!-- TARJETA: Producto + estadísticas -->
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body">
+          <div class="row">
+            <!-- Imagen del producto -->
+            <div class="col-md-4 text-center">
+              <img
+                [src]="listaImagenes[indexCurrentImage]?.url || 'https://via.placeholder.com/200x180/FFFFFF/3b7ddd?text=DEWALT'"
+                class="img-fluid producto-img" [alt]="subasta.caption" (click)="abrirGaleria(indexCurrentImage)">
+            </div>
+            <!-- Información del producto -->
+            <div class="col-md-8">
+              <h2 class="fw-bold">{{ subasta.caption }}</h2>
+              <p class="text-muted">#{{ subasta.id }}</p>
+
+              <!-- Tarjetas de estadísticas -->
+              <div class="row mt-3 g-3">
+                <div class="col-3">
+                  <div class="card border rounded-4 shadow-sm">
+                    <div class="card-body text-center p-2">
+                      <i class="fa fa-gavel text-primary fa-2x mb-1"></i>
+                      <h3 class="fw-bold mb-0">{{ subasta.totalOfertas || 73 }}</h3>
+                      <small class="text-muted">Ofertas</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="card border rounded-4 shadow-sm">
+                    <div class="card-body text-center p-2">
+                      <i class="fa fa-eye text-danger fa-2x mb-1"></i>
+                      <h3 class="fw-bold mb-0">{{ subasta.totalVistas || 241 }}</h3>
+                      <small class="text-muted">Vistas</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="card border rounded-4 shadow-sm">
+                    <div class="card-body text-center p-2">
+                      <i class="fa fa-users text-success fa-2x mb-1"></i>
+                      <h3 class="fw-bold mb-0">{{ subasta.totalParticipantes || 42 }}</h3>
+                      <small class="text-muted">Participantes</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="card border rounded-4 shadow-sm">
+                    <div class="card-body text-center p-2">
+                      <i class="fa fa-clock text-warning fa-2x mb-1"></i>
+                      <h3 class="fw-bold mb-0">{{ subasta.duracionDias || 7 }}</h3>
+                      <small class="text-muted">Días</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <hr>
+
+              <!-- Ganador, precio y descripción -->
+              <div class="row mt-3">
+                <div class="col-md-4">
+                  <p class="text-muted mb-1">Ganador</p>
+                  <h5>{{ ganadorInfo.nombre }} {{ ganadorInfo.apellido }}</h5>
+                </div>
+                <div class="col-md-4">
+                  <p class="text-muted mb-1">Precio Final</p>
+                  <h4 class="text-success">{{ ganadorInfo.apuesta | currency:'MXN':'symbol':'1.2-2' }}</h4>
+                  <p class="text-danger fw-bold">Precio mínimo ${{ subasta.precioMinimo || 500 }}</p>
+                </div>
+                <div class="col-md-4">
+                  <p class="text-muted">Descripción</p>
+                  <div class="descripcion-producto">{{ subasta.descripcion }}</div>
+                </div>
+              </div>
+            </div>
           </div>
-  
-          <div class="tw:bg-gradient-to-br tw:from-purple-50 tw:to-purple-100 tw:rounded-2xl tw:p-4 tw:border tw:border-purple-200">
-            <div class="tw:text-sm tw:text-gray-600 tw:mb-1">Oferta Actual</div>
-            <div class="tw:text-2xl tw:font-bold tw:text-purple-600">$450.00 MXN</div>
+        </div>
+      </div>
+
+      <!-- ====================================== -->
+      <!-- ESTATUS ACTUAL -->
+      <!-- ====================================== -->
+
+      <div class="card border-0 shadow-sm rounded-4 mt-4">
+
+        <div class="card-body">
+
+          <div class="d-flex justify-content-between align-items-center mb-2">
+
+            <h5 class="fw-bold mb-0">
+              Estatus actual
+            </h5>
+
+            <span class="badge bg-primary px-3 py-2">
+              {{subasta.estatus}}
+            </span>
+
           </div>
-  
-          <div class="tw:bg-gradient-to-br tw:from-blue-50 tw:to-blue-100 tw:rounded-2xl tw:p-4 tw:border tw:border-blue-200">
-            <div class="tw:text-sm tw:text-gray-600 tw:mb-1">Total Ofertas</div>
-            <div class="tw:text-2xl tw:font-bold tw:text-blue-600">15</div>
+
+          <div class="bg-dark text-white rounded-3 px-3 py-3 d-flex justify-content-between align-items-center">
+
+            <span>
+              {{subasta.estatus}}
+            </span>
+
+            <i class="fa fa-hourglass-half fs-4"></i>
+
           </div>
-  
-          <div class="tw:bg-gradient-to-br tw:from-green-50 tw:to-green-100 tw:rounded-2xl tw:p-4 tw:border tw:border-green-200">
-            <div class="tw:text-sm tw:text-gray-600 tw:mb-1">Participantes</div>
-            <div class="tw:text-2xl tw:font-bold tw:text-green-600">8</div>
+
+        </div>
+
+      </div>
+
+      <!-- ====================================== -->
+      <!-- DOCUMENTOS -->
+      <!-- ====================================== -->
+
+      <div class="card border-0 shadow-sm rounded-4 mt-3">
+
+        <div class="card-body">
+
+          <h5 class="fw-bold mb-3">
+            Documentos y descargas
+          </h5>
+
+          <div class="row g-3">
+
+            <div class="col-md-4">
+
+              <div class="border rounded-4 p-3 h-100 d-flex align-items-center">
+
+                <div class="me-3">
+
+                  <i class="fa fa-truck text-primary fs-2"></i>
+
+                </div>
+
+                <div class="flex-grow-1">
+
+                  <strong>Guía de envío</strong>
+
+                  <br>
+
+                  <small class="text-muted">
+                    Descargar guía de envío
+                  </small>
+
+                </div>
+
+                <i class="fa fa-download text-primary"></i>
+
+              </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+              <div class="border rounded-4 p-3 h-100 d-flex align-items-center">
+
+                <div class="me-3">
+
+                  <i class="fa fa-file-invoice text-success fs-2"></i>
+
+                </div>
+
+                <div class="flex-grow-1">
+
+                  <strong>Factura</strong>
+
+                  <br>
+
+                  <small class="text-muted">
+                    Descargar factura
+                  </small>
+
+                </div>
+
+                <i class="fa fa-download text-success"></i>
+
+              </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+              <div class="border rounded-4 p-3 h-100 d-flex align-items-center">
+
+                <div class="me-3">
+
+                  <i class="fa fa-file-alt text-purple fs-2"></i>
+
+                </div>
+
+                <div class="flex-grow-1">
+
+                  <strong>Recibo / Comprobante</strong>
+
+                  <br>
+
+                  <small class="text-muted">
+                    Descargar comprobante
+                  </small>
+
+                </div>
+
+                <i class="fa fa-download text-purple"></i>
+
+              </div>
+
+            </div>
+
           </div>
-  
-          <div class="tw:bg-gradient-to-br tw:from-indigo-50 tw:to-indigo-100 tw:rounded-2xl tw:p-4 tw:border tw:border-indigo-200">
-            <div class="tw:text-sm tw:text-gray-600 tw:mb-1">Incremento</div>
-            <div class="tw:text-2xl tw:font-bold tw:text-indigo-600">+80%</div>
+
+        </div>
+
+      </div>
+
+      <!-- ====================================== -->
+      <!-- OFERTAS Y VISTAS -->
+      <!-- ====================================== -->
+
+      <div class="row mt-3">
+
+        <!-- OFERTAS -->
+
+        <div class="col-lg-6">
+
+          <div class="card border-0 shadow-sm rounded-4 h-100">
+
+            <div class="card-body">
+
+              <div class="d-flex align-items-center mb-4">
+
+                <i class="fa fa-gavel text-primary me-2"></i>
+
+                <h5 class="fw-bold mb-0">
+                  Últimas 3 ofertas
+                </h5>
+
+              </div>
+
+              <div class="d-flex justify-content-between mb-3">
+
+                <div>
+
+                  <strong>Marcos Armendariz</strong>
+
+                </div>
+
+                <div class="text-end">
+
+                  <strong>$3,869.00</strong>
+
+                  <br>
+
+                  <small class="text-muted">
+                    22 Ago 2025
+                  </small>
+
+                </div>
+
+              </div>
+
+              <div class="d-flex justify-content-between mb-3">
+
+                <div>
+
+                  <strong>Carlos Méndez</strong>
+
+                </div>
+
+                <div class="text-end">
+
+                  <strong>$3,650.00</strong>
+
+                  <br>
+
+                  <small class="text-muted">
+                    22 Ago 2025
+                  </small>
+
+                </div>
+
+              </div>
+
+              <div class="d-flex justify-content-between">
+
+                <div>
+
+                  <strong>Juan Pérez</strong>
+
+                </div>
+
+                <div class="text-end">
+
+                  <strong>$3,450.00</strong>
+
+                  <br>
+
+                  <small class="text-muted">
+                    22 Ago 2025
+                  </small>
+
+                </div>
+
+              </div>
+
+              <button class="btn btn-outline-primary rounded-pill w-100 mt-4">
+
+                Ver todas las ofertas ({{subasta.totalOfertas || 73}})
+
+              </button>
+
+            </div>
+
           </div>
-  
-          <div class="tw:bg-gradient-to-br tw:from-orange-50 tw:to-orange-100 tw:rounded-2xl tw:p-4 tw:border tw:border-orange-200">
-            <div class="tw:text-sm tw:text-gray-600 tw:mb-1">Visitas</div>
-            <div class="tw:text-2xl tw:font-bold tw:text-orange-600">127</div>
+
+        </div>
+
+        <!-- VISTAS -->
+
+        <div class="col-lg-6">
+
+          <div class="card border-0 shadow-sm rounded-4 h-100">
+
+            <div class="card-body">
+
+              <div class="d-flex align-items-center mb-4">
+
+                <i class="fa fa-eye text-danger me-2"></i>
+
+                <h5 class="fw-bold mb-0">
+                  Últimas 3 vistas
+                </h5>
+
+              </div>
+
+              <div class="d-flex justify-content-between mb-3">
+
+                <strong>Jorge Hernández</strong>
+
+                <small class="text-muted">
+                  22 Ago 2025
+                </small>
+
+              </div>
+
+              <div class="d-flex justify-content-between mb-3">
+
+                <strong>Ana García</strong>
+
+                <small class="text-muted">
+                  22 Ago 2025
+                </small>
+
+              </div>
+
+              <div class="d-flex justify-content-between">
+
+                <strong>Luis Ramírez</strong>
+
+                <small class="text-muted">
+                  22 Ago 2025
+                </small>
+
+              </div>
+
+              <button class="btn btn-outline-danger rounded-pill w-100 mt-4">
+
+                Ver todas las vistas ({{subasta.totalVistas || 241}})
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div> <!-- fin col-izquierda -->
+
+    <!-- ====================================== -->
+    <!-- COLUMNA CENTRAL (3)                   -->
+    <!-- ====================================== -->
+    <div class="col-lg-3">
+
+      <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body p-4">
+
+          <h5 class="fw-bold mb-4">
+            Detalles de la ganancia
+          </h5>
+
+          <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <span class="text-muted">
+              Estatus producto
+            </span>
+
+            <span class="badge rounded-pill bg-primary">
+              Pendiente de pago
+            </span>
+
+          </div>
+
+          <div class="d-flex justify-content-between mb-3">
+
+            <span class="text-muted">
+              Precio final
+            </span>
+
+            <strong>
+
+              {{ganadorInfo.apuesta | currency:'MXN'}}
+
+            </strong>
+
+          </div>
+
+          <div class="d-flex justify-content-between mb-3">
+
+            <span class="text-muted">
+
+              Impuestos
+
+            </span>
+
+            <strong>
+
+              -{{subasta.impuestos | currency:'MXN'}}
+
+            </strong>
+
+          </div>
+
+          <div class="d-flex justify-content-between">
+
+            <span class="text-muted">
+
+              Comisión Xuba
+
+            </span>
+
+            <strong>
+
+              -{{subasta.comisionXuba | currency:'MXN'}}
+
+            </strong>
+
+          </div>
+
+          <hr class="my-4">
+
+          <div class="d-flex justify-content-between mb-4">
+
+            <strong>
+
+              Ganancia Total
+
+            </strong>
+
+            <strong>
+
+              {{subasta.ganancia | currency:'MXN'}}
+
+            </strong>
+
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+
+            <span class="text-muted">
+
+              Estatus del Pago
+
+            </span>
+
+            <span class="badge rounded-pill bg-success">
+
+              Pagado
+
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+      <button *ngIf="!subastaCancelada && subasta.estatus !== 'Cancelada'" class="btn btn-outline-danger w-100"
+        (click)="abrirModalCancelar()">
+
+        <i class="fa fa-ban me-2"></i>
+
+        Cancelar subasta
+
+      </button>
+
+      <div *ngIf="subastaCancelada || subasta.estatus === 'Cancelada'" class="alert alert-danger text-center mt-3 mb-0">
+
+        <i class="fa fa-ban me-2"></i>
+
+        Esta subasta fue cancelada.
+
+      </div>
+
+      <!-- GANADOR -->
+
+      <div class="card border-0 shadow-sm rounded-4 mt-3">
+
+        <div class="card-body">
+
+          <div class="d-flex align-items-center mb-3">
+
+            <i class="fa fa-trophy text-success me-2"></i>
+
+            <strong>
+
+              Ganador
+
+            </strong>
+
+          </div>
+
+          <div class="winner-card">
+
+            <div class="winner-left">
+
+              <div class="winner-circle">
+
+                <i class="fa fa-gem"></i>
+
+              </div>
+
+            </div>
+
+            <div class="winner-right">
+
+              <div class="winner-name">
+
+                {{ganadorInfo.nombre}}
+
+                {{ganadorInfo.apellido}}
+
+                <i class="fa fa-gem text-primary ms-1"></i>
+
+              </div>
+
+              <span class="winner-badge">
+
+                Ganador único
+
+              </span>
+
+              <div class="winner-row">
+
+                <span>Oferta ganadora</span>
+
+                <strong class="text-success">
+
+                  {{ganadorInfo.apuesta | currency:'MXN'}}
+
+                </strong>
+
+              </div>
+
+              <div class="winner-row">
+
+                <span>Fecha</span>
+
+                <small>
+
+                  {{ganadorInfo.fechaGanador}}
+
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+      <div class="card border-0 shadow-sm rounded-4 mt-3">
+
+        <div class="card-body d-flex align-items-center">
+
+          <i class="fa fa-lock text-success fs-3 me-3"></i>
+
+          <strong>
+
+            Compra protegida por XUBA
+
+          </strong>
+
+        </div>
+
+      </div>
+
+      <div class="card border-0 shadow-sm rounded-4 mt-3">
+
+        <div class="card-body d-flex align-items-center">
+
+          <i class="fa fa-truck text-primary fs-3 me-3"></i>
+
+          <strong>
+
+            El vendedor envía 24-48h después del pago
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div> <!-- fin col-central -->
+
+    <!-- ====================================== -->
+    <!-- COLUMNA DERECHA (2)                   -->
+    <!-- ====================================== -->
+    <div class="col-lg-2">
+
+      <div class="card border-0 shadow-sm rounded-4 historial-card">
+
+        <div class="card-body">
+
+          <h5 class="fw-bold mb-4">
+            Historial de estatus
+          </h5>
+
+          <div class="timeline">
+
+            <div class="timeline-line"></div>
+
+            <!-- Pendiente -->
+            <div class="timeline-item">
+
+              <div class="timeline-dot active"></div>
+
+              <div class="timeline-content">
+
+                <div class="timeline-title active">
+                  Pendiente de pago
+                </div>
+
+                <div class="timeline-description">
+                  Subasta aprobada, ya puedes proceder al pago
+                </div>
+
+                <div class="timeline-date">
+                  22/08/2025 11:36 PM
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Activa -->
+
+            <div class="timeline-item">
+
+              <div class="timeline-dot"></div>
+
+              <div class="timeline-content">
+
+                <div class="timeline-title">
+                  Activa
+                </div>
+
+                <div class="timeline-description">
+                  Estatus actualizado
+                </div>
+
+                <div class="timeline-date">
+                  25/06/2025 14:58 PM
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Mínimo -->
+
+            <div class="timeline-item">
+
+              <div class="timeline-dot"></div>
+
+              <div class="timeline-content">
+
+                <div class="timeline-title">
+                  Mínimo No Alcanzado
+                </div>
+
+                <div class="timeline-description">
+                  Estatus actualizado
+                </div>
+
+                <div class="timeline-date">
+                  25/06/2025 14:37 PM
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Activa -->
+
+            <div class="timeline-item">
+
+              <div class="timeline-dot"></div>
+
+              <div class="timeline-content">
+
+                <div class="timeline-title">
+                  Activa
+                </div>
+
+                <div class="timeline-description">
+                  Estatus actualizado
+                </div>
+
+                <div class="timeline-date">
+                  25/06/2025 14:36 PM
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Mínimo -->
+
+            <div class="timeline-item mb-0">
+
+              <div class="timeline-dot"></div>
+
+              <div class="timeline-content">
+
+                <div class="timeline-title">
+                  Mínimo No Alcanzado
+                </div>
+
+                <div class="timeline-description">
+                  Estatus actualizado
+                </div>
+
+                <div class="timeline-date">
+                  23/06/2025 10:37 AM
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    <!-- ======================================== -->
+    <!-- ACCIONES DISPONIBLES                    -->
+    <!-- ======================================== -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card border-0 shadow rounded-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+              <div>
+                <h5 class="fw-bold mb-1">Acciones disponibles</h5>
+                <p class="text-muted mb-0">Puedes contactar al comprador, descargar los documentos o consultar el
+                  historial completo.</p>
+              </div>
+              <div class="d-flex gap-2 mt-3 mt-md-0">
+                <button class="btn btn-primary">
+                  <i class="fa fa-comments me-2"></i>Contactar Comprador
+                </button>
+                <button class="btn btn-outline-primary">
+                  <i class="fa fa-download me-2"></i>Descargar Archivos
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  
-    <!-- Historial de ofertas y participantes -->
-    <div class="tw:grid tw:grid-cols-1 lg:tw:grid-cols-2 tw:gap-6 tw:mb-6">
-      <!-- Lista de ofertas -->
-      <div class="tw:bg-white tw:rounded-3xl tw:shadow-lg tw:p-6">
-        <h2 class="tw:text-2xl tw:font-bold tw:text-gray-800 tw:mb-4 tw:flex tw:items-center">
-          <span class="tw:bg-gradient-to-r tw:from-pink-500 tw:to-purple-600 tw:w-2 tw:h-8 tw:rounded-full tw:mr-3"></span>
-          Historial de Ofertas
-        </h2>
-        
-        <div class="tw:space-y-3 tw:max-h-96 tw:overflow-y-auto">
-          <!-- Oferta 1 -->
-          <div class="tw:flex tw:items-center tw:justify-between tw:p-4 tw:bg-gradient-to-r tw:from-purple-50 tw:to-pink-50 tw:rounded-xl tw:border tw:border-purple-200">
-            <div class="tw:flex tw:items-center">
-              <div class="tw:w-12 tw:h-12 tw:bg-gradient-to-br tw:from-purple-500 tw:to-pink-500 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:text-white tw:font-bold tw:mr-3">
-                JD
-              </div>
-              <div>
-                <div class="tw:font-semibold tw:text-gray-800">Juan Pérez</div>
-                <div class="tw:text-sm tw:text-gray-500">Hace 2 minutos</div>
-              </div>
-            </div>
-            <div class="tw:text-right">
-              <div class="tw:text-xl tw:font-bold tw:text-purple-600">$450.00</div>
-              <div class="tw:text-xs tw:text-gray-500">MXN</div>
-            </div>
-          </div>
-  
-          <!-- Oferta 2 -->
-          <div class="tw:flex tw:items-center tw:justify-between tw:p-4 tw:bg-gray-50 tw:rounded-xl tw:border tw:border-gray-200">
-            <div class="tw:flex tw:items-center">
-              <div class="tw:w-12 tw:h-12 tw:bg-gradient-to-br tw:from-blue-500 tw:to-indigo-500 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:text-white tw:font-bold tw:mr-3">
-                ML
-              </div>
-              <div>
-                <div class="tw:font-semibold tw:text-gray-800">María López</div>
-                <div class="tw:text-sm tw:text-gray-500">Hace 5 minutos</div>
-              </div>
-            </div>
-            <div class="tw:text-right">
-              <div class="tw:text-xl tw:font-bold tw:text-gray-700">$420.00</div>
-              <div class="tw:text-xs tw:text-gray-500">MXN</div>
-            </div>
-          </div>
-  
-          <!-- Oferta 3 -->
-          <div class="tw:flex tw:items-center tw:justify-between tw:p-4 tw:bg-gray-50 tw:rounded-xl tw:border tw:border-gray-200">
-            <div class="tw:flex tw:items-center">
-              <div class="tw:w-12 tw:h-12 tw:bg-gradient-to-br tw:from-green-500 tw:to-teal-500 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:text-white tw:font-bold tw:mr-3">
-                CR
-              </div>
-              <div>
-                <div class="tw:font-semibold tw:text-gray-800">Carlos Rodríguez</div>
-                <div class="tw:text-sm tw:text-gray-500">Hace 12 minutos</div>
-              </div>
-            </div>
-            <div class="tw:text-right">
-              <div class="tw:text-xl tw:font-bold tw:text-gray-700">$380.00</div>
-              <div class="tw:text-xs tw:text-gray-500">MXN</div>
-            </div>
-          </div>
-  
-          <!-- Más ofertas... -->
-          <div class="tw:flex tw:items-center tw:justify-between tw:p-4 tw:bg-gray-50 tw:rounded-xl tw:border tw:border-gray-200">
-            <div class="tw:flex tw:items-center">
-              <div class="tw:w-12 tw:h-12 tw:bg-gradient-to-br tw:from-orange-500 tw:to-red-500 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:text-white tw:font-bold tw:mr-3">
-                AS
-              </div>
-              <div>
-                <div class="tw:font-semibold tw:text-gray-800">Ana Sánchez</div>
-                <div class="tw:text-sm tw:text-gray-500">Hace 18 minutos</div>
-              </div>
-            </div>
-            <div class="tw:text-right">
-              <div class="tw:text-xl tw:font-bold tw:text-gray-700">$350.00</div>
-              <div class="tw:text-xs tw:text-gray-500">MXN</div>
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Top Participantes -->
-      <div class="tw:bg-white tw:rounded-3xl tw:shadow-lg tw:p-6">
-        <h2 class="tw:text-2xl tw:font-bold tw:text-gray-800 tw:mb-4 tw:flex tw:items-center">
-          <span class="tw:bg-gradient-to-r tw:from-blue-500 tw:to-indigo-600 tw:w-2 tw:h-8 tw:rounded-full tw:mr-3"></span>
-          Top Participantes
-        </h2>
-        
-        <div class="tw:space-y-3">
-          <!-- Participante 1 -->
-          <div class="tw:flex tw:items-center tw:justify-between tw:p-4 tw:bg-gradient-to-r tw:from-yellow-50 tw:to-yellow-100 tw:rounded-xl tw:border-2 tw:border-yellow-400">
-            <div class="tw:flex tw:items-center">
-              <div class="tw:text-2xl tw:mr-3">🥇</div>
-              <div class="tw:w-12 tw:h-12 tw:bg-gradient-to-br tw:from-purple-500 tw:to-pink-500 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:text-white tw:font-bold tw:mr-3">
-                JD
-              </div>
-              <div>
-                <div class="tw:font-semibold tw:text-gray-800">Juan Pérez</div>
-                <div class="tw:text-sm tw:text-gray-500">5 ofertas realizadas</div>
-              </div>
-            </div>
-            <div class="tw:text-right">
-              <div class="tw:text-lg tw:font-bold tw:text-yellow-700">$450.00</div>
-            </div>
-          </div>
-  
-          <!-- Participante 2 -->
-          <div class="tw:flex tw:items-center tw:justify-between tw:p-4 tw:bg-gradient-to-r tw:from-gray-50 tw:to-gray-100 tw:rounded-xl tw:border-2 tw:border-gray-300">
-            <div class="tw:flex tw:items-center">
-              <div class="tw:text-2xl tw:mr-3">🥈</div>
-              <div class="tw:w-12 tw:h-12 tw:bg-gradient-to-br tw:from-blue-500 tw:to-indigo-500 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:text-white tw:font-bold tw:mr-3">
-                ML
-              </div>
-              <div>
-                <div class="tw:font-semibold tw:text-gray-800">María López</div>
-                <div class="tw:text-sm tw:text-gray-500">4 ofertas realizadas</div>
-              </div>
-            </div>
-            <div class="tw:text-right">
-              <div class="tw:text-lg tw:font-bold tw:text-gray-700">$420.00</div>
-            </div>
-          </div>
-  
-          <!-- Participante 3 -->
-          <div class="tw:flex tw:items-center tw:justify-between tw:p-4 tw:bg-gradient-to-r tw:from-orange-50 tw:to-orange-100 tw:rounded-xl tw:border-2 tw:border-orange-300">
-            <div class="tw:flex tw:items-center">
-              <div class="tw:text-2xl tw:mr-3">🥉</div>
-              <div class="tw:w-12 tw:h-12 tw:bg-gradient-to-br tw:from-green-500 tw:to-teal-500 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:text-white tw:font-bold tw:mr-3">
-                CR
-              </div>
-              <div>
-                <div class="tw:font-semibold tw:text-gray-800">Carlos Rodríguez</div>
-                <div class="tw:text-sm tw:text-gray-500">3 ofertas realizadas</div>
-              </div>
-            </div>
-            <div class="tw:text-right">
-              <div class="tw:text-lg tw:font-bold tw:text-orange-700">$380.00</div>
-            </div>
-          </div>
-  
-          <!-- Más participantes -->
-          <div class="tw:space-y-2 tw:mt-4">
-            <div class="tw:flex tw:items-center tw:justify-between tw:p-3 tw:bg-gray-50 tw:rounded-lg">
-              <div class="tw:flex tw:items-center">
-                <div class="tw:w-10 tw:h-10 tw:bg-gradient-to-br tw:from-orange-500 tw:to-red-500 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:text-white tw:font-bold tw:mr-3 tw:text-sm">
-                  AS
-                </div>
-                <div class="tw:font-medium tw:text-gray-700 tw:text-sm">Ana Sánchez</div>
-              </div>
-              <div class="tw:text-sm tw:font-semibold tw:text-gray-600">2 ofertas</div>
-            </div>
-  
-            <div class="tw:flex tw:items-center tw:justify-between tw:p-3 tw:bg-gray-50 tw:rounded-lg">
-              <div class="tw:flex tw:items-center">
-                <div class="tw:w-10 tw:h-10 tw:bg-gradient-to-br tw:from-pink-500 tw:to-rose-500 tw:rounded-full tw:flex tw:items-center tw:justify-center tw:text-white tw:font-bold tw:mr-3 tw:text-sm">
-                  LG
-                </div>
-                <div class="tw:font-medium tw:text-gray-700 tw:text-sm">Luis García</div>
-              </div>
-              <div class="tw:text-sm tw:font-semibold tw:text-gray-600">1 oferta</div>
-            </div>
-          </div>
-        </div>
-      </div>
+
+    <!-- ======================================== -->
+    <!-- FOOTER                                  -->
+    <!-- ======================================== -->
+    <div class="text-center text-muted mt-5 mb-4">
+      <small>© 2026 XUBA Auctions · Panel de resultados de subasta</small>
     </div>
-  
-    <!-- Acciones -->
-    <div class="tw:bg-white tw:rounded-3xl tw:shadow-lg tw:p-6">
-      <div class="tw:flex tw:flex-col md:tw:flex-row tw:items-center tw:justify-between tw:gap-4">
-        <div class="tw:flex-1">
-          <h3 class="tw:text-lg tw:font-bold tw:text-gray-800 tw:mb-2">Gestión de la Subasta</h3>
-          <p class="tw:text-sm tw:text-gray-600">Puedes cancelar la subasta en cualquier momento. Esta acción no se puede deshacer.</p>
+    <!-- GALERÍA -->
+
+<div
+    class="galeria-backdrop"
+    *ngIf="mostrarGaleria"
+    (click)="cerrarGaleria()">
+
+    <div
+        class="galeria-modal"
+        (click)="$event.stopPropagation()">
+
+        <button
+            class="cerrar"
+            (click)="cerrarGaleria()">
+
+            <i class="fa fa-times"></i>
+
+        </button>
+
+        <img
+            class="imagen-principal"
+            [src]="listaImagenes[imagenSeleccionada]?.url">
+
+        <div class="miniaturas">
+
+            <img
+                *ngFor="let img of listaImagenes; let i=index"
+
+                [src]="img.url"
+
+                [class.activa]="i==imagenSeleccionada"
+
+                (click)="seleccionarImagen(i)">
+
         </div>
-        
-        <div class="tw:flex tw:gap-3">
 
- <button
-  *ngIf="subasta.estatus !== 'Cancelada'; else motivoCancelacionTpl"
-  (click)="abrirModalCancelar()"
-  class="...">
-  ❌ Cancelar Subasta
-</button>
+    </div>
 
-<ng-template #motivoCancelacionTpl>
-  <div class="tw:px-6 tw:py-3 tw:bg-red-50 tw:border tw:border-red-200 tw:rounded-xl">
-    <p class="tw:text-sm tw:font-semibold tw:text-red-600">
-      Motivo de cancelación
-    </p>
-    <p class="tw:text-gray-700">
-      {{ subasta.motivo }}
-    </p>
-  </div>
-</ng-template>
 </div>
 
-    <!--Modal de cancelacion-->
-    <div *ngIf="mostrarModalCancelar" class="tw:fixed tw:inset-0 tw:bg-black/50 tw:flex tw:items-center tw:justify-center tw:z-50">
-      <div class="tw:bg-white tw:rounded-2xl tw:p-6 tw:w-[500px]">
-        <h2 class="tw:text-2xl tw:font-bold tw:mb-4">
-          Cancelar Subasta
-        </h2>
-        <p class="tw:text-gray-600 tw:mb-4">
-          Escribe el motivo por el cual deseas cancelar la subasta.
-        </p>
-         <textarea
-         [(ngModel)]="motivoCancelacion"
-          rows="5"
-          minlength="30"
-          class="tw:w-full tw:border tw:border-gray-300 tw:rounded-xl tw:p-3"
-          placeholder="Escribe el motivo...">
-          </textarea>
-          
-          <div class="tw:text-right tw:text-sm tw:text-gray-500 tw:mt-1">
-            {{ motivoCancelacion.length }}/30
-          </div>
-          <div class="tw:flex tw:justify-between tw:items-center tw:mt-6">
-          <button (click)="cerrarModalCancelar()"class="tw:px-4 tw:py-2 tw:bg-gray-300 tw:rounded-xl">
-            Cerrar
-          </button>
-          <button (click)="confirmarCancelacion()"class="tw:px-4 tw:py-2 tw:bg-red-600 tw:text-white tw:rounded-xl">
-          Confirmar
-        </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
+  </div> <!-- fin container-fluid -->

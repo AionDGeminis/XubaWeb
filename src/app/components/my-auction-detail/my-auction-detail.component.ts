@@ -18,8 +18,14 @@ import { FormsModule } from '@angular/forms';
 })
 export class MyAuctionDetailComponent {
   subasta: Subasta | any = {};
+  ganadorInfo: any = {};
+  listaEstatus: any[] = [];
+  loading = false;
+  textoLoading = '';
   indexCurrentImage: number = 0;
   listaImagenes: any[] = [];
+  mostrarGaleria = false;
+  imagenSeleccionada = 0;
   mostrarModalCancelar = false;
   motivoCancelacion = '';
   subastaCancelada = false;
@@ -41,57 +47,42 @@ export class MyAuctionDetailComponent {
     this.getInitialData(id);
   }
 
-  getInitialData(IdSubasta: number){
-    this.subastasService.getAuctionById(IdSubasta).subscribe(sub => {
-      console.log(sub)
+ getInitialData(IdSubasta: number){
+
+  this.loading = true;
+
+  this.subastasService.getAuctionById(IdSubasta).subscribe({
+
+    next:(sub)=>{
+
       this.subasta = sub;
-      this.subasta.remaining = this.subasta.hora * 3600 + this.subasta.minuto * 60 + this.subasta.segundo
+
+      this.subasta.remaining =
+        this.subasta.hora * 3600 +
+        this.subasta.minuto * 60 +
+        this.subasta.segundo;
+
       this.listaImagenes = sub.mimagenesSubasta;
+
       this.setTimerV2();
-      //  if(this.isLoggedIn()){
-      //    // this.getSubastasSeguidas();
-      //    this.getDireccionesEntrega(this.usuario()!.id, 'entrega');
-      //  }
-      //  // 2. Luego cargar la lista
-      //  let tipo: 'porvencer' | 'premium' | 'todas' = 'todas';
- 
-      //  switch(this.origen) {
-      //      case 'SubastasPremium':
-      //        tipo = 'premium'
-      //        break;
-      //      case 'SubastasExpress':
-      //        tipo = 'porvencer'
-      //        break;
-      //      default:
-      //        tipo = 'todas';
-      //        break;
-      //  }
-       // if (this.origen === 'SubastasPremium') tipo = 'premium';
-       // else if (this.origen === 'SubastasExpress') tipo = 'porvencer';
-   
-       // console.log('Tipo de subastas a consultar:', tipo);
-      //  this.subastasService.getAuctions(tipo).subscribe(list => {
-      //    console.log('Lista recibida:', list);
-      //    this.lista = list;
-      //    let index = this.lista.findIndex( x => x.id === IdSubasta);
-      //    this.indiceActual = index > -1? index:0;
-      //    //console.log(index); 
-        
-      //   //  this.
-      //   //  this.lista.unshift(this.subasta!);
-   
-      //    // 3. Ya tienes subasta y lista. Ahora sí puedes usar todo
-      //    // this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta!.id);
-      //    // console.log(this.indiceActual)
-      //    this.imagenActual  = this.subasta!.url;
-      //    this.tiempoVence   = this.subasta!.tiempoVence ?? '00:00:00';
-         
-      //    this.iniciarTemporizador();
-      //    this.verificarSiSiguiendo();
-      //    this.conectarSignalR();
-      //  });
-     }); 
- }
+
+      this.getInformacionGanador(IdSubasta);
+
+      this.getHistorialEstatus(IdSubasta);
+
+      this.loading = false;
+
+    },
+
+    error:()=>{
+
+      this.loading=false;
+
+    }
+
+  });
+
+}
 
  setTimerV2(){
   this.intervalId = setInterval(() => {
@@ -152,4 +143,69 @@ confirmarCancelacion() {
     }
   });
 }
+getInformacionGanador(idSubasta:number){
+
+  this.subastasService
+      .GetInformacionSubastaTerminada(idSubasta)
+      .subscribe({
+
+        next:(resp)=>{
+
+          this.ganadorInfo = resp;
+
+          console.log(this.ganadorInfo);
+
+        },
+
+        error:(err)=>{
+
+          console.error(err);
+
+        }
+
+      });
+
+}
+getHistorialEstatus(idSubasta: number) {
+
+  this.subastasService
+    .GetHistorialEstatusSubasta(idSubasta)
+    .subscribe({
+
+      next: (resp: any) => {
+
+        console.log("Historial:", resp);
+
+        this.listaEstatus = resp;
+
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+      }
+
+    });
+
+}
+onImgError(event: Event) {
+  const img = event.target as HTMLImageElement;
+  img.src = 'images/nofound5.jpg';
+}
+abrirGaleria(index: number = 0) {
+  this.imagenSeleccionada = index;
+  this.mostrarGaleria = true;
+  this.document.body.style.overflow = 'hidden';
+}
+
+cerrarGaleria() {
+  this.mostrarGaleria = false;
+  this.document.body.style.overflow = 'auto';
+}
+
+seleccionarImagen(index: number) {
+  this.imagenSeleccionada = index;
+}
+
 }

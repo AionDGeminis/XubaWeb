@@ -38,6 +38,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   imagenActual = '';
   tiempoVence = '00:00:00';
   vencida = false;
+  fechaFin: Date | null = null;
+  intervalTiempo: any;
   valorApuesta = 0;
   siguienteApuesta = 0;
   // estaSiguiendo = false;
@@ -158,8 +160,17 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
          // 3. Ya tienes subasta y lista. Ahora sí puedes usar todo
          // this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta!.id);
          // console.log(this.indiceActual)
-         this.imagenActual  = this.subasta!.url;
-         this.tiempoVence   = this.subasta!.tiempoVence ?? '00:00:00';
+         this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
+
+// ⬇️ CONVERTIR A FECHA FIN REAL
+const segundos = this.tiempoStringASegundos(this.tiempoVence);
+
+this.fechaFin = new Date(
+  new Date().getTime() + segundos * 1000
+);
+
+// ⬇️ INICIAR TIMER NUEVO (REAL)
+this.iniciarTimerReal();
          
          this.iniciarTemporizador();
          this.verificarSiSiguiendo();
@@ -167,6 +178,36 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
        });
      }); 
  }
+ iniciarTimerReal() {
+
+  if (this.intervalTiempo) {
+    clearInterval(this.intervalTiempo);
+  }
+
+  this.intervalTiempo = setInterval(() => {
+
+    if (!this.fechaFin) return;
+
+    const ahora = new Date().getTime();
+    const fin = this.fechaFin.getTime();
+
+    let diff = fin - ahora;
+
+    if (diff <= 0) {
+      this.tiempoVence = '00:00:00';
+      this.vencida = true;
+      clearInterval(this.intervalTiempo);
+      return;
+    }
+
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+
+    this.tiempoVence = `${this.pad(h)}:${this.pad(m)}:${this.pad(s)}`;
+
+  }, 1000);
+}
  
 //  toggleTheme(){
 //   const html = document.documentElement;
@@ -374,7 +415,7 @@ setTimer(litaItems: any[]){
   this.intervalId = setInterval(() => {
     for(let item of litaItems){
       if (item.venceSegundos > 0) {
-        item.venceSegundos--;
+       // item.venceSegundos--;
       }
     }
   }, 1000);
@@ -845,10 +886,18 @@ ngAfterViewInit(): void {
   actualizarVista() {
     this.imagenActual  = this.subasta!.url;
     this.tiempoVence   = this.subasta!.tiempoVence ?? '00:00:00';
-    this.iniciarTemporizador();
+    //this.iniciarTemporizador();
     this.verificarSiSiguiendo();
     //this.getSubastasSeguidas();
     this.conectarSignalR();
+
+    const segundos = this.tiempoStringASegundos(this.tiempoVence);
+
+this.fechaFin = new Date(
+  new Date().getTime() + segundos * 1000
+);
+
+this.iniciarTimerReal();
   }
 
   cerrarDetalle(): void {
