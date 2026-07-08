@@ -715,7 +715,6 @@ input[type="checkbox"] {
 }
 
 
-
 .sidebar {
   background: var(--card);
   border-radius: var(--radius);
@@ -724,12 +723,15 @@ input[type="checkbox"] {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  /* min-width: 180px; */
   width: 95%;
   min-height: 90vh;
   max-height: 90vh;
   overflow-y: auto;
   align-items: center;
+
+  /* NUEVO */
+  position: sticky;
+  top: 70px; /* ajusta según la altura de tu navbar */
 }
 
 .sidebar .profile {
