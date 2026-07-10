@@ -35,6 +35,9 @@ export class MyAuctionDetailComponent {
   listaImagenes: any[] = [];
   mostrarGaleria = false;
   imagenSeleccionada = 0;
+  mostrarModalContraoferta = false;
+  mostrarModalFinalizar = false;
+  montoContraoferta = 0;
   mostrarModalCancelar = false;
   motivoCancelacion = '';
   subastaCancelada = false;
@@ -60,36 +63,32 @@ export class MyAuctionDetailComponent {
 
   this.loading = true;
 
-  this.subastasService.getAuctionById(IdSubasta).subscribe({
+  this.subastasService.ConsultarDetalleSeguimientoId(IdSubasta).subscribe({
     
 
-    next:(sub)=>{
+    next:(sub: any)=>{
 
       this.subasta = sub;
 
-      this.subasta.remaining =
-        this.subasta.hora * 3600 +
-        this.subasta.minuto * 60 +
-        this.subasta.segundo;
-        console.log(this.subasta.estatus);
+      this.subasta.remaining = this.tiempoStringASegundos(sub.tiempoVence);
 
-      this.listaImagenes = sub.mimagenesSubasta;
+this.listaImagenes = sub.imagenesSubasta || [];
 
-      this.setTimerV2();
+      this.listaOfertas = sub.ultimasOfertas || [];
 
-      this.getInformacionGanador(IdSubasta);
+this.listaVistas = sub.ultimasVistas || [];
 
-      this.getHistorialEstatus(IdSubasta);
+this.ganadorInfo = {
+  nombre: sub.ganador,
+  apuesta: sub.precioFinal,
+  imgPerfil: sub.imgPerfilGanador,
+  estatus: sub.estatus,
+  claveEstatus: sub.idEstatus
+};
 
-      //this.CambiarEstatusSubasta(IdSubasta, 2);
+this.subasta.estatus = sub.estatus;
 
-      this.loading = false;
-
-    },
-
-    error:()=>{
-
-      this.loading=false;
+this.calcularGanancia();
 
     }
 
@@ -156,58 +155,53 @@ confirmarCancelacion() {
     }
   });
 }
-getInformacionGanador(idSubasta:number){
+/*getInformacionGanador(idSubasta: number) {
 
-  this.subastasService
-      .GetInformacionSubastaTerminada(idSubasta)
-      .subscribe({
+  this.subastasService.ConsultarDetalleSeguimientoId(idSubasta).subscribe({
 
-        next:(resp)=>{
+    next: (resp: any) => {
 
-          this.ganadorInfo = resp;
+      this.ganadorInfo = {
+        nombre: resp.ganador,
+        apuesta: resp.precioFinal,
+        imgPerfil: resp.imgPerfilGanador
+      };
 
-          console.log(this.ganadorInfo);
-          this.calcularGanancia();
+      this.calcularGanancia();
 
-        },
+    }
 
-        error:(err)=>{
+  });
 
-          console.error(err);
+}*/
+/*getHistorialEstatus(idSubasta:number){
 
-        }
+  this.subastasService.ConsultarDetalleSeguimientoId(idSubasta).subscribe({
 
-      });
+    next:(resp:any)=>{
 
-}
-getHistorialEstatus(idSubasta: number) {
+      this.subasta.estatus = resp.estatus;
 
-  this.subastasService.GetHistorialEstatusSubasta(idSubasta).subscribe({
+      this.listaEstatus = [];
 
-     next: (resp: any) => {
+    }
 
-  console.log("Historial:", resp);
+  });
 
-  this.listaEstatus = resp;
-  if (this.listaEstatus.length > 0) {
-  this.subasta.estatus = this.listaEstatus[0].desStatus;
-}
+}*/
+tiempoStringASegundos(tiempo: string): number {
 
-  if (this.listaEstatus.length > 0) {
-
-    console.log("Primer estatus:", this.listaEstatus[0]);
-
+  if (!tiempo) {
+    return 0;
   }
 
-},
+  const partes = tiempo.split(':');
 
-      error: (err) => {
+  const horas = Number(partes[0]);
+  const minutos = Number(partes[1]);
+  const segundos = Number(partes[2]);
 
-        console.error(err);
-
-      }
-
-    });
+  return horas * 3600 + minutos * 60 + segundos;
 
 }
 onImgError(event: Event) {
@@ -215,9 +209,12 @@ onImgError(event: Event) {
   img.src = 'images/nofound5.jpg';
 }
 abrirGaleria(index: number = 0) {
+  console.log('Abrir galería', index);
+
   this.imagenSeleccionada = index;
   this.mostrarGaleria = true;
   this.document.body.style.overflow = 'hidden';
+  
 }
 
 cerrarGaleria() {
@@ -243,7 +240,7 @@ CambiarEstatusSubasta(idSubasta:number,nuevoEstatus:number){
 
           this.getInitialData(idSubasta);
 
-          this.getHistorialEstatus(idSubasta);
+          //this.getHistorialEstatus(idSubasta);
 
           this.toastr.success("Estatus actualizado");
 
@@ -260,6 +257,48 @@ CambiarEstatusSubasta(idSubasta:number,nuevoEstatus:number){
         }
 
       });
+
+}
+async aceptarOfertaActual() {
+
+  if (this.listaOfertas.length === 0) {
+    this.toastr.warning("No hay ofertas para aceptar.");
+    return;
+  }
+
+  const ultimaOferta = this.listaOfertas[0].ultimaOferta;
+
+  const r = await this.ss.showConfirmMessage(
+    `¿Desea aceptar la oferta de compra actual al precio de ${this.toCurrency(ultimaOferta)}?`
+  );
+
+  if (r) {
+
+    // 1023 es un ejemplo.
+    // Aquí debes poner el id del estatus "Pendiente de pago"
+    this.CambiarEstatusSubasta(
+      this.subasta.id,
+      1023
+    );
+
+  }
+
+}
+getLastOferta(): number {
+
+  if (!this.listaOfertas || this.listaOfertas.length === 0) {
+    return 0;
+  }
+
+  return this.listaOfertas[0].ultimaOferta;
+
+}
+toCurrency(valor: number): string {
+
+  return new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN'
+  }).format(valor);
 
 }
 calcularGanancia() {
@@ -297,6 +336,54 @@ abrirModalOfertas() {
 cerrarModalOfertas() {
 
   this.mostrarModalOfertas = false;
+
+}
+abrirModalContraoferta() {
+
+  if (this.listaOfertas.length > 0) {
+    this.montoContraoferta = this.listaOfertas[0].ultimaOferta;
+  }
+
+  this.mostrarModalContraoferta = true;
+
+}
+
+cerrarModalContraoferta() {
+
+  this.mostrarModalContraoferta = false;
+
+}
+confirmarContraoferta() {
+
+  console.log("Monto:", this.montoContraoferta);
+
+  // Aquí irá la API
+  // this.subastasService.Contraofertar(...)
+
+  this.toastr.success("Contraoferta enviada");
+
+  this.cerrarModalContraoferta();
+
+}
+abrirModalFinalizar() {
+
+  this.mostrarModalFinalizar = true;
+
+}
+
+cerrarModalFinalizar() {
+
+  this.mostrarModalFinalizar = false;
+
+}
+confirmarFinalizarSubasta() {
+
+  //this.CambiarEstatusSubasta(
+      this.subasta.id,
+      /* id del estatus Finalizada */
+ // );
+
+  this.cerrarModalFinalizar();
 
 }
 

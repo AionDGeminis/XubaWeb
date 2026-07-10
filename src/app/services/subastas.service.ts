@@ -77,6 +77,16 @@ getNotifications(idUsuario: number, pagina: number = 1) {
   getAuctionById(id: number): Observable<Subasta> {
     return this.http.get<Subasta>(`${env.base_url}/subastas/ConsultaSubataId/${id}`, {headers:test_headers}).pipe(map(res => res));
   }
+ConsultarDetalleSeguimientoId(idSubasta: number) {
+  return this.http.get(
+    `${env.base_url}/subastas/ConsultarDetalleSeguimientoId`,
+    {
+      params: {
+        idSubasta: idSubasta.toString()
+      }
+    }
+  );
+}
 
   consultarGanador(idSubasta: number) {
     return this.http.get<any>(`${env.base_url}/subastas/ConsultaGanador/${idSubasta}`, {headers:test_headers}).pipe(map(res => res));
@@ -147,6 +157,7 @@ getNotifications(idUsuario: number, pagina: number = 1) {
       }
     );
   }
+
 
   GetInformacionSubastaTerminada(IdSubasta: number){
     return this.http.get(`${env.base_url}/subastas/ConsultaGanador/${IdSubasta}`, {headers:test_headers}).pipe(map(res => res));

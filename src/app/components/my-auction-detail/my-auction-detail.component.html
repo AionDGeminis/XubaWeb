@@ -53,7 +53,7 @@
                   <div class="card border rounded-4 shadow-sm">
                     <div class="card-body text-center p-2">
                       <i class="fa fa-gavel text-primary fa-2x mb-1"></i>
-                      <h3 class="fw-bold mb-0">{{ subasta.totalOfertas || 73 }}</h3>
+                      <h3 class="fw-bold mb-0">{{ subasta.cantidadOfertas }}</h3>
                       <small class="text-muted">Ofertas</small>
                     </div>
                   </div>
@@ -62,7 +62,7 @@
                   <div class="card border rounded-4 shadow-sm">
                     <div class="card-body text-center p-2">
                       <i class="fa fa-eye text-danger fa-2x mb-1"></i>
-                      <h3 class="fw-bold mb-0">{{ subasta.totalVistas || 241 }}</h3>
+                      <h3 class="fw-bold mb-0">{{ subasta.cantidadVistas }}</h3>
                       <small class="text-muted">Vistas</small>
                     </div>
                   </div>
@@ -71,7 +71,7 @@
                   <div class="card border rounded-4 shadow-sm">
                     <div class="card-body text-center p-2">
                       <i class="fa fa-users text-success fa-2x mb-1"></i>
-                      <h3 class="fw-bold mb-0">{{ subasta.totalParticipantes || 42 }}</h3>
+                      <h3 class="fw-bold mb-0">{{ subasta.cantidadParticipantes }}</h3>
                       <small class="text-muted">Participantes</small>
                     </div>
                   </div>
@@ -80,7 +80,7 @@
                   <div class="card border rounded-4 shadow-sm">
                     <div class="card-body text-center p-2">
                       <i class="fa fa-clock text-warning fa-2x mb-1"></i>
-                      <h3 class="fw-bold mb-0">{{ subasta.duracionDias || 7 }}</h3>
+                      <h3 class="fw-bold mb-0">{{ subasta.dias }}</h3>
                       <small class="text-muted">Días</small>
                     </div>
                   </div>
@@ -120,77 +120,119 @@
       <!-- ESTATUS ACTUAL -->
       <!-- ====================================== -->
 
-      <div class="card border-0 shadow-sm rounded-4 mt-4">
+ <div class="card border-0 shadow-sm rounded-4 mt-4">
 
-        <div class="card-body">
+    <div class="card-header bg-white border-0">
+        <h5 class="fw-bold mb-0">
+            Estatus actual
+        </h5>
+    </div>
 
-          <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="card-body">
 
-            <h5 class="fw-bold mb-0">
-              Estatus actual
-            </h5>
+        <div class="bg-primary text-white rounded-4 p-4">
 
-        
+           <div class="d-flex justify-content-between align-items-start">
 
-          </div>
-<div class="bg-dark text-white rounded-3 p-3">
+    <!-- Lado izquierdo -->
+    <div>
 
-  <h6 class="mb-2">
-    {{ ganadorInfo.estatus }}
-  </h6>
+        <h4 class="fw-bold mb-2">
+            {{ subasta.estatus }}
+        </h4>
 
-  <!-- MÍNIMO NO ALCANZADO -->
-  <div *ngIf="ganadorInfo.claveEstatus === 'MNA'">
-    La subasta finalizó pero no se alcanzó el precio mínimo.
-  </div>
+        <p class="mb-0">
 
-  <!-- PROPUESTA AL GANADOR -->
-  <div *ngIf="ganadorInfo.claveEstatus === 'PGA'">
-    Esperando la respuesta del comprador a la oferta enviada.
-  </div>
+            <span *ngIf="subasta.idEstatus==1022">
+                Esperando la respuesta del comprador a la propuesta enviada.
+            </span>
 
-  <!-- CONTRAOFERTA -->
-  <div *ngIf="ganadorInfo.claveEstatus === 'PPV'">
-    El comprador te envió una contraoferta.
-  </div>
+            <span *ngIf="subasta.idEstatus==1023">
+                El comprador envió una contraoferta.
+            </span>
 
-  <!-- RECHAZÓ LA OFERTA -->
-  <div *ngIf="ganadorInfo.claveEstatus === 'RGA'">
-    El comprador rechazó tu oferta.
-  </div>
+            <span *ngIf="subasta.idEstatus==1024">
+                El comprador rechazó la propuesta.
+            </span>
 
-  <!-- PENDIENTE DE PAGO -->
-  <div *ngIf="ganadorInfo.claveEstatus === 'PTP'">
-    Esperando la confirmación de pago del comprador.
-  </div>
+            <span *ngIf="subasta.idEstatus==1025">
+                Esperando el pago del comprador.
+            </span>
 
-  <!-- PAGADO -->
-  <div *ngIf="ganadorInfo.claveEstatus === 'PDO'">
-    El comprador ha realizado el pago del producto correctamente.
-    <br>
-    Ya puedes proceder con el envío.
-  </div>
+            <span *ngIf="subasta.idEstatus==1026">
+                El comprador ya realizó el pago.
+            </span>
 
-  <!-- ENVIADO -->
-  <div *ngIf="ganadorInfo.claveEstatus === 'ENV'">
-    El producto ha sido enviado correctamente.
-  </div>
+            <span *ngIf="subasta.idEstatus==1027">
+                Producto enviado.
+            </span>
 
-  <!-- RECIBIDO -->
-  <div *ngIf="ganadorInfo.claveEstatus === 'REC'">
-    El producto fue entregado. Esperando confirmación del comprador.
-  </div>
+            <span *ngIf="subasta.idEstatus==1028">
+                Producto recibido.
+            </span>
 
-  <!-- RECEPCIÓN CONFIRMADA -->
-  <div *ngIf="ganadorInfo.claveEstatus === 'RCC'">
-    El comprador confirmó la correcta recepción del producto.
-  </div>
+        </p>
+
+    </div>
+
+    <!-- Lado derecho -->
+    <div class="text-end ms-4">
+
+        <small class="text-white-50">
+            Oferta actual
+        </small>
+
+        <h2 class="fw-bold mb-0">
+            {{ subasta.precioFinal | currency:'MXN' }}
+        </h2>
+
+    </div>
 
 </div>
 
         </div>
+       <!-- <div *ngIf="ganadorInfo.estatus === 'Mínimo no alcanzado',  " class="mt-3"> -->
 
-      </div>
+        <div class="text-center mt-4">
+
+    <h5 class="fw-bold mb-4">¿Qué deseas hacer?</h5>
+
+    <button
+    class="btn bg-xuba3 me-1"
+    (click)="aceptarOfertaActual()">
+
+    <i class="fas fa-handshake"></i>
+    Aceptar oferta
+
+</button>
+
+    <button
+class="btn bg-warning text-dark me-1"
+(click)="abrirModalContraoferta()">
+
+<i class="fas fa-hand-holding-usd"></i>
+
+Contraofertar
+
+</button>
+
+<button
+class="btn btn-danger"
+(click)="abrirModalFinalizar()">
+
+<i class="fas fa-stop-circle"></i>
+
+Finalizar subasta
+
+</button>
+</div>
+
+
+</div>
+
+    <!-- </div> -->
+
+</div>
 
       <!-- ====================================== -->
       <!-- DOCUMENTOS -->
@@ -306,100 +348,61 @@
 
         <div class="col-lg-6">
 
-          <div class="card border-0 shadow-sm rounded-4 h-100">
+  <div class="card border-0 shadow-sm rounded-4 h-100">
 
-            <div class="card-body d-flex flex-column">
+    <div class="card-body d-flex flex-column">
 
-              <div class="d-flex align-items-center mb-4">
+      <div class="d-flex align-items-center mb-4">
 
-                <i class="fa fa-gavel text-primary me-2"></i>
+        <i class="fa fa-gavel text-primary me-2"></i>
 
-                <h5 class="fw-bold mb-0">
-                  Últimas 3 ofertas
-                </h5>
+        <h5 class="fw-bold mb-0">
+          Últimas 3 ofertas
+        </h5>
 
-              </div>
+      </div>
 
-              <div class="d-flex justify-content-between mb-3">
+      <div
+        class="d-flex justify-content-between mb-3"
+        *ngFor="let oferta of listaOfertas | slice:0:3">
 
-                <div>
+        <div>
 
-                  <strong>Marcos Armendariz</strong>
-
-                </div>
-
-                <div class="text-end">
-
-                  <strong>$3,869.00</strong>
-
-                  <br>
-
-                  <small class="text-muted">
-                    22 Ago 2025
-                  </small>
-
-                </div>
-
-              </div>
-
-              <div class="d-flex justify-content-between mb-3">
-
-                <div>
-
-                  <strong>Carlos Méndez</strong>
-
-                </div>
-
-                <div class="text-end">
-
-                  <strong>$3,650.00</strong>
-
-                  <br>
-
-                  <small class="text-muted">
-                    22 Ago 2025
-                  </small>
-
-                </div>
-
-              </div>
-
-              <div class="d-flex justify-content-between">
-
-                <div>
-
-                  <strong>Juan Pérez</strong>
-
-                </div>
-
-                <div class="text-end">
-
-                  <strong>$3,450.00</strong>
-
-                  <br>
-
-                  <small class="text-muted">
-                    22 Ago 2025
-                  </small>
-
-                </div>
-
-              </div>
-<div class="mt-auto pt-4">
-    <button
-    class="btn btn-outline-primary rounded-pill w-100"
-    (click)="abrirModalOfertas()">
-
-    Ver todas las ofertas ({{subasta.totalOfertas || 73}})
-
-</button>
-</div>
-
-            </div>
-
-          </div>
+          <strong>{{ oferta.nombre }}</strong>
 
         </div>
+
+        <div class="text-end">
+
+          <strong>{{ oferta.ultimaOferta | currency:'MXN' }}</strong>
+
+          <br>
+
+          <small class="text-muted">
+            {{ oferta.fecha | date:'dd/MM/yyyy hh:mm a' }}
+          </small>
+
+        </div>
+
+      </div>
+
+      <div class="mt-auto pt-4">
+
+        <button
+          class="btn btn-outline-primary rounded-pill w-100"
+          (click)="abrirModalOfertas()">
+
+          Ver todas las ofertas ({{ subasta.cantidadOfertas }})
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
         <!-- VISTAS -->
 
@@ -419,43 +422,24 @@
 
               </div>
 
-              <div class="d-flex justify-content-between mb-3">
+              <div
+  class="d-flex justify-content-between mb-3"
+  *ngFor="let vista of listaVistas | slice:0:3">
 
-                <strong>Jorge Hernández</strong>
+  <strong>{{ vista.nombre }}</strong>
 
-                <small class="text-muted">
-                  22 Ago 2025
-                </small>
+  <small class="text-muted">
+    {{ vista.fecha | date:'dd/MM/yyyy hh:mm a' }}
+  </small>
 
-              </div>
-
-              <div class="d-flex justify-content-between mb-3">
-
-                <strong>Ana García</strong>
-
-                <small class="text-muted">
-                  22 Ago 2025
-                </small>
-
-              </div>
-
-              <div class="d-flex justify-content-between">
-
-                <strong>Luis Ramírez</strong>
-
-                <small class="text-muted">
-                  22 Ago 2025
-                </small>
-
-              </div>
+</div>
 
               <div class="mt-auto pt-4">
    <button
     class="btn btn-outline-danger rounded-pill w-100"
     (click)="abrirModalVistas()">
 
-    Ver todas las vistas ({{subasta.totalVistas || 241}})
-
+Ver todas las vistas ({{ subasta.cantidadVistas }})
 </button>
 </div>
 
@@ -589,9 +573,13 @@
 
               <div class="winner-circle">
 
-                <i class="fa fa-gem"></i>
+  <img
+      [src]="subasta.imgPerfilGanador"
+      alt="Ganador"
+      class="winner-avatar"
+      (error)="onImgError($event)">
 
-              </div>
+</div>
 
             </div>
 
@@ -601,7 +589,6 @@
 
                 {{ganadorInfo.nombre}}
 
-                {{ganadorInfo.apellido}}
 
                 <i class="fa fa-gem text-primary ms-1"></i>
 
@@ -644,21 +631,28 @@
         </div>
 
       </div>
-      <div class="card border-0 shadow-sm rounded-4 mt-3">
+    <div class="card border-0 shadow-sm rounded-4 mt-3">
 
-        <div class="card-body d-flex align-items-center">
+  <div class="card-body text-center py-3">
 
-          <i class="fa fa-lock text-success fs-3 me-3"></i>
+    <div class="d-flex justify-content-center align-items-center mb-1">
 
-          <strong>
+      <i class="fa fa-lock text-primary me-1"></i>
 
-            Compra protegida por XUBA
+      <span class="small fw-semibold text-secondary">
+        Compra segura y protegida a través de
+      </span>
 
-          </strong>
+    </div>
 
-        </div>
+   <img
+  src="openpay-logo.png"
+  class="logo-openpay"
+  alt="Openpay">
 
-      </div>
+  </div>
+
+</div>
 
       <div class="card border-0 shadow-sm rounded-4 mt-3">
 
@@ -819,6 +813,7 @@
         </div>
 
       </div>
+      
 
     </div>
    <!-- ======================================== -->
@@ -1122,7 +1117,7 @@
 
               <td>{{ oferta.nombre }}</td>
 
-              <td>{{ oferta.apuesta | currency:'MXN' }}</td>
+              <td>{{ oferta.ultimaOferta | currency:'MXN' }}</td>
 
               <td>{{ oferta.fecha | date:'dd/MM/yyyy hh:mm a' }}</td>
 
@@ -1149,6 +1144,71 @@
     </div>
 
   </div>
+
+</div>
+<!-- MODAL CONTRAOFERTA -->
+<div class="modal-backdrop-custom" *ngIf="mostrarModalContraoferta">
+
+    <div class="modal-xuba">
+
+        <!-- Header -->
+        <div class="modal-header-xuba">
+
+            <h5>Nueva oferta para el ganador</h5>
+
+            <button
+                class="btn-close-xuba"
+                (click)="cerrarModalContraoferta()">
+
+                &times;
+
+            </button>
+
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body">
+
+            <div class="mb-4">
+
+                <label class="form-label fw-bold">
+
+                    Nueva Oferta
+
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    [(ngModel)]="montoContraoferta">
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+
+        <div class="modal-footer border-0">
+
+            <button
+                class="btn btn-enviar"
+                (click)="confirmarContraoferta()">
+
+                Enviar Oferta
+
+            </button>
+
+            <button
+                class="btn btn-cerrar"
+                (click)="cerrarModalContraoferta()">
+
+                Cerrar
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 

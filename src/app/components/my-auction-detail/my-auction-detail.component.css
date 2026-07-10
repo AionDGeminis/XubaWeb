@@ -92,7 +92,7 @@
 
 }
 .historial-card{
-    height:100%;
+    height:50%;
 }
 
 .timeline{
@@ -199,9 +199,219 @@
     word-break:break-word;
 }
 .descripcion-producto{
-    width:510px;
+    width:410px;
 }
 
 .descripcion-producto{
-    margin-left: -50px;
+    margin-left: -30px;
+}
+
+.winner-avatar{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+}
+.btn-aceptar{
+    background:#b54cc8;
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    font-weight:600;
+    padding:8px 18px;
+    transition:.2s;
+}
+
+.btn-aceptar:hover{
+    background:#a13fb2;
+    color:#fff;
+}
+
+.btn-contra{
+    background:#f4b000;
+    color:#000;
+    border:none;
+    border-radius:5px;
+    font-weight:600;
+    padding:8px 18px;
+    transition:.2s;
+}
+
+.btn-contra:hover{
+    background:#de9f00;
+}
+
+.btn-finalizar{
+    background:#e84545;
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    font-weight:600;
+    padding:8px 18px;
+    transition:.2s;
+}
+
+.btn-finalizar:hover{
+    background:#d13030;
+    color:#fff;
+}
+.bg-xuba3{
+    background: linear-gradient(90deg, #4A94CE 0%, #B44C8E 100%);
+    color: #fff !important;
+    border: none;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: .2s;
+}
+
+.bg-xuba3:hover{
+    background: linear-gradient(90deg, #3f87bf 0%, #a84384 100%);
+    color: #fff;
+}
+
+.bg-xuba3:focus,
+.bg-xuba3:active{
+    color:#fff;
+    box-shadow:none;
+}
+/* Fondo */
+
+.modal-backdrop-custom{
+
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+/* Ventana */
+
+.modal-xuba{
+
+    width:600px;
+
+    max-width:95%;
+
+    background:#fff;
+
+    border-radius:8px;
+
+    overflow:hidden;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.25);
+
+}
+
+/* Encabezado */
+
+.modal-header-xuba{
+
+    background:linear-gradient(90deg,#ff3d5d,#4d6cff);
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 18px;
+
+}
+
+.modal-header-xuba h5{
+
+    margin:0;
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+.btn-close-xuba{
+
+    background:none;
+
+    border:none;
+
+    color:#fff;
+
+    font-size:28px;
+
+    cursor:pointer;
+
+}
+
+/* Input */
+
+.form-control{
+
+    border-radius:4px;
+
+    height:46px;
+
+}
+
+/* Botón enviar */
+
+.btn-enviar{
+
+    background:#ef3c45;
+
+    color:#fff;
+
+    border-radius:25px;
+
+    padding:8px 28px;
+
+    font-weight:600;
+
+}
+
+.btn-enviar:hover{
+
+    background:#d93139;
+
+    color:#fff;
+
+}
+
+/* Botón cerrar */
+
+.btn-cerrar{
+
+    background:#212529;
+
+    color:#fff;
+
+    border-radius:25px;
+
+    padding:8px 28px;
+
+}
+
+.btn-cerrar:hover{
+
+    background:#000;
+
+    color:#fff;
+
+}
+.logo-openpay{
+    height: 30px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
 }
