@@ -15,10 +15,19 @@ export class SubastasService {
 
   constructor(private http: HttpClient) {}
   
-  getAuctions(tipo: 'porvencer' | 'premium' | 'todas'): Observable<Subasta[]> {
-    const apiUrl = `${env.base_url}/subastas/${tipo}`; 
-    return this.http.get<Subasta[]>(apiUrl, {headers:test_headers});
-  }
+getAuctions(
+  tipo: 'porvencer' | 'premium' | 'todas',
+  idUsuario: number = 0,
+  pagina: number = 1
+): Observable<Subasta[]> {
+
+  const apiUrl =
+    `${env.base_url}/subastas/ConsultarSubastas?tipo=${tipo}&idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get<Subasta[]>(apiUrl, {
+    headers: test_headers
+  });
+}
 
   GetXubastasUsuarioPerfil(tipo: string, userId: number){
     return this.http.get<any>(`${env.base_url}/subastas/consultarMisSubastasParticipadasGanadas`, {params:{tipo,idUsuario: userId}, headers:test_headers});
@@ -37,28 +46,62 @@ export class SubastasService {
     return this.http.get<Subasta[]>(`${env.base_url}/subastas/misSubastas/${idUsuario}/${tipo}`, {headers:test_headers});
   }
 
-  getSubastasGanadas(idVendedor: number){
-    return this.http.get<Subasta[]>(`${env.base_url}/subastas/ConsultaMisSubastasGanadas/${idVendedor}`, {headers:test_headers}).pipe(map(res => res));
-  }
+  getSubastasGanadas(idUsuario: number, pagina: number = 1) {
+  const apiUrl =
+    `${env.base_url}/subastas/ConsultaMisSubastasGanadas?idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get<Subasta[]>(apiUrl, { headers: test_headers })
+    .pipe(map(res => res));
+}
   
-  getNotifications(idUsuario:number) {
-    const apiUrl = `${env.base_url}/notificaciones/${idUsuario}`; 
-    return this.http.get(apiUrl,{headers:test_headers}).pipe(map(res => res));//this.http.get<Subasta[]>(apiUrl);
-  }
+getNotifications(idUsuario: number, pagina: number = 1) {
+  const apiUrl = `${env.base_url}/notificaciones/ConsultarMisNotificaciones?idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get(apiUrl, { headers: test_headers })
+    .pipe(map(res => res));
+}
 
   marcarVistaNotificacion(idNotificacion:number) {
     const apiUrl = `${env.base_url}/notificaciones/VerNotificacion/`; 
     return this.http.put(apiUrl, {id: idNotificacion},{headers:test_headers}).pipe(map(res => res));//this.http.get<Subasta[]>(apiUrl);
   }
   
-  getSeguidores(idUsuario:number) {
-    const apiUrl = `${env.base_url}/usuarios/ConsultarMisSeguidores/${idUsuario}`; 
-    return this.http.get(apiUrl,{headers:test_headers}).pipe(map(res => res));//this.http.get<Subasta[]>(apiUrl);
-  }
+  getSeguidores(idUsuario: number, pagina: number = 1) {
+  const apiUrl =
+    `${env.base_url}/usuarios/ConsultarMisSeguidores?idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get(apiUrl, { headers: test_headers })
+    .pipe(map(res => res));
+}
 
   getAuctionById(id: number): Observable<Subasta> {
     return this.http.get<Subasta>(`${env.base_url}/subastas/ConsultaSubataId/${id}`, {headers:test_headers}).pipe(map(res => res));
   }
+ConsultarDetalleSeguimientoId(idSubasta: number) {
+  return this.http.get(
+    `${env.base_url}/subastas/ConsultarDetalleSeguimientoId`,
+    {
+      params: {
+        idSubasta: idSubasta.toString()
+      }
+    }
+  );
+}
+ConsultarUltimasVistas(data: any): Observable<any> {
+  return this.http.post(
+    `${env.base_url}/subastas/ConsultarUltimasVistas`,
+    data,
+    { headers: test_headers }
+  ).pipe(map(res => res));
+}
+ConsultarUltimasOfertas(idSubasta: number, pagina: number): Observable<any> {
+
+  return this.http.get<any>(
+    `${env.base_url}/subastas/ConsultarUltimasOfertas?idSubasta=${idSubasta}&pagina=${pagina}`,
+    { headers: test_headers }
+  );
+
+}
 
   consultarGanador(idSubasta: number) {
     return this.http.get<any>(`${env.base_url}/subastas/ConsultaGanador/${idSubasta}`, {headers:test_headers}).pipe(map(res => res));
@@ -130,6 +173,7 @@ export class SubastasService {
     );
   }
 
+
   GetInformacionSubastaTerminada(IdSubasta: number){
     return this.http.get(`${env.base_url}/subastas/ConsultaGanador/${IdSubasta}`, {headers:test_headers}).pipe(map(res => res));
   }
@@ -167,9 +211,12 @@ export class SubastasService {
     return this.http.post(`${env.base_url}/subastas/RegistrarOferta`, data, {headers:test_headers}).pipe(map(res => res));
   }
 
-  GetVendedoresSeguidos(idUsuario: number){
-    return this.http.get(`${env.base_url}/seguirVendedor/${idUsuario}`, {headers:test_headers}).pipe(map(res => res));
-  }
+ GetVendedoresSeguidos(idUsuario: number, pagina: number = 1) {
+  const apiUrl = `${env.base_url}/seguirVendedor/ConsultarVendedoresSeguidos?idUsuario=${idUsuario}&pagina=${pagina}`;
+
+  return this.http.get<any[]>(apiUrl, { headers: test_headers })
+    .pipe(map((res: any) => res));
+}
 
   seguirVendedor(data: any){
     return this.http.post(`${env.base_url}/seguirVendedor/Seguir`,data, {headers:test_headers}).pipe(map(res => res));
@@ -220,6 +267,16 @@ export class SubastasService {
   updateSubastaRechazada(data: any){
     return this.http.post(`${env.base_url}/Subastas/EditarSubastaRechazada`, data, {headers: test_headers}).pipe(map(res => res));
   }
+
+  registrarVista(data: any) {
+    return this.http.post(`${env.base_url}/subastas/RegistrarVista`, data, {headers: test_headers}).pipe(map(res => res));
+}
+editarFotoPerfil(data: any) { 
+  return this.http.post(`${env.base_url}/usuarios/EditarFotoPerfil`, data, { headers: test_headers }).pipe(map(res => res));
+}
+cancelarSubastaVendedor(data: any) {
+  return this.http.post(`${env.base_url}/subastas/CancelarSubastaVendedor`, data, { headers: test_headers }).pipe(map(res => res));
+}
   // @override
   // Future<List<UsuarioModel>> getListaVendedoresSeguidos(int id) async {
   //   try {

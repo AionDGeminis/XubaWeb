@@ -5,17 +5,17 @@
       <div class="profile-avatar" > 
         <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
       </div>
-      <!-- <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: 28%">
+      <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: 28%">
         <input type="file" accept="image/*"  (change)="onFileChange($event)" hidden />
         <i class="fas fa-camera"></i>
-      </label> -->
+      </label>
 
       <h2>{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h2>
       <p class="profile-role">{{infoUsuario.usuario ?? 'ND'}}</p>
       <p class="profile-email">{{infoUsuario.correo}}</p>
-      <!-- <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
+       <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
         <i class="fas fa-upload"></i> Guardar cambio
-      </button> -->
+      </button> 
 
       <div class="requisitos-container w-100 mt-3">
         <h5 class="f-arial f-10">Requisitos para xubastar</h5>
@@ -1181,6 +1181,23 @@
                 <hr>
                 <div class="form-row">
                   <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text"
+                     [(ngModel)]="datosFiscales.nombreComercial"
+                     name="nomcomercial">
+                  </div>
+                </div>
+                <div class="form-row" *ngIf="datosFiscales.tipoPersona === 'sin datos fiscales'">
+                  <div class="form-group">
+                    <label>CURP</label>
+                    <input type="text"
+                    [(ngModel)]="datosFiscales.curp"
+                    name="curp">
+                  </div>
+                </div>
+                <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
+                <div class="form-row">
+                  <div class="form-group">
                     <label>Pais</label>
                     <select class="form-select" [(ngModel)]="datosFiscales.pais" name="pais" >
                       <option value="MEXICO">Mexico</option>
@@ -1188,13 +1205,7 @@
                     </select>
                   </div>
                 </div>
-                  <div class="form-row" >
-                    <div class="form-group">
-                      <label>Nombre {{datosFiscales.tipoPersona !== 'sin datos fiscales' ? 'Registrado':''}}</label>
-                      <input type="text" [(ngModel)]="datosFiscales.nombreComercial" name="nomcomercial" >
-                    </div>
-                  
-                  </div>
+                
                   <div class="form-row" *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
                     <div class="form-group">
                       <label>RFC</label>
@@ -1216,12 +1227,6 @@
                         <option *ngFor="let uso of listaUsoCfdi" [value]="uso.usoCfdi">{{uso.descripcion}}</option>
 
                       </select>
-                    </div>
-                  </div>
-                  <div class="form-row" *ngIf="datosFiscales.tipoPersona === 'sin datos fiscales'">
-                    <div class="form-group">
-                      <label>CURP</label>
-                      <input type="text" [(ngModel)]="datosFiscales.curp" name="curp" >
                     </div>
                   </div>
                   <div class="form-row">
@@ -1320,7 +1325,7 @@
                       </label>
                     </div>
                   </div>
-                 
+                 </div>
                   <div class="w-100 text-center mt-3 mb-3">
                     <button class="btn-xuba btn-pill" (click)="saveInformacionFiscal()">Guardar cambios</button> 
                   </div>
@@ -1548,17 +1553,19 @@
       </div>
       <div class="modal-footer text-start">
       
-        <div class="pb-3 pe-3">
-          <button [disabled]="loading" class="btn btn-dark btn-pill me-2" (click)="closeModal('direccion')">
-            Cancelar
-          </button>
-          <button [disabled]="loading" *ngIf="!isEdit" class="btn btn-xuba btn-pill " (click)="saveDireccion()">
-           <i class="fa fa-save"></i> Guardar
-          </button>
-          <button [disabled]="loading" *ngIf="isEdit"  class="btn btn-xuba btn-pill " (click)="saveEditDireccion()">
-           <i class="fa fa-save"></i> Guardar
-          </button>
-        </div>     
+        <div class="modal-footer text-start">
+          <div class="pb-3 pe-3">
+            <button [disabled]="loading" type="button" class="btn btn-dark btn-pill me-2" (click)="closeModal('direccion')">
+              Cancelar
+            </button>
+            <button [disabled]="loading" *ngIf="!isEdit" type="button" class="btn btn-xuba btn-pill" (click)="saveDireccion()">
+             <i class="fa fa-save"></i> Guardar
+            </button>
+            <button [disabled]="loading" *ngIf="isEdit" type="button" class="btn btn-xuba btn-pill" (click)="saveEditDireccion()">
+              <i class="fa fa-save"></i> Guardar
+            </button>
+          </div>     
+        </div>
       </div>
     </div>
   </div>

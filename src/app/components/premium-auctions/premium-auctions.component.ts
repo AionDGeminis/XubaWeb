@@ -11,13 +11,16 @@ import { AuctionService } from '../../services/auction.service';
 import { SharedService } from '../../services/shared.service';
 import { LoaderComponent } from '../loader/loader.component';
 import { LocalSignalsService } from '../../services/localsignals.service';
+import { HostListener } from '@angular/core';
 @Component({
   selector: 'app-premium-auctions',
   imports: [CommonModule, CarouselModule, LoaderComponent],
   standalone: true,
   templateUrl: './premium-auctions.component.html',
   styleUrl: './premium-auctions.component.css'
+  
 })
+
 export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
   @ViewChild('contenedor') contenedorRef!: ElementRef;
 
@@ -26,36 +29,50 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
   premium: Subasta[] = [];
   currentPage = 0;
   auctionsId: number[] = [];
+  pagina = 1;
+  cargandoMas = false;
+  hayMas = true;
   private timer?: Subscription;
   timers: any[] = [];
   // currentIndex = 0;
   visibleCount = 4;
+  itemsPorPagina = 4;
   transition = 'transform 0.5s cubic-bezier(.4,0,.2,1)';
   animacion = '';
   currentIndex = 0;
 
   customOptions = {
-    loop: false,
-    margin: 16,
-    nav: false,
-    dots: false,
-    // navText: [
-    //   '<span class="custom-nav-arrow">&lt;</span>',
-    //   '<span class="custom-nav-arrow">&gt;</span>'
-    // ],
-    responsive: {
-      0: { items: 1 },
-      576: { items: 2 },
-      768: { items: 3 },
-      992: { items: 4 }
+  loop: false,
+  margin: 16,
+  nav: false,
+  dots: false,
+  mouseDrag: false,
+  touchDrag: true,
+  pullDrag: false,
+  slideBy: 4,
+
+  responsive: {
+    0: {
+      items: 1,
+      slideBy: 1
+    },
+    576: {
+      items: 2,
+      slideBy: 2
+    },
+    992: {
+      items: 4,
+      slideBy: 4
     }
-  };
+  }
+};
   loading: boolean = false;
   isFollowed: boolean = false;
   private intervalId: any;
 
   @Output() abrirDetalle = new EventEmitter<{ subasta: Subasta, lista: Subasta[], origen: string }>();
   @ViewChild('owlCar', { static: false }) owlCar!: CarouselComponent;
+  @HostListener('window:resize') onResize() {this.updateItemsPorPagina();}
 
   constructor(private lss: LocalSignalsService, private subastaService:SubastasService,private router: Router, private authService: AuthService, private auctionService: AuctionService, private ss: SharedService){
     this.getSubastasSeguidas();
@@ -73,7 +90,9 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
 
   
   ngOnInit(): void {
-    this.subastaService.getAuctions('premium').subscribe({
+    this.updateItemsPorPagina();
+    this.pagina = 1;
+    this.subastaService.getAuctions('premium', 0, this.pagina).subscribe({
       next: (data) => {
         this.premium = data;
         for(let p of this.premium){
@@ -87,6 +106,17 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
     
     });
   }
+  updateItemsPorPagina() {
+  const width = window.innerWidth;
+
+  if (width <= 575) {
+    this.itemsPorPagina = 1; // celular
+  } else if (width <= 992) {
+    this.itemsPorPagina = 2; // tablet
+  } else {
+    this.itemsPorPagina = 4; // desktop
+  }
+}
 
   // verificarSiSiguiendo(): void {
   //   const idUsuario = Number(this.authService.idUsuario);
@@ -202,10 +232,15 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
   //  this.lss.ejecutarFuncion();
   }
   
-  getTransform() {
-    // 214 = 210px tarjeta + 2*2px margen (mx-2)
-    return `translateX(-${this.currentIndex * 214}px)`;
-  }
+ getTransform(): string {
+  const card = document.querySelector('.auction-card') as HTMLElement;
+  if (!card) return 'translateX(0px)';
+
+  const gap = 16;
+  const cardWidth = card.offsetWidth + gap;
+
+  return `translateX(-${this.currentIndex * cardWidth}px)`;
+}
 
   get totalPages() {
     return Math.ceil(this.premium.length / this.visibleCount);
@@ -218,28 +253,37 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
 
 
 
-  next() {
-    // if (this.currentPage < this.totalPages - 1) {
-    //   this.animacion = 'animate__animated animate__slideInRight';
-    //   this.currentPage++;
-    //   setTimeout(() => this.animacion = '', 600);
-    // }
-    this.owlCar.next();
+next() {
+
+  const ultimaPagina = Math.ceil(this.premium.length / this.itemsPorPagina) - 1;
+
+  if (this.currentPage >= ultimaPagina) {
+
+    this.cargarMasPremium();
+
+    return;
+
   }
 
-  prev() {
-    this.owlCar.prev();
-    // if (this.currentPage > 0) {
-    //   this.animacion = 'animate__animated animate__slideInLeft';
-    //   this.currentPage--;
-    //   setTimeout(() => this.animacion = '', 600);
-    // }
+  this.currentPage++;
+  this.currentIndex += this.itemsPorPagina;
+
+}
+
+prev() {
+
+  if (this.currentPage == 0) {
+    return;
   }
 
+  this.currentPage--;
+ this.currentIndex -= this.itemsPorPagina;
+
+}
   ngAfterViewInit() {
     setTimeout(() => {
       const contenedor = this.contenedorRef.nativeElement;
-      this.verificarScroll(contenedor);
+     this.verificarScroll(contenedor);
     }, 100);
   }
 
@@ -252,7 +296,7 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
     const anchoVisible = contenedor.offsetWidth;
     contenedor.scrollBy({ left: anchoVisible, behavior: 'smooth' });
 
-    setTimeout(() => this.verificarScroll(contenedor), 300);
+    //setTimeout(() => this.verificarScroll(contenedor), 300);
   }
 
   scrollIzquierda(contenedor: HTMLElement) {
@@ -271,7 +315,7 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
 
 
   getDatosSubasta(id: number){
-    this.loading = true;
+    this.loading = false;
     this.subastaService.getAuctionById(id).subscribe({
       next: (subasta) => {
         let tiempoVence = subasta.tiempoVence?? '00:00:00';
@@ -327,4 +371,56 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
     return this.ss.toCurrency(valor);
   }
 
+
+cargarMasPremium() {
+
+  if (this.cargandoMas || !this.hayMas) {
+    return;
+  }
+
+  this.cargandoMas = true;
+
+  this.pagina++;
+
+  this.subastaService.getAuctions('premium',0,this.pagina)
+      .subscribe({
+
+        next: respuesta => {
+
+          if(respuesta.length==0){
+
+            this.hayMas=false;
+
+          }else{
+
+            respuesta.forEach(x=>{
+
+              x.venceSegundos=this.tiempoStringASegundos(x.tiempoVence);
+
+            });
+
+            this.premium.push(...respuesta);
+            console.log(this.premium.length)
+
+          }
+
+          this.cargandoMas=false;
+
+        },
+
+        error: err=>{
+
+          console.error(err);
+
+          this.cargandoMas=false;
+
+        }
+
+      });
+
+}
+
+trackBySubasta(index: number, item: Subasta): number {
+  return item.id;
+}
 }

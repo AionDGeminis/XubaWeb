@@ -20,6 +20,9 @@ export class XpressAuctionsComponent implements OnInit, AfterViewInit {
   mostrarFlechaIzquierda = false;
   mostrarFlechaDerecha = true;
   xpress: Subasta[] = [];
+  pagina = 1;
+  cargandoMas = false;
+  hayMas = true;
   @Output() abrirDetalle = new EventEmitter<{ subasta: Subasta, lista: Subasta[], origen: string }>();
   constructor(private subastaService:SubastasService,private router: Router, private ss: SharedService){}
   ngOnInit(): void {
@@ -57,6 +60,46 @@ export class XpressAuctionsComponent implements OnInit, AfterViewInit {
     
     });
   }
+  cargarMas() {
+
+  if (this.cargandoMas || !this.hayMas) return;
+
+  this.cargandoMas = true;
+  this.pagina++;
+
+  console.log('Solicitando página', this.pagina);
+
+  this.subastaService.getAuctions('porvencer', 0, this.pagina).subscribe({
+
+  next: (respuesta) => {
+
+    console.log('Página', this.pagina);
+    console.log(respuesta);
+
+    if (respuesta.length === 0) {
+      this.hayMas = false;
+    } else {
+
+      const nuevas = respuesta.filter(
+        x => !this.xpress.some(s => s.id === x.id)
+      );
+
+      console.log('Nuevas', nuevas);
+
+      this.xpress.push(...nuevas);
+    }
+
+    this.cargandoMas = false;
+  },
+
+  error: (e) => {
+    console.log(e);
+    this.cargandoMas = false;
+  }
+
+});
+
+}
   restarUnSegundo(tiempo: string): string {
     const [h, m, s] = tiempo.split(':').map(Number);
     let total = h * 3600 + m * 60 + s - 1;
@@ -82,16 +125,37 @@ export class XpressAuctionsComponent implements OnInit, AfterViewInit {
   }
 
   verificarScroll(contenedor: HTMLElement) {
-    this.mostrarFlechaIzquierda = contenedor.scrollLeft > 0;
-    this.mostrarFlechaDerecha =true;
+
+  this.mostrarFlechaIzquierda = contenedor.scrollLeft > 0;
+  this.mostrarFlechaDerecha = true;
+
+  const llegoAlFinal =
+    contenedor.scrollLeft + contenedor.clientWidth >=
+    contenedor.scrollWidth - 50;
+
+  if (llegoAlFinal) {
+    this.cargarMas();
   }
 
-  scrollDerecha(contenedor: HTMLElement) {
-    const anchoVisible = contenedor.offsetWidth;
-    contenedor.scrollBy({ left: anchoVisible, behavior: 'smooth' });
+}
 
-    setTimeout(() => this.verificarScroll(contenedor), 300);
+ scrollDerecha(contenedor: HTMLElement) {
+  const anchoVisible = contenedor.offsetWidth;
+
+  if (
+    contenedor.scrollLeft + anchoVisible >=
+    contenedor.scrollWidth - 20
+  ) {
+    this.cargarMas();   // <-- la misma función
   }
+
+  contenedor.scrollBy({
+    left: anchoVisible,
+    behavior: 'smooth'
+  });
+
+  setTimeout(() => this.verificarScroll(contenedor), 300);
+}
 
   scrollIzquierda(contenedor: HTMLElement) {
     const anchoVisible = contenedor.offsetWidth;

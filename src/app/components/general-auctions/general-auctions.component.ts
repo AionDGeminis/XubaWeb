@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, effect  } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, effect, HostListener } from '@angular/core';
 import { AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';    
 import { CommonModule } from '@angular/common';
@@ -26,6 +26,8 @@ export class GeneralAuctionsComponent implements OnInit {
   private intervalId: any;
   loading: boolean = false;
   mainTitle: string = '';
+  cargandoMas = false;
+  hayMas = true;
   constructor(private lss: LocalSignalsService, private subastaService:SubastasService,private ss: SharedService, private modalService: ModalService,private router: Router, private authService: AuthService, private auctionService: AuctionService ){
     this.getSubastasSeguidas();  
     effect(() => {
@@ -243,6 +245,54 @@ export class GeneralAuctionsComponent implements OnInit {
   toCurrency(valor: number): string {
     return this.ss.toCurrency(valor);
   }
+
+  cargarMasSubastas() {
+
+  if (this.cargandoMas || !this.hayMas) return;
+
+  this.cargandoMas = true;
+
+  this.subastaService.getAuctions('todas').subscribe({
+    next: (respuesta) => {
+
+      const nuevas = respuesta.filter(
+        x => !this.generales.some(s => s.id === x.id)
+      );
+
+      this.generales.push(...nuevas);
+
+      // Inicializar temporizador de las nuevas
+      nuevas.forEach(p => {
+        p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);
+      });
+
+      this.cargandoMas = false;
+
+      // Si no llegó ninguna nueva, ya no seguir intentando
+      if (nuevas.length === 0) {
+        this.hayMas = false;
+      }
+    },
+    error: () => {
+      this.cargandoMas = false;
+    }
+  });
+
+}
+@HostListener('window:scroll', [])
+onScroll(): void {
+
+  const posicion =
+    window.innerHeight + window.scrollY;
+
+  const altura =
+    document.body.offsetHeight;
+
+  if (posicion >= altura - 200) {
+    this.cargarMasSubastas();
+  }
+
+}
 
  
 }

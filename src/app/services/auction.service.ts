@@ -14,7 +14,10 @@ export class AuctionService {
 
   constructor(private http: HttpClient) {}
 
-  getAuctions(userId: number): Observable<Subasta[]> {
-    return this.http.get<Subasta[]>(`${this.apiUrl}/${userId}`);
-  }
+  getAuctions(userId: number, pagina: number = 1): Observable<Subasta[]> {
+  const apiUrl =
+    `${env.base_url}/seguirSubasta/ConsultarSubastasSeguidas?idUsuario=${userId}&pagina=${pagina}`;
+
+  return this.http.get<Subasta[]>(apiUrl, { headers: test_headers });
+}
 }

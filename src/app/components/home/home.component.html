@@ -71,7 +71,7 @@ s
               <i class="fas fa-arrow-left"></i>&nbsp; volver
             </button>
           </div>
-          <div class="notification-list">
+          <div class="notification-list" (scroll)="onScrollNotifications($event)" style="height:700px; overflow-y:auto;">
             <!-- Ítem 1 -->
             <div class="notification-item noleida" [ngClass]="{'noleida': noti.activa}" *ngFor="let noti of notificaciones; let i = index;" (click)="marcarNotificacionAbrir(noti, noti.msubastas)">
               <div class="notification-icon">
@@ -178,6 +178,7 @@ s
           <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
+          <div class="auction-list" (scroll)="onScrollSubastas($event)"style="height:700px; overflow-y:auto;">
         <div class="auction-card" [class]="'fast-animation animate__animated '" [ngClass]="{'animate__fadeOutLeft': splicingIndex === i}" *ngFor="let subasta of auctions;let i = index;" (click)="abrirDetalleSubasta(subasta)">
           <img [src]="subasta.url" alt="">
           <div class="title">{{ subasta.caption }}#{{subasta.id}}</div>
@@ -193,6 +194,7 @@ s
             {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
           </div>
         </div> 
+        </div>
         </ng-container>
       </div>
 
@@ -212,6 +214,7 @@ s
           <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()" >
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
+          <div class="auction-list" style="height:700px; overflow-y:auto;"(scroll)="onScrollSubastasGanadas($event)">
           <div class="auction-card" *ngFor="let subasta of auctionsWin" (click)="abrirDetalleSubasta(subasta)">
             <br>
             <img [src]="subasta.url" alt="">
@@ -235,6 +238,7 @@ s
               {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
             </div>
           </div> 
+        </div>
         </ng-container>
       </div>
 
@@ -256,7 +260,7 @@ s
           <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
-          <div class="followers-list">
+          <div class="followers-list" style="height:700px; overflow-y:auto;" (scroll)="onScrollSeguidores($event)">
             <div class="follower-card"  *ngFor="let f of followers"  (click)="openUserPage(f.id)">
               <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
               <div class="follower-info">
@@ -296,7 +300,7 @@ s
           <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
-          <div class="followers-list">
+          <div class="followers-list" style="height:700px; overflow-y:auto;" (scroll)="onScrollVendedoresFavoritos($event)">
             <div class="follower-card"  *ngFor="let f of favoritos"  (click)="openUserPage(f.id)">
               <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
               <div class="follower-info">

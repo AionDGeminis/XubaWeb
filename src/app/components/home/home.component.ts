@@ -154,6 +154,24 @@ export class HomeComponent implements OnInit {
   showingInAside = 'menu';
   clasesAside = {one:'', two:''}
   notificaciones: any[] = [];
+  paginaNotificaciones = 1;
+  cargandoMasNotificaciones = false;
+  hayMasNotificaciones = true;
+  pagina = 1;
+  cargandoMas = false;
+  hayMas = true;
+  paginaSubastas = 1;
+  cargandoMasSubastas = false;
+  hayMasSubastas = true;
+  paginaSubastasGanadas = 1;
+  cargandoMasSubastasGanadas = false;
+  hayMasSubastasGanadas = true;
+  paginaSeguidores = 1;
+  cargandoMasSeguidores = false;
+  hayMasSeguidores = true;
+  paginaVendedoresFavoritos = 1;
+  cargandoMasVendedoresFavoritos = false;
+  hayMasVendedoresFavoritos = true;
   imagesPreview: any[] = [];
   itemsLoaderNotificaciones: any = [1,2,3,4,5,6,7,8];
   loginForm: any = {usuario:null, pass: null};
@@ -743,53 +761,206 @@ export class HomeComponent implements OnInit {
     return `hace ${dias} d`;
   }
 
-  getNotificaciones(){
-    this.loadingNotificaciones = true;
-    let userData = this.authService.getUserData();
-    this.subastaService.getNotifications(userData.id).subscribe({
-      next: (data: any) => { 
-        console.log('Notificaciones cargadas:', data);
-        this.notificaciones = data;
-        this.loadingNotificaciones = false;
-      },
-      error: (err) =>{ 
-        console.error('Error al cargar notificaciones', err)
-        this.loadingNotificaciones = false;
-      }
-    });
+ getNotificaciones(reset: boolean = false) {
+
+  if (this.cargandoMasNotificaciones || !this.hayMasNotificaciones) {
+    return;
   }
 
-  getMisSeguidores(){
-    this.loadingNotificaciones = true;
-    let userData = this.authService.getUserData();
-    this.subastaService.getSeguidores(userData.id).subscribe({
-      next: (data: any) => { 
-        console.log('seguidos cargadas:', data);
-        this.followers = data;
-        this.loadingNotificaciones = false;
-      },
-      error: (err) =>{ 
-        console.error('Error al cargar seguidores', err)
-        this.loadingNotificaciones = false;
-      }
-    });
+  if (reset) {
+    this.paginaNotificaciones = 1;
+    this.notificaciones = [];
+    this.hayMasNotificaciones = true;
   }
 
-  getVendedoresFavoritos(){
-    this.loadingNotificaciones = true;
-    let userData = this.authService.getUserData();
-    this.subastaService.GetVendedoresSeguidos(userData.id).subscribe({
-      next: (data: any) => { 
-        console.log('favoritos  obtenidos:', data);
-        this.favoritos = data;
-        this.loadingNotificaciones = false;
-      },
-      error: (err) =>{ 
-        console.error('Error al cargar seguidores', err)
-        this.loadingNotificaciones = false;
+  this.cargandoMasNotificaciones = true;
+  //this.loadingNotificaciones = true;
+
+  const userData = this.authService.getUserData();
+
+  console.log('Solicitando página:', this.paginaNotificaciones);
+
+  this.subastaService.getNotifications(
+    userData.id,
+    this.paginaNotificaciones
+  ).subscribe({
+
+    next: (data: any) => {
+
+      console.log('Página recibida:', this.paginaNotificaciones);
+      console.log('Cantidad recibida:', data.length);
+      console.log('Datos:', data);
+
+      if (data.length < 10) {
+        this.hayMasNotificaciones = false;
       }
-    });
+
+      this.notificaciones.push(...data);
+
+      console.log('Total de notificaciones:', this.notificaciones.length);
+
+      this.paginaNotificaciones++;
+
+      console.log('Siguiente página:', this.paginaNotificaciones);
+
+      //this.loadingNotificaciones = false;
+      this.cargandoMasNotificaciones = false;
+    },
+
+    error: (err) => {
+
+      console.error('Error obteniendo notificaciones:', err);
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasNotificaciones = false;
+    }
+
+  });
+
+}
+onScrollNotifications(event: any) {
+
+  const element = event.target;
+
+  console.log(
+    "scrollTop:", element.scrollTop,
+    "clientHeight:", element.clientHeight,
+    "scrollHeight:", element.scrollHeight
+  );
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  if (alFinal) {
+    console.log("Pidiendo página", this.paginaNotificaciones);
+    this.getNotificaciones();
   }
+}
+  getMisSeguidores(reset: boolean = false) {
+
+  if (this.cargandoMasSeguidores || !this.hayMasSeguidores) {
+    return;
+  }
+
+  if (reset) {
+    this.paginaSeguidores = 1;
+    this.followers = [];
+    this.hayMasSeguidores = true;
+  }
+
+  //this.loadingNotificaciones = true;
+  this.cargandoMasSeguidores = true;
+
+  const userData = this.authService.getUserData();
+
+  console.log('Solicitando página:', this.paginaSeguidores);
+
+  this.subastaService.getSeguidores(
+    userData.id,
+    this.paginaSeguidores
+  ).subscribe({
+
+    next: (data: any) => {
+
+      console.log('Página recibida:', this.paginaSeguidores);
+      console.log('Cantidad recibida:', data.length);
+
+      if (data.length < 10) {
+        this.hayMasSeguidores = false;
+      }
+
+      this.followers.push(...data);
+
+      this.paginaSeguidores++;
+
+     // this.loadingNotificaciones = false;
+      this.cargandoMasSeguidores = false;
+    },
+
+    error: (err) => {
+
+      console.error('Error al cargar seguidores', err);
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasSeguidores = false;
+    }
+
+  });
+
+}
+onScrollSeguidores(event: any) {
+
+  const element = event.target;
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  if (alFinal) {
+    console.log('Pidiendo página', this.paginaSeguidores);
+    this.getMisSeguidores();
+  }
+
+}
+
+  getVendedoresFavoritos(reset: boolean = false) {
+
+  if (this.cargandoMasVendedoresFavoritos || !this.hayMasVendedoresFavoritos) {
+    return;
+  }
+
+  if (reset) {
+    this.paginaVendedoresFavoritos = 1;
+    this.favoritos = [];
+    this.hayMasVendedoresFavoritos = true;
+  }
+
+  this.cargandoMasVendedoresFavoritos = true;
+ // this.loadingNotificaciones = true;
+
+  let userData = this.authService.getUserData();
+
+  this.subastaService.GetVendedoresSeguidos(
+    userData.id,
+    this.paginaVendedoresFavoritos
+  ).subscribe({
+
+    next: (data: any) => {
+
+      if (data.length < 10) {
+        this.hayMasVendedoresFavoritos = false;
+      }
+
+      this.favoritos.push(...data);
+
+      this.paginaVendedoresFavoritos++;
+
+      //this.loadingNotificaciones = false;
+      this.cargandoMasVendedoresFavoritos = false;
+    },
+
+    error: (err) => {
+
+      console.error('Error al cargar vendedores favoritos', err);
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasVendedoresFavoritos = false;
+    }
+
+  });
+
+}
+onScrollVendedoresFavoritos(event: any) {
+
+  const element = event.target;
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  if (alFinal) {
+    this.getVendedoresFavoritos();
+  }
+
+}
 
   changeHomeIndex(index: number){
     this.currentHomeIndex = index;
@@ -803,7 +974,7 @@ export class HomeComponent implements OnInit {
     switch(option){
       case 'following': this.getSubastasSeguidas();
         break;
-      case 'notifications': this.getNotificaciones();
+      case 'notifications': this.getNotificaciones(true);
         break;
       case 'winner': this.getSubastasGanadas();
         break;
@@ -1095,42 +1266,98 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  getSubastasSeguidas(){
-      const usuario = this.authService.currentUser();
-    
-        if (usuario) {
-          const idUsuario = usuario.id;
-          this.loadingNotificaciones = true;
-        this.auctionService.getAuctions(idUsuario).subscribe({
-           next: (data) => {
-              this.auctions = data.map(subasta => ({
-                ...subasta,
-                tiempoVence: subasta.tiempoVence ?? '00:00:00',
-                vencida: false,
-                venceSegundos: this.tiempoStringASegundos(subasta.tiempoVence)
-              }));
-              this.loadingNotificaciones = false;
-              this.auctionsId = data.map(subasta => subasta.id);
-              this.setTimer(this.auctions);
-              // this.temporizadorSub = interval(1000).subscribe(() => {
-              //   this.auctions.forEach(subasta => {
-              //     subasta.tiempoVence = this.restarUnSegundo(subasta.tiempoVence);
-    
-              //     if (subasta.tiempoVence === '00:00:00' && !subasta.vencida) {
-              //       subasta.vencida = true;
-              //     }
-              //   });
-              // });
-            },
-            error: (error) => {
-              this.loadingNotificaciones = false;
-              console.error('Error cargando subastas:', error);
-            }
-          });
-      } else {
-        console.warn('Usuario no logueado, no se cargan subastas seguidas');
-      }
+  getSubastasSeguidas(reset: boolean = false) {
+
+  if (this.cargandoMasSubastas || !this.hayMasSubastas) {
+    return;
   }
+
+  if (reset) {
+    this.paginaSubastas = 1;
+    this.auctions = [];
+    this.hayMasSubastas = true;
+  }
+
+  const usuario = this.authService.currentUser();
+
+  if (!usuario) {
+    console.warn('Usuario no logueado, no se cargan subastas seguidas');
+    return;
+  }
+
+  this.cargandoMasSubastas = true;
+ // this.loadingNotificaciones = true;
+
+  const idUsuario = usuario.id;
+
+  console.log('Solicitando página:', this.paginaSubastas);
+
+  this.auctionService.getAuctions(idUsuario, this.paginaSubastas).subscribe({
+
+    next: (data) => {
+
+      console.log('Página recibida:', this.paginaSubastas);
+      console.log('Cantidad recibida:', data.length);
+
+      if (data.length < 10) {
+        this.hayMasSubastas = false;
+      }
+
+      const nuevasSubastas = data.map(subasta => ({
+        ...subasta,
+        tiempoVence: subasta.tiempoVence ?? '00:00:00',
+        vencida: false,
+        venceSegundos: this.tiempoStringASegundos(subasta.tiempoVence)
+      }));
+
+      this.auctions.push(...nuevasSubastas);
+
+      this.auctionsId = this.auctions.map(subasta => subasta.id);
+
+      this.setTimer(this.auctions);
+
+      this.paginaSubastas++;
+
+     // this.loadingNotificaciones = false;
+      this.cargandoMasSubastas = false;
+
+      console.log('Total subastas:', this.auctions.length);
+      console.log('Siguiente página:', this.paginaSubastas);
+
+    },
+
+    error: (error) => {
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasSubastas = false;
+
+      console.error('Error cargando subastas:', error);
+
+    }
+
+  });
+
+}
+onScrollSubastas(event: any) {
+
+  const element = event.target;
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  console.log({
+    scrollTop: element.scrollTop,
+    clientHeight: element.clientHeight,
+    scrollHeight: element.scrollHeight,
+    alFinal
+  });
+
+  if (alFinal) {
+    console.log('Pidiendo página', this.paginaSubastas);
+    this.getSubastasSeguidas();
+  }
+
+}
 
   setTimer(litaItems: any[]){
     this.seguidasIntervalID = setInterval(() => {
@@ -1183,31 +1410,83 @@ export class HomeComponent implements OnInit {
     // this.idSubastaConectada = nuevoId;
   }
 
-  getSubastasGanadas(){
-    const usuario = this.authService.currentUser();
-      if (usuario) {
-        this.loadingNotificaciones = true;
-        const idUsuario = usuario.id;
-      this.subastaService.getSubastasGanadas(idUsuario).subscribe({
-         next: (data) => {
-            this.auctionsWin = data;
-            this.loadingNotificaciones = false;
-          },
-          error: (error) => {
-            this.loadingNotificaciones = false;
-            console.error('Error cargando subastas:', error);
-          }
-        });
-    } else {
-      console.warn('Usuario no logueado, no se cargan subastas seguidas');
+ getSubastasGanadas(reset: boolean = false) {
+
+  if (this.cargandoMasSubastasGanadas || !this.hayMasSubastasGanadas) {
+    return;
+  }
+
+  if (reset) {
+    this.paginaSubastasGanadas = 1;
+    this.auctionsWin = [];
+    this.hayMasSubastasGanadas = true;
+  }
+
+  const usuario = this.authService.currentUser();
+
+  if (!usuario) {
+    console.warn('Usuario no logueado, no se cargan subastas ganadas');
+    return;
+  }
+
+  //this.loadingNotificaciones = true;
+  this.cargandoMasSubastasGanadas = true;
+
+  const idUsuario = usuario.id;
+
+  console.log('Solicitando página:', this.paginaSubastasGanadas);
+
+  this.subastaService.getSubastasGanadas(
+    idUsuario,
+    this.paginaSubastasGanadas
+  ).subscribe({
+
+    next: (data) => {
+
+      console.log('Página recibida:', this.paginaSubastasGanadas);
+      console.log('Cantidad recibida:', data.length);
+      console.log(data)
+
+      if (data.length < 10) {
+        this.hayMasSubastasGanadas = false;
+      }
+
+      this.auctionsWin.push(...data);
+
+      this.paginaSubastasGanadas++;
+
+      //this.loadingNotificaciones = false;
+      this.cargandoMasSubastasGanadas = false;
+
+      console.log('Total:', this.auctionsWin.length);
+    },
+
+    error: (error) => {
+
+      this.loadingNotificaciones = false;
+      this.cargandoMasSubastasGanadas = false;
+
+      console.error('Error cargando subastas:', error);
+
     }
+
+  });
+
+}
+
+onScrollSubastasGanadas(event: any) {
+
+  const element = event.target;
+
+  const alFinal =
+    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+  if (alFinal) {
+    console.log('Pidiendo página', this.paginaSubastasGanadas);
+    this.getSubastasGanadas();
   }
 
-  inListSeguidas(idSubasta: number){
-    let isFollowed = this.auctionsId.includes(idSubasta);
-    return isFollowed;
-  }
-
+}
   onFileChange(event: any) {
     const files = event.target.files;
     let maxFileCount = this.tipoSubasta === 'general' ? 5 : 100;
