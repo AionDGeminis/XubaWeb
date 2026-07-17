@@ -92,7 +92,10 @@
 
 }
 .historial-card{
-    height:50%;
+    height: auto;
+}
+.historial-card .card-body{
+    padding-bottom: 20px;
 }
 
 .timeline{
@@ -414,4 +417,142 @@
     width: auto;
     display: block;
     margin: 0 auto;
+}
+.header-vistas{
+    background: linear-gradient(90deg, #f03b74 0%, #b454c8 55%, #2f66d6 100%);
+    border-bottom: none;
+}
+
+.header-vistas .modal-title{
+    color: #fff;
+    font-weight: 700;
+}
+
+.header-vistas .btn-close{
+    filter: invert(1);
+}
+.header-ofertas{
+    background: linear-gradient(90deg, #f03b74 0%, #b454c8 55%, #2f66d6 100%);
+    border-bottom: none;
+}
+
+.header-ofertas .modal-title{
+    color: #fff;
+    font-weight: 700;
+}
+
+.header-ofertas .btn-close{
+    filter: invert(1);
+}
+.galeria-backdrop{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+.galeria-modal{
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    text-align: center;
+}
+
+.imagen-principal{
+    width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.cerrar{
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 2;
+}
+
+.miniaturas{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.miniaturas img{
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: .6;
+    border: 2px solid transparent;
+}
+
+.miniaturas img:hover,
+.miniaturas img.activa{
+    opacity: 1;
+    border-color: #b44c8e;
+}
+.logo-dhl{
+    height: 78px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
+.header-cancelar{
+    background: linear-gradient(90deg,#ff3b5f 0%, #6c63ff 100%);
+    border-bottom: none;
+}
+
+.header-cancelar .modal-title{
+    color: #fff;
+    font-weight: 700;
+}
+.premium-card{
+    border:3px solid transparent;
+    border-radius:16px;
+    background:
+        linear-gradient(#fff,#fff) padding-box,
+        linear-gradient(135deg,#FFD700,#F4C430,#B8860B,#FFD700) border-box;
+
+    box-shadow:0 0 18px rgba(212,175,55,.35);
+}
+.contador-caracteres{
+    margin-left: 15px;
+    font-weight: 600;
+}
+.textarea-cancelacion{
+    min-height: 150px;
+    resize: vertical;      /* Permite agrandar si el usuario quiere */
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 12px;
+}
+.contador-tiempo{
+    background: linear-gradient(90deg, #f03b74 0%, #b454c8 55%, #2f66d6 100%);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 10px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(180,84,200,.35);
+}
+
+.contador-tiempo i{
+    font-size: 18px;
 }

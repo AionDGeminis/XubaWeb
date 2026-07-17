@@ -87,6 +87,21 @@ ConsultarDetalleSeguimientoId(idSubasta: number) {
     }
   );
 }
+ConsultarUltimasVistas(data: any): Observable<any> {
+  return this.http.post(
+    `${env.base_url}/subastas/ConsultarUltimasVistas`,
+    data,
+    { headers: test_headers }
+  ).pipe(map(res => res));
+}
+ConsultarUltimasOfertas(idSubasta: number, pagina: number): Observable<any> {
+
+  return this.http.get<any>(
+    `${env.base_url}/subastas/ConsultarUltimasOfertas?idSubasta=${idSubasta}&pagina=${pagina}`,
+    { headers: test_headers }
+  );
+
+}
 
   consultarGanador(idSubasta: number) {
     return this.http.get<any>(`${env.base_url}/subastas/ConsultaGanador/${idSubasta}`, {headers:test_headers}).pipe(map(res => res));

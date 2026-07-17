@@ -9,6 +9,7 @@
  */
 
  @import "tailwindcss" prefix(tw);
+ @import "bootstrap-icons/font/bootstrap-icons.css";
 
 
 @font-face {
