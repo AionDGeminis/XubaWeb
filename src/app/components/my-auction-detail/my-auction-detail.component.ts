@@ -36,7 +36,6 @@ export class MyAuctionDetailComponent {
   mostrarGaleria = false;
   listaHistorial: any[] = [];
   listaHistorialDHL: any[] = [];
-  listaTimeline: any[] = []; 
   imagenSeleccionada = 0;
   ultimasVistas: any[] = [];
   paginaVistas = 1;
@@ -84,28 +83,30 @@ export class MyAuctionDetailComponent {
 
 // Siempre cargar el historial de la subasta
 this.listaHistorial = sub.historialEstatus || [];
+this.listaHistorial = this.listaHistorial.filter((item: any) => {
+  return item.estatus !== '';
+});
 
 // Por el momento la línea de tiempo es igual al historial
-this.listaTimeline = [...this.listaHistorial];
-console.log("historial de estatus xuba")
 
-/*this.listaHistorial.sort((a: any, b: any) =>
-  new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
+console.log("historial de estatus xuba")
+console.log(this.listaHistorial);
+
+this.listaHistorial.sort((a: any, b: any) =>
+  new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
 );
 
-this.listaHistorial = this.listaHistorial.filter(
+/*this.listaHistorial = this.listaHistorial.filter(
   (item: any, index: number, array: any[]) =>
     index === array.findIndex(x => x.estatus === item.estatus)
 );*/
 
 // Si está Enviado o Entregado, agregar los eventos de DHL
-if (
-  (sub.idEstatus == 13 || sub.idEstatus == 14) &&
-  sub.guiaEnvio &&
-  sub.guiaEnvio !== 'Guía no disponible'
-) {
+const posicion = this.listaHistorial.findIndex(item => item.idEstatus === 13);
+console.log("posicion idestatus " + posicion)
+if ( (sub.idEstatus == 13 || sub.idEstatus == 14) && sub.guiaEnvio && sub.guiaEnvio !== 'Guía no disponible') {
 
-  this.cargarSeguimientoDHL(sub.numGuia);
+  this.cargarSeguimientoDHL(sub.numGuia,posicion);
 
 }
 
@@ -148,16 +149,22 @@ if (usuario) {
 
 }
 
- setTimerV2() {
+setTimerV2() {
 
   clearInterval(this.intervalId);
 
   this.intervalId = setInterval(() => {
 
     if (this.subasta.remaining > 0) {
+
       this.subasta.remaining--;
+
     } else {
+
       clearInterval(this.intervalId);
+
+      this.getInitialData(this.subasta.id);
+
     }
 
   }, 1000);
@@ -284,9 +291,11 @@ cerrarGaleria() {
 seleccionarImagen(index: number) {
   this.imagenSeleccionada = index;
 }
-cargarSeguimientoDHL(noGuia: string) {
+
+cargarSeguimientoDHL(noGuia: string, posicion: number) {
 
   console.log('Número de guía:', noGuia);
+  this.listaHistorialDHL = [];
 
   this.subastasService.GetPaqueteriaSeguimiento(noGuia).subscribe({
 
@@ -322,23 +331,42 @@ cargarSeguimientoDHL(noGuia: string) {
 
         }
         console.log("historial paqueteria")
-     this.listaHistorialDHL.push({
+        const objetoPaquitreria = {estatus,descripcion: e.location,fecha: e.date, tipo: 'DHL'}
+        this.listaHistorial.splice(posicion , 0, objetoPaquitreria)
+     /*this.listaHistorialDHL.push({
 
     estatus,
     descripcion: e.location,
     fecha: e.date,
     tipo: 'DHL'
 
-});
-      });
-      this.listaTimeline = [
-  ...this.listaHistorial,
-  ...this.listaHistorialDHL
-];
+});*/
 
-this.listaTimeline.sort((a: any, b: any) =>
-  new Date(a.fecha).getTime() - new Date(b.fecha).getTime()
-);
+      });
+      const historialFinal: any[] = [];
+
+this.listaHistorial.forEach((item: any) => {
+
+    historialFinal.push(item);
+
+    if (
+        item.estatus === 'Pendiente envio' ||
+        item.estatus === 'Pendiente envío'
+    ) {
+
+        this.listaHistorialDHL
+            .slice()
+            .reverse()
+            .forEach((dhl: any) => {
+                historialFinal.push(dhl);
+            });
+
+    }
+
+});
+
+this.listaHistorial = historialFinal;
+      
 
       console.log('Historial final:', this.listaHistorial);
 
