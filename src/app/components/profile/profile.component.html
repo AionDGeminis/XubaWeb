@@ -1,172 +1,187 @@
 <app-loader *ngIf="loading"></app-loader>
 
 <div class="profile-container  fast-animation  animate__animated animate__fadeInRight">
-    <div class="profile-sidebar d-none d-sm-flex" style="position: relative;">
-      <div class="profile-avatar" > 
-        <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
-      </div>
-      <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: 28%">
-        <input type="file" accept="image/*"  (change)="onFileChange($event)" hidden />
-        <i class="fas fa-camera"></i>
-      </label>
+  <div class="profile-sidebar d-none d-sm-flex" style="position: relative;">
+    <div class="profile-avatar">
+      <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
+    </div>
+    <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: 28%">
+      <input type="file" accept="image/*" (change)="onFileChange($event)" hidden />
+      <i class="fas fa-camera"></i>
+    </label>
 
-      <h2>{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h2>
-      <p class="profile-role">{{infoUsuario.usuario ?? 'ND'}}</p>
-      <p class="profile-email">{{infoUsuario.correo}}</p>
-       <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
-        <i class="fas fa-upload"></i> Guardar cambio
-      </button> 
+    <h2>{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h2>
+    <p class="profile-role">{{infoUsuario.usuario ?? 'ND'}}</p>
+    <p class="profile-email">{{infoUsuario.correo}}</p>
+    <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
+      <i class="fas fa-upload"></i> Guardar cambio
+    </button>
 
-      <div class="requisitos-container w-100 mt-3">
-        <h5 class="f-arial f-10">Requisitos para xubastar</h5>
-        <div class="requisito cumplido" *ngFor="let req of checkListSubastar">
-          <span class="icono" aria-hidden="true">
-            <i class="" [ngClass]="{'fas fa-check text-dark': req.verificado, 'far fa-circle': !req.verificado}"></i>
-          </span>
-          <span class="texto" [ngClass]="{'text-dark': req.verificado, 'text-white': !req.verificado}">{{req.label}}</span>
-        </div>
+    <div class="requisitos-container w-100 mt-3">
+      <h5 class="f-arial f-10">Requisitos para xubastar</h5>
+      <div class="requisito cumplido" *ngFor="let req of checkListSubastar">
+        <span class="icono" aria-hidden="true">
+          <i class="" [ngClass]="{'fas fa-check text-dark': req.verificado, 'far fa-circle': !req.verificado}"></i>
+        </span>
+        <span class="texto"
+          [ngClass]="{'text-dark': req.verificado, 'text-white': !req.verificado}">{{req.label}}</span>
       </div>
-     
     </div>
 
-    <div class="profile-sidebar d-sm-none d-block text-center" style="position: relative;">
-      <div class="w-100 profile-xs-container">
-        <div class="profile-avatar-xs d-block m-auto" > 
-          <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario" class="d-block m-auto">
-        </div>
-        <!-- <label class="btn btn-sm btn-light btn-circle pt-2" 
+  </div>
+
+  <div class="profile-sidebar d-sm-none d-block text-center" style="position: relative;">
+    <div class="w-100 profile-xs-container">
+      <div class="profile-avatar-xs d-block m-auto">
+        <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario" class="d-block m-auto">
+      </div>
+      <!-- <label class="btn btn-sm btn-light btn-circle pt-2" 
         style="position: absolute;right: calc(50% - 70px);top:100px;">
           <input type="file" accept="image/*"  (change)="onFileChange($event)" hidden />
           <i class="fas fa-camera"></i>
         </label> -->
-      </div>
-   
-      <h2>{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h2>
-      <p class="profile-role">{{infoUsuario.usuario ?? 'ND'}}</p>
-      <p class="profile-email">{{infoUsuario.correo}}</p>
-      <!-- <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
+    </div>
+
+    <h2>{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h2>
+    <p class="profile-role">{{infoUsuario.usuario ?? 'ND'}}</p>
+    <p class="profile-email">{{infoUsuario.correo}}</p>
+    <!-- <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
         <i class="fas fa-upload"></i> Guardar cambio
       </button> -->
-    </div>
-  
-    <!-- Panel derecho: Información editable -->
-    <div class="profile-main">
-      <div class="w-100 d-none d-sm-block">
-        <button class="btn-tab-card w-20" (click)="setCurrentTabPage(0)" [ngClass]="{'active': tabIndex === 0}">General</button>
-        <button class="btn-tab-card w-20" (click)="setCurrentTabPage(1)" [ngClass]="{'active': tabIndex === 1}">Xubastas</button>
-        <!-- <button class="btn-tab-card w-20" (click)="setCurrentTab(1)" [ngClass]="{'active': tabIndex === 1}">Ganadas</button> -->
-        <button class="btn-tab-card w-20" (click)="setCurrentTabPage(3)" [ngClass]="{'active': tabIndex === 3}">Cuentas y Wallet</button>
-        <button class="btn-tab-card w-20" (click)="setCurrentTabPage(4)" [ngClass]="{'active': tabIndex === 4}">Datos fiscales</button>
-        <button class="btn-tab-card w-20" (click)="setCurrentTabPage(2)" [ngClass]="{'active': tabIndex === 2}">Estadisticas</button>
-      </div>
+  </div>
 
-      <div class="w-100 d-block d-sm-none">
-        <button title="Configuracion general" class="btn-tab-card w-20" (click)="setCurrentTabPage(0)" [ngClass]="{'active': tabIndex === 0}">
-          <i class="fas fa-cogs"></i>
-        </button>
-        <button title="Mis Xubastas" class="btn-tab-card w-20" (click)="setCurrentTabPage(1)" [ngClass]="{'active': tabIndex === 1}">
-          <i class="fas fa-gavel"></i> 2
-        </button>
-        <button title="Cuentas y Wallet" class="btn-tab-card w-20" (click)="setCurrentTabPage(3)" [ngClass]="{'active': tabIndex === 3}">
-          <i class="fas fa-wallet"></i>
-        </button>
-        <button title="Datos fiscales" class="btn-tab-card w-20" (click)="setCurrentTabPage(4)" [ngClass]="{'active': tabIndex === 4}">
-          <i class="fas fa-book"></i>
-        </button>
-        <button title="Estadisticas" class="btn-tab-card w-20" (click)="setCurrentTabPage(2)" [ngClass]="{'active': tabIndex === 2}"><i class="fas fa-chart-bar"></i></button>
-      </div>
-      <!-- Datos personales -->
-      <ng-container *ngIf="tabIndex === 0">
-        <div class="profile-card" style="position: relative;">
-          <!-- <app-loader *ngIf="loading"></app-loader> -->
-          <h3 c>Datos personales</h3>
-          <form>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="smaller-txt">Nombre(s)</label>
-                <input class="i-disable" type="text" [(ngModel)]="infoUsuario.nombre" name="nombre" disabled>
-              </div>
-              <div class="form-group">
-                <label class="smaller-txt">Apellido(s)</label>
-                <input type="text" [(ngModel)]="infoUsuario.apellido" name="apellido" disabled>
-              </div>
+  <!-- Panel derecho: Información editable -->
+  <div class="profile-main">
+    <div class="w-100 d-none d-sm-block">
+      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(0)"
+        [ngClass]="{'active': tabIndex === 0}">General</button>
+      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(1)"
+        [ngClass]="{'active': tabIndex === 1}">Xubastas</button>
+      <!-- <button class="btn-tab-card w-20" (click)="setCurrentTab(1)" [ngClass]="{'active': tabIndex === 1}">Ganadas</button> -->
+      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(3)" [ngClass]="{'active': tabIndex === 3}">Cuentas y
+        Wallet</button>
+      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(4)" [ngClass]="{'active': tabIndex === 4}">Datos
+        fiscales</button>
+      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(2)"
+        [ngClass]="{'active': tabIndex === 2}">Estadisticas</button>
+    </div>
+
+    <div class="w-100 d-block d-sm-none">
+      <button title="Configuracion general" class="btn-tab-card w-20" (click)="setCurrentTabPage(0)"
+        [ngClass]="{'active': tabIndex === 0}">
+        <i class="fas fa-cogs"></i>
+      </button>
+      <button title="Mis Xubastas" class="btn-tab-card w-20" (click)="setCurrentTabPage(1)"
+        [ngClass]="{'active': tabIndex === 1}">
+        <i class="fas fa-gavel"></i> 2
+      </button>
+      <button title="Cuentas y Wallet" class="btn-tab-card w-20" (click)="setCurrentTabPage(3)"
+        [ngClass]="{'active': tabIndex === 3}">
+        <i class="fas fa-wallet"></i>
+      </button>
+      <button title="Datos fiscales" class="btn-tab-card w-20" (click)="setCurrentTabPage(4)"
+        [ngClass]="{'active': tabIndex === 4}">
+        <i class="fas fa-book"></i>
+      </button>
+      <button title="Estadisticas" class="btn-tab-card w-20" (click)="setCurrentTabPage(2)"
+        [ngClass]="{'active': tabIndex === 2}"><i class="fas fa-chart-bar"></i></button>
+    </div>
+    <!-- Datos personales -->
+    <ng-container *ngIf="tabIndex === 0">
+      <div class="profile-card" style="position: relative;">
+        <!-- <app-loader *ngIf="loading"></app-loader> -->
+        <h3 c>Datos personales</h3>
+        <form>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="smaller-txt">Nombre(s)</label>
+              <input class="i-disable" type="text" [(ngModel)]="infoUsuario.nombre" name="nombre" disabled>
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="smaller-txt">Usuario</label>
-                <input type="text" [(ngModel)]="infoUsuario.usuario" name="usuario" disabled>
-              </div>
-              <div class="form-group">
-                <label class="smaller-txt">Teléfono</label>
-                <input type="text" [(ngModel)]="infoUsuario.telefono" name="telefono">
-              </div>
+            <div class="form-group">
+              <label class="smaller-txt">Apellido(s)</label>
+              <input type="text" [(ngModel)]="infoUsuario.apellido" name="apellido" disabled>
             </div>
-            <div class="form-row">
-              <div class="form-group" style="flex:1;">
-                <label class="smaller-txt">Correo electrónico</label>
-                <input type="text" [(ngModel)]="infoUsuario.correo" name="correo">
-              </div>
-              <div class="form-group">
-                <label class="smaller-txt">Cambiar Password</label>
-                <button class="btn  btn-dark " (click)="obtenerLinkActualizacionPassword()">
-                  Enviar enlace de actualizacion
-                </button>
-                
-              </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="smaller-txt">Usuario</label>
+              <input type="text" [(ngModel)]="infoUsuario.usuario" name="usuario" disabled>
             </div>
-            <button (click)="saveInfoChange()" class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
-              <i class="fas fa-save tw:text-xs"></i>
-              Guardar cambios
-            </button>
-            <!-- <button class="btn-sm btn-secondary" (click)="openModal('recarga')" >
+            <div class="form-group">
+              <label class="smaller-txt">Teléfono</label>
+              <input type="text" [(ngModel)]="infoUsuario.telefono" name="telefono">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="smaller-txt">Correo electrónico</label>
+              <input type="text" [(ngModel)]="infoUsuario.correo" name="correo">
+            </div>
+            <div class="form-group">
+              <label class="smaller-txt">Cambiar Password</label>
+              <button class="btn  btn-dark " (click)="obtenerLinkActualizacionPassword()">
+                Enviar enlace de actualizacion
+              </button>
+
+            </div>
+          </div>
+          <button (click)="saveInfoChange()"
+            class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
+            <i class="fas fa-save tw:text-xs"></i>
+            Guardar cambios
+          </button>
+          <!-- <button class="btn-sm btn-secondary" (click)="openModal('recarga')" >
               <i class="fas fa-save"></i> 
               Guardar cambios
             </button> -->
 
-            <!-- <button class="btn-xuba btn-pill smaller-txt" (click)="saveInfoChange()">Guardar cambios</button> -->
-          </form>
-        </div>
-    
-        <!-- Direcciones -->
-        <div class="profile-card">
-          <div class="header-row">
-            <h3>
-              <i class="fas fa-map" ></i> 
-              Direcciones
-            </h3>
-            <!-- <button  class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
+          <!-- <button class="btn-xuba btn-pill smaller-txt" (click)="saveInfoChange()">Guardar cambios</button> -->
+        </form>
+      </div>
+
+      <!-- Direcciones -->
+      <div class="profile-card">
+        <div class="header-row">
+          <h3>
+            <i class="fas fa-map"></i>
+            Direcciones
+          </h3>
+          <!-- <button  class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
               <i class="fas fa-plus tw:text-xs"></i>
               Direccion
             </button> -->
-            <button class="btn-sm btn-secondary" (click)="openModal('direccion')" >
-              <i class="fas fa-plus"></i> 
-              Direccion
-            </button>
-            <!-- <button  class="btn-secondary" (click)="openModal('direccion')"> <i class="fas fa-plus"></i> Direccion</button> -->
-          </div>
-          <hr>
-          <table class="table table-striped w-100">
-            <tr>
-              <th>Direccion</th>
-              <th class="text-center">Default</th>
-              <th>Acciones</th>
-            </tr>
-            <tr *ngFor="let d of direcciones">
-              <td class="w-70 bbtd tddir">{{d.calle}} #{{d.numeroExt}}, {{d.municipio}}</td>
-              <td class="w-10 bbtd tw:text-center">
-                <span style="font-size: 0.7em;border: none;" class="tw:badge tw:badge-sm smaller-txt" [ngClass]="{'label-default': d.predeterminada, 'label-n-default':!d.predeterminada}">
-                   {{d.predeterminada ? 'SI' : 'NO'}}
-                </span>
-               
-              </td>
-              <td class="w-10 text-center bbtd">
-                <button class="btn btn-sm bg-info text-white me-1" (click)="openEditModal('direccion', direccion, d)"><i class="fas fa-edit"></i> </button>
-                <button class="btn btn-sm bg-danger text-white" (click)="eliminarDireccion(d.id)"><i class="fas fa-trash"></i> </button>
-              </td>
-            </tr>
-          </table>
+          <button class="btn-sm btn-secondary" (click)="openModal('direccion')">
+            <i class="fas fa-plus"></i>
+            Direccion
+          </button>
+          <!-- <button  class="btn-secondary" (click)="openModal('direccion')"> <i class="fas fa-plus"></i> Direccion</button> -->
+        </div>
+        <hr>
+        <table class="table table-striped w-100">
+          <tr>
+            <th>Direccion</th>
+            <th class="text-center">Default</th>
+            <th>Acciones</th>
+          </tr>
+          <tr *ngFor="let d of direcciones">
+            <td class="w-70 bbtd tddir">{{d.calle}} #{{d.numeroExt}}, {{d.municipio}}</td>
+            <td class="w-10 bbtd tw:text-center">
+              <span style="font-size: 0.7em;border: none;" class="tw:badge tw:badge-sm smaller-txt"
+                [ngClass]="{'label-default': d.predeterminada, 'label-n-default':!d.predeterminada}">
+                {{d.predeterminada ? 'SI' : 'NO'}}
+              </span>
 
-          <!-- <ul class="address-list">
+            </td>
+            <td class="w-10 text-center bbtd">
+              <button class="btn btn-sm bg-info text-white me-1" (click)="openEditModal('direccion', direccion, d)"><i
+                  class="fas fa-edit"></i> </button>
+              <button class="btn btn-sm bg-danger text-white" (click)="eliminarDireccion(d.id)"><i
+                  class="fas fa-trash"></i> </button>
+            </td>
+          </tr>
+        </table>
+
+        <!-- <ul class="address-list">
             <li *ngFor="let d of direcciones">
               {{d.calle}} #{{d.numeroExt}}, {{d.municipio}}  <span [ngClass]="{'label-tdent': d.tipo === 'entrega', 'label-tdenv': d.tipo === 'envio'}">{{d.tipo}}</span>
               <span>
@@ -175,69 +190,71 @@
               </span>
             </li>
           </ul> -->
-          <!-- <button class="btn-secondary" (click)="openModal('direccion')">Agregar nueva dirección</button> -->
-        </div>
-        
+        <!-- <button class="btn-secondary" (click)="openModal('direccion')">Agregar nueva dirección</button> -->
+      </div>
 
-    
-        <!-- Reclamos abiertos -->
-        <div class="profile-card">
-          <div class="d-flex between">
-            <h3>Reclamos abiertos</h3>
-            <!-- <button (click)="openModal('disputa')" class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
+
+
+      <!-- Reclamos abiertos -->
+      <div class="profile-card">
+        <div class="d-flex between">
+          <h3>Reclamos abiertos</h3>
+          <!-- <button (click)="openModal('disputa')" class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
               <i class="fas fa-plus tw:text-xs"></i>
               Reclamo
             </button> -->
-            <button class="btn-sm btn-secondary" (click)="openModal('disputa')" >
-              <i class="fas fa-plus"></i> 
-              Reclamo
-            </button>
-            <!-- <button class="btn-secondary" (click)="openModal('disputa')">Crear nuevo reclamo</button> -->
-          </div>
-          
-          <ul class="claim-list">
-            <li *ngFor="let rec of listaReclamosAbiertos">
-              #{{rec.idReclamo}} - {{rec.categoria}} [{{rec.caption}}]
-              <span>
-                <!-- <button class="btn-link" (click)="openDetalleReclamo(rec)">Ver</button> -->
-                <!-- <button class="btn-link">Cerrar</button> -->
-              </span>
-            </li>
-            <!-- <li>
+          <button class="btn-sm btn-secondary" (click)="openModal('disputa')">
+            <i class="fas fa-plus"></i>
+            Reclamo
+          </button>
+          <!-- <button class="btn-secondary" (click)="openModal('disputa')">Crear nuevo reclamo</button> -->
+        </div>
+
+        <ul class="claim-list">
+          <li *ngFor="let rec of listaReclamosAbiertos">
+            #{{rec.idReclamo}} - {{rec.categoria}} [{{rec.caption}}]
+            <span>
+              <!-- <button class="btn-link" (click)="openDetalleReclamo(rec)">Ver</button> -->
+              <!-- <button class="btn-link">Cerrar</button> -->
+            </span>
+          </li>
+          <!-- <li>
               #1235 - Daño en el envío
               <span>
                 <button class="btn-link">Ver</button>
                 <button class="btn-link">Cerrar</button>
               </span>
             </li> -->
-          </ul>
-          
-        </div>
-      </ng-container>
-      <ng-container *ngIf="tabIndex === 1">
-        <div class="profile-card">
-          <h3 class="mb-0" style="display: flex;justify-content:space-between;">
-            Mis xubastas
-            <!-- <button (click)="moveToCreateSubasta()" class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
+        </ul>
+
+      </div>
+    </ng-container>
+    <ng-container *ngIf="tabIndex === 1">
+      <div class="profile-card">
+        <h3 class="mb-0" style="display: flex;justify-content:space-between;">
+          Mis xubastas
+          <!-- <button (click)="moveToCreateSubasta()" class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
               <i class="fas fa-plus tw:text-xs"></i>
               Nueva
             </button> -->
-            <button class="btn-sm btn-secondary" (click)="moveToCreateSubasta()" >
-              <i class="fas fa-plus"></i> 
-              Nueva
-            </button>
-          </h3>
-         
-          <!-- <p class="pt-0 mt-0 d-block d-sm-none">{{getCurrenSubastaName()}}</p> -->
-          <hr>
-          <div class="w-100 mb-2 ">
-            <button class="btn-tab-card w-50 " [ngClass]="{'active': tabSubastasIndex === 0}" (click)="setCurrentTabSubastas(0)">Participadas</button>
-            <button class="btn-tab-card w-50 " [ngClass]="{'active': tabSubastasIndex === 1}" (click)="setCurrentTabSubastas(1)">Creadas</button>
-          </div> 
-          <!-- <label class="lbl-select f-arial ps-2">Filtrar xubastas por estatus</label> -->
-          <!-- <p class="tw:text-red-500 fw-bold">Tailwind funcionando</p> -->
-         
-          <!-- <div class="p-1 w-100 bg-dark" style="border-radius: 5px;">
+          <button class="btn-sm btn-secondary" (click)="moveToCreateSubasta()">
+            <i class="fas fa-plus"></i>
+            Nueva
+          </button>
+        </h3>
+
+        <!-- <p class="pt-0 mt-0 d-block d-sm-none">{{getCurrenSubastaName()}}</p> -->
+        <hr>
+        <div class="w-100 mb-2 ">
+          <button class="btn-tab-card w-50 " [ngClass]="{'active': tabSubastasIndex === 0}"
+            (click)="setCurrentTabSubastas(0)">Participadas</button>
+          <button class="btn-tab-card w-50 " [ngClass]="{'active': tabSubastasIndex === 1}"
+            (click)="setCurrentTabSubastas(1)">Creadas</button>
+        </div>
+        <!-- <label class="lbl-select f-arial ps-2">Filtrar xubastas por estatus</label> -->
+        <!-- <p class="tw:text-red-500 fw-bold">Tailwind funcionando</p> -->
+
+        <!-- <div class="p-1 w-100 bg-dark" style="border-radius: 5px;">
            
 
             <select class="form-select" [(ngModel)]="currentTipoSubasta" (change)="onChangeTipoSubasta()">
@@ -256,51 +273,43 @@
               
            </select>
           </div> -->
-          <div class="relative inline-block text-left dropdown-container w-100 " *ngIf="tabSubastasIndex === 0">
-            <button
-              type="button"
-              class="btn-select-xuba mt-2 mb-2 tw:relative tw:p-0 tw:text-white tw:px-2 tw:py-1 tw:rounded-lg w-100"
-              (click)="toggleDropdown()">
-              Mostrar subastas por tipo: <span class="badge" [ngStyle]="{'background': selectedTipoSubasta.bg}" >{{selectedTipoSubasta.label}} </span>
+        <div class="relative inline-block text-left dropdown-container w-100 " *ngIf="tabSubastasIndex === 0">
+          <button type="button"
+            class="btn-select-xuba mt-2 mb-2 tw:relative tw:p-0 tw:text-white tw:px-2 tw:py-1 tw:rounded-lg w-100"
+            (click)="toggleDropdown()">
+            Mostrar subastas por tipo: <span class="badge"
+              [ngStyle]="{'background': selectedTipoSubasta.bg}">{{selectedTipoSubasta.label}} </span>
             <i style="position: absolute;right:10px; top:35%" class="fas fa-chevron-down"></i>
 
-            </button>
-            <div class="tw:relative w-100 ">
-              <div *ngIf="open" class="tw:absolute w-100  tw:w-56 tw:rounded-xl border-xuba tw:shadow-lg pt-3 pb-3">
-                <!-- <ul class="tw:py-2"> -->
-                  <button class="s-tag f-arial me-2" [ngClass]="{'s-tag-active': currentTipoSubasta === ts.tipo}" *ngFor="let ts of ListTipoSubastaPG" (click)="setTipoSubastaPG(ts)">{{ts.label}}</button>
-                  <!-- <li *ngFor="let ts of ListTipoSubastaPG">
-                    <button  class="tw:w-full tw:text-left tw:px-4 tw:py-2 tw:hover:bg-gray-100" (click)="setTipoSubastaPG(ts)">
-                      <span [ngStyle]="{'background': ts.bg}" class="badge">{{ts.label}} </span>
-                    </button>
-                  </li> -->
-                <!-- </ul> -->
-              </div>
+          </button>
+          <div class="tw:relative w-100 ">
+            <div *ngIf="open" class="tw:absolute w-100  tw:w-56 tw:rounded-xl border-xuba tw:shadow-lg pt-3 pb-3">
+              <button class="s-tag f-arial me-2" [ngClass]="{'s-tag-active': currentTipoSubasta === ts.tipo}"
+                *ngFor="let ts of ListTipoSubastaPG" (click)="setTipoSubastaPG(ts)">{{ts.label}}</button>
             </div>
           </div>
-          <div class="relative inline-block text-left dropdown-container w-100 " *ngIf="tabSubastasIndex === 1">
-            <button
-              type="button"
-              class="btn-select-xuba mt-2 mb-2 tw:relative tw:p-0 tw:text-white tw:px-2 tw:py-1 tw:rounded-lg w-100"
-              (click)="toggleDropdown()">
-              <!-- <span *ngIf="selectedTipoSubasta.tipo === 'Rechazada' && totalSubastasPorRevisar > 0" class="tw:inline-flex ms-2 tw:items-center tw:justify-center tw:min-w-[20px] tw:h-5 tw:px-1.5 tw:rounded-full tw:bg-red-500 tw:text-white tw:text-xs tw:font-bold">
-                {{totalSubastasPorRevisar}}
-              </span> -->
-              <i *ngIf="selectedTipoSubasta.tipo !== 'Rechazada' && totalSubastasPorRevisar > 0" class="fas fa-circle text-danger smaller-txt"></i>
-              Mostrar subastas por estatus: 
-              <span class="badge" [ngStyle]="{'background': selectedTipoSubasta.bg}" >
-                {{selectedTipoSubasta.label}} 
-              </span>
-              <span *ngIf="selectedTipoSubasta.tipo === 'Rechazada' && totalSubastasPorRevisar > 0" class="tw:inline-flex ms-2 tw:items-center tw:justify-center tw:min-w-[20px] tw:h-5 tw:px-1.5 tw:rounded-full tw:bg-red-500 tw:text-white tw:text-xs tw:font-bold">
-                {{totalSubastasPorRevisar}}
-              </span>
-              
-              <i style="position: absolute;right:10px; top:35%" class="fas fa-chevron-down"></i>
+        </div>
+        <div class="relative inline-block text-left dropdown-container w-100 " *ngIf="tabSubastasIndex === 1">
+          <button type="button"
+            class="btn-select-xuba mt-2 mb-2 tw:relative tw:p-0 tw:text-white tw:px-2 tw:py-1 tw:rounded-lg w-100"
+            (click)="toggleDropdown()">
+            <i *ngIf="selectedTipoSubasta.tipo !== 'Rechazada' && totalSubastasPorRevisar > 0"
+              class="fas fa-circle text-danger smaller-txt"></i>
+            Mostrar subastas por estatus:
+            <span class="badge" [ngStyle]="{'background': selectedTipoSubasta.bg}">
+              {{selectedTipoSubasta.label}}
+            </span>
+            <span *ngIf="selectedTipoSubasta.tipo === 'Rechazada' && totalSubastasPorRevisar > 0"
+              class="tw:inline-flex ms-2 tw:items-center tw:justify-center tw:min-w-[20px] tw:h-5 tw:px-1.5 tw:rounded-full tw:bg-red-500 tw:text-white tw:text-xs tw:font-bold">
+              {{totalSubastasPorRevisar}}
+            </span>
 
-            </button>
-            <div class="tw:relative w-100">
-              <div *ngIf="open" class="tw:absolute w-100  tw:w-56 tw:rounded-xl border-xuba tw:shadow-lg pt-3 pb-3">
-                <!-- <ul class="tw:py-2">
+            <i style="position: absolute;right:10px; top:35%" class="fas fa-chevron-down"></i>
+
+          </button>
+          <div class="tw:relative w-100">
+            <div *ngIf="open" class="tw:absolute w-100  tw:w-56 tw:rounded-xl border-xuba tw:shadow-lg pt-3 pb-3">
+              <!-- <ul class="tw:py-2">
                   <li *ngFor="let ts of ListTipoSubastaCreadas">
                     <div >
                       <button  class="tw:w-full tw:text-left tw:px-4 tw:py-2 tw:hover:bg-gray-100" (click)="setTipoSubastaPG(ts)">
@@ -315,149 +324,192 @@
                     
                   </li>
                 </ul> -->
-                <button class="s-tag f-arial me-2" [ngClass]="{'s-tag-active': currentTipoSubasta === ts.tipo}" *ngFor="let ts of ListTipoSubastaCreadas" (click)="setTipoSubastaPG(ts)">
-                  {{ts.label}}
-                  <span *ngIf="ts.tipo === 'Rechazada' && totalSubastasPorRevisar > 0" class="tw:inline-flex ms-2 tw:items-center tw:justify-center tw:min-w-[20px] tw:h-5 tw:px-1.5 tw:rounded-full tw:bg-red-500 tw:text-white tw:text-xs tw:font-bold">
-                    {{totalSubastasPorRevisar}}
-                  </span>
-                </button>
+              <button class="s-tag f-arial me-2" [ngClass]="{'s-tag-active': currentTipoSubasta === ts.tipo}"
+                *ngFor="let ts of ListTipoSubastaCreadas" (click)="setTipoSubastaPG(ts)">
+                {{ts.label}}
+                <span *ngIf="ts.tipo === 'Rechazada' && totalSubastasPorRevisar > 0"
+                  class="tw:inline-flex ms-2 tw:items-center tw:justify-center tw:min-w-[20px] tw:h-5 tw:px-1.5 tw:rounded-full tw:bg-red-500 tw:text-white tw:text-xs tw:font-bold">
+                  {{totalSubastasPorRevisar}}
+                </span>
+              </button>
 
+            </div>
+          </div>
+        </div>
+        <div class="table-cont-scroll mt-2" *ngIf="tabSubastasIndex === 0">
+
+          <table class="table table-striped w-100 text-center d-none d-sm-table">
+
+            <tr class="bg-xuba1 text-white">
+              <th class="w-10">Img</th>
+              <th class="w-10">Titulo</th>
+              <th class="w-30">Descripcion</th>
+              <th class="w-20">Precio</th>
+              <th class="w-10">Tiempo</th>
+              <th class="w-10">Estatus</th>
+              <th class="w-10">Acciones</th>
+            </tr>
+            <tr class="row-selectable" *ngFor="let subasta of listaSubastas">
+              <td style="width:100px">
+                <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null"
+                  (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)"
+                  class="d-block img-fluid img-auct" alt="Auction Image">
+              </td>
+              <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
+              <td class="td-desc">{{subasta.short_desc}}</td>
+              <td>{{toCurrency(subasta.apuesta)}}</td>
+              <td>{{formatTimeString(subasta.remaining!)}}</td>
+              <td>
+                <span class="status-lbl f-arial" [style]="'background:'+ subasta.bg">{{subasta.desStatus}}</span>
+              </td>
+              <td>
+                <button (click)="openSubastaDetalle(subasta)"
+                  class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt mt-1 border-none">
+                  <i class="fas fa-gavel text-white "></i>
+                </button>
+              </td>
+            </tr>
+          </table>
+          <div class="w-100 d-sm-none d-block">
+            <div class="w-100" *ngFor="let subasta of listaSubastas">
+              <div class="row">
+                <div class="col-5">Img</div>
+                <div class="col-7">
+                  <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null"
+                    (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)"
+                    class="d-block img-fluid w-50 ms-auto img-auct" alt="Auction Image">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-5">Titulo</div>
+                <div class="col-7 text-end f-arial">
+                  {{subasta.caption}} # {{subasta.id}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-5">Descripcion</div>
+                <div class="col-7 text-end f-arial">{{subasta.short_desc}}</div>
+              </div>
+              <div class="row">
+                <div class="col-5">Precio</div>
+                <div class="col-7 text-end f-arial">{{toCurrency(subasta.apuesta)}}</div>
+              </div>
+              <div class="row">
+                <div class="col-5">Tiempo</div>
+                <div class="col-7 text-end f-arial">{{formatTimeString(subasta.remaining!)}}</div>
+              </div>
+              <div class="row">
+                <div class="col-5">Estatus</div>
+                <div class="col-7 text-end f-arial">
+                  <span class="status-lbl f-arial" [style]="'background:'+ subasta.bg">{{subasta.desStatus}}</span>
+                </div>
+              </div>
+              <div class="row mt-1  pt-1 px-3">
+                <button class="btn-xuba btn-pill pt-1 pb-1" (click)="openSubastaDetalle(subasta)">
+                  Ver Detalles <i class="fas fa-gavel text-white "></i>
+                </button>
+              </div>
+              <div class="line-divider">
               </div>
             </div>
           </div>
-          <div class="table-cont-scroll mt-2" *ngIf="tabSubastasIndex === 0">
-          
-            <table class="table table-striped w-100 text-center d-none d-sm-table">
+        </div>
+        <!-- ========================================================== -->
+        <div class="table-cont-scroll mt-2" *ngIf="tabSubastasIndex === 1">
+          <table class="table table-striped w-100 text-center d-none d-sm-table">
+            <tr class="bg-xuba1 text-white">
+              <th class="w-10">Img</th>
+              <th class="w-10">Titulo</th>
+              <th class="w-30">Descripcion</th>
+              <th class="w-20">Precio</th>
+              <th class="w-20">Tiempo</th>
+              <th class="w-10">Acciones</th>
 
-                <tr class="bg-xuba1 text-white">
-                  <th class="w-10">Img</th>
-                  <th class="w-10">Titulo</th>
-                  <th class="w-30">Descripcion</th>
-                  <th class="w-20">Precio</th>
-                  <th class="w-10">Tiempo</th>
-                  <th class="w-10">Estatus</th>
-                </tr>
-                <tr class="row-selectable" *ngFor="let subasta of listaSubastas" (click)="openSubastaDetalle(subasta)">
-                  <td style="width:100px">
-                    <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
-                  </td>
-                  <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
-                  <td class="td-desc">{{subasta.short_desc}}</td>
-                  <td >{{toCurrency(subasta.apuesta)}}</td>
-                  <td >{{formatTimeString(subasta.remaining!)}}</td>
-                  <td >
-                   <span class="status-lbl f-arial" [style]="'background:'+ subasta.bg">{{subasta.desStatus}}</span> 
-                  </td>
-                </tr>
-              </table> 
-              <!-- <div class="w-100 d-sm-none d-block">
-                  <div class="w-100"  *ngFor="let subasta of listaSubastas">
-                    <div class="row">
-                      <div class="col-5">Img</div>
-                      <div class="col-7">
-                        <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid w-50 ms-auto img-auct" alt="Auction Image">
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-5">Titulo</div>
-                      <div class="col-7 text-end f-arial">
-                        {{subasta.caption}} # {{subasta.id}}
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-5">Descripcion</div>
-                      <div class="col-7 text-end f-arial">{{subasta.short_desc}}</div>
-                    </div>
-                    <div class="row">
-                      <div class="col-5">Precio</div>
-                      <div class="col-7 text-end f-arial">{{toCurrency(subasta.apuesta)}}</div>
-                    </div>
-                    <div class="row">
-                      <div class="col-5">Tiempo</div>
-                      <div class="col-7 text-end f-arial">{{formatTimeString(subasta.remaining!)}}</div>
-                    </div>
-                    <div class="row mt-1  pt-1 px-3">
-                      <button class="btn-xuba btn-pill pt-1 pb-1" (click)="openSubastaDetalle(subasta)">
-                       Ver Detalles
-                      </button>
-                    </div>
-                    <div class="line-divider">
-                    </div>
-                  </div>
-              </div> -->
-          </div>
-          <!-- ========================================================== -->
-          <div class="table-cont-scroll mt-2" *ngIf="tabSubastasIndex === 1">
-            <table class="table table-striped w-100 text-center d-none d-sm-table">
-              <tr class="bg-xuba1 text-white">
-                <th class="w-10">Img</th>
-                <th class="w-10">Titulo</th>
-                <th class="w-30">Descripcion</th>
-                <th class="w-20">Precio</th>
-                <th class="w-20">Tiempo</th>
-                <th class="w-10">Acciones</th>
-                
-              </tr>
-              <tr class="row-selectable tw:odd:bg-white tw:even:bg-gray-100" style="border-bottom:1px solid #b2bec3;padding-bottom: 4px !important;" *ngFor="let subasta of listaSubastas" >
-                <td style="width:100px; padding-bottom: 8px;">
-                  <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
-                </td>
-                <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
-                <td class="td-desc">{{subasta.short_desc}}</td>
-                <td >{{toCurrency(subasta.extraInfo.apuesta)}}</td>
-                <td >{{segundosATiempoString(subasta.tiempoVence!)}}</td>
-                <td >
-                  <button  (click)="openSubastaDetalleCreada(subasta)" class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt border-none">
-                    <i class="fas fa-file"></i>
-                  </button>
-                  <button (click)="openSubastaDetalle(subasta)" class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt mt-1 border-none">
-                    <i class="fas fa-gavel"></i>
-                  </button>
-                  <button (click)="openModalSubastaEdicion(subasta)" class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt mt-1 border-none">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                </td>
-              </tr>
-            </table> 
-            <div class="w-100 d-sm-none d-block">
-              <div class="w-100"  *ngFor="let subasta of listaSubastas">
-                <div class="row">
-                  <div class="col-5">Img</div>
-                  <div class="col-7">
-                    <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid w-50 ms-auto img-auct" alt="Auction Image">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Titulo</div>
-                  <div class="col-7 text-end f-arial">
-                    {{subasta.caption}} # {{subasta.id}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Descripcion</div>
-                  <div class="col-7 text-end f-arial">{{subasta.short_desc}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Precio</div>
-                  <div class="col-7 text-end f-arial">{{toCurrency(subasta.extraInfo.apuesta)}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Tiempo</div>
-                  <div class="col-7 text-end f-arial">{{segundosATiempoString(subasta.tiempoVence!)}}</div>
-                </div>
-                <div class="row mt-1  pt-1 px-3" *ngIf="subasta.desStatus !== 'Por aprobar'">
-                  <button class="btn-xuba btn-pill pt-1 pb-1" (click)="openSubastaDetalle(subasta)">
-                   Ver Detalles
-                  </button>
-                </div>
-                <div class="line-divider">
+            </tr>
+            <tr class="row-selectable tw:odd:bg-white tw:even:bg-gray-100"
+              style="border-bottom:1px solid #b2bec3;padding-bottom: 4px !important;"
+              *ngFor="let subasta of listaSubastas">
+              <td style="width:100px; padding-bottom: 8px;">
+                <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null"
+                  (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)"
+                  class="d-block img-fluid img-auct" alt="Auction Image">
+              </td>
+              <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
+              <td class="td-desc">{{subasta.short_desc}}</td>
+              <td>{{toCurrency(subasta.extraInfo.apuesta)}}</td>
+              <td>{{segundosATiempoString(subasta.tiempoVence!)}}</td>
+              <td>
+                <button (click)="openSubastaDetalleCreada(subasta)" title="Ver detalles"
+                  class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt border-none">
+                  <i class="fas fa-file text-white"></i>
+                </button>
+                <button (click)="openSubastaDetalle(subasta)" title="Ver apuestas"
+                  class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt mt-1 border-none">
+                  <i class="fas fa-gavel text-white"></i>
+                </button>
+                <button *ngIf="subasta.desStatus === 'Rechazada'" (click)="openModalSubastaEdicion(subasta)"
+                  class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt mt-1 border-none">
+                  <i class="fas fa-edit text-white"></i>
+                </button>
+
+              </td>
+            </tr>
+          </table>
+          <div class="w-100 d-sm-none d-block">
+            <div class="w-100" *ngFor="let subasta of listaSubastas">
+              <div class="row">
+                <div class="col-5">Img</div>
+                <div class="col-7">
+                  <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null"
+                    (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)"
+                    class="d-block img-fluid w-50 ms-auto img-auct" alt="Auction Image">
                 </div>
               </div>
+              <div class="row">
+                <div class="col-5">Titulo</div>
+                <div class="col-7 text-end f-arial">
+                  {{subasta.caption}} # {{subasta.id}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-5">Descripcion</div>
+                <div class="col-7 text-end f-arial">{{subasta.short_desc}}</div>
+              </div>
+              <div class="row">
+                <div class="col-5">Precio</div>
+                <div class="col-7 text-end f-arial">{{toCurrency(subasta.extraInfo.apuesta)}}</div>
+              </div>
+              <div class="row">
+                <div class="col-5">Tiempo</div>
+                <div class="col-7 text-end f-arial">{{segundosATiempoString(subasta.tiempoVence!)}}</div>
+              </div>
+              <div class="row mt-1 pt-1 px-3 d-flex flex-row justify-content-around align-items-center"
+                *ngIf="subasta.desStatus !== 'Por aprobar'">
+                <button class="btn-xuba btn-pill pt-1 pb-1 smaller-txt text-center"
+                  style="width: 30%; padding-left: 2px; padding-right: 2px;"
+                  (click)="openSubastaDetalleCreada(subasta)">
+                  Detalles <i class="fas fa-file"></i>
+                </button>
+                <button class="btn-xuba btn-pill pt-1 pb-1 smaller-txt text-center"
+                  style="width: 30%; padding-left: 2px; padding-right: 2px;" (click)="openSubastaDetalle(subasta)">
+                  Apuestas <i class="fas fa-gavel"></i>
+                </button>
+                <button *ngIf="subasta.desStatus === 'Rechazada'"
+                  class="btn-xuba btn-pill pt-1 pb-1 smaller-txt text-center"
+                  style="width: 30%; padding-left: 2px; padding-right: 2px;" (click)="openModalSubastaEdicion(subasta)">
+                  Editar <i class="fas fa-edit"></i>
+                </button>
+              </div>
+              <div class="line-divider">
+              </div>
+            </div>
           </div>
-          </div>
-        </div>  
+        </div>
+        <br><br>
+        <br><br>
+      </div>
 
-        <!-- <div class="profile-card">
+      <!-- <div class="profile-card">
           <h3 class="mb-0" style="display: flex;justify-content:space-between;">Mis subastas creadas
             <button class="btn btn-sm btn-info" (click)="moveToCreateSubasta()"><i class="fas fa-plus"></i> Nueva</button>
           </h3>
@@ -756,282 +808,293 @@
           </div>
 
         </div> -->
-      </ng-container>
+    </ng-container>
 
 
-      <ng-container *ngIf="tabIndex === 2">
-        <div class="row m-auto w-100">
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-3">
-    <h3 class="mb-0">Panel de estadísticas</h3>
-    <span class="ms-auto text-muted small">
-      Última actualización: 11/08/2025, 10:15 AM
-    </span>
-  </div>
+    <ng-container *ngIf="tabIndex === 2">
+      <div class="row m-auto w-100">
+        <div class="container py-4">
+          <div class="d-flex align-items-center mb-3">
+            <h3 class="mb-0">Panel de estadísticas</h3>
+            <span class="ms-auto text-muted small">
+              Última actualización: 11/08/2025, 10:15 AM
+            </span>
+          </div>
 
-  <div class="row g-3 mb-3">
-    <div class="col-12 col-sm-6 col-lg-3">
-      <div class="card shadow-sm h-100 bg1">
-        <div class="card-body d-flex align-items-center">
-          <div class="kpi-icon bg-primary-subtle text-primary me-3">
-            <i class="fas fa-gavel"></i>
-          </div>
-          <div class="text-white">
-            <div class=" small">Subastas creadas</div>
-            <div class="fs-4 fw-semibold">18</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-      <div class="card shadow-sm h-100 bg2">
-        <div class="card-body d-flex align-items-center">
-          <div class="kpi-icon bg-success-subtle text-success me-3">
-            <i class="fas fa-trophy"></i>
-          </div>
-          <div class="text-white">
-            <div class=" small">Creadas ganadas</div>
-            <div class="fs-4 fw-semibold">9</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-      <div class="card shadow-sm h-100 bg3">
-        <div class="card-body d-flex align-items-center">
-          <div class="kpi-icon bg-warning-subtle text-warning me-3">
-            <i class="fas fa-award"></i>
-          </div>
-          <div class="text-white">
-            <div class=" small">Has ganado</div>
-            <div class="fs-4 fw-semibold">5</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 col-sm-6 col-lg-3">
-      <div class="card shadow-sm h-100 bg4">
-        <div class="card-body d-flex align-items-center">
-          <div class="kpi-icon bg-danger-subtle text-danger me-3">
-            <i class="fas fa-hand-point-up"></i>
-          </div>
-          <div class="text-white">
-            <div class=" small">Has participado</div>
-            <div class="fs-4 fw-semibold">22</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row g-3 mb-4">
-    <div class="col-12 col-lg-4">
-      <div class="card h-100 shadow-sm">
-        <div class="card-header bg-xuba1 text-white" >Resumen</div>
-        <div class="card-body">
-          <div class="d-flex justify-content-between mb-2">
-            <span class="text-muted">Activas</span>
-            <span class="fw-semibold">4</span>
-          </div>
-          <div class="d-flex justify-content-between mb-2">
-            <span class="text-muted">Promedio vistas</span>
-            <span class="fw-semibold">128</span>
-          </div>
-          <div class="d-flex justify-content-between mb-2">
-            <span class="text-muted">Promedio pujas</span>
-            <span class="fw-semibold">7.4</span>
-          </div>
-          <div class="d-flex justify-content-between">
-            <span class="text-muted">Favoritos recibidos</span>
-            <span class="fw-semibold">63</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 col-lg-8">
-      <div class="card h-100 shadow-sm">
-        <div class="card-header bg-xuba1 text-white d-flex align-items-center">
-          <span>Top subastas </span>
-        </div>
-        <div class="card-body">
-          <div class="mb-3">
-            <div class="d-flex align-items-center justify-content-between">
-              <div class="text-truncate me-3">
-                <span class="fw-semibold">MacBook Pro 14” M3 2023</span>
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card shadow-sm h-100 bg1">
+                <div class="card-body d-flex align-items-center">
+                  <div class="kpi-icon bg-primary-subtle text-primary me-3">
+                    <i class="fas fa-gavel"></i>
+                  </div>
+                  <div class="text-white">
+                    <div class=" small">Subastas creadas</div>
+                    <div class="fs-4 fw-semibold">18</div>
+                  </div>
+                </div>
               </div>
-              <div class="small text-muted me-3">
-                23 pujas • 12 favs • 980 vistas
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card shadow-sm h-100 bg2">
+                <div class="card-body d-flex align-items-center">
+                  <div class="kpi-icon bg-success-subtle text-success me-3">
+                    <i class="fas fa-trophy"></i>
+                  </div>
+                  <div class="text-white">
+                    <div class=" small">Creadas ganadas</div>
+                    <div class="fs-4 fw-semibold">9</div>
+                  </div>
+                </div>
               </div>
-             
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card shadow-sm h-100 bg3">
+                <div class="card-body d-flex align-items-center">
+                  <div class="kpi-icon bg-warning-subtle text-warning me-3">
+                    <i class="fas fa-award"></i>
+                  </div>
+                  <div class="text-white">
+                    <div class=" small">Has ganado</div>
+                    <div class="fs-4 fw-semibold">5</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card shadow-sm h-100 bg4">
+                <div class="card-body d-flex align-items-center">
+                  <div class="kpi-icon bg-danger-subtle text-danger me-3">
+                    <i class="fas fa-hand-point-up"></i>
+                  </div>
+                  <div class="text-white">
+                    <div class=" small">Has participado</div>
+                    <div class="fs-4 fw-semibold">22</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="mb-3">
-            <div class="d-flex align-items-center justify-content-between">
-              <div class="text-truncate me-3">
-                <span class="fw-semibold">Colección comics edición limitada</span>
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-lg-4">
+              <div class="card h-100 shadow-sm">
+                <div class="card-header bg-xuba1 text-white">Resumen</div>
+                <div class="card-body">
+                  <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Activas</span>
+                    <span class="fw-semibold">4</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Promedio vistas</span>
+                    <span class="fw-semibold">128</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Promedio pujas</span>
+                    <span class="fw-semibold">7.4</span>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span class="text-muted">Favoritos recibidos</span>
+                    <span class="fw-semibold">63</span>
+                  </div>
+                </div>
               </div>
-              <div class="small text-muted me-3">
-                11 pujas • 5 favs • 420 vistas
+            </div>
+
+            <div class="col-12 col-lg-8">
+              <div class="card h-100 shadow-sm">
+                <div class="card-header bg-xuba1 text-white d-flex align-items-center">
+                  <span>Top subastas </span>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div class="text-truncate me-3">
+                        <span class="fw-semibold">MacBook Pro 14” M3 2023</span>
+                      </div>
+                      <div class="small text-muted me-3">
+                        23 pujas • 12 favs • 980 vistas
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div class="text-truncate me-3">
+                        <span class="fw-semibold">Colección comics edición limitada</span>
+                      </div>
+                      <div class="small text-muted me-3">
+                        11 pujas • 5 favs • 420 vistas
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="mb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div class="text-truncate me-3">
+                        <span class="fw-semibold">Silla ergonómica oficina</span>
+                      </div>
+                      <div class="small text-muted me-3">
+                        3 pujas • 2 favs • 210 vistas
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
               </div>
-             
             </div>
           </div>
 
-          <div class="mb-0">
-            <div class="d-flex align-items-center justify-content-between">
-              <div class="text-truncate me-3">
-                <span class="fw-semibold">Silla ergonómica oficina</span>
-              </div>
-              <div class="small text-muted me-3">
-                3 pujas • 2 favs • 210 vistas
-              </div>
-   
-            </div>
-          </div>
 
         </div>
       </div>
-    </div>
-  </div>
+    </ng-container>
 
-  
-</div>
+
+    <ng-container *ngIf="tabIndex === 3">
+      <div class="profile-card">
+        <div class="header-row">
+          <h3>
+            <i class="fas" [ngClass]="{'fa-lock': tabCuentasIndex === 1, 'fa-user': tabCuentasIndex === 0,}"></i>
+            {{tabCuentasIndex === 0 ? 'Cuentas para recibir pagos' : 'Tarjetas'}}
+          </h3>
+          <button *ngIf="tabCuentasIndex === 0 " [disabled]="cuentasClabe.length > 0" class="btn-secondary"
+            [ngClass]="{'disable': cuentasClabe.length > 0}" (click)="openModal('clabe')"> <i class="fas fa-plus"></i>
+            Cuenta</button>
+          <button *ngIf="tabCuentasIndex === 1" [disabled]="tarjetas!.length > 2"
+            [ngClass]="{'disable': tarjetas!.length > 2}" class="btn-secondary" (click)="openModal('tarjeta')"> <i
+              class="fas fa-plus"></i> Tarjeta</button>
         </div>
-      </ng-container>
-      
+        <hr>
+        <div class="w-100">
+          <button class="btn-tab-card w-50 " [ngClass]="{'active': tabCuentasIndex === 0}"
+            (click)="setCurrentCuentaIndex(0)">Cuentas</button>
+          <button class="btn-tab-card w-50 " [ngClass]="{'active': tabCuentasIndex === 1}"
+            (click)="setCurrentCuentaIndex(1)">Tarjetas</button>
+        </div>
+        <table class="table table-striped w-100 mt-3 d-none d-sm-table">
 
-      <ng-container *ngIf="tabIndex === 3">
-        <div class="profile-card">
-          <div class="header-row">
-            <h3>
-              <i class="fas" [ngClass]="{'fa-lock': tabCuentasIndex === 1, 'fa-user': tabCuentasIndex === 0,}"></i> 
-              {{tabCuentasIndex === 0 ? 'Cuentas para recibir pagos' : 'Tarjetas'}} 
-            </h3>
-            <button *ngIf="tabCuentasIndex === 0 " [disabled]="cuentasClabe.length > 0" class="btn-secondary" [ngClass]="{'disable': cuentasClabe.length > 0}" (click)="openModal('clabe')"> <i class="fas fa-plus"></i> Cuenta</button>
-            <button *ngIf="tabCuentasIndex === 1" [disabled]="tarjetas!.length > 2" [ngClass]="{'disable': tarjetas!.length > 2}"  class="btn-secondary" (click)="openModal('tarjeta')"> <i class="fas fa-plus"></i> Tarjeta</button>
-          </div>
-          <hr>
-          <div class="w-100">
-            <button class="btn-tab-card w-50 " [ngClass]="{'active': tabCuentasIndex === 0}" (click)="setCurrentCuentaIndex(0)">Cuentas</button>
-            <button class="btn-tab-card w-50 " [ngClass]="{'active': tabCuentasIndex === 1}" (click)="setCurrentCuentaIndex(1)">Tarjetas</button>
-          </div>
-          <table class="table table-striped w-100 mt-3 d-none d-sm-table">
-           
-            <ng-container *ngIf="tabCuentasIndex === 0">
-              <tr>
-                <th>CLABE Interbancaria</th>
-                <th class="text-end">Acciones</th>
-              </tr>
-              <tr *ngFor="let cc of cuentasClabe">
-                <td class="w-30 bbtd">{{cc.cuentaClabe}}</td>
-                <td class="w-10 text-end bbtd">
-                  <button class="btn btn-sm btn-info me-1"><i class="fas fa-edit"></i> </button>
-                </td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="tabCuentasIndex === 1">
-            
-              <tr style="width:100% !important;" class="bg-dark-sapphire text-white">
-                <th  style="width: 30% !important;padding-left: 5px;">Tarjeta</th>
-                <th style="width: 10%;">Expira</th>
-                <th style="width: 10%;">Marca</th>
-                <th style="width: 10%;">Tipo</th>
-                <th style="width: 30%;">Titular</th>
-                <th style="width: 10%;" class="text-center">Acciones</th>
-              </tr>
-              <tr *ngFor="let t of tarjetas">
-                <td class="f-arial card-text" style="padding-left: 5px;">{{t.card_number}}</td>
-                <td class="f-arial card-text">{{t.expiration_month}}/{{t.expiration_year}}</td>
-               
-                <td>
+          <ng-container *ngIf="tabCuentasIndex === 0">
+            <tr>
+              <th>CLABE Interbancaria</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+            <tr *ngFor="let cc of cuentasClabe">
+              <td class="w-30 bbtd">{{cc.cuentaClabe}}</td>
+              <td class="w-10 text-end bbtd">
+                <button class="btn btn-sm btn-info me-1"><i class="fas fa-edit"></i> </button>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="tabCuentasIndex === 1">
+
+            <tr style="width:100% !important;" class="bg-dark-sapphire text-white">
+              <th style="width: 30% !important;padding-left: 5px;">Tarjeta</th>
+              <th style="width: 10%;">Expira</th>
+              <th style="width: 10%;">Marca</th>
+              <th style="width: 10%;">Tipo</th>
+              <th style="width: 30%;">Titular</th>
+              <th style="width: 10%;" class="text-center">Acciones</th>
+            </tr>
+            <tr *ngFor="let t of tarjetas">
+              <td class="f-arial card-text" style="padding-left: 5px;">{{t.card_number}}</td>
+              <td class="f-arial card-text">{{t.expiration_month}}/{{t.expiration_year}}</td>
+
+              <td>
+                <img style="width:50px;" [src]="'images/' + t.brand + '.png'" alt="">
+              </td>
+              <td class="f-arial card-text">{{t.type}}</td>
+              <td class="f-arial card-text">{{t.holder_name}} {{t.holder_lastname}}</td>
+              <td class="text-center">
+                <button class="btn btn-info btn-sm bg-info me-1" (click)="editTarjeta(t)"><i
+                    class="fa fa-edit"></i></button>
+                <button class="btn btn-danger btn-sm bg-danger" (click)="deleteTarjeta(t)"><i
+                    class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+          </ng-container>
+
+        </table>
+        <div class="w-100 d-sm-none d-block">
+          <ng-container *ngIf="tabCuentasIndex === 1">
+            <div class="w-100" *ngFor="let t of tarjetas">
+              <div class="row">
+                <div class="col-5">Tarjeta</div>
+                <div class="col-7 f-arial text-end">
+                  {{t.card_number}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-5">Expira</div>
+                <div class="col-7 f-arial text-end">
+                  {{t.expiration_month}}/{{t.expiration_year}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-5">Marca</div>
+                <div class="col-7 text-end">
                   <img style="width:50px;" [src]="'images/' + t.brand + '.png'" alt="">
-                </td>
-                <td class="f-arial card-text">{{t.type}}</td>
-                <td class="f-arial card-text">{{t.holder_name}} {{t.holder_lastname}}</td>
-                <td class="text-center">
-                  <button class="btn btn-info btn-sm bg-info me-1" (click)="editTarjeta(t)"><i class="fa fa-edit"></i></button>
-                  <button class="btn btn-danger btn-sm bg-danger" (click)="deleteTarjeta(t)"><i class="fa fa-trash"></i></button>
-                </td>
-              </tr>
-            </ng-container>
-          
-          </table>
-          <div class="w-100 d-sm-none d-block">
-            <ng-container *ngIf="tabCuentasIndex === 1">
-              <div class="w-100"  *ngFor="let t of tarjetas">
-                <div class="row">
-                  <div class="col-5">Tarjeta</div>
-                  <div class="col-7 f-arial text-end">
-                    {{t.card_number}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Expira</div>
-                  <div class="col-7 f-arial text-end">
-                    {{t.expiration_month}}/{{t.expiration_year}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Marca</div>
-                  <div class="col-7 text-end">
-                    <img style="width:50px;" [src]="'images/' + t.brand + '.png'" alt="">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Tipo</div>
-                  <div class="col-7 f-arial text-end">
-                    {{t.type}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Titular</div>
-                  <div class="col-7 f-arial text-end">{{t.holder_name}} {{t.holder_lastname}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Acciones</div>
-                  <div class="col-7 text-end">
-                    <button class="btn btn-info btn-sm bg-info me-1" (click)="editTarjeta(t)"><i class="fa fa-edit"></i></button>
-                    <button class="btn btn-danger btn-sm bg-danger" (click)="deleteTarjeta(t)"><i class="fa fa-trash"></i></button>
-
-                  </div>
-                </div>
-               
-                <div class="line-divider">
                 </div>
               </div>
-            </ng-container>
-          </div>
-          <h5 *ngIf="tabCuentasIndex === 0" class="disclaim">Solo puedes agregar una CLABE, no se puede eliminar, solo editar.</h5>
-          
-          <div *ngIf="tabCuentasIndex === 1" class="protected text-center">
-            <hr>
-            <i class="fas fa-lock"></i> Toda tu informacion esta segura y protegida a traves de 
-            <br />
-            <img src="images/openpay-logo.png" class="d-none d-sm-block m-auto w-15 mt-1" alt="OpenPay Logo" >
-            <img src="images/openpay-logo.png" class="d-block d-sm-none m-auto w-50 mt-1" alt="OpenPay Logo" >
+              <div class="row">
+                <div class="col-5">Tipo</div>
+                <div class="col-7 f-arial text-end">
+                  {{t.type}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-5">Titular</div>
+                <div class="col-7 f-arial text-end">{{t.holder_name}} {{t.holder_lastname}}</div>
+              </div>
+              <div class="row">
+                <div class="col-5">Acciones</div>
+                <div class="col-7 text-end">
+                  <button class="btn btn-info btn-sm bg-info me-1" (click)="editTarjeta(t)"><i
+                      class="fa fa-edit"></i></button>
+                  <button class="btn btn-danger btn-sm bg-danger" (click)="deleteTarjeta(t)"><i
+                      class="fa fa-trash"></i></button>
 
-          </div>
+                </div>
+              </div>
+
+              <div class="line-divider">
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <h5 *ngIf="tabCuentasIndex === 0" class="disclaim">Solo puedes agregar una CLABE, no se puede eliminar, solo
+          editar.</h5>
+
+        <div *ngIf="tabCuentasIndex === 1" class="protected text-center">
+          <hr>
+          <i class="fas fa-lock"></i> Toda tu informacion esta segura y protegida a traves de
+          <br />
+          <img src="images/openpay-logo.png" class="d-none d-sm-block m-auto w-15 mt-1" alt="OpenPay Logo">
+          <img src="images/openpay-logo.png" class="d-block d-sm-none m-auto w-50 mt-1" alt="OpenPay Logo">
 
         </div>
 
-        <div class="profile-card">
-          <div class="header-row">
-            <h3>Movimientos de pago</h3>
-          
+      </div>
 
-            <!-- <button class="btn-sm btn-secondary" (click)="openModal('recarga')" ><i class="fas fa-plus"></i> Agregar saldo</button> -->
-          </div>
-          <div class="row">
-            <h5 class="saldo">{{toCurrency(currentMDX)}} Moneda digital</h5>
-            <span class="small title-fund">Saldo actual</span>
-          </div>
-          <hr>
-          <div class=" tw:p-6 tw:rounded-2xl  tw:border-slate-800">
+      <div class="profile-card">
+        <div class="header-row">
+          <h3>Movimientos de pago</h3>
 
-            <!-- HEADER -->
-            <!-- <div class="tw:flex tw:items-center tw:justify-between tw:mb-6">
+
+          <!-- <button class="btn-sm btn-secondary" (click)="openModal('recarga')" ><i class="fas fa-plus"></i> Agregar saldo</button> -->
+        </div>
+        <div class="row">
+          <h5 class="saldo">{{toCurrency(currentMDX)}} Moneda digital</h5>
+          <span class="small title-fund">Saldo actual</span>
+        </div>
+        <hr>
+        <div class=" tw:p-6 tw:rounded-2xl  tw:border-slate-800">
+
+          <!-- HEADER -->
+          <!-- <div class="tw:flex tw:items-center tw:justify-between tw:mb-6">
               <div>
                 <h2 class="tw:text-sm tw:font-bold tw:text-white">
                   Movimientos de pago
@@ -1048,414 +1111,438 @@
                 Descargar reporte
               </button>
             </div> -->
-          
-          
-            
-          
-          </div>
-            <table class="styled-table w-100 d-none d-sm-table">
-              <thead>
-                <tr class="th-wallet">
-                  <th>Ref.</th>
-                  <th >T. Movimiento</th>
-                  <th >Movimiento</th>
-                  <th>Cantidad</th>
-                  <th>Fecha</th>
-                  <th>Estatus Pago</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let wp of walletPagos">
-                  <td class="invoice f-arial">#{{wp.folio}}</td>
-                  <td class="invoice f-arial">
-                    <span class="tw:inline-flex tw:items-center tw:gap-2 tw:bg-emerald-500/15 tw:text-emerald-400 tw:px-3 tw:py-1 tw:rounded-full tw:text-sm tw:font-medium">
-                    {{wp.tipo}}
-                  </span>
-                  </td>
-                  <td class="client" colspan="2">
-                    <img class="avatar" [src]="wp.item.img" alt="Alexandra Della">
-                    <div>
-                      <div class="client-name f-arial">{{wp.item.name}}</div>
-                      <div class="client-email f-arial">#{{wp.item.id}}</div>
-                    </div>
-                  </td>
-                  <td class="amount f-arial">{{ toCurrency(wp.totalRecibir) }}</td>
-                  <td class="date f-arial">{{wp.fecha | date:'yyyy-MM-dd, hh:mm a'}}</td>
-                  <td>
-                    <span class="badge f-arial" 
-                      [ngClass]="{'badge-success': wp.estatusClave === 'PDO', 'badge-warning': wp.estatusClave === 'PPR'}"
-                    >
-                      {{wp.estatus}}
-                    </span>
-                  </td>
-                  <td >
-                    <button class="action-btn" (click)="openModal('wallet', selectedWallet, wp)"><i class="fas fa-eye"></i></button>
-                    <button class="action-btn" (click)="openModal('wallet', selectedWallet, wp)"><i class="fas fa-file-code text-info"></i></button>
-                    <button class="action-btn" (click)="openModalComprobante()"><i class="fas fa-file-pdf text-danger"></i></button>
-                  </td>
-                </tr>
-               
-              </tbody>
-            </table>
 
-            <div class="w-100 d-sm-none d-block">
-                <div class="w-100" *ngFor="let wp of walletPagos">
-                  <div class="row">
-                    <div class="col-5 f-arial">Folio</div>
-                    <div class="col-7">
-                      #{{wp.folio}}
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-5 f-arial">Item</div>
-                    <div class="col-7">
-                      <img class="avatar" [src]="wp.item.img" alt="Alexandra Della">
-                      <div>
-                        <div class="client-name f-arial">{{wp.item.name}}</div>
-                        <div class="client-email f-arial">#{{wp.item.id}}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-5 f-arial">Cantidad</div>
-                    <div class="col-7">{{ toCurrency(wp.totalRecibir) }}</div>
-                  </div>
-                  <div class="row">
-                    <div class="col-5 f-arial">Fecha</div>
-                    <div class="col-7">{{wp.fecha | date:'yyyy-MM-dd, hh:mm a'}}</div>
-                  </div>
-                  <div class="row">
-                    <div class="col-5 f-arial">Estatus pago</div>
-                    <div class="col-7"> <span class="badge f-arial" 
-                      [ngClass]="{'badge-success': wp.estatusClave === 'PDO', 'badge-warning': wp.estatusClave === 'PPR'}"
-                    >
-                      {{wp.estatus}}
-                    </span></div>
-                  </div>
-                  <div class="row">
-                    <div class="col-5 f-arial">Acciones</div>
-                    <div class="col-7">
-                      <button class="action-btn" (click)="openModal('wallet', selectedWallet, wp)"><i class="fas fa-eye"></i></button>
-                    </div>
-                  </div>
 
-                  <div class="line-divider">
-                  </div>
-                </div>
-            </div>
+
+
         </div>
-      </ng-container>
+        <table class="styled-table w-100 d-none d-sm-table">
+          <thead>
+            <tr class="th-wallet">
+              <th>Ref.</th>
+              <th>T. Movimiento</th>
+              <th>Movimiento</th>
+              <th>Cantidad</th>
+              <th>Fecha</th>
+              <th>Estatus Pago</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let wp of walletPagos">
+              <td class="invoice f-arial">#{{wp.folio}}</td>
+              <td class="invoice f-arial">
+                <span
+                  class="tw:inline-flex tw:items-center tw:gap-2 tw:bg-emerald-500/15 tw:text-emerald-400 tw:px-3 tw:py-1 tw:rounded-full tw:text-sm tw:font-medium">
+                  {{wp.tipo}}
+                </span>
+              </td>
+              <td class="client" colspan="2">
+                <img class="avatar" [src]="wp.item.img" alt="Alexandra Della">
+                <div>
+                  <div class="client-name f-arial">{{wp.item.name}}</div>
+                  <div class="client-email f-arial">#{{wp.item.id}}</div>
+                </div>
+              </td>
+              <td class="amount f-arial">{{ toCurrency(wp.totalRecibir) }}</td>
+              <td class="date f-arial">{{wp.fecha | date:'yyyy-MM-dd, hh:mm a'}}</td>
+              <td>
+                <span class="badge f-arial"
+                  [ngClass]="{'badge-success': wp.estatusClave === 'PDO', 'badge-warning': wp.estatusClave === 'PPR'}">
+                  {{wp.estatus}}
+                </span>
+              </td>
+              <td>
+                <button class="action-btn" (click)="openModal('wallet', selectedWallet, wp)"><i
+                    class="fas fa-eye"></i></button>
+                <button class="action-btn" (click)="openModal('wallet', selectedWallet, wp)"><i
+                    class="fas fa-file-code text-info"></i></button>
+                <button class="action-btn" (click)="openModalComprobante()"><i
+                    class="fas fa-file-pdf text-danger"></i></button>
+              </td>
+            </tr>
 
-      <ng-container *ngIf="tabIndex === 4">
-        <div class="profile-card">
-          <div class="header-row">
-            <h3>
-              <i class="fas fa-file-invoice" ></i> 
-              Datos fiscales
-            </h3>
-          </div>
-          <hr>
+          </tbody>
+        </table>
 
-          <form>
-            <div class="mt-2 bg-light pt-2 ps-2">
-              <p>Tipo de persona</p>
-              <div class="tipo-subasta pt-2 pb-2">
-                <label>
-                  <input type="radio" name="tipo"  value="fisica" [(ngModel)]="datosFiscales.tipoPersona" /> Persona Fisica
-              </label>
-              <label class="ms-5">
-                  <input type="radio" name="tipo"  value="moral" [(ngModel)]="datosFiscales.tipoPersona" /> Persona moral
-              </label>
-              <label class="ms-5">
-                  <input type="radio" name="tipo"  value="sin datos fiscales" [(ngModel)]="datosFiscales.tipoPersona" /> Persona sin datos fiscales
-              </label>
+        <div class="w-100 d-sm-none d-block">
+          <div class="w-100" *ngFor="let wp of walletPagos">
+            <div class="row">
+              <div class="col-5 f-arial">Folio</div>
+              <div class="col-7">
+                #{{wp.folio}}
               </div>
             </div>
-            
-          <ng-container >
-            
-              <div  class="animate__animated animate__fadeInLeft fast-animation">
-                <div class="ps-3">
+            <div class="row">
+              <div class="col-5 f-arial">Item</div>
+              <div class="col-7">
+                <img class="avatar" [src]="wp.item.img" alt="Alexandra Della">
+                <div>
+                  <div class="client-name f-arial">{{wp.item.name}}</div>
+                  <div class="client-email f-arial">#{{wp.item.id}}</div>
                 </div>
-                <hr>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>Nombre</label>
-                    <input type="text"
-                     [(ngModel)]="datosFiscales.nombreComercial"
-                     name="nomcomercial">
-                  </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-5 f-arial">Cantidad</div>
+              <div class="col-7">{{ toCurrency(wp.totalRecibir) }}</div>
+            </div>
+            <div class="row">
+              <div class="col-5 f-arial">Fecha</div>
+              <div class="col-7">{{wp.fecha | date:'yyyy-MM-dd, hh:mm a'}}</div>
+            </div>
+            <div class="row">
+              <div class="col-5 f-arial">Estatus pago</div>
+              <div class="col-7"> <span class="badge f-arial"
+                  [ngClass]="{'badge-success': wp.estatusClave === 'PDO', 'badge-warning': wp.estatusClave === 'PPR'}">
+                  {{wp.estatus}}
+                </span></div>
+            </div>
+            <div class="row">
+              <div class="col-5 f-arial">Acciones</div>
+              <div class="col-7">
+                <button class="action-btn" (click)="openModal('wallet', selectedWallet, wp)"><i
+                    class="fas fa-eye"></i></button>
+              </div>
+            </div>
+
+            <div class="line-divider">
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="tabIndex === 4">
+      <div class="profile-card">
+        <div class="header-row">
+          <h3>
+            <i class="fas fa-file-invoice"></i>
+            Datos fiscales
+          </h3>
+        </div>
+        <hr>
+
+        <form>
+          <div class="mt-2 bg-light pt-2 ps-2">
+            <p>Tipo de persona</p>
+            <div class="tipo-subasta pt-2 pb-2">
+              <label>
+                <input type="radio" name="tipo" value="fisica" [(ngModel)]="datosFiscales.tipoPersona" /> Persona Fisica
+              </label>
+              <label class="ms-5">
+                <input type="radio" name="tipo" value="moral" [(ngModel)]="datosFiscales.tipoPersona" /> Persona moral
+              </label>
+              <label class="ms-5">
+                <input type="radio" name="tipo" value="sin datos fiscales" [(ngModel)]="datosFiscales.tipoPersona" />
+                Persona sin datos fiscales
+              </label>
+            </div>
+          </div>
+
+          <ng-container>
+
+            <div class="animate__animated animate__fadeInLeft fast-animation">
+              <div class="ps-3">
+              </div>
+              <hr>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Nombre</label>
+                  <input type="text" [(ngModel)]="datosFiscales.nombreComercial" name="nomcomercial">
                 </div>
-                <div class="form-row" *ngIf="datosFiscales.tipoPersona === 'sin datos fiscales'">
-                  <div class="form-group">
-                    <label>CURP</label>
-                    <input type="text"
-                    [(ngModel)]="datosFiscales.curp"
-                    name="curp">
-                  </div>
+              </div>
+              <div class="form-row" *ngIf="datosFiscales.tipoPersona === 'sin datos fiscales'">
+                <div class="form-group">
+                  <label>CURP</label>
+                  <input type="text" [(ngModel)]="datosFiscales.curp" name="curp">
                 </div>
-                <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
+              </div>
+              <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
                 <div class="form-row">
                   <div class="form-group">
                     <label>Pais</label>
-                    <select class="form-select" [(ngModel)]="datosFiscales.pais" name="pais" >
+                    <select class="form-select" [(ngModel)]="datosFiscales.pais" name="pais">
                       <option value="MEXICO">Mexico</option>
-                    
+
                     </select>
                   </div>
                 </div>
-                
-                  <div class="form-row" *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
-                    <div class="form-group">
-                      <label>RFC</label>
-                      <input type="text" [(ngModel)]="datosFiscales.rfc" name="rfc" >
-                    </div>
-                    <div class="form-group">
-                      <label>Regimen Fiscal</label>
-                      <select class="form-select" [(ngModel)]="datosFiscales.regimenFiscal" name="regimenFiscal" >
-                      
-                        <option *ngFor="let reg of listaRegimenes" [value]="reg.regimenFiscal">{{reg.descripcion}}</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-row"  *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">         
-                    <div class="form-group">
-                      <label>Uso de CFDI</label>
-                      <select class="form-select" [(ngModel)]="datosFiscales.usoCFDI" name="usoCFDI" >
-                      
-                        <option *ngFor="let uso of listaUsoCfdi" [value]="uso.usoCfdi">{{uso.descripcion}}</option>
 
-                      </select>
-                    </div>
+                <div class="form-row" *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
+                  <div class="form-group">
+                    <label>RFC</label>
+                    <input type="text" [(ngModel)]="datosFiscales.rfc" name="rfc">
                   </div>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Correo electronico</label>
-                      <input type="text" [(ngModel)]="datosFiscales.correo" name="correo" >
-                    </div>
+                  <div class="form-group">
+                    <label>Regimen Fiscal</label>
+                    <select class="form-select" [(ngModel)]="datosFiscales.regimenFiscal" name="regimenFiscal">
+
+                      <option *ngFor="let reg of listaRegimenes" [value]="reg.regimenFiscal">{{reg.descripcion}}
+                      </option>
+                    </select>
                   </div>
-                  <hr>
-                  <div class="ps-3">
-                    <h5 class="f-arial bold ft1">
-                       Domicilio fiscal
-                    </h5>
+                </div>
+                <div class="form-row" *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
+                  <div class="form-group">
+                    <label>Uso de CFDI</label>
+                    <select class="form-select" [(ngModel)]="datosFiscales.usoCFDI" name="usoCFDI">
+
+                      <option *ngFor="let uso of listaUsoCfdi" [value]="uso.usoCfdi">{{uso.descripcion}}</option>
+
+                    </select>
                   </div>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Calle</label>
-                      <input type="text" [(ngModel)]="datosFiscales.calle" name="calle" >
-                    </div>
-                    <div class="form-group">
-                      <label>Numero exterior</label>
-                      <input type="text" [(ngModel)]="datosFiscales.noExterior" name="noExterior">
-                    </div>
-                    <div class="form-group">
-                      <label>Numero interior</label>
-                      <input type="text" [(ngModel)]="datosFiscales.noInterior" name="noInterior">
-                    </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Correo electronico</label>
+                    <input type="text" [(ngModel)]="datosFiscales.correo" name="correo">
                   </div>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Codigo Postal (CP)</label>
-                      <input type="text" (input)="getDataByZipCode()"  [(ngModel)]="datosFiscales.codigoPostal" name="codigoPostal" >
-                    </div>
-                   
-                    <div class="form-group" *ngIf="hasDataZipCode">
-                      <label for="marca">Colonia</label>
-                      <select class="form-select" [(ngModel)]="selectedColoniaFiscal" (change)="setColoniaDomicilioFiscal()" name="colonias">
-                        <option value="null">Seleccionar colonia</option>
-                        <option [ngValue]="c" *ngFor="let c of listaColonias">{{c.d_asenta}}</option>
-                      </select>
-                    </div>
-                    <div class="form-group" *ngIf="!hasDataZipCode || manualDireccionFiscal">
-                        <label for="marca">Colonia</label>
-                        <input type="text" [(ngModel)]="datosFiscales.colonia" id="colonia" name="colonia" />
-                    </div>
-                    
+                </div>
+                <hr>
+                <div class="ps-3">
+                  <h5 class="f-arial bold ft1">
+                    Domicilio fiscal
+                  </h5>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Calle</label>
+                    <input type="text" [(ngModel)]="datosFiscales.calle" name="calle">
                   </div>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Ciudad</label>
-                      <input type="text" (input)="checkStateAndCity()"  [(ngModel)]="datosFiscales.ciudad" name="ciudad">
-                    </div>
-                    <div class="form-group">
-                      <label>Municipio</label>
-                      <input type="text" [(ngModel)]="datosFiscales.municipio" name="municipio">
-                    </div>
-                   
-                    
+                  <div class="form-group">
+                    <label>Numero exterior</label>
+                    <input type="text" [(ngModel)]="datosFiscales.noExterior" name="noExterior">
                   </div>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Estado</label>
-                      <input type="text" (input)="checkStateAndCity()" [(ngModel)]="datosFiscales.estado" name="estado">
-                    </div>
+                  <div class="form-group">
+                    <label>Numero interior</label>
+                    <input type="text" [(ngModel)]="datosFiscales.noInterior" name="noInterior">
                   </div>
-                  <div class="mt-2" *ngIf="esFronteraNorte">
-                    <p>¿Cuentas con el estimulo de impuestos fronterizo?</p>
-                    <div class="tipo-subasta pt-2 pb-2">
-                      <label>
-                          <input type="radio" name="impuestoFronterizo"  value="SI" [(ngModel)]="datosFiscales.impuestoFronterizo" /> SI
-                      </label>
-                      <label class="ms-5">
-                          <input type="radio" name="impuestoFronterizo"  value="NO" [(ngModel)]="datosFiscales.impuestoFronterizo" /> NO
-                      </label>
-                    </div>
-                  </div>
-                  <div class="mt-2 bg-light pt-2 ps-2">
-                    <p>¿Cuenta con la actividad económica de plataformas digitales?</p>
-                    <div class="tipo-subasta pt-2 pb-2">
-                      <label>
-                          <input type="radio" name="actividadPlataformaDigital"  value="SI" [(ngModel)]="datosFiscales.actividadPlataformaDigital" /> SI
-                      </label>
-                      <label class="ms-5">
-                          <input type="radio" name="actividadPlataformaDigital"  value="NO" [(ngModel)]="datosFiscales.actividadPlataformaDigital" /> NO
-                      </label>
-                    </div>
-                  </div>
-                  <div class="mt-2 bg-light pt-2 ps-2">
-                    <p>Tipo de facturacion</p>
-                    <div class="tipo-subasta pt-2 pb-2">
-                      <label>
-                          <input type="radio" name="tipoValidacion"  value="Sellos" [(ngModel)]="datosFiscales.tipoValidacion" /> Sellos Fiscales
-                      </label>
-                      <label class="ms-5">
-                          <input type="radio" name="tipoValidacion"  value="CuentaTerceros" [(ngModel)]="datosFiscales.tipoValidacion" /> A cuenta de terceros
-                      </label>
-                    </div>
-                  </div>
-                 </div>
-                  <div class="w-100 text-center mt-3 mb-3">
-                    <button class="btn-xuba btn-pill" (click)="saveInformacionFiscal()">Guardar cambios</button> 
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Codigo Postal (CP)</label>
+                    <input type="text" (input)="getDataByZipCode()" [(ngModel)]="datosFiscales.codigoPostal"
+                      name="codigoPostal">
                   </div>
 
-                  <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
-                  
-                    <ng-container *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && datosFiscales.tipoValidacion === 'Sellos'">
-                      <div class="form-row">
-                        <div class="form-group">
-                         <label>Archivo CERT</label>
-                        
-                         <label class="cargar-foto-label">
-                           <input type="file" accept=".cer" multiple (change)="onCerSelected($event)"
-                               hidden />
-                           <span><i class="fas fa-file"></i> seleccionar archivo</span>
-                         </label>
-                         <br><span>{{cerFile?  cerFile.name : 'No seleccionado'}}</span>
-                        </div> 
-                        <div class="form-group">
-                         <label>Archivo KEY</label>
-                         
-                         <label class="cargar-foto-label">
-                           <input type="file" accept=".key" multiple (change)="onKeySelected($event)"
-                               hidden />
-                           <span><i class="fas fa-file"></i> seleccionar archivo</span>
-                         </label>
-                         <br><span>{{keyFile?  keyFile.name : 'No seleccionado'}}</span>
-                        </div> 
-                     </div>
-                     <div class="form-row">
-                       <div class="form-group">
-                         <label>Contraseña</label>
-                         <input type="password" [(ngModel)]="efirma.password" name="pass">
-                       </div>
-                      
-                     </div>
-                     <div class="w-100 text-center mt-2">
-                       <button class="btn-xuba btn-pill" (click)="sendEfirma()">Subir archivos</button> 
-                     </div>
-                    </ng-container>
-                    <ng-container *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && datosFiscales.tipoValidacion === 'CuentaTerceros'">
-                    
-                      <div class="contrato-container">
-                        <header class="contrato-header">
-                            <h3>CONTRATO DE PRESTACIÓN DE SERVICIOS A CUENTA DE TERCEROS</h3>
-                            <h4>COMERCIO SUBASTERO DEL NORTE S. DE R.L. DE C.V. (XUBA SUBASTAS)</h4>
-                        </header>
-                    
-                        <section class="contrato-introduccion">
-                            <p>
-                                <strong>CONTRATO DE PRESTACIÓN DE SERVICIOS A CUENTA DE TERCEROS</strong>, que celebran por una parte 
-                                <strong>COMERCIO SUBASTERO DEL NORTE S. DE R.L. DE C.V.</strong>, operadora de la plataforma digital 
-                                <strong>XUBA SUBASTAS</strong> (en lo sucesivo, “LA PLATAFORMA”), y por la otra parte 
-                                <strong>EL USUARIO VENDEDOR</strong>, cuyos datos se registran electrónicamente al crear su cuenta 
-                                (en lo sucesivo, “EL VENDEDOR”).
-                            </p>
-                        </section>
-                    
-                        <section class="contrato-declaraciones">
-                            <h5>DECLARACIONES</h5>
-                            <ol type="I">
-                                <li>Declara <strong>LA PLATAFORMA</strong> que es una sociedad mercantil mexicana y opera la plataforma XUBA SUBASTAS.</li>
-                                <li>Declara <strong>EL VENDEDOR</strong> que posee capacidad legal y es propietario de los bienes que ofrece.</li>
-                            </ol>
-                        </section>
-                    
-                        <section class="contrato-clausulas">
-                            <h5>CLÁUSULAS</h5>
-                            
-                            <div class="clausula">
-                                <p><strong>PRIMERA. Objeto del contrato:</strong> LA PLATAFORMA actuará a cuenta de EL VENDEDOR para administrar publicaciones, pagos y dispersión de fondos.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>SEGUNDA. Naturaleza del servicio:</strong> LA PLATAFORMA no compra ni vende bienes, solo administra pagos.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>TERCERA. Obligaciones de LA PLATAFORMA:</strong> mantener publicaciones, recibir pagos, retener comisiones y dispersar montos netos.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>CUARTA. Obligaciones de EL VENDEDOR:</strong> proporcionar información veraz, entregar productos, autorizar pagos y emitir comprobantes fiscales.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>QUINTA. Comisiones:</strong> se aplicarán las tarifas vigentes publicadas en la plataforma.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>SEXTA. Dispersión de fondos:</strong> se realizará en un plazo de 1 a 5 días hábiles posteriores a la confirmación de entrega.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>SÉPTIMA. Responsabilidad de los bienes:</strong> LA PLATAFORMA no es propietaria ni responsable del producto.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>OCTAVA. Suspensión de cuenta:</strong> LA PLATAFORMA podrá suspender la cuenta por fraude o incumplimiento.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>NOVENA. Protección de datos:</strong> ambas partes se sujetan al Aviso de Privacidad vigente.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>DÉCIMA. Vigencia:</strong> inicia con la aceptación electrónica y continúa mientras la cuenta esté activa.</p>
-                            </div>
-                    
-                            <div class="clausula">
-                                <p><strong>DÉCIMA PRIMERA. Jurisdicción:</strong> Ciudad Juárez, Chihuahua.</p>
-                            </div>
-                            <div class="w-100 text-end">
-                              <button class="btn btn-light btn-outline-dark btn-sm me-2">No acepto</button>
-                              <button class="btn btn-sm btn-xuba">Acepto contrato</button>
-                            </div>
-                        </section>
-                    </div>
-                    </ng-container>
-                    
+                  <div class="form-group" *ngIf="hasDataZipCode">
+                    <label for="marca">Colonia</label>
+                    <select class="form-select" [(ngModel)]="selectedColoniaFiscal"
+                      (change)="setColoniaDomicilioFiscal()" name="colonias">
+                      <option value="null">Seleccionar colonia</option>
+                      <option [ngValue]="c" *ngFor="let c of listaColonias">{{c.d_asenta}}</option>
+                    </select>
                   </div>
+                  <div class="form-group" *ngIf="!hasDataZipCode || manualDireccionFiscal">
+                    <label for="marca">Colonia</label>
+                    <input type="text" [(ngModel)]="datosFiscales.colonia" id="colonia" name="colonia" />
+                  </div>
+
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Ciudad</label>
+                    <input type="text" (input)="checkStateAndCity()" [(ngModel)]="datosFiscales.ciudad" name="ciudad">
+                  </div>
+                  <div class="form-group">
+                    <label>Municipio</label>
+                    <input type="text" [(ngModel)]="datosFiscales.municipio" name="municipio">
+                  </div>
+
+
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Estado</label>
+                    <input type="text" (input)="checkStateAndCity()" [(ngModel)]="datosFiscales.estado" name="estado">
+                  </div>
+                </div>
+                <div class="mt-2" *ngIf="esFronteraNorte">
+                  <p>¿Cuentas con el estimulo de impuestos fronterizo?</p>
+                  <div class="tipo-subasta pt-2 pb-2">
+                    <label>
+                      <input type="radio" name="impuestoFronterizo" value="SI"
+                        [(ngModel)]="datosFiscales.impuestoFronterizo" /> SI
+                    </label>
+                    <label class="ms-5">
+                      <input type="radio" name="impuestoFronterizo" value="NO"
+                        [(ngModel)]="datosFiscales.impuestoFronterizo" /> NO
+                    </label>
+                  </div>
+                </div>
+                <div class="mt-2 bg-light pt-2 ps-2">
+                  <p>¿Cuenta con la actividad económica de plataformas digitales?</p>
+                  <div class="tipo-subasta pt-2 pb-2">
+                    <label>
+                      <input type="radio" name="actividadPlataformaDigital" value="SI"
+                        [(ngModel)]="datosFiscales.actividadPlataformaDigital" /> SI
+                    </label>
+                    <label class="ms-5">
+                      <input type="radio" name="actividadPlataformaDigital" value="NO"
+                        [(ngModel)]="datosFiscales.actividadPlataformaDigital" /> NO
+                    </label>
+                  </div>
+                </div>
+                <div class="mt-2 bg-light pt-2 ps-2">
+                  <p>Tipo de facturacion</p>
+                  <div class="tipo-subasta pt-2 pb-2">
+                    <label>
+                      <input type="radio" name="tipoValidacion" value="Sellos"
+                        [(ngModel)]="datosFiscales.tipoValidacion" /> Sellos Fiscales
+                    </label>
+                    <label class="ms-5">
+                      <input type="radio" name="tipoValidacion" value="CuentaTerceros"
+                        [(ngModel)]="datosFiscales.tipoValidacion" /> A cuenta de terceros
+                    </label>
+                  </div>
+                </div>
               </div>
+              <div class="w-100 text-center mt-3 mb-3">
+                <button class="btn-xuba btn-pill" (click)="saveInformacionFiscal()">Guardar cambios</button>
+              </div>
+
+              <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
+
+                <ng-container
+                  *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && datosFiscales.tipoValidacion === 'Sellos'">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Archivo CERT</label>
+
+                      <label class="cargar-foto-label">
+                        <input type="file" accept=".cer" multiple (change)="onCerSelected($event)" hidden />
+                        <span><i class="fas fa-file"></i> seleccionar archivo</span>
+                      </label>
+                      <br><span>{{cerFile? cerFile.name : 'No seleccionado'}}</span>
+                    </div>
+                    <div class="form-group">
+                      <label>Archivo KEY</label>
+
+                      <label class="cargar-foto-label">
+                        <input type="file" accept=".key" multiple (change)="onKeySelected($event)" hidden />
+                        <span><i class="fas fa-file"></i> seleccionar archivo</span>
+                      </label>
+                      <br><span>{{keyFile? keyFile.name : 'No seleccionado'}}</span>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Contraseña</label>
+                      <input type="password" [(ngModel)]="efirma.password" name="pass">
+                    </div>
+
+                  </div>
+                  <div class="w-100 text-center mt-2">
+                    <button class="btn-xuba btn-pill" (click)="sendEfirma()">Subir archivos</button>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && datosFiscales.tipoValidacion === 'CuentaTerceros'">
+
+                  <div class="contrato-container">
+                    <header class="contrato-header">
+                      <h3>CONTRATO DE PRESTACIÓN DE SERVICIOS A CUENTA DE TERCEROS</h3>
+                      <h4>COMERCIO SUBASTERO DEL NORTE S. DE R.L. DE C.V. (XUBA SUBASTAS)</h4>
+                    </header>
+
+                    <section class="contrato-introduccion">
+                      <p>
+                        <strong>CONTRATO DE PRESTACIÓN DE SERVICIOS A CUENTA DE TERCEROS</strong>, que celebran por una
+                        parte
+                        <strong>COMERCIO SUBASTERO DEL NORTE S. DE R.L. DE C.V.</strong>, operadora de la plataforma
+                        digital
+                        <strong>XUBA SUBASTAS</strong> (en lo sucesivo, “LA PLATAFORMA”), y por la otra parte
+                        <strong>EL USUARIO VENDEDOR</strong>, cuyos datos se registran electrónicamente al crear su
+                        cuenta
+                        (en lo sucesivo, “EL VENDEDOR”).
+                      </p>
+                    </section>
+
+                    <section class="contrato-declaraciones">
+                      <h5>DECLARACIONES</h5>
+                      <ol type="I">
+                        <li>Declara <strong>LA PLATAFORMA</strong> que es una sociedad mercantil mexicana y opera la
+                          plataforma XUBA SUBASTAS.</li>
+                        <li>Declara <strong>EL VENDEDOR</strong> que posee capacidad legal y es propietario de los
+                          bienes que ofrece.</li>
+                      </ol>
+                    </section>
+
+                    <section class="contrato-clausulas">
+                      <h5>CLÁUSULAS</h5>
+
+                      <div class="clausula">
+                        <p><strong>PRIMERA. Objeto del contrato:</strong> LA PLATAFORMA actuará a cuenta de EL VENDEDOR
+                          para administrar publicaciones, pagos y dispersión de fondos.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>SEGUNDA. Naturaleza del servicio:</strong> LA PLATAFORMA no compra ni vende bienes,
+                          solo administra pagos.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>TERCERA. Obligaciones de LA PLATAFORMA:</strong> mantener publicaciones, recibir
+                          pagos, retener comisiones y dispersar montos netos.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>CUARTA. Obligaciones de EL VENDEDOR:</strong> proporcionar información veraz,
+                          entregar productos, autorizar pagos y emitir comprobantes fiscales.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>QUINTA. Comisiones:</strong> se aplicarán las tarifas vigentes publicadas en la
+                          plataforma.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>SEXTA. Dispersión de fondos:</strong> se realizará en un plazo de 1 a 5 días hábiles
+                          posteriores a la confirmación de entrega.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>SÉPTIMA. Responsabilidad de los bienes:</strong> LA PLATAFORMA no es propietaria ni
+                          responsable del producto.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>OCTAVA. Suspensión de cuenta:</strong> LA PLATAFORMA podrá suspender la cuenta por
+                          fraude o incumplimiento.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>NOVENA. Protección de datos:</strong> ambas partes se sujetan al Aviso de Privacidad
+                          vigente.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>DÉCIMA. Vigencia:</strong> inicia con la aceptación electrónica y continúa mientras
+                          la cuenta esté activa.</p>
+                      </div>
+
+                      <div class="clausula">
+                        <p><strong>DÉCIMA PRIMERA. Jurisdicción:</strong> Ciudad Juárez, Chihuahua.</p>
+                      </div>
+                      <div class="w-100 text-end">
+                        <button class="btn btn-light btn-outline-dark btn-sm me-2">No acepto</button>
+                        <button class="btn btn-sm btn-xuba">Acepto contrato</button>
+                      </div>
+                    </section>
+                  </div>
+                </ng-container>
+
+              </div>
+            </div>
           </ng-container>
-        
-          </form>
-        </div>
-      </ng-container>
-  
-    </div>
+
+        </form>
+      </div>
+    </ng-container>
+
   </div>
+</div>
 
 
 
@@ -1463,389 +1550,399 @@
 <!-- ===== MODALES =========== -->
 <!-- ========================= -->
 
-  <div *ngIf="isModalOpen.direccion" class="cart-modal-backdrop" >
-    <div class="cart-modal-container" (click)="onContentClick($event)">
-      <div class="modal-header bg-main-header text-white">
-        <h3 class="modal-title">
-          <span class="text-white" >Agregar direccion</span>
-        </h3>
-        <button [disabled]="loading" class="close-button" (click)="closeModal('direccion')">
-          <span class="text-white">&times;</span>
-        </button>
-      </div>
-      
-      <div class="modal-body">
-          
-          <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
-           
-            <form class="form-productos pl-2 pr-2">
-             
-              <div class="mb-2 label-final-price">
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                    <label for="nombre">Calle</label>
-                    <input type="text" [(ngModel)]="direccion.calle"   id="calle" name="calle" />
-                </div>
-            </div>
-             
-              <div class="form-row">
-                  <div class="form-group">
-                    <label for="compraDirecta">Numero exterior</label>
-                    <input type="text" [(ngModel)]="direccion.numeroExt"  id="numeroExt" name="numeroExt" />
-                  </div>
-                  <div class="form-group">
-                      <label for="precio">Numero interior</label>
-                      <input type="text" [(ngModel)]="direccion.numeroInt" id="numeroInt" name="numeroInt" />
-                  </div>
-              </div>
-              
-              <div class="form-row">
-                    <div class="form-group">
-                      <label for="marca">Codigo Postal</label>
-                      <input type="text" [(ngModel)]="direccion.codigoPostal" (input)="onInput($event, direccion.codigoPostal, checkCodigoPostal)" maxlength="5" id="codigoPostal" name="codigoPostal" />
-                  </div>
-                  <div class="form-group" *ngIf="hasColonias">
-                      <label for="marca">Colonia</label>
-                      <select class="form-select" [(ngModel)]="selectedColonia" (change)="setSelectedColonia()" name="colonias">
-                        <option value="null">Seleccionar colonia</option>
-                        <option [ngValue]="c" *ngFor="let c of listaColonias">{{c.d_asenta}}</option>
-                      </select>
-                  </div>
-                  <div class="form-group" *ngIf="!hasColonias || manualColonia">
-                      <label for="marca">Colonia</label>
-                      <input type="text" [(ngModel)]="direccion.colonia" id="colonia" name="colonia" />
-                  </div>
-                 
-              </div>
-              <div class="form-row">
-                  <div class="form-group">
-                      <label for="marca">Entre calles</label>
-                      <input type="text" [(ngModel)]="direccion.callesCruzan" id="callesCruzan" name="callesCruzan" />
-                  </div>
-              </div>
-              <div class="form-row">
-                  <div class="form-group">
-                      <label for="marca">Estado</label>
-                      <input type="text" [(ngModel)]="direccion.estado" id="estado" name="estado" />
-                  </div>
-                  <div class="form-group">
-                    <label for="marca">Municipio</label>
-                    <input type="text" [(ngModel)]="direccion.municipio" id="municipio" name="municipio" />
-                </div>
-              </div>
-            
-            <div class="form-row mt-4">
-              <div class="form-group">
-                  <label for="marca">Predeterminada</label>
-                  <div class="form-check form-switch" >
-                    <input class="form-check-input" name="predeterminada" type="checkbox" id="switch1" [(ngModel)]="direccion.predeterminada">
-                    <label class="form-check-label" for="switch1"></label>
-                  </div>
-              </div>
-           
+<div *ngIf="isModalOpen.direccion" class="cart-modal-backdrop">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white">Agregar direccion</span>
+      </h3>
+      <button [disabled]="loading" class="close-button" (click)="closeModal('direccion')">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
+
+        <form class="form-productos pl-2 pr-2">
+
+          <div class="mb-2 label-final-price">
           </div>
-         
-          </form>
-        
-          <hr>
-        </div>
-      </div>
-      <div class="modal-footer text-start">
-      
-        <div class="modal-footer text-start">
-          <div class="pb-3 pe-3">
-            <button [disabled]="loading" type="button" class="btn btn-dark btn-pill me-2" (click)="closeModal('direccion')">
-              Cancelar
-            </button>
-            <button [disabled]="loading" *ngIf="!isEdit" type="button" class="btn btn-xuba btn-pill" (click)="saveDireccion()">
-             <i class="fa fa-save"></i> Guardar
-            </button>
-            <button [disabled]="loading" *ngIf="isEdit" type="button" class="btn btn-xuba btn-pill" (click)="saveEditDireccion()">
-              <i class="fa fa-save"></i> Guardar
-            </button>
-          </div>     
-        </div>
-      </div>
-    </div>
-  </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nombre">Calle</label>
+              <input type="text" [(ngModel)]="direccion.calle" id="calle" name="calle" />
+            </div>
+          </div>
 
+          <div class="form-row">
+            <div class="form-group">
+              <label for="compraDirecta">Numero exterior</label>
+              <input type="text" [(ngModel)]="direccion.numeroExt" id="numeroExt" name="numeroExt" />
+            </div>
+            <div class="form-group">
+              <label for="precio">Numero interior</label>
+              <input type="text" [(ngModel)]="direccion.numeroInt" id="numeroInt" name="numeroInt" />
+            </div>
+          </div>
 
-  <div *ngIf="isModalOpen.clabe" class="cart-modal-backdrop">
-    <div class="cart-modal-container" (click)="onContentClick($event)">
-      <div class="modal-header bg-main-header text-white">
-        <h3 class="modal-title">
-          <span class="text-white" >Agregar Cuenta CLABE</span>
-        </h3>
-        <button [disabled]="loading" class="close-button" (click)="closeModal('clabe')">
-          <span class="text-white">&times;</span>
-        </button>
-      </div>
-      
-      <div class="modal-body">
-          
-          <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
-           
-            <form class="form-productos pl-2 pr-2">
-              <div class="form-row">
-                  <div class="form-group">
-                      <label for="precio">CLABE Interbancaria</label>
-                      <input type="text" [(ngModel)]="cuentaClabeUsuario.cuentaClabe" id="clabe" name="clabe" />
-                  </div>
-              </div>
-          </form>
-          
-        </div>
-      </div>
-      <div class="modal-footer text-start">
-        <div class="pb-3 pe-3">
-          <button [disabled]="loading" class="btn btn-xuba-cancel me-2" (click)="closeModal('clabe')">
-            Cancelar
-          </button>
-          <button [disabled]="loading" class="btn btn-xuba btn-add-cart" (click)="saveCuentaClabe()">
-           <i class="fa fa-save"></i> Guardar
-          </button>
-        </div>     
-      </div>
-    </div>
-  </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="marca">Codigo Postal</label>
+              <input type="text" [(ngModel)]="direccion.codigoPostal"
+                (input)="onInput($event, direccion.codigoPostal, checkCodigoPostal)" maxlength="5" id="codigoPostal"
+                name="codigoPostal" />
+            </div>
+            <div class="form-group" *ngIf="hasColonias">
+              <label for="marca">Colonia</label>
+              <select class="form-select" [(ngModel)]="selectedColonia" (change)="setSelectedColonia()" name="colonias">
+                <option value="null">Seleccionar colonia</option>
+                <option [ngValue]="c" *ngFor="let c of listaColonias">{{c.d_asenta}}</option>
+              </select>
+            </div>
+            <div class="form-group" *ngIf="!hasColonias || manualColonia">
+              <label for="marca">Colonia</label>
+              <input type="text" [(ngModel)]="direccion.colonia" id="colonia" name="colonia" />
+            </div>
 
-  <div *ngIf="isModalOpen.validacion" class="cart-modal-backdrop">
-    <div class="cart-modal-container" (click)="onContentClick($event)">
-      <div class="modal-header bg-main-header text-white">
-        <h3 class="modal-title">
-          <span class="text-white" >Validacion de usuario</span>
-        </h3>
-        <button [disabled]="loading" class="close-button" (click)="closeModal('validacion')">
-          <span class="text-white">&times;</span>
-        </button>
-      </div>
-      
-      <div class="modal-body">
-          
-          <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
-           
-            <form class="form-productos pl-2 pr-2">
-              <div class="form-row">
-                  <div class="form-group">
-                      <label for="precio">Ingrese Contrasena actual</label>
-                      <input type="password" [(ngModel)]="currentUserPassword" id="validacion" name="validacion" />
-                  </div>
-              </div>
-          </form>
-          
-        </div>
-      </div>
-      <div class="modal-footer text-start">
-        <div class="pb-3 pe-3">
-          <button [disabled]="loading" class="btn btn-xuba-cancel me-2" (click)="closeModal('validacion')">
-            Cancelar
-          </button>
-          <button [disabled]="loading" class="btn btn-xuba btn-pill" (click)="validarUsuarioLogueado()">
-           <i class="fa fa-lock"></i> Verificar
-          </button>
-        </div>     
-      </div>
-    </div>
-  </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="marca">Entre calles</label>
+              <input type="text" [(ngModel)]="direccion.callesCruzan" id="callesCruzan" name="callesCruzan" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="marca">Estado</label>
+              <input type="text" [(ngModel)]="direccion.estado" id="estado" name="estado" />
+            </div>
+            <div class="form-group">
+              <label for="marca">Municipio</label>
+              <input type="text" [(ngModel)]="direccion.municipio" id="municipio" name="municipio" />
+            </div>
+          </div>
 
-
-  <div *ngIf="isModalOpen.wallet" class="cart-modal-backdrop">
-    <div class="cart-modal-container" (click)="onContentClick($event)">
-      <div class="modal-header bg-main-header text-white">
-        <h3 class="modal-title">
-          <span class="text-white" >Resumen</span>
-        </h3>
-        <button [disabled]="loading" class="close-button" (click)="closeModal('wallet')">
-          <span class="text-white">&times;</span>
-        </button>
-      </div>
-      
-      <div class="modal-body">
-          
-          <div class="tab-content fast-animation  animate__animated animate__fadeIn" >
-           
-            <div class="invoice-detail-container">
-              <div class="text-end">
-                <div class="invoice-item-id">FOLIO#{{selectedWallet.id}}</div>
-              </div>
-              <div class="invoice-header">
-                <div>
-                  <div class="invoice-item-name">{{selectedWallet.item.name}}</div>
-                  <div class="invoice-item-id">#{{selectedWallet.item.id}}</div>
-                </div>
-                <div class="invoice-date">{{ selectedWallet.fecha | date:'yyyy-MM-dd, HH:mm' }}</div>
-              </div>
-            <hr>
-              <div class="invoice-amount">
-                <span class="label">Valor final:</span>
-                <span class="value">{{ toCurrency(selectedWallet.precio) }}</span>
-              </div>
-            
-              <div class="invoice-retentions">
-                <div class="retention-title">Retenciones</div>
-                <div class="retention-row" *ngFor="let ret of selectedWallet.retenciones">
-                  <span class="retention-name">{{ret.name}}</span>
-                  <span class="retention-value">${{ret.valor}}</span>
-                </div>
-              </div>
-            
-              <div class="invoice-total f-low">
-                <span class="label">Saldo negativo:</span>
-                <span class="value">{{ toCurrency(selectedWallet.saldoNegativo) }}</span>
-              </div>
-              <div class="invoice-total f-low">
-                <span class="label">Cargo por flete:</span>
-                <span class="value">${{selectedWallet.flete}}</span>
-              </div> <hr>
-              <div class="invoice-total">
-                <span class="label text-dark total-title">Total a recibir:</span>
-                <span class="label-price">{{ toCurrency(selectedWallet.totalRecibir) }}</span>
-              </div>
-            
-              <div class="invoice-status-row">
-                <span class="invoice-status" [ngClass]="{'badge-success': selectedWallet.estatusClave === 'PDO', 'badge-warning': selectedWallet.estatusClave === 'PPR'}">
-                  {{selectedWallet.estatus}}
-                </span>
+          <div class="form-row mt-4">
+            <div class="form-group">
+              <label for="marca">Predeterminada</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" name="predeterminada" type="checkbox" id="switch1"
+                  [(ngModel)]="direccion.predeterminada">
+                <label class="form-check-label" for="switch1"></label>
               </div>
             </div>
-        
-          <hr>
-        </div>
-      </div>
-      <div class="modal-footer text-start">
-      
-        <div class="pb-3 pe-3">
-          <button [disabled]="loading" class="btn btn-xuba-cancel me-2" (click)="closeModal('wallet')">
-            Cerrar
-          </button>
-        </div>     
+
+          </div>
+
+        </form>
+
+        <hr>
       </div>
     </div>
-  </div>
+    <div class="modal-footer text-start">
 
-
-  <div *ngIf="isModalOpen.tarjeta" class="cart-modal-backdrop" >
-    <div class="cart-modal-container" (click)="onContentClick($event)">
-      <div class="modal-header bg-main-header text-white">
-        <h3 class="modal-title">
-          <span class="text-white" >Agregar tarjeta</span>
-        </h3>
-        <button [disabled]="loading" class="close-button" (click)="closeModal('tarjeta')">
-          <span class="text-white">&times;</span>
-        </button>
-      </div>
-      
-      <div class="modal-body">
-          <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
-            <form class="form-productos pl-2 pr-2">
-              <div class="form-row mt-3">
-                <div class="form-group">
-                    <label for="cardnumber">No. Tarjeta</label>
-                    <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event, tarjeta.card_number)" maxlength="16" id="cardnumber" name="cardnumber" />
-                </div>
-              </div>
-             
-              <div class="form-row">
-                  <div class="form-group">
-                      <label for="expm">Expiracion (MM)</label>
-                      <input type="text" [(ngModel)]="tarjeta.expiration_month" (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expm" name="expm" />
-                  </div>
-                  <div class="form-group">
-                      <label for="expy">Expiracion (YY)</label>
-                      <input type="text" [(ngModel)]="tarjeta.expiration_year" (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expy" name="expy" />
-                  </div>
-                  <div class="form-group">
-                      <label for="expy">CVV</label>
-                      <input type="text" [(ngModel)]="tarjeta.cvv2" (input)="onInput($event, tarjeta.cvv2)" maxlength="4" id="cvv2" name="cvv2" />
-                  </div>
-              </div>
-              <div class="form-row">
-                  <div class="form-group">
-                      <label for="nombre">Nombre</label>
-                      <input type="text" [(ngModel)]="tarjeta.holder_name" id="nombre" name="nombre" />
-                  </div>
-                   <div class="form-group">
-                      <label for="apellido">Apellido</label>
-                      <input type="text" [(ngModel)]="tarjeta.holder_lastname" id="apellido" name="apellido" />
-                  </div>
-              </div>
-              <div class="form-row">
-                  <div class="form-group">
-                      <label for="correo">Correo Electronico</label>
-                      <input type="text" [(ngModel)]="tarjeta.mail" id="correo" name="correo" />
-                  </div>
-                  <div class="form-group">
-                    <label for="telefono">Telefono</label>
-                    <input type="text" [(ngModel)]="tarjeta.phone" id="telefono" name="telefono"  (input)="onInput($event, tarjeta.phone)" />
-                </div>
-              </div>
-          </form>
-          <div class="mb-2 text-center">
-            <i class="fas fa-lock"></i> Tu datos estan guardados y protegidos por
-          </div>
-          <div class="w-100 text-center">
-            <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="OpenPay Logo" >
-          </div>
-          <hr>
-        </div>
-      </div>
       <div class="modal-footer text-start">
-      
         <div class="pb-3 pe-3">
-          <button [disabled]="loading" class="btn btn-pill btn-dark me-2" (click)="closeModal('tarjeta')">
+          <button [disabled]="loading" type="button" class="btn btn-dark btn-pill me-2"
+            (click)="closeModal('direccion')">
             Cancelar
           </button>
-          <button [disabled]="loading" class="btn btn-pill btn-xuba btn-add-cart" (click)="saveTarjeta()">
-           <i class="fa fa-lock"></i> Guardar
+          <button [disabled]="loading" *ngIf="!isEdit" type="button" class="btn btn-xuba btn-pill"
+            (click)="saveDireccion()">
+            <i class="fa fa-save"></i> Guardar
+          </button>
+          <button [disabled]="loading" *ngIf="isEdit" type="button" class="btn btn-xuba btn-pill"
+            (click)="saveEditDireccion()">
+            <i class="fa fa-save"></i> Guardar
           </button>
         </div>
-        <form id="payment-form">
-          <input type="hidden" name="deviceIdHiddenFieldName" id="device-session-id" />
-        </form>     
       </div>
     </div>
   </div>
+</div>
 
 
-  <div *ngIf="isModalOpen.etiqueta" class="cart-modal-backdrop" >
-    <div class="cart-modal-container" (click)="onContentClick($event)">
-      <div class="modal-header bg-main-header text-white">
-        <h3 class="modal-title">
-          <span class="text-white" >Etiqueta de envio</span>
-        </h3>
-        <button  class="close-button" (click)="closeModal('etiqueta')">
-          <span class="text-white">&times;</span>
+<div *ngIf="isModalOpen.clabe" class="cart-modal-backdrop">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white">Agregar Cuenta CLABE</span>
+      </h3>
+      <button [disabled]="loading" class="close-button" (click)="closeModal('clabe')">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
+
+        <form class="form-productos pl-2 pr-2">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="precio">CLABE Interbancaria</label>
+              <input type="text" [(ngModel)]="cuentaClabeUsuario.cuentaClabe" id="clabe" name="clabe" />
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+      <div class="pb-3 pe-3">
+        <button [disabled]="loading" class="btn btn-xuba-cancel me-2" (click)="closeModal('clabe')">
+          Cancelar
+        </button>
+        <button [disabled]="loading" class="btn btn-xuba btn-add-cart" (click)="saveCuentaClabe()">
+          <i class="fa fa-save"></i> Guardar
         </button>
       </div>
-      
-      <div class="modal-body">
-          
-          <div class="tab-content bg-dark text-center fast-animation  animate__animated animate__fadeInRight" >
+    </div>
+  </div>
+</div>
 
-              <iframe 
-                [src]="selectedSubasta.urlGuia | safeUrl"
-                width="100%" 
-                height="600px">
-              </iframe>
-        </div>
+<div *ngIf="isModalOpen.validacion" class="cart-modal-backdrop">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white">Validacion de usuario</span>
+      </h3>
+      <button [disabled]="loading" class="close-button" (click)="closeModal('validacion')">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
+
+        <form class="form-productos pl-2 pr-2">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="precio">Ingrese Contrasena actual</label>
+              <input type="password" [(ngModel)]="currentUserPassword" id="validacion" name="validacion" />
+            </div>
+          </div>
+        </form>
+
       </div>
-      <div class="modal-footer text-start">      
-        <div class="pb-3 pe-3 pt-2">
-          <button class="btn btn-danger btn-pill me-2" (click)="downloadPdf()">
-            Descargar PDF
-          </button>
-          <button class="btn btn-dark btn-pill me-2" (click)="closeModal('etiqueta')">
-            Cerrar
-          </button>
-        
-        </div>     
+    </div>
+    <div class="modal-footer text-start">
+      <div class="pb-3 pe-3">
+        <button [disabled]="loading" class="btn btn-xuba-cancel me-2" (click)="closeModal('validacion')">
+          Cancelar
+        </button>
+        <button [disabled]="loading" class="btn btn-xuba btn-pill" (click)="validarUsuarioLogueado()">
+          <i class="fa fa-lock"></i> Verificar
+        </button>
       </div>
     </div>
   </div>
+</div>
 
 
-<div *ngIf="isModalOpen.subastaDetalle" class="cart-modal-backdrop" >
+<div *ngIf="isModalOpen.wallet" class="cart-modal-backdrop">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white">Resumen</span>
+      </h3>
+      <button [disabled]="loading" class="close-button" (click)="closeModal('wallet')">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="tab-content fast-animation  animate__animated animate__fadeIn">
+
+        <div class="invoice-detail-container">
+          <div class="text-end">
+            <div class="invoice-item-id">FOLIO#{{selectedWallet.id}}</div>
+          </div>
+          <div class="invoice-header">
+            <div>
+              <div class="invoice-item-name">{{selectedWallet.item.name}}</div>
+              <div class="invoice-item-id">#{{selectedWallet.item.id}}</div>
+            </div>
+            <div class="invoice-date">{{ selectedWallet.fecha | date:'yyyy-MM-dd, HH:mm' }}</div>
+          </div>
+          <hr>
+          <div class="invoice-amount">
+            <span class="label">Valor final:</span>
+            <span class="value">{{ toCurrency(selectedWallet.precio) }}</span>
+          </div>
+
+          <div class="invoice-retentions">
+            <div class="retention-title">Retenciones</div>
+            <div class="retention-row" *ngFor="let ret of selectedWallet.retenciones">
+              <span class="retention-name">{{ret.name}}</span>
+              <span class="retention-value">${{ret.valor}}</span>
+            </div>
+          </div>
+
+          <div class="invoice-total f-low">
+            <span class="label">Saldo negativo:</span>
+            <span class="value">{{ toCurrency(selectedWallet.saldoNegativo) }}</span>
+          </div>
+          <div class="invoice-total f-low">
+            <span class="label">Cargo por flete:</span>
+            <span class="value">${{selectedWallet.flete}}</span>
+          </div>
+          <hr>
+          <div class="invoice-total">
+            <span class="label text-dark total-title">Total a recibir:</span>
+            <span class="label-price">{{ toCurrency(selectedWallet.totalRecibir) }}</span>
+          </div>
+
+          <div class="invoice-status-row">
+            <span class="invoice-status"
+              [ngClass]="{'badge-success': selectedWallet.estatusClave === 'PDO', 'badge-warning': selectedWallet.estatusClave === 'PPR'}">
+              {{selectedWallet.estatus}}
+            </span>
+          </div>
+        </div>
+
+        <hr>
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+
+      <div class="pb-3 pe-3">
+        <button [disabled]="loading" class="btn btn-xuba-cancel me-2" (click)="closeModal('wallet')">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="isModalOpen.tarjeta" class="cart-modal-backdrop">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white">Agregar tarjeta</span>
+      </h3>
+      <button [disabled]="loading" class="close-button" (click)="closeModal('tarjeta')">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
+        <form class="form-productos pl-2 pr-2">
+          <div class="form-row mt-3">
+            <div class="form-group">
+              <label for="cardnumber">No. Tarjeta</label>
+              <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event, tarjeta.card_number)"
+                maxlength="16" id="cardnumber" name="cardnumber" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="expm">Expiracion (MM)</label>
+              <input type="text" [(ngModel)]="tarjeta.expiration_month"
+                (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expm" name="expm" />
+            </div>
+            <div class="form-group">
+              <label for="expy">Expiracion (YY)</label>
+              <input type="text" [(ngModel)]="tarjeta.expiration_year"
+                (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expy" name="expy" />
+            </div>
+            <div class="form-group">
+              <label for="expy">CVV</label>
+              <input type="text" [(ngModel)]="tarjeta.cvv2" (input)="onInput($event, tarjeta.cvv2)" maxlength="4"
+                id="cvv2" name="cvv2" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nombre">Nombre</label>
+              <input type="text" [(ngModel)]="tarjeta.holder_name" id="nombre" name="nombre" />
+            </div>
+            <div class="form-group">
+              <label for="apellido">Apellido</label>
+              <input type="text" [(ngModel)]="tarjeta.holder_lastname" id="apellido" name="apellido" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="correo">Correo Electronico</label>
+              <input type="text" [(ngModel)]="tarjeta.mail" id="correo" name="correo" />
+            </div>
+            <div class="form-group">
+              <label for="telefono">Telefono</label>
+              <input type="text" [(ngModel)]="tarjeta.phone" id="telefono" name="telefono"
+                (input)="onInput($event, tarjeta.phone)" />
+            </div>
+          </div>
+        </form>
+        <div class="mb-2 text-center">
+          <i class="fas fa-lock"></i> Tu datos estan guardados y protegidos por
+        </div>
+        <div class="w-100 text-center">
+          <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="OpenPay Logo">
+        </div>
+        <hr>
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+
+      <div class="pb-3 pe-3">
+        <button [disabled]="loading" class="btn btn-pill btn-dark me-2" (click)="closeModal('tarjeta')">
+          Cancelar
+        </button>
+        <button [disabled]="loading" class="btn btn-pill btn-xuba btn-add-cart" (click)="saveTarjeta()">
+          <i class="fa fa-lock"></i> Guardar
+        </button>
+      </div>
+      <form id="payment-form">
+        <input type="hidden" name="deviceIdHiddenFieldName" id="device-session-id" />
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="isModalOpen.etiqueta" class="cart-modal-backdrop">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white">Etiqueta de envio</span>
+      </h3>
+      <button class="close-button" (click)="closeModal('etiqueta')">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="tab-content bg-dark text-center fast-animation  animate__animated animate__fadeInRight">
+
+        <iframe [src]="selectedSubasta.urlGuia | safeUrl" width="100%" height="600px">
+        </iframe>
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+      <div class="pb-3 pe-3 pt-2">
+        <button class="btn btn-danger btn-pill me-2" (click)="downloadPdf()">
+          Descargar PDF
+        </button>
+        <button class="btn btn-dark btn-pill me-2" (click)="closeModal('etiqueta')">
+          Cerrar
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="isModalOpen.subastaDetalle" class="cart-modal-backdrop">
   <div class="cart-modal-container" (click)="onContentClick($event)">
     <div class="modal-header bg-main-header text-white">
       <h3 class="modal-title">
@@ -1857,200 +1954,227 @@
         <span class="text-white">&times;</span>
       </button>
     </div>
-    
-    <div class="modal-body">
-        <div class="tab-content fast-animation  animate__animated animate__fadeInRight" >
-          <ng-container *ngIf="currentTipoSubasta === 'Finalizada'">
-            <div class="auction-details">
 
-              <div class="auction-header">
-                <h2>{{subastaSeleccionada.caption}}</h2>
-                <h5 class="badge" [ngClass]="{
+    <div class="modal-body">
+      <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
+        <ng-container *ngIf="currentTipoSubasta === 'Finalizada'">
+          <div class="auction-details">
+
+            <div class="auction-header">
+              <h2>{{subastaSeleccionada.caption}}</h2>
+              <h5 class="badge"
+                [ngClass]="{
                   'badge-success': this.subastaSeleccionada.extraInfo.apuestaActual >= this.subastaSeleccionada.extraInfo.precio,
                   'badge-danger': this.subastaSeleccionada.extraInfo.apuestaActual < this.subastaSeleccionada.extraInfo.precio}">
-                  Precio minimo: [{{toCurrency(this.subastaSeleccionada.extraInfo.precio)}}] 
-                  {{this.subastaSeleccionada.extraInfo.apuestaActual >= this.subastaSeleccionada.extraInfo.precio ? 'Alcanzado' : 'No alcanzado'}} 
-                </h5> 
-              </div>
-              <div class="info-section-1">
-                <h3>Información general</h3>
-                <p><strong>Fecha de cierre: </strong>25/11/2025</p>
-                <p><strong>Descripción:</strong>{{subastaSeleccionada.descripcion}}</p>
-              </div>
-            
-              <div class="info-section">
-                <span class="t1">Apuesta final</span> <br>
-                <span class="t1-value">
-                </span> 
-                <br><br>
-                <span class="t1">Ganador</span> <br>
-                <span class="t1-winner">N/A</span> 
+                Precio minimo: [{{toCurrency(this.subastaSeleccionada.extraInfo.precio)}}]
+                {{this.subastaSeleccionada.extraInfo.apuestaActual >= this.subastaSeleccionada.extraInfo.precio ?
+                'Alcanzado' : 'No alcanzado'}}
+              </h5>
+            </div>
+            <div class="info-section-1">
+              <h3>Información general</h3>
+              <p><strong>Fecha de cierre: </strong>25/11/2025</p>
+              <p><strong>Descripción:</strong>{{subastaSeleccionada.descripcion}}</p>
+            </div>
 
-              </div>
-              <div class="actions-section">
-                <!-- <button class="btn-edit" (click)="getDatosSubasta(subastaSeleccionada.id)">
+            <div class="info-section">
+              <span class="t1">Apuesta final</span> <br>
+              <span class="t1-value">
+              </span>
+              <br><br>
+              <span class="t1">Ganador</span> <br>
+              <span class="t1-winner">N/A</span>
+
+            </div>
+            <div class="actions-section">
+              <!-- <button class="btn-edit" (click)="getDatosSubasta(subastaSeleccionada.id)">
                   Ver mas detalles
                 </button> -->
-              </div>
             </div>
-           
-          </ng-container>
-          <ng-container *ngIf="currentTipoSubasta === 'Rechazada'">
-            <div class="auction-details">
-              <h2 style="font-size: 1em;">Revision y correccion de subasta</h2>
-              <div class="auction-header">
-                <h2>{{subastaSeleccionada.caption}}#{{subastaSeleccionada.id}}</h2>
-              
-              </div>
-              <!-- <div class="info-section" style="background: #f0932b;">
+          </div>
+
+        </ng-container>
+        <ng-container *ngIf="currentTipoSubasta === 'Rechazada'">
+          <div class="auction-details">
+            <h2 style="font-size: 1em;">Revision y correccion de subasta</h2>
+            <div class="auction-header">
+              <h2>{{subastaSeleccionada.caption}}#{{subastaSeleccionada.id}}</h2>
+
+            </div>
+            <!-- <div class="info-section" style="background: #f0932b;">
                 <h3 class="t-2">Tu subasta no fue aprobada por los siguientes motivos:</h3>
                 <span class="text-center f-arial f-10" *ngFor="let comen of subastaSeleccionada.extraInfo.comentariosRechazo">
                   <strong>- {{comen.comentario}}</strong>
                   <hr />
                 </span>
               </div> -->
-              <div class="info-section">
-                <form class="form-productos pl-2 pr-2">
-                  <div class="form-row">
-                      <div class="form-group" [ngClass]="{'hasToReview': hasToReview('Nombre del Producto',subastaSeleccionada.extraInfo.comentariosChecklist) }">
-                          <label for="nombre">Nombre del producto</label>
-                          <input type="text" [(ngModel)]="subastaEdicion.caption" id="nombre" name="nombre" />
-                          <span class="reviewComment f-arial" *ngIf="hasToReview('Nombre del Producto',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                            {{getCommentReview('Nombre del Producto',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                          </span>
-                        </div>
-                      
-                  </div>
-                
-                  <div class="form-row">
-                      <div class="form-group full-width" [ngClass]="{'hasToReview': hasToReview('Descripción del Producto',subastaSeleccionada.extraInfo.comentariosChecklist) }">
-                          <label for="descripcion">Descripción</label>
-                          <textarea id="descripcion" [(ngModel)]="subastaEdicion.descripcion" name="descripcion" rows="3"></textarea>
-                          <span class="reviewComment f-arial" *ngIf="hasToReview('Descripción del Producto',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                            {{getCommentReview('Descripción del Producto',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                          </span>
-                        </div>
-                  </div>
-                  <div class="form-row">
-                      <div class="form-group" >
-                          <label for="precio">Precio</label>
-                          <input type="number" [(ngModel)]="subastaEdicion.precio" id="precio" name="precio" />
-                      </div>
-                      <div class="form-group ps-5">
-                          <label for="compraDirecta">Compra directa</label>
-                          <input class="form-check-input checkbox-lg" [(ngModel)]="subastaEdicion.compraDirecta" type="checkbox" name="compraDirecta" value="" id="checkboxGrande">  
-                      </div>
-                      <div class="form-group" [ngClass]="{'hasToReview': hasToReview('¿Es Nuevo?',subastaSeleccionada.extraInfo.comentariosChecklist) }">
-                        <label for="compraDirecta">Es nuevo?</label>
-                        <input class="form-check-input checkbox-lg" [(ngModel)]="subastaEdicion.nuevo" type="checkbox" name="nuevo" value="" id="checkboxGrande">
-                        <span class="reviewComment f-arial" *ngIf="hasToReview('¿Es Nuevo?',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                          {{getCommentReview('¿Es Nuevo?',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                        </span>
-                      </div>
-                  </div>
-                  <div class="form-row">
-                      <div class="form-group" [ngClass]="{'hasToReview': hasToReview('Marca',subastaSeleccionada.extraInfo.comentariosChecklist) }">
-                          <label for="marca">Marca</label>
-                          <input type="text" [(ngModel)]="subastaEdicion.marca" id="marca" name="marca" />
-                          <span class="reviewComment f-arial" *ngIf="hasToReview('Marca',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                            {{getCommentReview('Marca',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                          </span>
-                      </div>
-                      <div class="form-group" [ngClass]="{'hasToReview': hasToReview('Modelo',subastaSeleccionada.extraInfo.comentariosChecklist) }">
-                          <label for="modelo">Modelo</label>
-                          <input type="text" [(ngModel)]="subastaEdicion.modelo" id="modelo" name="modelo" />
-                          <span class="reviewComment f-arial" *ngIf="hasToReview('Modelo',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                            {{getCommentReview('Modelo',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                          </span>
-                      </div>
-                  </div>
-                  <hr>
-                  <div class="form-row">
-                    <div class="form-group" [ngClass]="{'hasToReview': hasToReview('Peso',subastaSeleccionada.extraInfo.comentariosChecklist) }">
-                        <label for="peso">Peso (kg, Ej. 1, 5, 10, .5)</label>
-                        <input type="number" [(ngModel)]="subastaEdicion.peso" id="peso" name="peso" />
-                        <span class="reviewComment f-arial" *ngIf="hasToReview('Peso',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                          {{getCommentReview('Peso',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                        </span>
-                    </div>
-                </div>
-               
+            <div class="info-section">
+              <form class="form-productos pl-2 pr-2">
                 <div class="form-row">
-                    <div class="form-group" [ngClass]="{'hasToReview': hasToReview('Largo',subastaSeleccionada.extraInfo.comentariosChecklist) }">
-                        <label for="largo">Largo (cm)</label>
-                        <input type="number" [(ngModel)]="subastaEdicion.largo" id="largo" name="largo" />
-                        <span class="reviewComment f-arial" *ngIf="hasToReview('Largo',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                          {{getCommentReview('Largo',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                        </span>
-                    </div>
-                    <img src="images/b-largo.png" style="width: 150px;" alt="">
+                  <div class="form-group"
+                    [ngClass]="{'hasToReview': hasToReview('Nombre del Producto',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                    <label for="nombre">Nombre del producto</label>
+                    <input type="text" [(ngModel)]="subastaEdicion.caption" id="nombre" name="nombre" />
+                    <span class="reviewComment f-arial"
+                      *ngIf="hasToReview('Nombre del Producto',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                      {{getCommentReview('Nombre del Producto',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                    </span>
+                  </div>
+
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group full-width"
+                    [ngClass]="{'hasToReview': hasToReview('Descripción del Producto',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" [(ngModel)]="subastaEdicion.descripcion" name="descripcion"
+                      rows="3"></textarea>
+                    <span class="reviewComment f-arial"
+                      *ngIf="hasToReview('Descripción del Producto',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                      {{getCommentReview('Descripción del
+                      Producto',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                    </span>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="precio">Precio</label>
+                    <input type="number" [(ngModel)]="subastaEdicion.precio" id="precio" name="precio" />
+                  </div>
+                  <div class="form-group ps-5">
+                    <label for="compraDirecta">Compra directa</label>
+                    <input class="form-check-input checkbox-lg" [(ngModel)]="subastaEdicion.compraDirecta"
+                      type="checkbox" name="compraDirecta" value="" id="checkboxGrande">
+                  </div>
+                  <div class="form-group"
+                    [ngClass]="{'hasToReview': hasToReview('¿Es Nuevo?',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                    <label for="compraDirecta">Es nuevo?</label>
+                    <input class="form-check-input checkbox-lg" [(ngModel)]="subastaEdicion.nuevo" type="checkbox"
+                      name="nuevo" value="" id="checkboxGrande">
+                    <span class="reviewComment f-arial"
+                      *ngIf="hasToReview('¿Es Nuevo?',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                      {{getCommentReview('¿Es Nuevo?',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                    </span>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"
+                    [ngClass]="{'hasToReview': hasToReview('Marca',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                    <label for="marca">Marca</label>
+                    <input type="text" [(ngModel)]="subastaEdicion.marca" id="marca" name="marca" />
+                    <span class="reviewComment f-arial"
+                      *ngIf="hasToReview('Marca',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                      {{getCommentReview('Marca',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                    </span>
+                  </div>
+                  <div class="form-group"
+                    [ngClass]="{'hasToReview': hasToReview('Modelo',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                    <label for="modelo">Modelo</label>
+                    <input type="text" [(ngModel)]="subastaEdicion.modelo" id="modelo" name="modelo" />
+                    <span class="reviewComment f-arial"
+                      *ngIf="hasToReview('Modelo',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                      {{getCommentReview('Modelo',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                    </span>
+                  </div>
+                </div>
+                <hr>
+                <div class="form-row">
+                  <div class="form-group"
+                    [ngClass]="{'hasToReview': hasToReview('Peso',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                    <label for="peso">Peso (kg, Ej. 1, 5, 10, .5)</label>
+                    <input type="number" [(ngModel)]="subastaEdicion.peso" id="peso" name="peso" />
+                    <span class="reviewComment f-arial"
+                      *ngIf="hasToReview('Peso',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                      {{getCommentReview('Peso',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group"
+                    [ngClass]="{'hasToReview': hasToReview('Largo',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                    <label for="largo">Largo (cm)</label>
+                    <input type="number" [(ngModel)]="subastaEdicion.largo" id="largo" name="largo" />
+                    <span class="reviewComment f-arial"
+                      *ngIf="hasToReview('Largo',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                      {{getCommentReview('Largo',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                    </span>
+                  </div>
+                  <img src="images/b-largo.png" style="width: 150px;" alt="">
 
                 </div>
                 <div class="form-row">
-                    <div class="form-group" [ngClass]="{'hasToReview': hasToReview('Alto',subastaSeleccionada.extraInfo.comentariosChecklist) }">
-                        <label for="ancho">Alto (cm)</label>
-                        <input type="number" [(ngModel)]="subastaEdicion.ancho" id="ancho" name="ancho" />
-                        <span class="reviewComment f-arial" *ngIf="hasToReview('Alto',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                          {{getCommentReview('Alto',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                        </span>
-                    </div>
-                    <img src="images/b-alto.png" style="width: 150px;" alt="">
+                  <div class="form-group"
+                    [ngClass]="{'hasToReview': hasToReview('Alto',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                    <label for="ancho">Alto (cm)</label>
+                    <input type="number" [(ngModel)]="subastaEdicion.ancho" id="ancho" name="ancho" />
+                    <span class="reviewComment f-arial"
+                      *ngIf="hasToReview('Alto',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                      {{getCommentReview('Alto',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                    </span>
+                  </div>
+                  <img src="images/b-alto.png" style="width: 150px;" alt="">
                 </div>
                 <div class="form-row">
-                    <div class="form-group" [ngClass]="{'hasToReview': hasToReview('Profundidad',subastaSeleccionada.extraInfo.comentariosChecklist) }">
-                        <label for="profundidad">Profundidad (cm)</label>
-                        <input type="number" [(ngModel)]="subastaEdicion.profundidad" id="profundidad" name="profundidad" />
-                        <span class="reviewComment f-arial" *ngIf="hasToReview('Profundidad',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                          {{getCommentReview('Profundidad',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                        </span>
-                    </div>
-                    <img src="images/b-profundidad.png" style="width: 150px;" alt="">
+                  <div class="form-group"
+                    [ngClass]="{'hasToReview': hasToReview('Profundidad',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                    <label for="profundidad">Profundidad (cm)</label>
+                    <input type="number" [(ngModel)]="subastaEdicion.profundidad" id="profundidad" name="profundidad" />
+                    <span class="reviewComment f-arial"
+                      *ngIf="hasToReview('Profundidad',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                      {{getCommentReview('Profundidad',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                    </span>
+                  </div>
+                  <img src="images/b-profundidad.png" style="width: 150px;" alt="">
                 </div>
                 <hr>
-                <label class="cargar-foto-label" >
-                  <input type="file" accept="image/*" multiple (change)="onFileChangeEdit($event)"
-                      hidden />
+                <label class="cargar-foto-label">
+                  <input type="file" accept="image/*" multiple (change)="onFileChangeEdit($event)" hidden />
                   <span><i class="fas fa-image"></i> Cargar foto</span>
-              </label>
-              <div class="preview-list" [ngClass]="{'hasToReviewImg': hasToReview('Fotrografias',subastaSeleccionada.extraInfo.comentariosChecklist) }">
+                </label>
+                <div class="preview-list"
+                  [ngClass]="{'hasToReviewImg': hasToReview('Fotrografias',subastaSeleccionada.extraInfo.comentariosChecklist) }">
                   <div class="preview-img" *ngFor="let img of subastaEdicion.imagesPreview; let i = index">
-                      <img [src]="img.url" alt="Preview" />
-                      <button type="button" (click)="eliminarImagen(img, i)">×</button>
-                      
+                    <img [src]="img.url" alt="Preview" />
+                    <button type="button" (click)="eliminarImagen(img, i)">×</button>
+
                   </div>
-                  
-              </div>
-              <div *ngIf="hasToReview('Fotrografias',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                <span class="reviewComment f-arial" *ngIf="hasToReview('Fotrografias',subastaSeleccionada.extraInfo.comentariosChecklist)">
-                  {{getCommentReview('Fotrografias',subastaSeleccionada.extraInfo.comentariosChecklist)}}
-                </span>
-              </div>
+
+                </div>
+                <div *ngIf="hasToReview('Fotrografias',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                  <span class="reviewComment f-arial"
+                    *ngIf="hasToReview('Fotrografias',subastaSeleccionada.extraInfo.comentariosChecklist)">
+                    {{getCommentReview('Fotrografias',subastaSeleccionada.extraInfo.comentariosChecklist)}}
+                  </span>
+                </div>
               </form>
-              </div>
             </div>
-          </ng-container>
-          
+          </div>
+        </ng-container>
+
         <hr>
       </div>
     </div>
     <div class="modal-footer text-end pt-2" style="background:#ecf0f1">
-    
+
       <div class="pb-2 pe-2 ps-2 w-100">
         <div class="d-none d-sm-block">
           <button [disabled]="loading" class="btn btn-dark me-2 btn-pill" (click)="closeModal('subastaDetalle')">
             cerrar
           </button>
-          <button *ngIf="currentTipoSubasta === 'Rechazada'" [disabled]="loading" class="btn btn-xuba btn-pill" (click)="actualizarSubastaRechazada()">
-           <i class="fa fa-sync"></i> Actualizar subasta
+          <button *ngIf="currentTipoSubasta === 'Rechazada'" [disabled]="loading" class="btn btn-xuba btn-pill"
+            (click)="actualizarSubastaRechazada()">
+            <i class="fa fa-sync"></i> Actualizar subasta
           </button>
         </div>
         <div class="d-block d-sm-none pb-1">
 
-          <button *ngIf="currentTipoSubasta === 'Rechazada'" [disabled]="loading" class="btn btn-xuba btn-block btn-pill w-100" (click)="actualizarSubastaRechazada()">
-           <i class="fa fa-sync"></i> Actualizar subasta
+          <button *ngIf="currentTipoSubasta === 'Rechazada'" [disabled]="loading"
+            class="btn btn-xuba btn-block btn-pill w-100" (click)="actualizarSubastaRechazada()">
+            <i class="fa fa-sync"></i> Actualizar subasta
           </button>
         </div>
-      </div>     
+      </div>
     </div>
   </div>
 </div>
@@ -2311,99 +2435,98 @@
 
 <div class="fullscreen-viewer" *ngIf="isModalOpen.viewer" (click)="closeModal('viewer')">
   <button class="close-viewer" (click)="closeModal('viewer')">
-    <i class="fas fa-times"></i> 
+    <i class="fas fa-times"></i>
   </button>
-  
-  <button class="nav-btn prev" 
-          *ngIf="imagesListViewer.length > 1"
-          (click)="navigateImage('prev', $event)"
-          [class.disabled]="currentIndexImageViewer === 0">
+
+  <button class="nav-btn prev" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('prev', $event)"
+    [class.disabled]="currentIndexImageViewer === 0">
     <i class="fas fa-chevron-left"></i>
   </button>
-  
+
   <div class="viewer-content" (click)="$event.stopPropagation()">
-    <img [class]="'fast-animation  animate__animated ' + classNavigateImg" [src]="imagesListViewer[currentIndexImageViewer].url"  style="background: #bdc3c7;">
+    <img [class]="'fast-animation  animate__animated ' + classNavigateImg"
+      [src]="imagesListViewer[currentIndexImageViewer].url" style="background: #bdc3c7;">
   </div>
-  
-  <button class="nav-btn next" 
-          *ngIf="imagesListViewer.length > 1"
-          (click)="navigateImage('next', $event)"
-          [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
+
+  <button class="nav-btn next" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('next', $event)"
+    [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
     <i class="fas fa-chevron-right"></i>
   </button>
 </div>
 
 
-<div *ngIf="isModalOpen.disputa" class="modal-backdrop" >
+<div *ngIf="isModalOpen.disputa" class="modal-backdrop">
   <div class="modal-container" (click)="onContentClick($event)">
     <div class="modal-header bg-main-header text-white">
       <h3 class="modal-title">
-        <span class="text-white" >Abrir nuevo reclamo</span>
+        <span class="text-white">Abrir nuevo reclamo</span>
       </h3>
-      <button  class="close-button" (click)="closeModal('disputa')">
+      <button class="close-button" (click)="closeModal('disputa')">
         <span class="text-white">&times;</span>
       </button>
     </div>
-    
-    <div class="modal-body"> 
-      <div class="tab-content text-start fast-animation  animate__animated animate__fadeInRight" >
-          <form class="form-productos pl-2 pr-2">
-              <div class="dispute-form-container">
-                  <form class="dispute-form">
-                    <div class="item-ref">
-                    </div>
-                    <div class="form-group mt-3">
-                      <label for="type">Seleccionar subasta</label>
-                      <select id="type" class="form-select" name="type" [(ngModel)]="subastaSeleccioandaReclamo">
-                        <option *ngFor="let sub of listaSimpleSubastas" [ngValue]="sub">{{sub.caption}}</option>
-                     
-                      </select>
-                    </div>
-                    <hr>
-                    <div class="form-group mt-3">
-                      <label for="type">Categoria</label>
-                      <select id="type" class="form-select" name="type" [(ngModel)]="reclamoModel.idCategoria">
-                        <option *ngFor="let cat of listaCategoriasDisputa" [value]="cat.id">{{cat.categoria}}</option>
-                     
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label for="subject">Asunto del reclamo</label>
-                      <input type="text" id="subject" name="subject" [(ngModel)]="reclamoModel.asunto" placeholder="Resumen del problema" required>
-                    </div>
-                
-                    <div class="form-group mt-3">
-                      <label for="description">Descripción detallada</label>
-                      <textarea id="description" name="description" [(ngModel)]="reclamoModel.descripcion" placeholder="Explique con detalle el problema" rows="4" required></textarea>
-                    </div>
-                
-                    <div class="form-group">
-                      <label for="attachments">Archivos adjuntos</label>
-                      <label class="cargar-foto-label w-25 d-sm-block d-none">
-                          <input type="file" accept="image/*" multiple (change)="onFileChangeReclamo($event)"
-                              [disabled]="imagesPreview!.length >= 5" hidden />
-                          <span><i class="fas fa-image"></i> Seleccionar imagenes</span>
-                      </label>
-                      <label class="cargar-foto-label w-100 d-block d-sm-none">
-                          <input type="file" accept="image/*" multiple (change)="onFileChangeReclamo($event)"
-                              [disabled]="imagesPreview!.length >= 5" hidden />
-                          <span><i class="fas fa-image"></i> Seleccionar imagenes</span>
-                      </label>
-                    </div>
-                    <div class="row">
-                      <div class="col-2" *ngFor="let im of imagesPreview">
-                          <img class="img-thumbnail" [src]="im" alt="Preview Image">
-                      </div>
 
-                    </div>
-                   
-                  </form>
+    <div class="modal-body">
+      <div class="tab-content text-start fast-animation  animate__animated animate__fadeInRight">
+        <form class="form-productos pl-2 pr-2">
+          <div class="dispute-form-container">
+            <form class="dispute-form">
+              <div class="item-ref">
+              </div>
+              <div class="form-group mt-3">
+                <label for="type">Seleccionar subasta</label>
+                <select id="type" class="form-select" name="type" [(ngModel)]="subastaSeleccioandaReclamo">
+                  <option *ngFor="let sub of listaSimpleSubastas" [ngValue]="sub">{{sub.caption}}</option>
+
+                </select>
+              </div>
+              <hr>
+              <div class="form-group mt-3">
+                <label for="type">Categoria</label>
+                <select id="type" class="form-select" name="type" [(ngModel)]="reclamoModel.idCategoria">
+                  <option *ngFor="let cat of listaCategoriasDisputa" [value]="cat.id">{{cat.categoria}}</option>
+
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="subject">Asunto del reclamo</label>
+                <input type="text" id="subject" name="subject" [(ngModel)]="reclamoModel.asunto"
+                  placeholder="Resumen del problema" required>
+              </div>
+
+              <div class="form-group mt-3">
+                <label for="description">Descripción detallada</label>
+                <textarea id="description" name="description" [(ngModel)]="reclamoModel.descripcion"
+                  placeholder="Explique con detalle el problema" rows="4" required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="attachments">Archivos adjuntos</label>
+                <label class="cargar-foto-label w-25 d-sm-block d-none">
+                  <input type="file" accept="image/*" multiple (change)="onFileChangeReclamo($event)"
+                    [disabled]="imagesPreview!.length >= 5" hidden />
+                  <span><i class="fas fa-image"></i> Seleccionar imagenes</span>
+                </label>
+                <label class="cargar-foto-label w-100 d-block d-sm-none">
+                  <input type="file" accept="image/*" multiple (change)="onFileChangeReclamo($event)"
+                    [disabled]="imagesPreview!.length >= 5" hidden />
+                  <span><i class="fas fa-image"></i> Seleccionar imagenes</span>
+                </label>
+              </div>
+              <div class="row">
+                <div class="col-2" *ngFor="let im of imagesPreview">
+                  <img class="img-thumbnail" [src]="im" alt="Preview Image">
                 </div>
-          </form>
+
+              </div>
+
+            </form>
+          </div>
+        </form>
       </div>
     </div>
     <div class="modal-footer text-start">
-    
+
       <div class="pb-3 pe-3 pt-2">
         <button class="btn btn-danger btn-pill me-2" (click)="saveReclamo()">
           Crear Reclamo
@@ -2411,39 +2534,36 @@
         <button class="btn btn-dark btn-pill me-2" (click)="closeModal('disputa')">
           Cerrar
         </button>
-      
-      </div>     
+
+      </div>
     </div>
   </div>
 </div>
 
 
 
-<div *ngIf="isModalOpen.comprobante" class="modal-backdrop" >
+<div *ngIf="isModalOpen.comprobante" class="modal-backdrop">
   <div class="modal-container" (click)="onContentClick($event)">
     <div class="modal-header bg-main-header text-white">
       <h3 class="modal-title">
-        <span class="text-white" >Abrir nuevo reclamo</span>
+        <span class="text-white">Abrir nuevo reclamo</span>
       </h3>
-      <button  class="close-button" (click)="closeModal('comprobante')">
+      <button class="close-button" (click)="closeModal('comprobante')">
         <span class="text-white">&times;</span>
       </button>
     </div>
-    
-    <div class="modal-body"> 
-      <div class="tab-content text-start fast-animation  animate__animated animate__fadeInRight" >
-        <app-pago-subasta-ticket
-        [modeloComprobante]="modeloComprobante"
-        (onCloseModal)="closeModalComprobante()"
-      >
-      
-      </app-pago-subasta-ticket>
-      
-       <!-- dfdfdf -->
+
+    <div class="modal-body">
+      <div class="tab-content text-start fast-animation  animate__animated animate__fadeInRight">
+        <app-pago-subasta-ticket [modeloComprobante]="modeloComprobante" (onCloseModal)="closeModalComprobante()">
+
+        </app-pago-subasta-ticket>
+
+        <!-- dfdfdf -->
       </div>
     </div>
     <div class="modal-footer text-start">
-    
+
       <div class="pb-3 pe-3 pt-2">
         <button class="btn btn-danger btn-pill me-2" (click)="saveReclamo()">
           Crear Reclamo
@@ -2451,8 +2571,8 @@
         <button class="btn btn-dark btn-pill me-2" (click)="closeModal('comprobante')">
           Cerrar
         </button>
-      
-      </div>     
+
+      </div>
     </div>
   </div>
 </div>
