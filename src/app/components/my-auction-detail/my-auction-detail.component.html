@@ -38,7 +38,7 @@
       <div>
 
      <h3 class="fw-bold mb-1">
-  {{ subasta.idEstatus == 2
+  {{ subasta.remaining > 0
       ? 'Tu subasta todavía está en proceso.'
       : 'Tu subasta ha concluido.' }}
 </h3>
@@ -53,15 +53,19 @@
 
   <div class="text-end mt-2 mt-md-0">
 
-  <ng-container *ngIf="subasta.idEstatus == 2; else subastaTerminada">
+  <ng-container *ngIf="subasta.remaining > 0; else subastaTerminada">
 
   <small class="text-muted d-block">
     Tiempo restante
   </small>
 
-  <span class="badge contador-tiempo fs-5 px-3 py-2">
+  <span *ngIf="subasta.remaining >= 0" class="badge contador-tiempo fs-5 px-3 py-2">
     <i class="bi bi-clock-history me-2"></i>
     {{ formatTimeString(subasta.remaining) }}
+</span>
+<span *ngIf="subasta.remaining <= 0" class="badge contador-tiempo fs-5 px-3 py-2">
+    <i class="bi bi-clock-history me-2"></i>
+    {{ subasta.fechaFin }}
 </span>
 
 </ng-container>
@@ -214,57 +218,12 @@
     <div>
 
         <h4 class="fw-bold mb-2">
-            {{ subasta.estatus }}
+            {{ listaHistorial[0]?.estatus }}
         </h4>
-
-        <p class="mb-0">
-
-            <span *ngIf="subasta.idEstatus==2">
-                Subasta todavia activa.
-            </span>
-
-            <span *ngIf="subasta.idEstatus==1021">
-                Tu subasta no alcanzo el minimo requerido.
-            </span>
-
-            <span *ngIf="subasta.idEstatus==1022">
-                Esperando la respuesta del comprador a la propuesta enviada.
-            </span>
-
-            <span *ngIf="subasta.idEstatus==1023">
-                El comprador envió una contraoferta.
-            </span>
-
-            <span *ngIf="subasta.idEstatus==1026">
-                No hubo ofertas .
-            </span>
-
-            <span *ngIf="subasta.idEstatus==1024">
-                El comprador rechazó la propuesta.
-            </span>
-
-            <span *ngIf="subasta.idEstatus==1025">
-                Esperando el pago del comprador.
-            </span>
-
-            <span *ngIf="subasta.idEstatus==1026">
-                El comprador ya realizó el pago.
-            </span>
-
-            <span *ngIf="subasta.idEstatus==12">
-                Esperando el pago.
-            </span>
-
-
-            <span *ngIf="subasta.idEstatus==1027">
-                Producto enviado.
-            </span>
-
-            <span *ngIf="subasta.idEstatus==1028">
-                Producto recibido.
-            </span>
-
-        </p>
+ <p class="mb-0">
+   {{ listaHistorial[0]?.descripcion }}
+ </p>
+        
 
     </div>
 
@@ -392,11 +351,15 @@ Finalizar subasta
 
                   <strong>Guía de envío</strong>
 
-                  <br>
+<br>
 
-                  <small class="text-muted">
-                    Descargar guía de envío
-                  </small>
+<small class="text-muted">
+  {{
+    subasta.guiaEnvio && subasta.guiaEnvio !== 'Guía no disponible'
+      ? 'Descargar guía de envío'
+      : 'Guía no disponible'
+  }}
+</small>
 
                 </div>
 
@@ -825,6 +788,7 @@ Ver todas las vistas ({{ subasta.cantidadVistas }})
           <h5 class="fw-bold mb-4">
             Historial de estatus
           </h5>
+          <div class="timeline-scroll">
 
          <div class="timeline">
 
@@ -832,7 +796,7 @@ Ver todas las vistas ({{ subasta.cantidadVistas }})
 
     <div
     class="timeline-item"
-    *ngFor="let item of listaTimeline; let ultimo = first">
+   *ngFor="let item of listaHistorial; let ultimo = first">
 
     <div
         class="timeline-dot"
@@ -863,6 +827,7 @@ Ver todas las vistas ({{ subasta.cantidadVistas }})
 
     </div>
 
+</div>
 </div>
 
           </div>
