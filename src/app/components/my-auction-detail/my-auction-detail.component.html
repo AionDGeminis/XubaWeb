@@ -230,18 +230,30 @@
     <!-- Lado derecho -->
     <div class="text-end ms-4">
 
-        <small class="text-white-50">
-            Oferta actual
-        </small>
+    <small  *ngIf="subasta.idEstatus === 2 " class="text-white-50">
+        Oferta actual
+    </small>
+    <small *ngIf="subasta.idEstatus != 2 " class="text-white-50">
+        Oferta final
+    </small>
 
-       <h2 class="fw-bold mb-0">
-    {{ subasta.precioFinal | currency:'MXN' }}
-    <span *ngIf="subasta.confirmarContraoferta">
-        ({{ subasta.confirmarContraoferta | currency:'MXN' }})
-    </span>
-</h2>
+    <h2 class="fw-bold mb-0">
+        {{ subasta.precioFinal | currency:'MXN' }}
+    </h2>
 
-    </div>
+</div>
+
+<div class="text-end ms-4" *ngIf="subasta.contraOferta">
+
+    <small class="text-white-50">
+        Contraoferta
+    </small>
+
+    <h2 class="fw-bold mb-0">
+        {{ subasta.contraOferta | currency:'MXN' }}
+    </h2>
+
+</div>
 
 </div>
 

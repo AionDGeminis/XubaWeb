@@ -232,6 +232,8 @@ export class WinnerViewComponent implements OnInit{
     }
   }
 
+  
+
 
   getDatosSubasta(id: number){
     this.loading = true;
@@ -1064,7 +1066,7 @@ export class WinnerViewComponent implements OnInit{
     generarGuiaDeEnvio(){
       this.textoLoading = 'Generando guia...'
       this.loading = true;
-      // this.createPaqueteriaModel();
+      this.createPaqueteriaModel();
       setTimeout(() => {
         console.log(this.paqueteriaRequestModel);
         console.log(JSON.stringify(this.paqueteriaRequestModel));
@@ -1082,8 +1084,8 @@ export class WinnerViewComponent implements OnInit{
           error: (error) => {
             this.loading = false;
             this.ss.showNotification('error','Hubo un problema al generar la guia de envio');
-            // this.showComprobante = true;
-            // this.openComprobante();
+            this.showComprobante = true;
+            this.openComprobante();
             setTimeout(() => { this.openComprobante(); }, 350);
             console.error('Error al generar la guía de envío:', error.error);
           }

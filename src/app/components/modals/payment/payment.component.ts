@@ -156,8 +156,8 @@ export class PaymentComponent implements OnInit {
       'phone':this.tarjeta.phone,      
       'use_3d_secure': true,
       'device_session_id': deviceSessionId,
-      'redirect_url':  `${environment.threeds_redirect_url}/${encodedAuth}` 
-      // 'redirect_url': `http://localhost:4200/payment-callback/${encodedAuth}` 
+     'redirect_url':  `${environment.threeds_redirect_url}/${encodedAuth}` 
+     //'redirect_url': `http://localhost:4200/payment-callback/${encodedAuth}` 
       // 'redirect_url': 'https://www.xuba.mx/subasta-terminada/eyJpZFN1YmFzdGEiOjU1MzUsInRpcG9Vc3VhcmlvIjoiY29tcHJhZG9yIn0%3D' 
       // window.open(res.payment_method.url, '_blank');
 // 

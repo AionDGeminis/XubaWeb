@@ -78,6 +78,7 @@ export class MyAuctionDetailComponent {
     
 
     next:(sub: any)=>{
+      console.log(sub);
 
     this.subasta = sub;
 
@@ -440,7 +441,7 @@ async aceptarOfertaActual() {
     // Aquí debes poner el id del estatus "Pendiente de pago"
     this.CambiarEstatusSubasta(
       this.subasta.id,
-      1023
+      12
     );
 
   }
@@ -653,7 +654,7 @@ confirmarContraoferta() {
     tipoUsuario: 'VEND'
   };
 
-  console.log('Datos enviados:', data);
+  console.log('Datos enviados de contra oferta:', data);
 
   this.subastasService.guardarOFertaCompraSubasta(data).subscribe({
 

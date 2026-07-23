@@ -341,12 +341,28 @@ export class AuctionFinishedComponent implements OnInit{
       OpenPay.setSandboxMode(environment.openPaySandBox);
     this.setDataShipper();
     // throw new Error('Method not implemented.');
+    
+    
+    
   }
 
   getInitialData(IdSubasta: number){
     // this.getHistorialEstatus(IdSubasta);
     this.getDatosSubasta(IdSubasta);
     this.getInformacionGanador(IdSubasta);
+   console.log(
+  'postalAddress:',
+  this.paqueteriaRequestModel.customerDetails.shipperDetails.postalAddress
+
+);
+
+  }
+
+  probarGuia(){
+    console.log("probando paqueteria544")
+console.log(this.paqueteriaRequestModel)
+this.generarGuiaDeEnvio();
+
   }
 
   getInformacionGanador(IdSubasta: number){
@@ -584,6 +600,9 @@ export class AuctionFinishedComponent implements OnInit{
     //     "incoterm": "DAP",
     //     "unitOfMeasurement": "metric"
     // }
+    console.log('musuarios:', this.subasta.musuarios);
+    console.log('nombre:', this.subasta.musuarios?.nombre);
+    console.log('apellido:', this.subasta.musuarios?.apellido);
     this.paqueteriaRequestModel.customerDetails.shipperDetails = {
       "postalAddress": {
             "postalCode": this.subasta.direccion.codigoPostal,
@@ -634,6 +653,7 @@ export class AuctionFinishedComponent implements OnInit{
       ],
       "typeCode": "business"
     }
+    console.log(this.paqueteriaRequestModel)
   }
 
   getCorrectDateFormat(): string{
