@@ -1,4 +1,5 @@
 <div class="main-detail-wrapper">
+  <app-loader *ngIf="loading"></app-loader>
 
   <!-- Mobile Bottom Sheet Container (en Desktop se comporta como display: contents) -->
   <div class="mobile-sheet-container" [class.sheet-open]="mostrarDetalles">
@@ -194,8 +195,9 @@
     <!-- Imagen producto -->
     <div class="detail-img-container">
       <div class="detail-img-wrapper">
-        <img [src]="subasta.mimagenesSubasta[currentIndexImage].url" [class]="'animate__animated ' + imageClassAnimated"
-          alt="Imagen de la subasta" style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
+        <img [src]="subasta.mimagenesSubasta[currentIndexImage].url"
+          [class]="'fast-animation animate__animated ' + classAnimate.imageContainer" alt="Imagen de la subasta"
+          style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
       </div>
 
       <!-- Botones de Navegación Flotantes (SÓLO MÓVIL) -->

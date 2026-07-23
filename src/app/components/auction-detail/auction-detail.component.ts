@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2'
 import { SharedService } from '../../services/shared.service';
 import { AuctionService } from '../../services/auction.service';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-auction-detail',
@@ -21,7 +22,8 @@ import { AuctionService } from '../../services/auction.service';
     CommonModule,
     OfertaPersonalizadaModalComponent,
     VerticalPremiumAuctionsComponent,
-    FormsModule
+    FormsModule,
+    LoaderComponent
   ],
   templateUrl: './auction-detail.component.html',
   styleUrls: ['./auction-detail.component.css']
@@ -32,7 +34,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   lista: Subasta[] = [];
   listaPremium: Subasta[] = [];
   origen = '';
-
+  loading: boolean = false;
   // Estados de UI y datos
   indiceActual = 0;
   imagenActual = '';
@@ -62,7 +64,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private idSubastaConectada: string | null = null;
   private temporizadorSub$?: Subscription;
-  public usuario!: Signal<Usuario|null>;
+  public usuario!: Signal<Usuario | null>;
   public isLoggedIn!: Signal<boolean>;
 
   animatedClassFrame = '';
@@ -89,7 +91,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('descripcion', { static: false }) descripcionElement!: ElementRef;
   @ViewChild('botonApuesta') botonApuesta!: ElementRef;
 
-  classAnimate = {imageContainer:'', rightAside:''}
+  classAnimate = { imageContainer: '', rightAside: '' }
 
   constructor(
     private route: ActivatedRoute,
@@ -101,19 +103,19 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     private toastr: ToastrService,
     private ss: SharedService,
     private auctionService: AuctionService,
-    private renderer: Renderer2, 
+    private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
   ) {
     this.checkTheme();
     this.usuario = this.authService.currentUser;
-    const id     = +this.route.snapshot.paramMap.get('id')!;
+    const id = +this.route.snapshot.paramMap.get('id')!;
     console.log(id)
     this.getInitialData(id);
     this.isLoggedIn = computed(() => !!this.usuario());
     this.vistas.idUsuario = this.usuario()?.id ?? 0;
     this.vistas.idSubasta = id;
     this.getVistasOfertas();
-    if(this.isLoggedIn()){
+    if (this.isLoggedIn()) {
       this.getVendedoresSeguidos(this.usuario()!.id);
       // const id     = +this.route.snapshot.paramMap.get('id')!;
       // console.log(id)
@@ -121,172 +123,174 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  getInitialData(IdSubasta: number){
+  getInitialData(IdSubasta: number) {
+    this.loading = true;
     this.subastasService.getAuctionById(IdSubasta).subscribe(sub => {
-     console.log(sub)
-       this.subasta = sub;
-       if(this.isLoggedIn()){
-         // this.getSubastasSeguidas();
-         this.getDireccionesEntrega(this.usuario()!.id, 'entrega');
-       }
-       // 2. Luego cargar la lista
-       let tipo: 'porvencer' | 'premium' | 'todas' = 'todas';
- 
-       switch(this.origen) {
-           case 'SubastasPremium':
-             tipo = 'premium'
-             break;
-           case 'SubastasExpress':
-             tipo = 'porvencer'
-             break;
-           default:
-             tipo = 'todas';
-             break;
-       }
-       // if (this.origen === 'SubastasPremium') tipo = 'premium';
-       // else if (this.origen === 'SubastasExpress') tipo = 'porvencer';
-   
-       // console.log('Tipo de subastas a consultar:', tipo);
-       this.subastasService.getAuctions(tipo).subscribe(list => {
-         console.log('Lista recibida:', list);
-         this.lista = list;
-         let index = this.lista.findIndex( x => x.id === IdSubasta);
-         this.indiceActual = index > -1? index:0;
-         //console.log(index); 
-        
+      console.log(sub)
+      this.subasta = sub;
+      this.loading = false;
+      if (this.isLoggedIn()) {
+        // this.getSubastasSeguidas();
+        this.getDireccionesEntrega(this.usuario()!.id, 'entrega');
+      }
+      // 2. Luego cargar la lista
+      let tipo: 'porvencer' | 'premium' | 'todas' = 'todas';
+
+      switch (this.origen) {
+        case 'SubastasPremium':
+          tipo = 'premium'
+          break;
+        case 'SubastasExpress':
+          tipo = 'porvencer'
+          break;
+        default:
+          tipo = 'todas';
+          break;
+      }
+      // if (this.origen === 'SubastasPremium') tipo = 'premium';
+      // else if (this.origen === 'SubastasExpress') tipo = 'porvencer';
+
+      // console.log('Tipo de subastas a consultar:', tipo);
+      this.subastasService.getAuctions(tipo).subscribe(list => {
+        console.log('Lista recibida:', list);
+        this.lista = list;
+        let index = this.lista.findIndex(x => x.id === IdSubasta);
+        this.indiceActual = index > -1 ? index : 0;
+        //console.log(index); 
+
         //  this.
         //  this.lista.unshift(this.subasta!);
-   
-         // 3. Ya tienes subasta y lista. Ahora sí puedes usar todo
-         // this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta!.id);
-         // console.log(this.indiceActual)
-         this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
 
-// ⬇️ CONVERTIR A FECHA FIN REAL
-const segundos = this.tiempoStringASegundos(this.tiempoVence);
+        // 3. Ya tienes subasta y lista. Ahora sí puedes usar todo
+        // this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta!.id);
+        // console.log(this.indiceActual)
+        this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
 
-this.fechaFin = new Date(
-  new Date().getTime() + segundos * 1000
-);
+        // ⬇️ CONVERTIR A FECHA FIN REAL
+        const segundos = this.tiempoStringASegundos(this.tiempoVence);
 
-// ⬇️ INICIAR TIMER NUEVO (REAL)
-this.iniciarTimerReal();
-         
-         this.iniciarTemporizador();
-         this.verificarSiSiguiendo();
-         this.conectarSignalR();
-       });
-     }); 
- }
- iniciarTimerReal() {
+        this.fechaFin = new Date(
+          new Date().getTime() + segundos * 1000
+        );
 
-  if (this.intervalTiempo) {
-    clearInterval(this.intervalTiempo);
+        // ⬇️ INICIAR TIMER NUEVO (REAL)
+        this.iniciarTimerReal();
+
+        this.iniciarTemporizador();
+        this.verificarSiSiguiendo();
+        this.conectarSignalR();
+      });
+    });
   }
+  iniciarTimerReal() {
 
-  this.intervalTiempo = setInterval(() => {
-
-    if (!this.fechaFin) return;
-
-    const ahora = new Date().getTime();
-    const fin = this.fechaFin.getTime();
-
-    let diff = fin - ahora;
-
-    if (diff <= 0) {
-      this.tiempoVence = '00:00:00';
-      this.vencida = true;
+    if (this.intervalTiempo) {
       clearInterval(this.intervalTiempo);
-      return;
     }
 
-    const h = Math.floor(diff / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
+    this.intervalTiempo = setInterval(() => {
 
-    this.tiempoVence = `${this.pad(h)}:${this.pad(m)}:${this.pad(s)}`;
+      if (!this.fechaFin) return;
 
-  }, 1000);
-}
- 
-//  toggleTheme(){
-//   const html = document.documentElement;
-//     const icon = document.getElementById('theme-icon');
-//     if(!icon) return;
-//     if (html.getAttribute('data-theme') === 'dark') {
-//       html.setAttribute('data-theme', 'light');
-//       icon.className = 'fas fa-sun';
-//       icon.style.color = '#f59e0b';
-//     } else {
-//       html.setAttribute('data-theme', 'dark');
-//       icon.className = 'fas fa-moon';
-//       icon.style.color = 'var(--text2)';
-//     }
-//  }
-checkTheme(){
-  const tema = localStorage.getItem('theme') ? localStorage.getItem('theme') : '';
-  this.isDarkMode = tema === 'dark' ? true:false;
-  this.renderer.setAttribute(this.document.documentElement, 'data-theme', tema!);
-  localStorage.setItem('theme', tema!);
-}
- 
-toggleTheme() {
-  this.isDarkMode = !this.isDarkMode;
-  const theme = this.isDarkMode ? 'dark' : '';
-  
-  // Aplica el atributo al tag <html>
-  this.renderer.setAttribute(this.document.documentElement, 'data-theme', theme);
-  
-  // Opcional: Guardar en localStorage para que persista al recargar
-  localStorage.setItem('theme', theme);
-}
+      const ahora = new Date().getTime();
+      const fin = this.fechaFin.getTime();
+
+      let diff = fin - ahora;
+
+      if (diff <= 0) {
+        this.tiempoVence = '00:00:00';
+        this.vencida = true;
+        clearInterval(this.intervalTiempo);
+        return;
+      }
+
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+
+      this.tiempoVence = `${this.pad(h)}:${this.pad(m)}:${this.pad(s)}`;
+
+    }, 1000);
+  }
+
+  //  toggleTheme(){
+  //   const html = document.documentElement;
+  //     const icon = document.getElementById('theme-icon');
+  //     if(!icon) return;
+  //     if (html.getAttribute('data-theme') === 'dark') {
+  //       html.setAttribute('data-theme', 'light');
+  //       icon.className = 'fas fa-sun';
+  //       icon.style.color = '#f59e0b';
+  //     } else {
+  //       html.setAttribute('data-theme', 'dark');
+  //       icon.className = 'fas fa-moon';
+  //       icon.style.color = 'var(--text2)';
+  //     }
+  //  }
+  checkTheme() {
+    const tema = localStorage.getItem('theme') ? localStorage.getItem('theme') : '';
+    this.isDarkMode = tema === 'dark' ? true : false;
+    this.renderer.setAttribute(this.document.documentElement, 'data-theme', tema!);
+    localStorage.setItem('theme', tema!);
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    const theme = this.isDarkMode ? 'dark' : '';
+
+    // Aplica el atributo al tag <html>
+    this.renderer.setAttribute(this.document.documentElement, 'data-theme', theme);
+
+    // Opcional: Guardar en localStorage para que persista al recargar
+    localStorage.setItem('theme', theme);
+  }
   ngOnInit(): void {
 
-    const id     = +this.route.snapshot.paramMap.get('id')!;
-   
-    this.origen  = this.route.snapshot.paramMap.get('origen') || '';
+    const id = +this.route.snapshot.paramMap.get('id')!;
+
+    this.origen = this.route.snapshot.paramMap.get('origen') || '';
     console.log('Origen:', this.origen);
     // this.usuario()!.id
     this.getPremium();
     // this.subastasService.getAuctionById(id).subscribe(sub => {
     //   this.subasta = sub;
-  
+
     //   // 2. Luego cargar la lista
     //   let tipo: 'porvencer' | 'premium' | 'todas' = 'todas';
     //   if (this.origen === 'Subastas Premium') tipo = 'premium';
     //   else if (this.origen === 'Subastas Express') tipo = 'porvencer';
-  
+
     //   console.log('Tipo de subastas a consultar:', tipo);
     //   this.subastasService.getAuctions(tipo).subscribe(list => {
     //     console.log('Lista recibida:', list);
     //     this.lista = list;
-  
+
     //     // 3. Ya tienes subasta y lista. Ahora sí puedes usar todo
     //     this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta!.id);
     //     this.imagenActual  = this.subasta!.url;
     //     this.tiempoVence   = this.subasta!.tiempoVence ?? '00:00:00';
-  
+
     //     this.iniciarTemporizador();
     //     this.verificarSiSiguiendo();
     //     this.conectarSignalR();
     //   });
     // }); 
-    
-}
 
-getVendedoresSeguidos(idUsuario: number){
-  this.subastasService.GetVendedoresSeguidos(idUsuario).subscribe({
-    next: (vendedores: any) => {
+  }
+
+  getVendedoresSeguidos(idUsuario: number) {
+    this.subastasService.GetVendedoresSeguidos(idUsuario).subscribe({
+      next: (vendedores: any) => {
         this.listaVendedoresSeguidos = vendedores;
         console.log('Vendedores seguidos:', vendedores);
-    },
-    error: (err) => {
+      },
+      error: (err) => {
         console.error('Error fetching vendedores seguidos:', err);
-    }
-  });
-}
+      }
+    });
+  }
 
-getVistasOfertas(){
+  getVistasOfertas() {
     this.subastasService.registrarVista(this.vistas).subscribe({
       next: (vistas: any) => {
         this.vistasOfertas = vistas
@@ -294,157 +298,157 @@ getVistasOfertas(){
     })
   }
 
-getSiguiendo(idVendedor: number){
-  if(this.listaVendedoresSeguidos.length > 0){
-    return this.listaVendedoresSeguidos.some(vendedor => vendedor.id === idVendedor);
-  } else {  
-    return false;
+  getSiguiendo(idVendedor: number) {
+    if (this.listaVendedoresSeguidos.length > 0) {
+      return this.listaVendedoresSeguidos.some(vendedor => vendedor.id === idVendedor);
+    } else {
+      return false;
+    }
   }
-}
 
-toggleSeguirVendedor(idVendedor: number){
-  if(this.getSiguiendo(idVendedor)){
-    this.dejarSeguirVendedor(idVendedor);
-  } else {
-    this.seguirVendedor(idVendedor);
+  toggleSeguirVendedor(idVendedor: number) {
+    if (this.getSiguiendo(idVendedor)) {
+      this.dejarSeguirVendedor(idVendedor);
+    } else {
+      this.seguirVendedor(idVendedor);
+    }
   }
-}
 
-seguirVendedor(idVendedor: number){
-  this.lockButton = true;
+  seguirVendedor(idVendedor: number) {
+    this.lockButton = true;
 
-  const idUsuario = this.usuario()!.id;
-  if(this.isLoggedIn()){
-    let modelo = {
-      idUsuario,
-      idVendedor
-    };
-    this.subastasService.seguirVendedor(modelo).subscribe({
-      next: (vendedores: any) => {
-       this.getVendedoresSeguidos(idUsuario);
-       this.lockButton = false;
+    const idUsuario = this.usuario()!.id;
+    if (this.isLoggedIn()) {
+      let modelo = {
+        idUsuario,
+        idVendedor
+      };
+      this.subastasService.seguirVendedor(modelo).subscribe({
+        next: (vendedores: any) => {
+          this.getVendedoresSeguidos(idUsuario);
+          this.lockButton = false;
 
-      },
-      error: (err) => {
-        this.lockButton = false;
+        },
+        error: (err) => {
+          this.lockButton = false;
 
-        this.ss.showNotification('error','Hubo un problema al seguir vendedor');
+          this.ss.showNotification('error', 'Hubo un problema al seguir vendedor');
 
           console.error('Error fetching vendedores seguidos:', err);
+        }
+      });
+    }
+  }
+
+  navigateImage(to: string, event: any) {
+    event.stopPropagation();
+    switch (to) {
+      case 'prev':
+        if (this.currentIndexImageViewer > 0) {
+          this.classNavigateImg = 'animate__fadeOutRight';
+          setTimeout(() => {
+            this.currentIndexImageViewer--;
+            this.classNavigateImg = 'animate__fadeInLeft';
+          }, 350);
+        }
+        break;
+      case 'next':
+        if (this.currentIndexImageViewer < this.imagesListViewer.length - 1) {
+          this.classNavigateImg = 'animate__fadeOutLeft';
+          setTimeout(() => {
+            this.currentIndexImageViewer++;
+            this.classNavigateImg = 'animate__fadeInRight';
+          }, 350);
+          // this.currentImageIndex++;
+        }
+        break;
+    }
+  }
+
+  openModalViewer() {
+    this.isviewerOpen = true;
+    this.imagesListViewer = this.subasta.mimagenesSubasta;
+  }
+
+  closeModalViewer() {
+    this.isviewerOpen = false;
+
+  }
+
+
+  dejarSeguirVendedor(idVendedor: number) {
+    this.lockButton = true;
+    const idUsuario = this.usuario()!.id;
+    if (this.isLoggedIn()) {
+      let modelo = {
+        idUsuario,
+        idVendedor
+      };
+      this.subastasService.noseguirVendedor(modelo).subscribe({
+        next: (vendedores: any) => {
+          this.getVendedoresSeguidos(idUsuario);
+          this.lockButton = false;
+        },
+        error: (err) => {
+          this.lockButton = false;
+          this.ss.showNotification('error', 'Hubo un problema al dejar de seguir vendedor');
+          console.error('Error fetching vendedores seguidos:', err);
+        }
+      });
+    }
+  }
+
+
+
+  getPremium() {
+    this.subastasService.getAuctions('premium').subscribe({
+      next: (list) => {
+        this.listaPremium = list;
+        for (let p of this.listaPremium) {
+          p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);
+        }
+        this.setTimer(this.listaPremium);
+      },
+      error: (e) => {
+        console.error('Error fetching premium auctions:', e);
       }
     });
   }
-}
 
-navigateImage(to: string, event: any){
-  event.stopPropagation();
-  switch(to){
-    case 'prev':
-      if(this.currentIndexImageViewer > 0){
-        this.classNavigateImg = 'animate__fadeOutRight';
-        setTimeout(() => {
-          this.currentIndexImageViewer--;
-          this.classNavigateImg = 'animate__fadeInLeft';
-        }, 350);
+  setTimer(litaItems: any[]) {
+    this.intervalId = setInterval(() => {
+      for (let item of litaItems) {
+        if (item.venceSegundos > 0) {
+          // item.venceSegundos--;
+        }
       }
-        break;
-    case 'next':
-      if(this.currentIndexImageViewer < this.imagesListViewer.length - 1) {
-        this.classNavigateImg = 'animate__fadeOutLeft';
-        setTimeout(() => {
-          this.currentIndexImageViewer++;
-          this.classNavigateImg = 'animate__fadeInRight';
-        }, 350);
-        // this.currentImageIndex++;
-      }
-        break;
+    }, 1000);
   }
-}
 
-openModalViewer(){
-  this.isviewerOpen = true;
-  this.imagesListViewer = this.subasta.mimagenesSubasta;
-}
-
-closeModalViewer(){
-  this.isviewerOpen = false;
-
-}
-
-
-dejarSeguirVendedor(idVendedor: number){
-  this.lockButton = true;
-  const idUsuario = this.usuario()!.id;
-  if(this.isLoggedIn()){
-    let modelo = {
-      idUsuario,
-      idVendedor
-    };
-    this.subastasService.noseguirVendedor(modelo).subscribe({
-      next: (vendedores: any) => {
-       this.getVendedoresSeguidos(idUsuario);
-       this.lockButton = false;
-      },
-      error: (err) => {
-        this.lockButton = false;
-        this.ss.showNotification('error','Hubo un problema al dejar de seguir vendedor');
-          console.error('Error fetching vendedores seguidos:', err);
-      }
-    });
+  tiempoStringASegundos(tiempo: string) {
+    const [h, m, s] = tiempo.split(':').map(Number);
+    return h * 3600 + m * 60 + s;
   }
-}
 
+  // 2. Función para convertir segundos a "hh:mm:ss"
+  segundosATiempoString(segundos: number) {
+    const h = String(Math.floor(segundos / 3600)).padStart(2, '0');
+    const m = String(Math.floor((segundos % 3600) / 60)).padStart(2, '0');
+    const s = String(segundos % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
 
+  isSingleSeguida(idSubasta: number): boolean {
+    let isFollowed = this.auctionsId.includes(idSubasta);
+    return isFollowed;
+  }
 
-getPremium(){
-  this.subastasService.getAuctions('premium').subscribe({
-    next: (list) => {
-      this.listaPremium = list;
-      for(let p of this.listaPremium){
-        p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);
-      }
-      this.setTimer(this.listaPremium);
-    },
-    error: (e) => {
-      console.error('Error fetching premium auctions:', e);
-    }
-  });
-}
+  openUserPage(user: any) {
+    this.router.navigate(['/userpage', user]);
+  }
 
-setTimer(litaItems: any[]){
-  this.intervalId = setInterval(() => {
-    for(let item of litaItems){
-      if (item.venceSegundos > 0) {
-       // item.venceSegundos--;
-      }
-    }
-  }, 1000);
-}
-
-tiempoStringASegundos(tiempo: string) {
-  const [h, m, s] = tiempo.split(':').map(Number);
-  return h * 3600 + m * 60 + s;
-}
-
-// 2. Función para convertir segundos a "hh:mm:ss"
-segundosATiempoString(segundos: number) {
-  const h = String(Math.floor(segundos / 3600)).padStart(2, '0');
-  const m = String(Math.floor((segundos % 3600) / 60)).padStart(2, '0');
-  const s = String(segundos % 60).padStart(2, '0');
-  return `${h}:${m}:${s}`;
-}
-
-isSingleSeguida(idSubasta: number): boolean {
-  let isFollowed = this.auctionsId.includes(idSubasta);
-  return isFollowed;
-}
-
-openUserPage(user: any){
-  this.router.navigate(['/userpage', user]);
-}
-
-getSubastasSeguidas(){
-  const usuario = this.authService.currentUser();
+  getSubastasSeguidas() {
+    const usuario = this.authService.currentUser();
     if (usuario) {
       const idUsuario = usuario.id;
       this.auctionService.getAuctions(idUsuario).subscribe({
@@ -454,77 +458,77 @@ getSubastasSeguidas(){
         error: (error) => {
           console.error('Error cargando subastas:', error);
         }
-    });
-  } else {
-    console.warn('Usuario no logueado, no se cargan subastas seguidas');
-  }
-}
-
-toggleSingleSeguida(idSubasta: number, event: Event): void {
-  event.stopPropagation();
-  const usuario = this.authService.currentUser();
-  if(usuario){
-     if (this.isSingleSeguida(idSubasta)) {
-    // this.auctionsId = this.auctionsId.filter(id => id !== idSubasta);
+      });
     } else {
-      console.log(usuario!.id);
-      this.auctionsId.push(idSubasta);
-      this.subastasService.seguirSubasta(usuario!.id, idSubasta.toString()).subscribe({
-        next: (data) => {
-          console.log('resultado seguir subasta');
-          console.log(data);
-         this.getSubastasSeguidas();
-        },
-        error: (error) => {
-          console.error('Error al agregar subasta seguida:', error);
-        }
-      })
-      // this.auctionsId.push(idSubasta);
+      console.warn('Usuario no logueado, no se cargan subastas seguidas');
     }
-    // const idUsuario = Number(this.authService.idUsuario);
-    // //const idSubasta = idSubasta.toString();
-    // if (this.isFollowed) {
-    //   this.subastasService.dejarDeSeguirSubasta(idUsuario, idSubasta.toString())
-    //     .subscribe(() => this.isSingleSeguida(idSubasta));
-    // } else {
-    //   this.subastasService.seguirSubasta(idUsuario, idSubasta.toString())
-    //     .subscribe(() => this.isFollowed = true);
-    // }
   }
- 
-}
 
-setupIndices() {
-  this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta!.id);
-  this.imagenActual = this.subasta!.url;
-  this.tiempoVence  = this.subasta!.tiempoVence ?? '00:00:00';
-}
-
-cambiarSubastaDesdePremium(data: { subasta: Subasta; lista: Subasta[]; origen: string }): void {
-  this.subasta = data.subasta;
-  this.lista = data.lista;
-  this.origen = data.origen;
-
-  this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta!.id);
-  this.imagenActual  = this.subasta!.url;
-  this.tiempoVence   = this.subasta!.tiempoVence ?? '00:00:00';
-
-  this.resetDatos(); // reinicia temporizador, verifica seguimiento, etc.
-  this.actualizarVista();
-}
-  
-ngAfterViewInit(): void {
-  setTimeout(() => {
-    const tituloEl = this.tituloElement?.nativeElement;
-    const descripcionEl = this.descripcionElement?.nativeElement;
-
-    if (tituloEl && descripcionEl) {
-      this.textoTruncado =
-        tituloEl.scrollWidth > tituloEl.clientWidth ||
-        descripcionEl.scrollHeight > descripcionEl.clientHeight;
+  toggleSingleSeguida(idSubasta: number, event: Event): void {
+    event.stopPropagation();
+    const usuario = this.authService.currentUser();
+    if (usuario) {
+      if (this.isSingleSeguida(idSubasta)) {
+        // this.auctionsId = this.auctionsId.filter(id => id !== idSubasta);
+      } else {
+        console.log(usuario!.id);
+        this.auctionsId.push(idSubasta);
+        this.subastasService.seguirSubasta(usuario!.id, idSubasta.toString()).subscribe({
+          next: (data) => {
+            console.log('resultado seguir subasta');
+            console.log(data);
+            this.getSubastasSeguidas();
+          },
+          error: (error) => {
+            console.error('Error al agregar subasta seguida:', error);
+          }
+        })
+        // this.auctionsId.push(idSubasta);
+      }
+      // const idUsuario = Number(this.authService.idUsuario);
+      // //const idSubasta = idSubasta.toString();
+      // if (this.isFollowed) {
+      //   this.subastasService.dejarDeSeguirSubasta(idUsuario, idSubasta.toString())
+      //     .subscribe(() => this.isSingleSeguida(idSubasta));
+      // } else {
+      //   this.subastasService.seguirSubasta(idUsuario, idSubasta.toString())
+      //     .subscribe(() => this.isFollowed = true);
+      // }
     }
-  });
-}
+
+  }
+
+  setupIndices() {
+    this.indiceActual = this.lista.findIndex(s => s.id === this.subasta!.id);
+    this.imagenActual = this.subasta!.url;
+    this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
+  }
+
+  cambiarSubastaDesdePremium(data: { subasta: Subasta; lista: Subasta[]; origen: string }): void {
+    this.subasta = data.subasta;
+    this.lista = data.lista;
+    this.origen = data.origen;
+
+    this.indiceActual = this.lista.findIndex(s => s.id === this.subasta!.id);
+    this.imagenActual = this.subasta!.url;
+    this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
+
+    this.resetDatos(); // reinicia temporizador, verifica seguimiento, etc.
+    this.actualizarVista();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      const tituloEl = this.tituloElement?.nativeElement;
+      const descripcionEl = this.descripcionElement?.nativeElement;
+
+      if (tituloEl && descripcionEl) {
+        this.textoTruncado =
+          tituloEl.scrollWidth > tituloEl.clientWidth ||
+          descripcionEl.scrollHeight > descripcionEl.clientHeight;
+      }
+    });
+  }
 
   ngOnDestroy(): void {
     if (this.idSubastaConectada) {
@@ -542,10 +546,10 @@ ngAfterViewInit(): void {
           console.log('subasta terminada')
           this.vencida = true;
           this.temporizadorSub$?.unsubscribe();
-          this.consultarGanador(); 
-          let dataParams = JSON.stringify({ idSubasta: this.subasta!.id, tipoUsuario:'comprador'});
+          this.consultarGanador();
+          let dataParams = JSON.stringify({ idSubasta: this.subasta!.id, tipoUsuario: 'comprador' });
           let encoded = this.ss.encodeToBase64(dataParams);
-          this.router.navigate(['/subasta-terminada',encoded]);
+          this.router.navigate(['/subasta-terminada', encoded]);
         }
       }
     });
@@ -578,41 +582,41 @@ ngAfterViewInit(): void {
     this.imagenActual = url;
   }
 
-  toShort(val: string){
+  toShort(val: string) {
     return val.length > 41 ? val.substring(0, 41) + '...' : val;
   }
 
-  getDireccionesEntrega(idUsuario: number, tipo: string){
+  getDireccionesEntrega(idUsuario: number, tipo: string) {
     this.subastasService.GetDireccionesUsuario(idUsuario, tipo).subscribe({
       next: (response: any) => {
-          console.log(response);
-          this.direcciones = response;
-          this.direccionEntrega = this.direcciones.length > 0 ? this.direcciones.find((direccion: any) => direccion.predeterminada) : null;
-          console.log(this.direccionEntrega)
-          if(this.direccionEntrega && this.direccionEntrega !== null && this.direccionEntrega !== undefined){
-            // this.calcularPrecios();
-            this.cotizarPreciosDeEnntrega()
-          }
+        console.log(response);
+        this.direcciones = response;
+        this.direccionEntrega = this.direcciones.length > 0 ? this.direcciones.find((direccion: any) => direccion.predeterminada) : null;
+        console.log(this.direccionEntrega)
+        if (this.direccionEntrega && this.direccionEntrega !== null && this.direccionEntrega !== undefined) {
+          // this.calcularPrecios();
+          this.cotizarPreciosDeEnntrega()
+        }
       },
       error: (error: any) => {
-          console.error('Error fetching addresses:', error);
+        console.error('Error fetching addresses:', error);
       }
     }
     );
   }
 
-  changeDireccionEntrega(){
+  changeDireccionEntrega() {
     this.cotizarPreciosDeEnntrega();
   }
 
-  cotizarPreciosDeEnntrega(){
+  cotizarPreciosDeEnntrega() {
     let modeloCotizar = this.getCotizarModelFormat();
     console.log('datos cotizar: ', modeloCotizar);
     this.loadingCotizacion = true;
     this.subastasService.cotizarEnvio(modeloCotizar).subscribe({
       next: (data: any) => {
         this.loadingCotizacion = false;
-        this.listaTiposEnvio = data.filter( (x: any) => x.codigoProducto === 'G' || x.codigoProducto === 'N');
+        this.listaTiposEnvio = data.filter((x: any) => x.codigoProducto === 'G' || x.codigoProducto === 'N');
         console.log('Cotización exitosa:', this.listaTiposEnvio);
         // this.listaTiposEnvio[0].precio += 100;
         // this.tipoEnvioSeleccionado = this.listaTiposEnvio[0];
@@ -626,7 +630,7 @@ ngAfterViewInit(): void {
     })
   }
 
-  getCotizarModelFormat(){
+  getCotizarModelFormat() {
     console.log('Generating cotización model format');
     console.log(this.subasta)
     var cotizacion = {
@@ -643,7 +647,7 @@ ngAfterViewInit(): void {
     return cotizacion;
   }
 
-  getCotizarFecha(){
+  getCotizarFecha() {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
@@ -700,39 +704,39 @@ ngAfterViewInit(): void {
         const partes = item.replace('$', '').split('-');
         return { monto: `$${partes[0]}`, usuario: partes[1], fecha: partes.slice(2).join('-') };
       });
-      
-      if(actual.estatus === 'FIN'){
+
+      if (actual.estatus === 'FIN') {
         this.vencida = true;
         this.temporizadorSub$?.unsubscribe();
-        this.consultarGanador(); 
-        let dataParams = JSON.stringify({ idSubasta: this.subasta!.id, tipoUsuario:'comprador'});
+        this.consultarGanador();
+        let dataParams = JSON.stringify({ idSubasta: this.subasta!.id, tipoUsuario: 'comprador' });
         let encoded = this.ss.encodeToBase64(dataParams);
-        this.router.navigate(['/subasta-terminada',encoded]);
+        this.router.navigate(['/subasta-terminada', encoded]);
       }
 
     });
     this.idSubastaConectada = nuevoId;
   }
 
-  openShippingPricesModal(){
+  openShippingPricesModal() {
     this.direccionEntrega = this.direcciones.length > 0 ? this.direcciones.find((direccion: any) => direccion.predeterminada) : null;
-    this.direccionEntrega = this.direccionEntrega ? this.direccionEntrega :  this.direcciones.length > 0? this.direcciones[0]:null;
+    this.direccionEntrega = this.direccionEntrega ? this.direccionEntrega : this.direcciones.length > 0 ? this.direcciones[0] : null;
     // this.direccionEntrega = !this.direccionEntrega && this.direcciones.length > 0? this.direcciones[0]:null;
     console.log(this.direcciones)
     console.log(this.direccionEntrega)
-    if(this.direccionEntrega){
+    if (this.direccionEntrega) {
       this.cotizarPreciosDeEnntrega();
       this.showModalShippingPrices = true;
     }
-          console.log(this.direccionEntrega)
-          // if(this.direccionEntrega && this.direccionEntrega !== null && this.direccionEntrega !== undefined){
-          //   // this.calcularPrecios();
-          //   this.cotizarPreciosDeEnntrega()
-          // }
+    console.log(this.direccionEntrega)
+    // if(this.direccionEntrega && this.direccionEntrega !== null && this.direccionEntrega !== undefined){
+    //   // this.calcularPrecios();
+    //   this.cotizarPreciosDeEnntrega()
+    // }
     // this.showModalShippingPrices = true;
   }
 
-  closeShippingPricesModal(){
+  closeShippingPricesModal() {
     this.showModalShippingPrices = false;
   }
 
@@ -782,40 +786,40 @@ ngAfterViewInit(): void {
     console.log(diff)
     if (diff <= 0 && !compraDirecta) return;
     let dataApuesta = {
-      idSubasta: this.subasta!.id, 
-      idComprador, 
-      apuesta: compraDirecta ? monto : diff, 
-      compraDirecta 
+      idSubasta: this.subasta!.id,
+      idComprador,
+      apuesta: compraDirecta ? monto : diff,
+      compraDirecta
     }
     console.log(dataApuesta)
-    this.subastasService.enviarApuesta(dataApuesta).subscribe({ 
+    this.subastasService.enviarApuesta(dataApuesta).subscribe({
       next: () => {
-        if(!this.isFollowed){
+        if (!this.isFollowed) {
           this.verificarSiSiguiendo();
         }
-      }, 
-      error: err => console.error('Error al enviar apuesta:', err) 
+      },
+      error: err => console.error('Error al enviar apuesta:', err)
     });
 
     this.getVistasOfertas()
   }
-  
-  closeModalBottom(){
+
+  closeModalBottom() {
     this.classModalBottom = 'animate__fadeOutDown'
     setTimeout(() => {
-          this.showModalBottom = false;
+      this.showModalBottom = false;
     }, 250);
   }
 
-  openModalBottom(){
+  openModalBottom() {
     this.showModalBottom = true;
     this.classModalBottom = 'animate__fadeInUp'
-//     setTimeout(() => {
-//       this.showModalBottom = false;
-// }, 250);
+    //     setTimeout(() => {
+    //       this.showModalBottom = false;
+    // }, 250);
   }
 
-  async compraDirecta(){
+  async compraDirecta() {
     const idComprador = +(this.authService.idUsuario);
     if (idComprador === +(this.subasta!.musuarios?.id)) {
       this.toastr.error('No puedes ofertar en tu propia subasta.', 'Error');
@@ -823,25 +827,25 @@ ngAfterViewInit(): void {
     }
 
     let dataApuesta = {
-      idSubasta: this.subasta!.id, 
-      idComprador, 
-      apuesta: this.subasta.precio, 
-      compraDirecta : true
+      idSubasta: this.subasta!.id,
+      idComprador,
+      apuesta: this.subasta.precio,
+      compraDirecta: true
     }
     let r = await this.ss.showConfirmMessage(`¿Desea realizar la copra directa de este producto por un precio de: ${this.toCurrency(this.subasta.precio)}?`)
-    if(r){
-      this.subastasService.enviarApuesta(dataApuesta).subscribe({ 
+    if (r) {
+      this.subastasService.enviarApuesta(dataApuesta).subscribe({
         next: (data) => {
           console.log(data)
-          if(!this.isFollowed){
+          if (!this.isFollowed) {
             this.verificarSiSiguiendo();
           }
-          this.ss.showNotification('success','Compra directa correcta')
-        }, 
-        error: err => console.error('Error al enviar apuesta:', err) 
+          this.ss.showNotification('success', 'Compra directa correcta')
+        },
+        error: err => console.error('Error al enviar apuesta:', err)
       });
     }
-   
+
   }
 
   // Navegación entre subastas
@@ -858,15 +862,16 @@ ngAfterViewInit(): void {
       this.actualizarVista(); // actualiza imagen, tiempo, etc.
       setTimeout(() => {
         this.classAnimate.imageContainer = 'animate__fadeInLeft'
-     }, 300);
+      }, 300);
     }
   }
 
-  
-  
+
+
   irASiguiente(): void {
-    
+
     if (this.indiceActual < this.lista.length - 1) {
+      // this.loading = true;
       this.currentIndexImage = 0;
       this.classAnimate.imageContainer = 'animate__fadeOutLeft'
       this.indiceActual++;
@@ -875,17 +880,17 @@ ngAfterViewInit(): void {
       console.log(this.subasta)
       this.resetDatos();
       this.isFollowed = false;
-      this.actualizarVista(); 
+      this.actualizarVista();
       setTimeout(() => {
         this.classAnimate.imageContainer = 'animate__fadeInRight'
-     }, 300);
+      }, 300);
     }
-    
-  
+
+
   }
   actualizarVista() {
-    this.imagenActual  = this.subasta!.url;
-    this.tiempoVence   = this.subasta!.tiempoVence ?? '00:00:00';
+    this.imagenActual = this.subasta!.url;
+    this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
     //this.iniciarTemporizador();
     this.verificarSiSiguiendo();
     //this.getSubastasSeguidas();
@@ -893,11 +898,11 @@ ngAfterViewInit(): void {
 
     const segundos = this.tiempoStringASegundos(this.tiempoVence);
 
-this.fechaFin = new Date(
-  new Date().getTime() + segundos * 1000
-);
+    this.fechaFin = new Date(
+      new Date().getTime() + segundos * 1000
+    );
 
-this.iniciarTimerReal();
+    this.iniciarTimerReal();
   }
 
   cerrarDetalle(): void {
@@ -943,26 +948,26 @@ this.iniciarTimerReal();
     return Number(monto.replace(/[^0-9.-]+/g, ''));
   }
 
-  animateResponse(){
-   this.animatedClass = 'animate__bounceIn' 
-   setTimeout(() => {
-    this.animatedClass = '';
-   }, 300);
+  animateResponse() {
+    this.animatedClass = 'animate__bounceIn'
+    setTimeout(() => {
+      this.animatedClass = '';
+    }, 300);
   }
 
-  tryOfertaPersonalizada(){
-    if(this.valorSubastaPersonalizada === null || this.valorSubastaPersonalizada <=0 || this.valorSubastaPersonalizada > 1000){
+  tryOfertaPersonalizada() {
+    if (this.valorSubastaPersonalizada === null || this.valorSubastaPersonalizada <= 0 || this.valorSubastaPersonalizada > 1000) {
       Swal.fire({
-      // title: 'Error!',
-      text: 'El importe no es valido',
-      icon: 'error',
-      showConfirmButton: false,
-      // confirmButtonText: 'Cool',
-      toast: true,
-      position: 'top-end',
-      timer: 2000,
-    });
-    return;
+        // title: 'Error!',
+        text: 'El importe no es valido',
+        icon: 'error',
+        showConfirmButton: false,
+        // confirmButtonText: 'Cool',
+        toast: true,
+        position: 'top-end',
+        timer: 2000,
+      });
+      return;
     }
     console.log(this.valorSubastaPersonalizada)
     this.realizarApuesta(this.valorApuesta + this.valorSubastaPersonalizada, false);
@@ -973,7 +978,7 @@ this.iniciarTimerReal();
     this.isModalOpen = true;
   }
 
-  closeModal(){
+  closeModal() {
     this.valorSubastaPersonalizada = null;
     this.isModalOpen = false;
   }
@@ -982,7 +987,7 @@ this.iniciarTimerReal();
     event.stopPropagation();
   }
 
-  setApuestaPersonalizada(valor: number){
+  setApuestaPersonalizada(valor: number) {
     this.valorSubastaPersonalizada = valor;
   }
 
@@ -993,21 +998,21 @@ this.iniciarTimerReal();
       this.imageClassAnimated = '';
     }, 300);
   }
-  
-  moveToProfile(){
+
+  moveToProfile() {
     this.router.navigate(['/profile']);
   }
 
-  getDatosSubasta(id: number){
+  getDatosSubasta(id: number) {
     // this.loading = true;
     this.subastasService.getAuctionById(id).subscribe({
       next: (subasta) => {
-        let tiempoVence = subasta.tiempoVence?? '00:00:00';
+        let tiempoVence = subasta.tiempoVence ?? '00:00:00';
         let segundos: number, minutos: number, horas: number;
         let _tiempoRestante = tiempoVence.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
         console.log(_tiempoRestante);
         // this.loading = false;
-        if(_tiempoRestante > 0){
+        if (_tiempoRestante > 0) {
           const url = new URL(window.location.href);
           console.log(url)
           const newURl = `${url.origin}/subasta-detalle/${subasta.id}/SubastasPremium`;
@@ -1016,7 +1021,7 @@ this.iniciarTimerReal();
           // this.router.navigate(['/subasta-detalle', subasta.id, 'SubastasPremium']);
           window.location.href = newURl;
         } else {
-          let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario:'comprador'});
+          let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario: 'comprador' });
           let encoded = this.ss.encodeToBase64(dataParams);
           this.router.navigate(['/subasta-terminada', encoded]);
         }
@@ -1027,5 +1032,5 @@ this.iniciarTimerReal();
       }
     })
   }
-  
+
 }
