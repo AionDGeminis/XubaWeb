@@ -366,6 +366,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   openModalViewer() {
+    this.currentIndexImageViewer = this.currentIndexImage;
     this.isviewerOpen = true;
     this.imagesListViewer = this.subasta.mimagenesSubasta;
   }
@@ -465,35 +466,36 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   toggleSingleSeguida(idSubasta: number, event: Event): void {
-    event.stopPropagation();
+    // event.stopPropagation();
     const usuario = this.authService.currentUser();
     if (usuario) {
-      if (this.isSingleSeguida(idSubasta)) {
-        // this.auctionsId = this.auctionsId.filter(id => id !== idSubasta);
-      } else {
-        console.log(usuario!.id);
-        this.auctionsId.push(idSubasta);
-        this.subastasService.seguirSubasta(usuario!.id, idSubasta.toString()).subscribe({
-          next: (data) => {
-            console.log('resultado seguir subasta');
-            console.log(data);
-            this.getSubastasSeguidas();
-          },
-          error: (error) => {
-            console.error('Error al agregar subasta seguida:', error);
-          }
-        })
-        // this.auctionsId.push(idSubasta);
-      }
-      // const idUsuario = Number(this.authService.idUsuario);
-      // //const idSubasta = idSubasta.toString();
-      // if (this.isFollowed) {
-      //   this.subastasService.dejarDeSeguirSubasta(idUsuario, idSubasta.toString())
-      //     .subscribe(() => this.isSingleSeguida(idSubasta));
+      // if (this.isSingleSeguida(idSubasta)) {
+      //   // this.auctionsId = this.auctionsId.filter(id => id !== idSubasta);
       // } else {
-      //   this.subastasService.seguirSubasta(idUsuario, idSubasta.toString())
-      //     .subscribe(() => this.isFollowed = true);
+      console.log(usuario!.id);
+      //   this.auctionsId.push(idSubasta);
+      //   this.subastasService.seguirSubasta(usuario!.id, idSubasta.toString()).subscribe({
+      //     next: (data) => {
+      //       console.log('resultado seguir subasta');
+      //       console.log(data);
+      //       this.getSubastasSeguidas();
+      //     },
+      //     error: (error) => {
+      //       console.error('Error al agregar subasta seguida:', error);
+      //     }
+      //   })
+      //   // this.auctionsId.push(idSubasta);
       // }
+      const idUsuario = Number(this.authService.idUsuario);
+      //const idSubasta = idSubasta.toString();
+      if (this.isFollowed) {
+        this.subastasService.dejarDeSeguirSubasta(idUsuario, idSubasta.toString())
+          //.subscribe(() => this.isSingleSeguida(idSubasta));
+          .subscribe(() => this.isFollowed = false);
+      } else {
+        this.subastasService.seguirSubasta(idUsuario, idSubasta.toString())
+          .subscribe(() => this.isFollowed = true);
+      }
     }
 
   }
