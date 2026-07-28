@@ -23,7 +23,7 @@ declare var OpenPay: any;
   templateUrl: './auction-finished.component.html',
   styleUrl: './auction-finished.component.css'
 })
-export class AuctionFinishedComponent implements OnInit{
+export class AuctionFinishedComponent implements OnInit {
   subasta!: Subasta;
   lista: Subasta[] = [];
   // usuario: Usuario | null = {} as Usuario;
@@ -34,11 +34,12 @@ export class AuctionFinishedComponent implements OnInit{
   estatusPagado: string = AuctionClaveStatus.Pagado;
   estatusEnviado: string = AuctionClaveStatus.Enviado;
   tipoUsuario: string = '';
-  public usuario!: Signal<Usuario|null>;
+  public usuario!: Signal<Usuario | null>;
   public isLoggedIn!: Signal<boolean>;
   hasPermiso: boolean = false;
   showComprobante: boolean = false;
   direccionEntrega: any;
+  vendedor: any
   // origen = '';
   direcciones: any[] = [];
   // // Estados de UI y datos
@@ -71,13 +72,13 @@ export class AuctionFinishedComponent implements OnInit{
     expiration_month: '',
     expiration_year: '',
     cvv2: '',
-    mail:'',
+    mail: '',
     phone: '',
   };
   tarjetas: any[] = [];
   selectedCard: any = null;
   openModal: boolean = false;
-  isModalOpen: any = {etiqueta: false};
+  isModalOpen: any = { etiqueta: false };
 
   paqueteriaRequestModel: any = {
     plannedShippingDateAndTime: "2025-08-21T19:19:40 GMT+00:00",
@@ -131,7 +132,7 @@ export class AuctionFinishedComponent implements OnInit{
           "phone": "4972463",
           "mobilePhone": "2563456227231",
           "companyName": "XUBA",
-          "fullName": "Antonio Rodriguez"
+         // "fullName": "Antonio Rodriguez"
         },
         "registrationNumbers": [
           {
@@ -169,7 +170,7 @@ export class AuctionFinishedComponent implements OnInit{
         "typeCode": "business"
       }
     },
-    content: {  
+    content: {
       "packages": [
         {
           "typeCode": "2BP",
@@ -236,44 +237,44 @@ export class AuctionFinishedComponent implements OnInit{
   //   noAutorizacion:'2344523'
   // };
   modeloComprobante = {
-    estatus:'',
-    fecha:'',
-    idTransaction:'',
+    estatus: '',
+    fecha: '',
+    idTransaction: '',
     metodoPago: '',
-    cliente:'',
-    correo:'',
-    ordenXuba:'',
-    total:0,
-    subtotal:0,
-    envio:0,
-    nombreArticulo:'',
-    idArticulo:0,
-    descripcion:'',
-    cantidad:1,
-    noAutorizacion:''
+    cliente: '',
+    correo: '',
+    ordenXuba: '',
+    total: 0,
+    subtotal: 0,
+    envio: 0,
+    nombreArticulo: '',
+    idArticulo: 0,
+    descripcion: '',
+    cantidad: 1,
+    noAutorizacion: ''
   };
-  ordenEstatusValidaiones: any = { 
-    SST:1, 
-    ACT:2,    
-    FIN:3,
-    PGA:4,
-    RGA:5,
-    AGA:6, 
-    PSI:7,    
-    ASI:8,
-    RSI:9,
-    NEF:10,
-    PDO:11, 
-    PTP:12,    
-    PEV:13,
-    ENV:14,
+  ordenEstatusValidaiones: any = {
+    SST: 1,
+    ACT: 2,
+    FIN: 3,
+    PGA: 4,
+    RGA: 5,
+    AGA: 6,
+    PSI: 7,
+    ASI: 8,
+    RSI: 9,
+    NEF: 10,
+    PDO: 11,
+    PTP: 12,
+    PEV: 13,
+    ENV: 14,
     REC: 15
-   };
+  };
   descripcionCargo: string = '';
   metodoPagoDescripcion: string = '';
   listaSeguimiento: any[] = [];
   dataParams: any = null;
-  constructor(private route: ActivatedRoute,private openPayService: OpenPayService,private ss: SharedService, private authService: AuthService, private subastasService: SubastasService, private router: Router ) { 
+  constructor(private route: ActivatedRoute, private openPayService: OpenPayService, private ss: SharedService, private authService: AuthService, private subastasService: SubastasService, private router: Router) {
     //const dataParams: any  = this.route.snapshot.params;
     // this.usuario = this.authService.currentUser();
     this.usuario = this.authService.currentUser;
@@ -284,7 +285,7 @@ export class AuctionFinishedComponent implements OnInit{
     // console.log(decoded)
     // console.log('parametro de url')
     // console.log(dataParams)
-    if(decoded){
+    if (decoded) {
       // console.log(decoded)
       this.hasPermiso = true;
       let jsonData = JSON.parse(decoded);
@@ -320,7 +321,7 @@ export class AuctionFinishedComponent implements OnInit{
       console.log('informacion de parametros no valida')
       this.hasPermiso = false;
     }
-   
+
     // this.tipoUsuario = dataParams.tipoUsuario || '';
     // if(dataParams && dataParams.id){
     //   if(this.tipoUsuario !== '')
@@ -337,35 +338,34 @@ export class AuctionFinishedComponent implements OnInit{
     // OpenPay.setApiKey('pk_f2da5530e74d4c7fbf292d886aba5e50');
     // OpenPay.setSandboxMode(true);
     OpenPay.setId(environment.openPayId);
-      OpenPay.setApiKey(environment.openPayApiKey);
-      OpenPay.setSandboxMode(environment.openPaySandBox);
+    OpenPay.setApiKey(environment.openPayApiKey);
+    OpenPay.setSandboxMode(environment.openPaySandBox);
     this.setDataShipper();
     // throw new Error('Method not implemented.');
-    
-    
-    
+
+
+
   }
 
-  getInitialData(IdSubasta: number){
+  getInitialData(IdSubasta: number) {
     // this.getHistorialEstatus(IdSubasta);
     this.getDatosSubasta(IdSubasta);
     this.getInformacionGanador(IdSubasta);
-   console.log(
-  'postalAddress:',
-  this.paqueteriaRequestModel.customerDetails.shipperDetails.postalAddress
+    console.log(
+      'postalAddress:',
+      this.paqueteriaRequestModel.customerDetails.shipperDetails.postalAddress
 
-);
+    );
 
   }
 
-  probarGuia(){
+  probarGuia() {
     console.log("probando paqueteria544")
-console.log(this.paqueteriaRequestModel)
-this.generarGuiaDeEnvio();
-
+    console.log(this.paqueteriaRequestModel)
+    this.generarGuiaDeEnvio();
   }
 
-  getInformacionGanador(IdSubasta: number){
+  getInformacionGanador(IdSubasta: number) {
     this.loading = true;
     this.subastasService.GetInformacionSubastaTerminada(IdSubasta).subscribe({
       next: (response) => {
@@ -387,7 +387,7 @@ this.generarGuiaDeEnvio();
     });
   }
 
-  async calcularPrecios(){
+  async calcularPrecios() {
     // this.precioComision = 12.00;
     this.precioEnvio = 0;
     // this.precioTotal = this.subasta.apuesta + this.precioComision + this.precioEnvio;
@@ -397,7 +397,7 @@ this.generarGuiaDeEnvio();
     this.subastasService.cotizarEnvio(modeloCotizar).subscribe({
       next: (data: any) => {
         this.loading = false;
-        this.listaTiposEnvio = data.filter( (x: any) => x.codigoProducto === 'G' || x.codigoProducto === 'N');
+        this.listaTiposEnvio = data.filter((x: any) => x.codigoProducto === 'G' || x.codigoProducto === 'N');
         // console.log('Cotización exitosa:', this.listaTiposEnvio);
         // this.listaTiposEnvio[0].precio += 100;
         this.tipoEnvioSeleccionado = this.listaTiposEnvio[0];
@@ -423,12 +423,12 @@ this.generarGuiaDeEnvio();
     // this.precioTotal = this.precio + this.precioComision;
   }
 
-  changeTipoEnvio(){
+  changeTipoEnvio() {
     this.precioEnvio = this.tipoEnvioSeleccionado?.precio || 0;
     this.precioTotal = this.subasta.apuesta + this.precioComision + this.precioEnvio;
   }
 
-  changeDireccion(){
+  changeDireccion() {
     this.calcularPrecios();
   }
 
@@ -436,11 +436,11 @@ this.generarGuiaDeEnvio();
     return this.precioEnvio;
   }
 
-  getInformacionUsuario(idUsuario: number){
+  getInformacionUsuario(idUsuario: number) {
     this.authService.consultarDatosUsuario(idUsuario).subscribe({
       next: (response: any) => {
         this.infoUsuario = response;
-          // console.log(response);
+        // console.log(response);
       },
       error: (err: any) => {
         console.error('Error fetching user information:', err);
@@ -448,24 +448,24 @@ this.generarGuiaDeEnvio();
     });
   }
 
-  setComprobanteModel(){
+  setComprobanteModel() {
     let clienteNombre = `${this.ganadorInfo?.nombre} ${this.ganadorInfo?.apellido}`
-    
+
     this.modeloComprobante = {
-      estatus:'',
-      fecha:'',
-      idTransaction:'',
+      estatus: '',
+      fecha: '',
+      idTransaction: '',
       metodoPago: '',
-      cliente: clienteNombre ,
-      correo:'',
-      ordenXuba:`#AX-${this.subasta.id}-${this.ganadorInfo.idComprador}`,
-      total:this.precioTotal,
-      subtotal:this.ganadorInfo.apuesta,
-      envio:this.precioEnvio,
-      nombreArticulo:`Item#${this.subasta.id}-${this.subasta.caption}`,
-      idArticulo:this.subasta.id,
+      cliente: clienteNombre,
+      correo: '',
+      ordenXuba: `#AX-${this.subasta.id}-${this.ganadorInfo.idComprador}`,
+      total: this.precioTotal,
+      subtotal: this.ganadorInfo.apuesta,
+      envio: this.precioEnvio,
+      nombreArticulo: `Item#${this.subasta.id}-${this.subasta.caption}`,
+      idArticulo: this.subasta.id,
       descripcion: this.descripcionCargo,
-      cantidad:1,
+      cantidad: 1,
       noAutorizacion: '',
     };
   }
@@ -478,17 +478,17 @@ this.generarGuiaDeEnvio();
   //     //  let tipo: 'porvencer' | 'premium' | 'todas' = 'todas';
   //     //  if (this.origen === 'Subastas Premium') tipo = 'premium';
   //     //  else if (this.origen === 'Subastas Express') tipo = 'porvencer';
-   
+
   //     //  console.log('Tipo de subastas a consultar:', tipo);
   //     //  this.subastasService.getAuctions(tipo).subscribe(list => {
   //     //    console.log('Lista recibida:', list);
   //     //    this.lista = list;
-   
+
   //        // 3. Ya tienes subasta y lista. Ahora sí puedes usar todo
   //       //  this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta.id);
   //       //  this.imagenActual  = this.subasta.url;
   //       //  this.tiempoVence   = this.subasta.tiempoVence ?? '00:00:00';
-         
+
   //       //  this.iniciarTemporizador();
   //       //  this.verificarSiSiguiendo();
   //       //  this.conectarSignalR();
@@ -496,16 +496,19 @@ this.generarGuiaDeEnvio();
   //    }); 
   // }
 
-  getDatosSubasta(id: number){
+  getDatosSubasta(id: number) {
     this.loading = true;
     this.subastasService.getAuctionById(id).subscribe({
       next: (subasta) => {
         this.subasta = subasta;
+        this.vendedor = subasta.musuarios;
+        console.log('VENDEDOR');
+        console.log(this.vendedor);
         // console.log('Datos de la subasta', subasta);
-        if(this.isLoggedIn()){
+        if (this.isLoggedIn()) {
           // this.getDireccionesEntrega(this.usuario()!.id, 'entrega');
         }
-       
+
         // let tiempoVence = subasta.tiempoVence?? '00:00:00';
         // let segundos: number, minutos: number, horas: number;
         // let _tiempoRestante = tiempoVence.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
@@ -526,7 +529,7 @@ this.generarGuiaDeEnvio();
     })
   }
 
-  validateData(){
+  validateData() {
 
   }
 
@@ -534,15 +537,15 @@ this.generarGuiaDeEnvio();
     this.router.navigate(['/profile']);
   }
 
-  closeModalDireccion(){
+  closeModalDireccion() {
     this.openModalDireccion = false;
   }
 
-  fOpenModalDireccion(){
+  fOpenModalDireccion() {
     this.openModalDireccion = true;
   }
 
-  getCotizarModelFormat(){
+  getCotizarModelFormat() {
     // console.log('intentar crear modelo cotizacion')
     // console.log(this.subasta.direccion)
     var cotizacion = {
@@ -559,104 +562,157 @@ this.generarGuiaDeEnvio();
     return cotizacion;
   }
 
-  createPaqueteriaModel(){
-    // const hoy = new Date();
-    // const manana = new Date(hoy);
-    // manana.setDate(hoy.getDate() + 4);
-    
-    this.paqueteriaRequestModel.idsubasta = this.subasta.id;
-    this.paqueteriaRequestModel.plannedShippingDateAndTime = this.getCorrectDateFormat()//"2025-08-23T19:19:40 GMT+00:00"
-    this.paqueteriaRequestModel.content = {
-      "packages": [
+  createPaqueteriaModel() {
+    console.log('Dirección:', this.subasta.direccion);
+    console.log('Teléfono:', this.subasta.direccion?.telefono);
+    console.log(
+      JSON.stringify(
+        this.paqueteriaRequestModel.customerDetails.shipperDetails.contactInformation,
+        null,
+        2
+      )
+    );
+
+    this.paqueteriaRequestModel = {
+      idsubasta: this.subasta.id,
+  
+      plannedShippingDateAndTime: this.getCorrectDateFormat(),
+  
+      pickup: {
+        isRequested: false
+      },
+  
+      productCode: "G",
+  
+      getRateEstimates: false,
+  
+      accounts: [
+        {
+          number: "987283375",
+          typeCode: "shipper"
+        }
+      ],
+  
+      outputImageProperties: {
+        printerDPI: 300,
+        encodingFormat: "pdf",
+        imageOptions: [
           {
-            "typeCode": "2BP",
-            "weight": this.subasta.peso,
-            "dimensions": {
-              "length": this.subasta.largo,
-              "width": this.subasta.profundidad,
-              "height": this.subasta.ancho
+            typeCode: "waybillDoc",
+            templateName: "ARCH_8x4",
+            isRequested: true,
+            hideAccountNumber: false,
+            numberOfCopies: 1
+          },
+          {
+            typeCode: "label",
+            templateName: "ECOM26_84_001",
+            isRequested: true,
+            hideAccountNumber: false,
+            numberOfCopies: 1
+          }
+        ],
+        splitTransportAndWaybillDocLabels: true,
+        allDocumentsInOneImage: false,
+        splitDocumentsByPages: true,
+        splitInvoiceAndReceipt: true,
+        receiptAndLabelsInOneImage: false
+      },
+  
+      customerDetails: {
+        shipperDetails: {
+          postalAddress: {
+            postalCode: this.subasta.direccion.codigoPostal,
+            cityName: this.subasta.direccion.municipio,
+            countryCode: "MX",
+            
+            addressLine1: `${this.subasta.direccion.calle} ${this.subasta.direccion.numeroExt} ${this.subasta.direccion.numeroInt ?? ""}`,
+            addressLine2: this.subasta.direccion.colonia,
+            countryName: "Mexico"
+          },
+          
+         contactInformation: {
+  email: this.vendedor?.correo,
+  phone: this.vendedor?.telefono,
+  mobilePhone: this.vendedor?.telefono,
+  companyName: "XUBA",
+  fullName: `${this.vendedor?.nombre} ${this.vendedor?.apellido}`
+},
+          registrationNumbers: [
+            {
+              typeCode: "VAT",
+              number: "244444911",
+              issuerCountryCode: "MX"
+            }
+          ],
+          typeCode: "business"
+        },
+  
+        receiverDetails: {
+          postalAddress: {
+            postalCode: this.direccionEntrega.codigoPostal,
+            cityName: this.direccionEntrega.municipio,
+            countryCode: "MX",
+            addressLine1: `${this.direccionEntrega.calle} ${this.direccionEntrega.numeroExt} ${this.direccionEntrega.numeroInt ?? ""}`,
+            addressLine2: this.direccionEntrega.colonia,
+            countryName: "Mexico"
+          },
+          contactInformation: {
+            email: this.infoUsuario.correo,
+            phone: this.infoUsuario.telefono,
+            mobilePhone: this.infoUsuario.telefono,
+            companyName: "XUBA",
+            fullName: `${this.infoUsuario.nombre} ${this.infoUsuario.apellido}`
+          },
+          registrationNumbers: [
+            {
+              typeCode: "VAT",
+              number: "12345678",
+              issuerCountryCode: "MX"
+            }
+          ],
+          typeCode: "business"
+        }
+      },
+  
+      content: {
+        packages: [
+          {
+            typeCode: "2BP",
+            weight: this.subasta.peso,
+            dimensions: {
+              length: this.subasta.largo,
+              width: this.subasta.profundidad,
+              height: this.subasta.ancho
             }
           }
         ],
-        "isCustomsDeclarable": false,
-        "description": "Producto: " + this.subasta.caption,
-        "incoterm": "DAP",
-        "unitOfMeasurement": "metric"
-    }
-    // this.paqueteriaRequestModel.content = {
-    //   "packages": [
-    //       {
-    //         "typeCode": "2BP",
-    //         "weight": this.infoSubasta.peso,
-    //         "dimensions": {
-    //           "length": this.infoSubasta.largo,
-    //           "width": this.infoSubasta.profundidad,
-    //           "height": this.infoSubasta.ancho
-    //         }
-    //       }
-    //     ],
-    //     "isCustomsDeclarable": false,
-    //     "description": "Producto: " + this.infoSubasta.caption,
-    //     "incoterm": "DAP",
-    //     "unitOfMeasurement": "metric"
-    // }
-    console.log('musuarios:', this.subasta.musuarios);
-    console.log('nombre:', this.subasta.musuarios?.nombre);
-    console.log('apellido:', this.subasta.musuarios?.apellido);
-    this.paqueteriaRequestModel.customerDetails.shipperDetails = {
-      "postalAddress": {
-            "postalCode": this.subasta.direccion.codigoPostal,
-            "cityName": this.subasta.direccion.municipio,
-            "countryCode": "MX",
-            "addressLine1": `${this.subasta.direccion.calle} ${this.subasta.direccion.numeroExt} ${this.subasta.direccion.numeroInt}`,
-            "addressLine2": this.subasta.direccion.colonia,
-            "countryName": "Mexico"
+        isCustomsDeclarable: false,
+        description: `Producto: ${this.subasta.caption}`,
+        incoterm: "DAP",
+        unitOfMeasurement: "metric"
       },
-      "contactInformation": {
-        "email": this.subasta.direccion.correo,
-        "phone": this.subasta.direccion.telefono,
-        "mobilePhone": "2563456227231",
-        "companyName": "XUBA",
-        "fullName": `${this.subasta.musuarios.nombre} ${this.subasta.musuarios.apellido}`
+  
+      getTransliteratedResponse: false,
+  
+      estimatedDeliveryDate: {
+        isRequested: false,
+        typeCode: "QDDC"
       },
-      "registrationNumbers": [
+  
+      getAdditionalInformation: [
         {
-          "typeCode": "VAT",
-          "number": "244444911",
-          "issuerCountryCode": "MX"
+          typeCode: "pickupDetails",
+          isRequested: true
         }
-      ],
-      "typeCode": "business"
-    }
-    this.paqueteriaRequestModel.customerDetails.receiverDetails = {
-      "postalAddress": {
-        "postalCode": this.direccionEntrega.codigoPostal,
-        "cityName": this.direccionEntrega.municipio,
-        "countryCode": "MX",
-        "addressLine1": `${this.direccionEntrega.calle} ${this.direccionEntrega.numeroExt} ${this.direccionEntrega.numeroInt}`,
-        "addressLine2": this.direccionEntrega.colonia,
-        "countryName": "Mexico"
-      },
-      "contactInformation": {
-        "email": this.infoUsuario.correo,
-        "phone": this.infoUsuario.telefono,
-        "mobilePhone": this.infoUsuario.telefono,
-        "companyName": "XUBA",
-        "fullName": `${this.infoUsuario.nombre} ${this.infoUsuario.apellido}`
-      },
-      "registrationNumbers": [
-        {
-          "typeCode": "VAT",
-          "number": "12345678",
-          "issuerCountryCode": "MX"
-        }
-      ],
-      "typeCode": "business"
-    }
-    console.log(this.paqueteriaRequestModel)
+      ]
+    };
+
+    console.log("Modelo guía:", this.paqueteriaRequestModel);
+
   }
 
-  getCorrectDateFormat(): string{
+  getCorrectDateFormat(): string {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
@@ -671,16 +727,16 @@ this.generarGuiaDeEnvio();
     return fecha;
   }
 
-  getCotizarFecha(){
+  getCotizarFecha() {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
     return today.toISOString();
   }
 
-  
 
-  setDataShipper(){
+
+  setDataShipper() {
     this.paqueteriaRequestModel.customerDetails.shipperDetails = {
       "postalAddress": {
         "postalCode": "03100",
@@ -708,23 +764,23 @@ this.generarGuiaDeEnvio();
     }
   }
 
-  async getTarjetasUsuario(idUsuario: number){
-    this.tarjetas = await this.ss.loadLocalData('Cq@3K$K$RD') ?? []; 
-    if(this.tarjetas.length > 0){
+  async getTarjetasUsuario(idUsuario: number) {
+    this.tarjetas = await this.ss.loadLocalData('Cq@3K$K$RD') ?? [];
+    if (this.tarjetas.length > 0) {
       this.tarjetas = this.tarjetas.filter(x => x.id_user === idUsuario);
     }
     console.log('L487: obtener tarjetas ')
     console.log(this.tarjetas)
   }
 
-  changeTarjetaSeleccionada(){
+  changeTarjetaSeleccionada() {
     Object.assign(this.tarjeta, this.selectedCard);
   }
 
   checkUserPermissions(IdUsuario: number, IdSubasta: number) {
     this.subastasService.getAuctionById(IdSubasta).subscribe({
       next: (auction) => {
-        if(auction.musuarios.id === IdUsuario) {
+        if (auction.musuarios.id === IdUsuario) {
           this.hasPermiso = true;
           this.getInitialData(IdSubasta);
         } else {
@@ -735,18 +791,18 @@ this.generarGuiaDeEnvio();
       error: (error) => {
         this.hasPermiso = false;
       }
-    }); 
+    });
   }
 
-  
 
-  isInMinimumStatus(clave: string, minCve: string){
+
+  isInMinimumStatus(clave: string, minCve: string) {
     let current = this.ordenEstatusValidaiones[clave];
     let minimo = this.ordenEstatusValidaiones[minCve];
     return current >= minimo;
   }
 
-  isInMinimumStatusTo(clave: string, minCve: string, to: string){
+  isInMinimumStatusTo(clave: string, minCve: string, to: string) {
     let current = this.ordenEstatusValidaiones[clave];
     let minimo = this.ordenEstatusValidaiones[minCve];
     let toStatus = this.ordenEstatusValidaiones[to];
@@ -754,57 +810,57 @@ this.generarGuiaDeEnvio();
   }
 
 
-  GetSegumientoPaqueteria(noGuia: string){
+  GetSegumientoPaqueteria(noGuia: string) {
     this.subastasService.GetPaqueteriaSeguimiento(noGuia).subscribe((seguimiento: any) => {
       this.listaSeguimiento = seguimiento.events;
 
-        console.log(this.listaSeguimiento);
+      console.log(this.listaSeguimiento);
     });
   }
 
-  getHistorialEstatus(IdSubasta: number){
+  getHistorialEstatus(IdSubasta: number) {
     this.subastasService.GetHistorialEstatusSubasta(IdSubasta).subscribe((historial: any) => {
       console.log(historial);
       this.listaEstatus = historial;
     });
   }
 
-  getDireccionesEntrega(idUsuario: number, tipo: string){
+  getDireccionesEntrega(idUsuario: number, tipo: string) {
     this.subastasService.GetDireccionesUsuario(idUsuario, tipo).subscribe({
       next: (response: any) => {
-          // console.log(response);
-          this.direcciones = response;
-          this.direccionEntrega = this.direcciones.length > 0 ? this.direcciones.find((direccion: any) => direccion.predeterminada) : null;
-          if(this.direccionEntrega && this.direccionEntrega !== null && this.direccionEntrega !== undefined){
-            this.calcularPrecios();
-          }
+        // console.log(response);
+        this.direcciones = response;
+        this.direccionEntrega = this.direcciones.length > 0 ? this.direcciones.find((direccion: any) => direccion.predeterminada) : null;
+        if (this.direccionEntrega && this.direccionEntrega !== null && this.direccionEntrega !== undefined) {
+          this.calcularPrecios();
+        }
       },
       error: (error: any) => {
-          console.error('Error fetching addresses:', error);
+        console.error('Error fetching addresses:', error);
       }
     }
     );
   }
 
-  toDateFormat(fechaISO: string){
+  toDateFormat(fechaISO: string) {
     const fecha = new Date(fechaISO);
 
     const dia = String(fecha.getDate()).padStart(2, '0');
     const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Mes empieza en 0
     const anio = fecha.getFullYear();
-  
+
     const hora = String(fecha.getHours()).padStart(2, '0');
     const minuto = String(fecha.getMinutes()).padStart(2, '0');
-  
+
     return `${dia}/${mes}/${anio} ${hora}:${minuto}`;
   }
 
-  procesarPago(){
-    if(!this.ss.isValidModel(this.tarjeta, [])){
+  procesarPago() {
+    if (!this.ss.isValidModel(this.tarjeta, [])) {
       this.ss.showNotification('error', 'Datos faltantes');
       return;
     } else {
-      if(+this.tarjeta.expiration_month > 12){
+      if (+this.tarjeta.expiration_month > 12) {
         this.ss.showNotification('error', 'El mes de expiración de la tarjeta no es válido.', 3000);
         return;
       }
@@ -814,7 +870,7 @@ this.generarGuiaDeEnvio();
     // this.loading = true;
   }
   //http://localhost:4200/subasta-terminada/eyJpZFN1YmFzdGEiOjU1MzUsInRpcG9Vc3VhcmlvIjoiY29tcHJhZG9yIn0%3D
- 
+
   tokenizarTarjeta() {
     this.loading = true;
     this.textoLoading = 'Procesando tu pago...'
@@ -841,7 +897,7 @@ this.generarGuiaDeEnvio();
         //   this.ss.showNotification('error', 'Solo se permiten tarjetas de debito', 3500);
         //   return;
         // } else {
-          this.GenerarCargo(token_id);
+        this.GenerarCargo(token_id);
         // }
 
       },
@@ -849,24 +905,24 @@ this.generarGuiaDeEnvio();
         this.loading = false;
         let res_error = error.data;
         let errorMessage = '';
-        switch(res_error.description) {
-            case 'card_number length is invalid':
-                errorMessage = 'El número de tarjeta tiene una longitud inválida.';
-                break;
-            case 'cvv2 length must be 3 digits':
-                errorMessage = 'El CVV2 debe tener 3 dígitos.';
-                break;
-            case 'cvv2 length must be 4 digits':
-                errorMessage = 'El CVV2 debe tener 4 dígitos.';
-                break;
-            case 'The expiration date has expired':
-                errorMessage = 'La fecha de expiración es invalida.';
-                break;
-            case 'The card number verification digit is invalid':
-                errorMessage = 'El numero de tarjeta es invalido.';
-                break;
-            default:
-                errorMessage = 'No se ha podido generar el cargo [stp1-tkn]';
+        switch (res_error.description) {
+          case 'card_number length is invalid':
+            errorMessage = 'El número de tarjeta tiene una longitud inválida.';
+            break;
+          case 'cvv2 length must be 3 digits':
+            errorMessage = 'El CVV2 debe tener 3 dígitos.';
+            break;
+          case 'cvv2 length must be 4 digits':
+            errorMessage = 'El CVV2 debe tener 4 dígitos.';
+            break;
+          case 'The expiration date has expired':
+            errorMessage = 'La fecha de expiración es invalida.';
+            break;
+          case 'The card number verification digit is invalid':
+            errorMessage = 'El numero de tarjeta es invalido.';
+            break;
+          default:
+            errorMessage = 'No se ha podido generar el cargo [stp1-tkn]';
         }
         this.ss.showNotification('error', errorMessage, 3500);
 
@@ -877,18 +933,18 @@ this.generarGuiaDeEnvio();
 
 
 
-  GenerarCargo(tokenId: string){
+  GenerarCargo(tokenId: string) {
     let userData = this.authService.getUserData();
-    const dataCharge  = {
+    const dataCharge = {
       'token': tokenId,
       'amount': this.subasta.apuesta,
-      'description': 'Pago subasta GANADA-' + userData.id + '-'+this.subasta.caption,
-      'name':this.tarjeta.holder_name,       
-      'lastName':this.tarjeta.holder_lastname,       
-      'email':this.tarjeta.mail,
-      'phone':this.tarjeta.phone,       
+      'description': 'Pago subasta GANADA-' + userData.id + '-' + this.subasta.caption,
+      'name': this.tarjeta.holder_name,
+      'lastName': this.tarjeta.holder_lastname,
+      'email': this.tarjeta.mail,
+      'phone': this.tarjeta.phone,
     };
- 
+
     console.log(dataCharge)
     this.openPayService.GenerarCargo(dataCharge).subscribe({
       next: (response: any) => {
@@ -897,35 +953,35 @@ this.generarGuiaDeEnvio();
         console.log(response);
         let res = JSON.parse(response.message);
         console.log(res);
-        if(res.error_code){
-          switch(res.error_code) { 
-            case 1001: 
+        if (res.error_code) {
+          switch (res.error_code) {
+            case 1001:
               this.ss.showNotification('error', 'El correo proporcionado es inválido.', 3500);
               break;
-            case 3001: 
+            case 3001:
               this.ss.showNotification('error', 'La tarjeta fue declinada.', 3500);
               break;
-            case 3002: 
+            case 3002:
               this.ss.showNotification('error', 'La tarjeta ha expirado.', 3500);
               break;
-            case 3003: 
+            case 3003:
               this.ss.showNotification('error', 'La tarjeta no tiene fondos suficientes.', 3500);
               // this.ss.showNotification('error', 'La tarjeta fue declinada.', 3500);
               break;
-            case 3004: 
+            case 3004:
               this.ss.showNotification('error', 'La tarjeta ha sido identificada como una tarjeta robada.', 3500);
               // this.ss.showNotification('error', 'La tarjeta fue declinada.', 3500);
               break;
-            case 3005: 
+            case 3005:
               this.ss.showNotification('error', 'La tarjeta ha sido rechazada por el sistema antifraudes.', 3500);
               break;
-            default: 
-            this.ss.showNotification('error', 'Se produjo un error desconocido ['+res.error_code +']', 3500);
+            default:
+              this.ss.showNotification('error', 'Se produjo un error desconocido [' + res.error_code + ']', 3500);
               break;
           }
         } else {
           let estatusCargo = '';
-          switch(res.status){
+          switch (res.status) {
             case 'completed': estatusCargo = 'Completado';
               break;
             default: estatusCargo = 'NoDisponible';
@@ -936,28 +992,28 @@ this.generarGuiaDeEnvio();
           this.modeloComprobante.fecha = res.operation_date;
           this.modeloComprobante.estatus = estatusCargo;
           this.modeloComprobante.correo = res.customer.email;
-          if(res.id && res.status && res.status === 'completed'){
+          if (res.id && res.status && res.status === 'completed') {
             this.CambiarEstatusSubasta(this.subasta.id, AuctionStatus.Pagado);
-          } else { 
+          } else {
             this.ss.showNotification('warning', 'Pago procesado con estatus no completado');
-            return;          
+            return;
           }
         }
-       
-       
 
-        
 
-       
+
+
+
+
       },
       error: (error: any) => {
         console.log(error);
         this.loading = false;
-        this.ss.showNotification('error','Hubo un problema al generar el cargo');
+        this.ss.showNotification('error', 'Hubo un problema al generar el cargo');
 
         console.error('Error al generar cargo:', error);
       }
-        // this.generarCargoSuccess(response);
+      // this.generarCargoSuccess(response);
     });
 
   }
@@ -971,9 +1027,9 @@ this.generarGuiaDeEnvio();
         // this.getInitialData(this.subasta.id);
         console.log('Estatus actualizado:', response);
         this.generarGuiaDeEnvio();
-      },  
+      },
       error: (error) => {
-        this.ss.showNotification('error','Hubo un problema al cambiar estatus');
+        this.ss.showNotification('error', 'Hubo un problema al cambiar estatus');
         this.loading = false;
         // this.showComprobante = true;
         // this.openComprobante();
@@ -983,48 +1039,78 @@ this.generarGuiaDeEnvio();
     });
   }
 
-  generarGuiaDeEnvio(){
-    this.textoLoading = 'Generando guia...'
-    this.loading = true;
-    this.createPaqueteriaModel();
-    setTimeout(() => {
-      console.log(this.paqueteriaRequestModel);
-      console.log(JSON.stringify(this.paqueteriaRequestModel));
-      console.log('intentar generar guia de envio');
-      this.subastasService.generarGuiaPaqueteria(this.paqueteriaRequestModel).subscribe({
-        next: (response) => {
-          this.loading = false;
-          this.closeModal();
-          this.getInitialData(this.subasta.id);
-          console.log('Guía de envío generada exitosamente:', response);
-          this.ss.showNotification('success','Pago procesado correctamente');
-          // this.showComprobante = true;
-          // this.openComprobante();
-          setTimeout(() => { this.openComprobante(); }, 350);
-        },
-        error: (error) => {
-          this.loading = false;
-          this.ss.showNotification('error','Hubo un problema al generar la guia de envio');
-          // this.showComprobante = true;
-          // this.openComprobante();
-          setTimeout(() => { this.openComprobante(); }, 350);
-          console.error('Error al generar la guía de envío:', error.error);
-        }
-      });
-    }, 200);
-    
-  }
+  generarGuiaDeEnvio() {
+  this.textoLoading = 'Generando guía...';
+  this.loading = true;
+
+  this.createPaqueteriaModel();
+
+  console.log('==============================');
+  console.log('VENDEDOR');
+  console.log(this.vendedor);
+
+  console.log('FULLNAME');
+  console.log(
+    this.paqueteriaRequestModel.customerDetails.shipperDetails.contactInformation.fullName
+  );
+
+  console.log('CONTACT INFORMATION');
+  console.log(
+    this.paqueteriaRequestModel.customerDetails.shipperDetails.contactInformation
+  );
+
+  console.log('MODELO COMPLETO');
+  console.log(this.paqueteriaRequestModel);
+
+  console.log('JSON');
+  console.log(JSON.stringify(this.paqueteriaRequestModel, null, 2));
+  console.log('==============================');
+
+  setTimeout(() => {
+    this.subastasService.generarGuiaPaqueteria(this.paqueteriaRequestModel).subscribe({
+      next: (response) => {
+        this.loading = false;
+        this.closeModal();
+        this.getInitialData(this.subasta.id);
+
+        console.log('Guía generada correctamente');
+        console.log(response);
+
+        this.ss.showNotification('success', 'Pago procesado correctamente');
+
+        setTimeout(() => {
+          this.openComprobante();
+        }, 350);
+      },
+      error: (error) => {
+        this.loading = false;
+
+        console.error('ERROR DHL');
+        console.error(error);
+
+        this.ss.showNotification(
+          'error',
+          'Hubo un problema al generar la guía de envío'
+        );
+
+        setTimeout(() => {
+          this.openComprobante();
+        }, 350);
+      }
+    });
+  }, 200);
+}
 
   onContentClick(event: MouseEvent) {
     event.stopPropagation();
   }
 
-  closeModal(){
-    if(this.loading) return;
+  closeModal() {
+    if (this.loading) return;
     this.openModal = false;
   }
 
-  openModalPago(){
+  openModalPago() {
     this.openModal = true;
   }
 
@@ -1038,7 +1124,7 @@ this.generarGuiaDeEnvio();
   onInput(event: any, atributo: any, fn?: (value: any) => void) {
     const soloNumeros = event.target.value.replace(/[^0-9]/g, '');
     atributo = soloNumeros;
-    event.target.value = soloNumeros; 
+    event.target.value = soloNumeros;
     fn?.(soloNumeros);
     // Actualiza el input si el usuario pegó algo no numérico
   }
@@ -1167,7 +1253,7 @@ this.generarGuiaDeEnvio();
   //   }
   // }
 
-  async print(){
+  async print() {
     //   console.log('Printing ticket...')
     //   setTimeout(() => {
     //    this.ss.ImprimirTicket();
@@ -1179,24 +1265,24 @@ this.generarGuiaDeEnvio();
         fileName: undefined       // o 'comprobante_tr_ABC123.png' si quieres descargar
       });
     } catch (err: any) {
-      this.ss.showNotification('error','Error al intentar imprimir\n' + err.toString())
+      this.ss.showNotification('error', 'Error al intentar imprimir\n' + err.toString())
       console.error('Error al capturar/imprimir:', err);
     }
   }
 
-  async downloadComprobante(){
+  async downloadComprobante() {
     try {
-        await this.ss.captureAndDownloadPdf('printContainer', {
-            filename: 'comprobante.pdf',
-            scale: 2,
-            backgroundColor: '#ffffff',
-            orientation: 'p',
-            format: 'a4',
-            marginMm: 10
-        });
+      await this.ss.captureAndDownloadPdf('printContainer', {
+        filename: 'comprobante.pdf',
+        scale: 2,
+        backgroundColor: '#ffffff',
+        orientation: 'p',
+        format: 'a4',
+        marginMm: 10
+      });
     } catch (err: any) {
-        this.ss.showNotification('error', 'Error al intentar descargar el comprobante\n' + err.toString());
-        console.error('Error al capturar')
+      this.ss.showNotification('error', 'Error al intentar descargar el comprobante\n' + err.toString());
+      console.error('Error al capturar')
     }
   }
 
@@ -1211,22 +1297,22 @@ this.generarGuiaDeEnvio();
     }, 250);
   }
 
-  openComprobante(){
+  openComprobante() {
     this.classComprobanteModal = 'animate__zoomIn';
     this.showComprobante = true;
   }
 
-  setOpenModal(modalName: string){
+  setOpenModal(modalName: string) {
     this.isModalOpen[modalName] = true;
   }
-  setCloseModal(modalName: string){
+  setCloseModal(modalName: string) {
     this.isModalOpen[modalName] = false;
   }
-  
-  async downloadPdf(){
+
+  async downloadPdf() {
     try {
       const timestamp = Date.now();
-      const filename = `guide_label-${this.subasta.id}-${timestamp}.pdf`; 
+      const filename = `guide_label-${this.subasta.id}-${timestamp}.pdf`;
       const resp = await fetch(this.subasta.urlGuia, { credentials: 'same-origin' }); // o mode:'cors' según sea necesario
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const blob = await resp.blob();
