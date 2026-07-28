@@ -139,8 +139,8 @@
             <img src="images/openpay-logo.png" alt="Openpay" style="height: 22px; margin: 0 auto; display: block;">
           </div>
 
-          <!-- Galería -->
-          <div class="glass"
+          <!-- Galería (SÓLO ESCRITORIO) -->
+          <div class="glass d-none d-lg-flex"
             style="flex: 0.35; min-height: 0; border-radius: 16px; padding: 12px; display: flex; flex-direction: column;">
             <p
               style="font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 8px; flex-shrink: 0; display: flex; align-items: center; gap: 6px;">
@@ -176,11 +176,25 @@
   <!-- ══════════════ CENTRO ══════════════ -->
   <div class="column-center">
 
-    <!-- Título de la subasta (SÓLO MÓVIL) -->
-    <div class="d-lg-none px-3 pt-3 text-center" style="flex-shrink: 0;">
-      <h2 style="font-size: 0.9em; font-weight: 800; color: var(--text); margin: 0; line-height: 1.2;">
-        {{subasta.caption}} <span style="font-size: 13px; color: var(--text2); font-weight: 600;">#{{subasta.id}}</span>
-      </h2>
+    <!-- Header de la subasta (SÓLO MÓVIL) -->
+    <div class="d-lg-none px-3 pt-3 d-flex flex-row align-items-center justify-content-between"
+      style="flex-shrink: 0; gap: 10px;">
+      <button (click)="irAAnterior()" class="glass"
+        style="width: 36px; height: 36px; border: none; border-radius: 50%; color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div style="flex: 1; min-width: 0; text-align: center;">
+        <h2
+          style="font-size: 0.9em; font-weight: 800; color: var(--text); margin: 0; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word;">
+          #{{subasta.id}} - {{subasta.caption}}
+        </h2>
+      </div>
+
+      <button (click)="irASiguiente()" class="glass"
+        style="width: 36px; height: 36px; border: none; border-radius: 50%; color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
+        <i class="fas fa-chevron-right"></i>
+      </button>
     </div>
 
     <!-- Banner ganando -->
@@ -195,36 +209,38 @@
     <!-- Imagen producto -->
     <div class="detail-img-container">
       <div class="detail-img-wrapper">
-        <img [src]="subasta.mimagenesSubasta[currentIndexImage].url"
-          [class]="'fast-animation animate__animated ' + classAnimate.imageContainer" alt="Imagen de la subasta"
-          style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
+        <img [src]="subasta.mimagenesSubasta[currentIndexImage].url" (click)="openModalViewer()"
+          [class]="'fast-animation cursor-pointer animate__animated ' + classAnimate.imageContainer"
+          alt="Imagen de la subasta" style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
       </div>
 
-      <!-- Botones de Navegación Flotantes (SÓLO MÓVIL) -->
-      <button class="glass d-lg-none" (click)="irAAnterior()"
-        style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; z-index: 10;">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <button class="glass d-lg-none" (click)="irASiguiente()"
-        style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; z-index: 10;">
-        <i class="fas fa-chevron-right"></i>
-      </button>
-
       <!-- Pantalla completa -->
-      <button class="glass" (click)="openModalViewer()"
+      <!-- <button class="glass" (click)="openModalViewer()"
         style="position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">
         <i class="fas fa-expand"></i>
-      </button>
+      </button> -->
       <!-- Acciones flotantes -->
-      <div style="position: absolute; right: 14px; bottom: 14px; display: flex; flex-direction: column; gap: 8px;">
+      <div class="actions-floater"
+        style="position: absolute; right: 14px; bottom: 14px; display: flex; flex-direction: column; gap: 8px;">
         <button class="glass"
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-share-alt"></i>
         </button>
-        <button class="glass"
+        <button class="glass" (click)="toggleSingleSeguida(subasta.id, $event)"
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
-          <i class="fas fa-heart"></i>
+          <i class="fas fa-heart " [ngClass]="{'followed-i': isFollowed}"></i>
         </button>
+      </div>
+
+
+      <!-- Galería Flotante (SÓLO MÓVIL) -->
+      <div class="d-lg-none no-scrollbar" *ngIf="subasta.mimagenesSubasta && subasta.mimagenesSubasta.length > 1"
+        style="position: absolute; left: 50%; transform: translateX(-50%); width: 80%; bottom: 14px; display: flex; gap: 6px; overflow-x: auto; padding: 4px; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(8px); border-radius: 12px; z-index: 10; justify-content: flex-start;">
+        <div class="thumb" *ngFor="let images of subasta.mimagenesSubasta; let i = index;"
+          style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 6px; flex-shrink: 0; cursor: pointer; overflow: hidden; border: 1.5px solid transparent;"
+          [style.borderColor]="currentIndexImage === i ? '#ec4899' : 'transparent'" (click)="setIndexImage(i)">
+          <img [src]="images.url" class="w-100 h-100" style="object-fit: cover; display: block;" alt="">
+        </div>
       </div>
     </div>
 
@@ -386,6 +402,12 @@
 
 
 <div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()">
+  <!-- Contador de imágenes -->
+  <div class="viewer-counter"
+    style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: white; font-size: 18px; font-weight: 700; z-index: 101;">
+    {{ currentIndexImageViewer + 1 }} / {{ imagesListViewer.length }}
+  </div>
+
   <button class="close-viewer" (click)="closeModalViewer()">
     <i class="fas fa-times"></i>
   </button>
