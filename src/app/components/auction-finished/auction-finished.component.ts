@@ -993,7 +993,9 @@ export class AuctionFinishedComponent implements OnInit {
           this.modeloComprobante.estatus = estatusCargo;
           this.modeloComprobante.correo = res.customer.email;
           if (res.id && res.status && res.status === 'completed') {
-            this.CambiarEstatusSubasta(this.subasta.id, AuctionStatus.Pagado);
+                console.log('PreparacionEnvio =', AuctionStatus.PreparacionEnvio);
+
+            this.CambiarEstatusSubasta(this.subasta.id, AuctionStatus.PreparacionEnvio);
           } else {
             this.ss.showNotification('warning', 'Pago procesado con estatus no completado');
             return;

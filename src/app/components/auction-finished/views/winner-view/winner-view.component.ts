@@ -34,7 +34,7 @@ export class WinnerViewComponent implements OnInit {
     SST: 1, ACT: 2, FIN: 3, MNA: 4, PGA: 5,
     RGA: 5, AGA: 5, PSI: 6, ASI: 6, RSI: 6,
     NEF: 10, PDO: 7, PTP: 8, PEV: 0, ENV: 10,
-    REC: 11,
+    REC: 11
   };
   showComprobante: boolean = false;
   isModalOpen: any = { etiqueta: false, nuevaOferta: false, disputa: false, detalleReclamo: false, viewer: false };
@@ -131,6 +131,7 @@ export class WinnerViewComponent implements OnInit {
   url3DS: string | null = null;
   dataParams: any = null;
   isNewCard: boolean = false;
+  productoEntregadoDHL = false;
   camposOmitirTarjeta: any = [
     'address', 'allows_charges', 'allows_payouts', 'bank_code', 'bank_name', '', '', '', '',
     '', '', '', '', '', '', ''
@@ -203,6 +204,8 @@ export class WinnerViewComponent implements OnInit {
       next: (response: any) => {
         this.infoUsuario = response;
 
+        this.getDireccionesEntrega(this.infoUsuario.id); // <-- Agregar
+
         this.getInitialData(true);
         console.log(response);
       },
@@ -214,26 +217,16 @@ export class WinnerViewComponent implements OnInit {
 
 
   getInitialData(reloadSubastaInfo?: boolean) {
-    // console.log(this.usuario!)
-    if (this.subasta) {
-      console.log(this.subasta);
-      // this.ganadorInfo.claveEstatus = 'PVE';
-      this.precioActualSubasta = this.subasta.apuesta;
-      // console.log('datos de la subasta')
-      // console.log(this.subasta)
-      // this.getDireccionesEntrega(this.infoUsuario.id, 'entrega');
-      this.getHistorialEstatus(this.subasta.id);
-      //this.checkAndLoadDataByStatus();
-      // this.getTarjetasUsuario(this.infoUsuario.id);
-      // if(reloadSubastaInfo){
-      //   this.getDatosSubasta(this.subasta.id);
-      this.getInformacionGanador(this.subasta.id);
-      // }
-    }
+  if (this.subasta) {
+    console.log(this.subasta);
+
+    this.precioActualSubasta = this.subasta.apuesta;
+
+    this.getHistorialEstatus(this.subasta.id, () => {
+      this.getInformacionGanador(this.subasta!.id);
+    });
   }
-
-
-
+}
 
   getDatosSubasta(id: number) {
     this.loading = true;
@@ -256,10 +249,18 @@ export class WinnerViewComponent implements OnInit {
       next: (response) => {
         console.log('informacion del ganador')
         // console.log(response);
-        this.ganadorInfo = response;
-        console.log(this.ganadorInfo)
-        this.precioActualSubasta = this.ganadorInfo.apuesta;
+       this.ganadorInfo = response;
+
+
+
+console.log("API:", this.ganadorInfo.claveEstatus);
+
+this.precioActualSubasta = this.ganadorInfo.apuesta;
         this.loading = false;
+        this.subasta!.mestatus.cveStatus = this.ganadorInfo.claveEstatus;
+
+console.log("Subasta:", this.subasta!.mestatus.cveStatus);
+console.log("Ganador:", this.ganadorInfo.claveEstatus);
 
         this.checkAndLoadDataByStatus();
         //
@@ -282,24 +283,20 @@ export class WinnerViewComponent implements OnInit {
     switch (this.subasta?.mestatus.cveStatus) {
       case 'ACT':
         break;
-      case 'PDO':
-      case 'ENV':
-        // if(this.ganadorInfo.numGuia) this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia)
-        if (this.ganadorInfo.numGuia) this.GetSegumientoPaqueteria('2035758211')
-        break;
-      case 'PTP':
-        this.getDireccionesEntrega(this.infoUsuario.id);
-        this.getSecureCards();
-        break;
-      case 'REC':
-        this.getCategoriasReclamo();
-        break;
-      case 'RCM':
-        this.getReclamoInfo();
-        break;
-      case 'PEV':
-        this.getReclamoInfo();
-        break;
+     case 'PDO':
+case 'PEV':
+case 'RCC':
+case 'RCM':
+
+  if (this.ganadorInfo.numGuia) {
+    this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
+  }
+
+  if (this.subasta?.mestatus.cveStatus === 'RCM') {
+    this.getReclamoInfo();
+  }
+
+  break;
     }
   }
 
@@ -753,17 +750,83 @@ export class WinnerViewComponent implements OnInit {
   GetSegumientoPaqueteria(noGuia: string) {
     this.subastasService.GetPaqueteriaSeguimiento(noGuia).subscribe((seguimiento: any) => {
       this.listaSeguimiento = seguimiento.events;
+      const eventosDHL = seguimiento.events.map((e: any) => {
+
+  let estatus = e.description;
+
+  switch (e.description) {
+
+    case 'Shipment picked up':
+      estatus = 'Paquete recolectado';
+      break;
+
+    case 'Shipment is out with courier for delivery':
+      estatus = 'En ruta para entrega';
+      break;
+
+    case 'Delivered':
+      estatus = 'Entregado';
+      break;
+  }
+
+  return {
+    desStatus: estatus,
+    labelC: e.location,
+    fecha: e.date,
+    tipo: 'DHL'
+  };
+
+}).reverse();
+// Elimina los eventos DHL anteriores
+//this.listaHistorialEstatusProducto =
+  //this.listaHistorialEstatusProducto.filter(x => x.tipo !== 'DHL');
+
+// Buscar el último PEV
+const indexPEV = this.listaHistorialEstatusProducto.findIndex(
+  (x: any) => x.cveStatus === 'RCC' || x.cveStatus === 'PEV'
+);
+console.log("ANTES DEL SPLICE");
+console.table(this.listaHistorialEstatusProducto);
+
+if (this.subasta?.mestatus.cveStatus === 'RCC') {
+
+    this.listaHistorialEstatusProducto.splice(
+        indexPEV + 1,
+        0,
+        ...eventosDHL
+    );
+
+}
+if (this.subasta?.mestatus.cveStatus === 'PEV') {
+
+    this.listaHistorialEstatusProducto.unshift(...eventosDHL);
+
+} 
+
+this.productoEntregadoDHL = seguimiento.events.some(
+  (e: any) => e.description === 'Delivered'
+);
+
+console.log(this.listaHistorialEstatusProducto);
 
       console.log(this.listaSeguimiento);
     });
   }
 
-  getHistorialEstatus(IdSubasta: number) {
-    this.subastasService.GetHistorialEstatusSubasta(IdSubasta).subscribe((historial: any) => {
-      // console.log(historial);
+ getHistorialEstatus(IdSubasta: number, callback?: () => void) {
+  console.log('SE VOLVIÓ A CARGAR EL HISTORIAL');
+  this.subastasService.GetHistorialEstatusSubasta(IdSubasta).subscribe({
+    next: (historial: any) => {
       this.listaHistorialEstatusProducto = historial;
-    });
-  }
+      console.log("Historiaaaa",this.listaHistorialEstatusProducto);
+      console.table("treeeent",this.listaHistorialEstatusProducto);
+
+      if (callback) {
+        callback();
+      }
+    }
+  });
+}
 
 
 
@@ -1020,7 +1083,7 @@ export class WinnerViewComponent implements OnInit {
   afterProcessCharge(response: any) {
     this.setResponseComprobanteData(response);
     if (response.status === 'completed') {
-      this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.PendienteEnvio, true);
+      this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.PreparacionEnvio, true);
     } else {
       this.createPaqueteriaModel();
       this.setToXubaComprobante(response)

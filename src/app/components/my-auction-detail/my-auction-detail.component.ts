@@ -52,6 +52,7 @@ export class MyAuctionDetailComponent {
   motivoCancelacion = '';
   minCaracteres = 30;
   subastaCancelada = false;
+  estatusActual: any = {};
   private intervalId: any;
  constructor( private route: ActivatedRoute,
   private router: Router,
@@ -80,13 +81,22 @@ export class MyAuctionDetailComponent {
     next:(sub: any)=>{
       console.log(sub);
 
+      const historialDHLGuardado = this.listaHistorial.filter(
+  (x: any) => x.tipo === 'DHL'
+);
+
     this.subasta = sub;
 
+
 // Siempre cargar el historial de la subasta
-this.listaHistorial = sub.historialEstatus || [];
-this.listaHistorial = this.listaHistorial.filter((item: any) => {
-  return item.estatus !== '';
+this.listaHistorial = (sub.historialEstatus || []).filter((item: any) => {
+  return item.estatus !== '' && item.estatus !== 'Enviado';
 });
+this.listaHistorial.push(...historialDHLGuardado);
+
+   this.estatusActual = this.listaHistorial.find(
+  x => x.idEstatus === this.subasta.idEstatus
+);
 
 // Por el momento la línea de tiempo es igual al historial
 
@@ -108,6 +118,9 @@ console.log("posicion idestatus " + posicion)
 if ( (sub.idEstatus == 13 || sub.idEstatus == 14) && sub.guiaEnvio && sub.guiaEnvio !== 'Guía no disponible') {
 
   this.cargarSeguimientoDHL(sub.numGuia,posicion);
+  this.listaHistorial.sort((a: any, b: any) =>
+  new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+);
 
 }
 
@@ -305,85 +318,67 @@ cargarSeguimientoDHL(noGuia: string, posicion: number) {
       console.log('Respuesta DHL:', resp);
 
       if (!resp.events || resp.events.length === 0) {
-  return;
-}
+        return;
+      }
 
-      
+      // Crear la lista de eventos DHL
+      const eventosDHL = resp.events.map((e: any) => {
 
-      resp.events.forEach((e: any) => {
+  let estatus = e.description;
 
-        console.log('Evento:', e);
+  switch (e.description) {
 
-        let estatus = e.description;
+    case 'Shipment picked up':
+      estatus = 'Paquete recolectado';
+      break;
 
-        switch (e.description) {
+    case 'Shipment is out with courier for delivery':
+      estatus = 'En ruta para entrega';
+      break;
 
-          case 'Shipment picked up':
-            estatus = 'Paquete recolectado';
-            break;
+    case 'Delivered':
+      estatus = 'Entregado';
+      break;
+  }
 
-          case 'Shipment is out with courier for delivery':
-            estatus = 'En ruta para entrega';
-            break;
-
-          case 'Delivered':
-            estatus = 'Entregado';
-            break;
-
-        }
-        console.log("historial paqueteria")
-        const objetoPaquitreria = {estatus,descripcion: e.location,fecha: e.date, tipo: 'DHL'}
-        this.listaHistorial.splice(posicion , 0, objetoPaquitreria)
-     /*this.listaHistorialDHL.push({
-
+  return {
     estatus,
     descripcion: e.location,
     fecha: e.date,
     tipo: 'DHL'
+  };
 
-});*/
+}).reverse();
 
-      });
-      const historialFinal: any[] = [];
+// Buscar "Enviado"
+const indexEnviado = this.listaHistorial.findIndex(x => x.idEstatus == 13);
 
-this.listaHistorial.forEach((item: any) => {
+if (indexEnviado !== -1) {
 
-    historialFinal.push(item);
+  // Insertar DHL antes de "Enviado"
+  this.listaHistorial.splice(indexEnviado, 0, ...eventosDHL);
 
-    if (
-        item.estatus === 'Pendiente envio' ||
-        item.estatus === 'Pendiente envío'
-    ) {
-
-        this.listaHistorialDHL
-            .slice()
-            .reverse()
-            .forEach((dhl: any) => {
-                historialFinal.push(dhl);
-            });
-
-    }
-
-});
-
-this.listaHistorial = historialFinal;
-      
+}
+if (indexEnviado !== -1) {
+  // Quitar el estatus "Enviado"
+  this.listaHistorial.splice(indexEnviado + eventosDHL.length, 1);
+}
 
       console.log('Historial final:', this.listaHistorial);
 
     },
 
-   error: (err) => {
+    error: (err) => {
 
-  console.error('Error DHL:', err);
+      console.error('Error DHL:', err);
 
-  this.listaHistorial = [{
-    estatus: 'No fue posible consultar el seguimiento',
-    descripcion: 'La paquetería no respondió correctamente.',
-    fecha: new Date()
-  }];
+      this.listaHistorial = [{
+        estatus: 'No fue posible consultar el seguimiento',
+        descripcion: 'La paquetería no respondió correctamente.',
+        fecha: new Date()
+      }];
 
-}
+    }
 
   });
 
@@ -742,6 +737,10 @@ abrirGuiaEnvio() {
 
   window.open(this.subasta.guiaEnvio, '_blank');
 
+
+}
+regresar(): void {
+  this.router.navigate(['/profile']);
 }
 
 }

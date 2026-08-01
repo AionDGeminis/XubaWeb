@@ -126,7 +126,7 @@ export class AuthCallbackComponent implements OnInit{
           this.saveNewSubasta();
         break;
       case 'payment-winner':
-          this.CambiarEstatusSubasta(this.jsonParams.id,AuctionStatus.Pagado);
+          this.CambiarEstatusSubasta(this.jsonParams.id,AuctionStatus.PreparacionEnvio);
         break;
       case 'payment-guide-return':
           this.CambiarEstatusReclamo(this.jsonParams.idc);

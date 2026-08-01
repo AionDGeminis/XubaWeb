@@ -560,3 +560,54 @@
     max-height: 500px;
     overflow-y: auto;
 }
+.timeline-content{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.timeline-title,
+.timeline-description,
+.timeline-date{
+    display: block;
+    width: 100%;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.timeline-title{
+    margin-bottom: 4px;
+}
+
+.timeline-description{
+    margin-bottom: 4px;
+}
+
+.timeline-item{
+    align-items: flex-start;
+}
+.btn-regresar{
+    width: 46px;
+    height: 46px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #f03b74 0%, #b454c8 55%, #2f66d6 100%);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(180,84,200,.35);
+    transition: all .2s ease;
+}
+
+.btn-regresar:hover{
+    background: linear-gradient(90deg, #e3346d 0%, #a844b8 55%, #295cc7 100%);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(180,84,200,.45);
+}
+
+.btn-regresar i{
+    font-size: 22px;
+    font-weight: bold;
+}
