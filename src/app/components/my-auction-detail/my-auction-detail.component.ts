@@ -115,7 +115,7 @@ this.listaHistorial.sort((a: any, b: any) =>
 // Si está Enviado o Entregado, agregar los eventos de DHL
 const posicion = this.listaHistorial.findIndex(item => item.idEstatus === 13);
 console.log("posicion idestatus " + posicion)
-if ( (sub.idEstatus == 13 || sub.idEstatus == 14) && sub.guiaEnvio && sub.guiaEnvio !== 'Guía no disponible') {
+if ( (sub.idEstatus == 13 || sub.idEstatus == 1023) && sub.guiaEnvio && sub.guiaEnvio !== 'Guía no disponible') {
 
   this.cargarSeguimientoDHL(sub.numGuia,posicion);
   this.listaHistorial.sort((a: any, b: any) =>

@@ -203,7 +203,7 @@
           <div class="text-white rounded-4 p-4" [ngStyle]="{
     'background-color':
       subasta.idEstatus == 1025 ? '#dc3545' :
-      subasta.idEstatus == 11 ? '#198754' :
+      subasta.idEstatus == 1023 ? '#198754' :
       '#0d6efd'
   }">
 
@@ -237,18 +237,18 @@
                 </h2>
 
               </div>
+<div
+  class="text-end ms-4"
+  *ngIf="subasta.contraOferta && (subasta.idEstatus == 13 || subasta.idEstatus == 14)"
+>
+  <small class="text-white-50">
+    Contraoferta
+  </small>
 
-              <div class="text-end ms-4" *ngIf="subasta.contraOferta">
-
-                <small class="text-white-50">
-                  Contraoferta
-                </small>
-
-                <h2 class="fw-bold mb-0">
-                  {{ subasta.contraOferta | currency:'MXN' }}
-                </h2>
-
-              </div>
+  <h2 class="fw-bold mb-0">
+    {{ subasta.contraOferta | currency:'MXN' }}
+  </h2>
+</div>
 
             </div>
 
