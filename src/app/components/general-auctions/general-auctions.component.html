@@ -40,23 +40,38 @@
            http://localhost:4200/subasta/7329/Subastas%20Premium
           </div>           -->
           <div class="auction-card" (click)="getDatosSubasta(subasta.id)">
-            <img [src]="subasta.url" alt="">
-            <!-- {{subasta.musuarios.nombre}} -->
-              <div class="title">{{ subasta.caption }}#{{subasta.id}}</div>
-              <div class="desc">{{ subasta.descripcion }}</div>
-              <div class="price">{{ toCurrency(subasta.apuesta) }} MXN</div>
-              <div class="timer">{{segundosATiempoString(subasta.venceSegundos!) }}</div>
-              <div class="actions">
-                <button title="Seguir" (click)="toggleSeguida(subasta.id, $event)"><i class="fas fa-heart" [ngClass]="{'nofollowed-i': !isSeguida(subasta.id),'followed-i': isSeguida(subasta.id)}"></i></button>
-                <button title="Ofertar"><i class="fas fa-gavel"></i></button>
-                <button title="Compartir"><i class="fas fa-share"></i></button>
-              </div>
-              <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
-                {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
-              </div>
-          </div> 
-        }
+        <img [src]="subasta.url" alt="">
+        <!-- Diseño Computadora -->
+        <div class="title">{{ subasta.caption }}#{{subasta.id}}</div>
+        <div class="desc">{{ subasta.descripcion }}</div>
+        <div class="price-container">
+          <div class="price">
+            {{ toCurrency(subasta.apuesta) }} MXN
+          </div>
+          <div *ngIf="subasta.premium" class="icon-premium">
+            <i class="bi bi-gem"></i>
+          </div>
+        </div>
+
+
+        <div class="timer">
+          {{ segundosATiempoString(subasta.venceSegundos!) }}
+        </div>
+
+
+        <div class="actions">
+          <button title="Seguir" (click)="toggleSeguida(subasta.id, $event)"><i class="fas fa-heart"
+              [ngClass]="{'nofollowed-i': !isSeguida(subasta.id),'followed-i': isSeguida(subasta.id)}"></i></button>
+          <button title="Ofertar"><i class="fas fa-gavel"></i></button>
+          <button title="Compartir"><i class="fas fa-share"></i></button>
+        </div>
+        <div class="ribbon-label"
+          [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
+          {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+        </div>
       </div>
+      }
+    </div>
 
       <div class="contenedor-subastas-generales-xs d-grid d-sm-none">
         @for ( subasta of generales; track subasta.id) {
