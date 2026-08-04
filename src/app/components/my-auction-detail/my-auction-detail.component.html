@@ -14,40 +14,17 @@
     <i class="bi bi-arrow-left"></i>
 </button>
 
-        <div class="rounded-circle d-flex justify-content-center align-items-center me-3"
-          style="width:55px;height:55px;" [ngClass]="{
-    'bg-primary': subasta.idEstatus == 1020,
-    'bg-warning': subasta.idEstatus == 1021 || subasta.idEstatus == 1022,
-    'bg-success': subasta.idEstatus == 1025 || subasta.idEstatus == 1026 || subasta.idEstatus == 1027 || subasta.idEstatus == 1028,
-    'bg-danger': subasta.idEstatus == 1023 || subasta.idEstatus == 1024
-  }">
-
-          <i class="fa text-white fs-3" [ngClass]="{
-    'fa-gavel': subasta.idEstatus == 1020,
-    'fa-exclamation-triangle': subasta.idEstatus == 1021,
-    'fa-comments-dollar': subasta.idEstatus == 1022,
-    'fa-times-circle': subasta.idEstatus == 1023,
-    'fa-clock': subasta.idEstatus == 1025,
-    'fa-credit-card': subasta.idEstatus == 1026,
-    'fa-truck': subasta.idEstatus == 1027,
-    'fa-box-open': subasta.idEstatus == 1028
-  }">
-          </i>
-
-        </div>
+        
 
         <div>
 
           <h3 class="fw-bold mb-1">
-            {{ subasta.remaining > 0
-            ? 'Tu subasta todavía está en proceso.'
-            : 'Tu subasta ha concluido.' }}
+         {{ estatusActual?.estatus }}
           </h3>
 
           <small class="text-muted">
-            {{ subasta.estatus }}
-          </small>
-
+ {{ listaHistorial[0]?.descripcion }}
+</small>
         </div>
 
       </div>
@@ -907,8 +884,8 @@
                   </h5>
 
                   <p class="text-muted mb-0">
-                    {{ subasta.motivoCancelacion }}
-                  </p>
+  {{ subasta.motivoCanclacion?.motivoCancelacion }}
+</p>
 
                 </ng-container>
 

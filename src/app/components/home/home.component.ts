@@ -30,6 +30,7 @@ declare var OpenPay: any;
 interface ISubasta {
   id?: number;
   caption: string;
+  horaRecolecta?: string;
   idVendedor?: number;
   descripcion?: string;
   precio: number | null; 
@@ -218,8 +219,9 @@ export class HomeComponent implements OnInit {
   classAsideItem = '';
   splicingIndex = -1;
   tipoEntrega: 'sucursal' | 'domicilio' = 'sucursal';
-  horaDomicilioInicio: any;
+  horaRecolecta: any;
   horaDomicilioFin: any;
+  horarios: string[] = [];
   constructor(
     private lss: LocalSignalsService,
     private authService: AuthService,
@@ -286,7 +288,8 @@ export class HomeComponent implements OnInit {
         comisionFlete:0,
         ganacia: 0,
         url: '',
-        entregaSucursal:true
+        entregaSucursal:true,
+        horaRecolecta: ''
         
       };
       this.imagesPreview = [];
@@ -383,9 +386,34 @@ export class HomeComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {
-    
+ ngOnInit(): void {
+
+  for (let h = 9; h <= 18; h++) {
+
+    for (let m = 0; m < 60; m += 10) {
+
+      if (h === 18 && m > 0) {
+        break;
+      }
+
+      this.horarios.push(
+        `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+      );
+
+    }
+
   }
+
+}
+formatearHora(hora: string): string {
+
+ const [h, m] = hora.split(':').map(Number);
+
+  const periodo = h >= 12 ? 'PM' : 'AM';
+  const hora12 = h % 12 || 12;
+
+  return `${hora12}:${String(m).padStart(2, '0')} ${periodo}`;
+}
 
   
 
@@ -419,7 +447,8 @@ export class HomeComponent implements OnInit {
       url: '',
       nuevo: false,
       idDireccion: 0,
-      entregaSucursal: true
+      entregaSucursal: true,
+      horaRecolecta: ''
     };
     this.imagesPreview = [];
   }
@@ -632,6 +661,21 @@ export class HomeComponent implements OnInit {
   isValidModelSubasta(){
     let isValid = true;
     this.subasta.entregaSucursal = this.tipoEntrega === 'sucursal'? true:false;
+    this.subasta.horaRecolecta = this.horaRecolecta + ':00';
+    if (this.tipoEntrega === 'domicilio') {
+
+  if (
+    this.horaRecolecta < '09:00' ||
+    this.horaRecolecta > '18:00'
+  ) {
+    this.ss.showNotification(
+      'warning',
+      'La hora de recolecta debe estar entre las 9:00 AM y las 6:00 PM.'
+    );
+    return false;
+  }
+
+}
     this.subasta.horas = this.tipoSubasta ==='premium'? this.subasta.horas:100;
     if(this.tipoSubasta !== 'premium'){
       this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50:100 ;
@@ -645,6 +689,7 @@ export class HomeComponent implements OnInit {
     }
     return isValid;
   }
+
 
   isValidNoNegativeValues(){
     if(this.subasta.peso! <= 0){
@@ -1764,7 +1809,8 @@ onScrollSubastasGanadas(event: any) {
   }
 
   saveNewSubasta(){
-    //console.log(this.subasta);
+    console.log('horaRecolecta:', this.subasta.horaRecolecta);
+  console.log('JSON:', JSON.stringify(this.subasta));
     this.subastaService.crearSubasta(this.subasta).subscribe({
       next: (response) => this.saveSubastaSuccess(response),
       error: (err) => this.handleError(err),

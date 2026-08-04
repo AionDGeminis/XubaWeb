@@ -27,7 +27,7 @@ export const routes: Routes = [
     { path: 'validate/:userValidateData', component:ValidateComponent },
     { path: 'change-password/:userValidateData', component:ChangePasswordComponent },
     // { path: 'search-result/:paramSearch', component:SearchResultComponent },
-    { path: '**', redirectTo: 'preregistro' }
+    { path: '**', redirectTo: 'home' }
     // { path: '**', redirectTo: 'home' }
 ];
 
