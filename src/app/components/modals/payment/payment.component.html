@@ -21,8 +21,7 @@
               <div class="disclaimer p-1 text-center mt-2 mb-2">
                 Por el momento solo se permite el pago con tarjetas de debito
               </div>
-              <form class="form-productos pl-2 pr-2">
-    
+               <form id="payment-form" class="form-productos pl-2 pr-2">
                 <div class="mb-2 label-final-price">
                   Total a Pagar: <strong>${{totalPago}}</strong> 
                 </div>
@@ -43,21 +42,44 @@
                       <input type="text" [(ngModel)]="tarjeta.card_number" (input)="onInput($event, tarjeta.card_number)" maxlength="16" id="cardnumber" name="cardnumber" />
                   </div>
                 </div>
+
                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="precio">Expiracion (MM)</label>
-                        <input type="text" [(ngModel)]="tarjeta.expiration_month" (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expm" name="expm" />
-                    </div>
-                    <div class="form-group">
-                        <label for="compraDirecta">Expiracion (YY)</label>
-                        <input type="text" [(ngModel)]="tarjeta.expiration_year" (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expy" name="expy" />
-                    </div>
-                    <div class="form-group">
-                      <label for="compraDirecta">CCV</label>
-                      <input type="text" [(ngModel)]="tarjeta.cvv2"  (input)="onInput($event, tarjeta.cvv2)" maxlength="4"  id="ccv" name="ccv" />
-                    </div>
-                </div>
+               <div class="form-row">
+    <div class="form-group">
+        <label for="expiracion">Expiración (MM/YY)</label>
+        <input
+            type="text"
+            [(ngModel)]="tarjetaExpiracion"
+            (input)="formatearExpiracion($event)"
+            maxlength="5"
+            placeholder="MM/YY"
+            id="expiracion"
+            name="expiracion" />
+    </div>
+
+    <div class="form-group">
+        <label for="ccv">CCV</label>
+
+        <div class="position-relative">
+            <input
+                [type]="mostrarCVV ? 'text' : 'password'"
+                [(ngModel)]="tarjeta.cvv2"
+                (input)="onInput($event, tarjeta.cvv2)"
+                maxlength="4"
+                autocomplete="off"
+                id="ccv"
+                name="ccv"
+                class="form-control pe-5" />
+
+            <i
+                class="bi position-absolute"
+                [ngClass]="mostrarCVV ? 'bi-eye-slash' : 'bi-eye'"
+                (click)="mostrarCVV = !mostrarCVV"
+                style="right:15px; top:50%; transform:translateY(-50%); cursor:pointer;">
+            </i>
+        </div>
+    </div>
+</div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="nombre">Nombre</label>

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, OnInit, Signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subasta, Usuario } from '../../../../models/subasta.model';
-import { CotizacionPaqueteriaModel } from '../../../../models/cotizacion-model';
+import { CotizacionPaqueteriaModel, RecoleccionModel } from '../../../../models/cotizacion-model';
 import { SharedService } from '../../../../services/shared.service';
 import { SubastasService } from '../../../../services/subastas.service';
 import { AuthService } from '../../../../services/auth.service';
@@ -55,6 +55,7 @@ export class WinnerViewComponent implements OnInit {
   paqueteriaRequestModel: any = {
     customerDetails: {}
   }
+  recoleccionRequestModel: any = {};
   listaOfertas = [500];
   loading: boolean = false;
   openModal: boolean = false;
@@ -136,6 +137,8 @@ export class WinnerViewComponent implements OnInit {
     'address', 'allows_charges', 'allows_payouts', 'bank_code', 'bank_name', '', '', '', '',
     '', '', '', '', '', '', ''
   ];
+
+
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   constructor(
     private ss: SharedService,
@@ -148,9 +151,6 @@ export class WinnerViewComponent implements OnInit {
     this.dataParams = this.route.snapshot.params['permissionData'];
     this.getInitialGuiaModel();
 
-    // console.log('informacion params')
-    // console.log(this.dataParams)
-    // this.getInitialData();
   }
 
   ngOnInit(): void {
@@ -166,8 +166,7 @@ export class WinnerViewComponent implements OnInit {
     //   }
     // });
 
-    // console.log('informacion ganador fijo')
-    // console.log(this.ganadorInfo)
+
     // if(this.ganadorInfo && this.ganadorInfo.numGuia && this.ganadorInfo.numGuia.trim() !== ''){
     // this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
     //  this.ganadorInfo.claveEstatus = 'PVE';
@@ -187,7 +186,6 @@ export class WinnerViewComponent implements OnInit {
 
   private conectarSignalR(idReclamo: number): void {
     this.signalRChatService.connectToChat(idReclamo.toString(), this.authService.idUsuario, (datos: any[]) => {
-      console.log('recibir mensajes en tiempo real')
       this.addMessageToList(datos);
     });
   }
@@ -207,7 +205,7 @@ export class WinnerViewComponent implements OnInit {
         this.getDireccionesEntrega(this.infoUsuario.id); // <-- Agregar
 
         this.getInitialData(true);
-        console.log(response);
+
       },
       error: (err: any) => {
         console.error('Error fetching user information:', err);
@@ -217,16 +215,16 @@ export class WinnerViewComponent implements OnInit {
 
 
   getInitialData(reloadSubastaInfo?: boolean) {
-  if (this.subasta) {
-    console.log(this.subasta);
+    if (this.subasta) {
 
-    this.precioActualSubasta = this.subasta.apuesta;
 
-    this.getHistorialEstatus(this.subasta.id, () => {
-      this.getInformacionGanador(this.subasta!.id);
-    });
+      this.precioActualSubasta = this.subasta.apuesta;
+
+      this.getHistorialEstatus(this.subasta.id, () => {
+        this.getInformacionGanador(this.subasta!.id);
+      });
+    }
   }
-}
 
   getDatosSubasta(id: number) {
     this.loading = true;
@@ -247,20 +245,17 @@ export class WinnerViewComponent implements OnInit {
     this.loading = true;
     this.subastasService.GetInformacionSubastaTerminada(IdSubasta).subscribe({
       next: (response) => {
-        console.log('informacion del ganador')
-        // console.log(response);
-       this.ganadorInfo = response;
+        this.ganadorInfo = response;
 
 
 
-console.log("API:", this.ganadorInfo.claveEstatus);
 
-this.precioActualSubasta = this.ganadorInfo.apuesta;
+
+        this.precioActualSubasta = this.ganadorInfo.apuesta;
         this.loading = false;
         this.subasta!.mestatus.cveStatus = this.ganadorInfo.claveEstatus;
 
-console.log("Subasta:", this.subasta!.mestatus.cveStatus);
-console.log("Ganador:", this.ganadorInfo.claveEstatus);
+
 
         this.checkAndLoadDataByStatus();
         //
@@ -278,35 +273,29 @@ console.log("Ganador:", this.ganadorInfo.claveEstatus);
     //     // this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
     //     this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
     // }
-    console.log(this.subasta?.mestatus.cveStatus)
-    console.log(this.ganadorInfo)
     switch (this.subasta?.mestatus.cveStatus) {
       case 'ACT':
         break;
-     case 'PDO':
-case 'PEV':
-case 'RCC':
-case 'RCM':
+      case 'PDO':
+      case 'PEV':
+      case 'RCC':
+      case 'RCM':
 
-  if (this.ganadorInfo.numGuia) {
-    this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
-  }
+        if (this.ganadorInfo.numGuia) {
+          this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
+        }
 
-  if (this.subasta?.mestatus.cveStatus === 'RCM') {
-    this.getReclamoInfo();
-  }
+        if (this.subasta?.mestatus.cveStatus === 'RCM') {
+          this.getReclamoInfo();
+        }
 
-  break;
+        break;
     }
   }
 
   async getSecureCards() {
-    // console.log('obtener tarjetas usuario')
-    // console.log(this.infoUsuario)
-    // this.loading = true;
     this.openPayService.getTarjetasUsuario(this.infoUsuario.id).subscribe({
       next: (response: any) => {
-        console.log(response);
         this.tarjetas = response;
         let newCard = this.getNewCardModel();
         this.tarjetas.push(newCard);
@@ -315,7 +304,7 @@ case 'RCM':
       error: (err) => {
         // this.loading = false;
         //this.ss.showNotification('error', 'Hubo un problema al intentar obtener la lista de tarjetas');
-        console.log(err)
+
       }
     })
   }
@@ -323,10 +312,10 @@ case 'RCM':
   getDireccionesEntrega(idUsuario: number) {
     this.subastasService.GetDireccionesUsuario(idUsuario, '').subscribe({
       next: (response: any) => {
-        console.log(response);
+
         this.listaDireccionesEntrega = response;
         this.miDireccionEntrega = this.listaDireccionesEntrega.length > 0 ? this.listaDireccionesEntrega.find((direccion: any) => direccion.predeterminada) : null;
-        console.log(this.miDireccionEntrega);
+
         if (!this.miDireccionEntrega && this.listaDireccionesEntrega.length > 0) {
           this.miDireccionEntrega = this.listaDireccionesEntrega[0];
         }
@@ -335,7 +324,6 @@ case 'RCM':
         // }
       },
       error: (error: any) => {
-        console.error('Error fetching addresses:', error);
       }
     }
     );
@@ -366,7 +354,7 @@ case 'RCM':
       this.subastasService.saveMessageChat(mensaje).subscribe({
         next: (response) => {
           // this.signalRChatService.sendGetMessageAsync(this.informacionReclamo.id);
-          console.log('mensaje guardado', response);
+
           // this.addMessageToList(mensaje);
           this.newReclamoMessage = '';
           this.sendingMessage = false;
@@ -395,7 +383,7 @@ case 'RCM':
   getCategoriasReclamo() {
     this.subastasService.getCategoriasReclamo().subscribe({
       next: (categorias: any) => {
-        console.log(categorias);
+
         this.listaCategoriasDisputa = categorias;
       },
       error: (err) => {
@@ -414,10 +402,9 @@ case 'RCM':
     for (let image of r) {
       this.reclamoModel.imagenesReclamos.push({ url: image });
     }
-    // console.log(this.reclamoModel);
+
     this.subastasService.addReclamo(this.reclamoModel).subscribe({
       next: (response) => {
-        console.log('Reclamo saved successfully', response);
         this.setCloseModal('disputa');
         this.getInitialData(true);
       },
@@ -458,18 +445,14 @@ case 'RCM':
 
   getClearBase64(array: any[]) {
     let _array = [];
-    // console.log(array)
     for (let i of array) {
       // let url = i;
       let index = i.indexOf('base64');
-      // console.log(index)
       let firstPart = i.substring(0, index + 7);
 
       let b64 = i.replace(firstPart, '');
-      console.log(b64)
       _array.push(b64);
     }
-    // console.log(array)
     return _array;
   }
 
@@ -520,8 +503,6 @@ case 'RCM':
     this.subastasService.getInfoDetalleReclamo(this.subasta!.id).subscribe({
       next: (reclamoInfo: any) => {
         this.informacionReclamo = reclamoInfo;
-        console.log('Informacion del reclamo')
-        console.log(reclamoInfo);
         this.getMensajesReclamo(reclamoInfo.id)
         this.conectarSignalR(this.informacionReclamo.id);
         // this.informacionReclamo.idEstatus = 3;
@@ -536,7 +517,6 @@ case 'RCM':
     this.subastasService.getMensajesChatReclamo(idReclamo).subscribe({
       next: (msg: any) => {
         this.conversacion = msg;
-        console.log(msg)
       },
       error: (error) => {
         console.log(error)
@@ -632,13 +612,11 @@ case 'RCM':
     this.precioEnvio = 0;
     // this.precioTotal = this.subasta.apuesta + this.precioComision + this.precioEnvio;
     let modeloCotizar = this.getCotizarModelFormat();
-    console.log('datos cotizar: ', modeloCotizar);
     this.loading = true;
     this.subastasService.cotizarEnvio(modeloCotizar).subscribe({
       next: (data: any) => {
         this.loading = false;
         this.listaTiposEnvio = data.filter((x: any) => x.codigoProducto === 'G' || x.codigoProducto === 'N');
-        // console.log('Cotización exitosa:', this.listaTiposEnvio);
         // this.listaTiposEnvio[0].precio += 100;
         this.tipoEnvioSeleccionado = this.listaTiposEnvio[0];
         this.precioEnvio = this.tipoEnvioSeleccionado.precio
@@ -659,8 +637,7 @@ case 'RCM':
     //     error: (err) => reject(err)
     //   })
     // });
-    // console.log('datos traidos con promise')
-    // console.log(re)
+
     // this.precioTotal = this.precio + this.precioComision;
   }
 
@@ -752,81 +729,73 @@ case 'RCM':
       this.listaSeguimiento = seguimiento.events;
       const eventosDHL = seguimiento.events.map((e: any) => {
 
-  let estatus = e.description;
+        let estatus = e.description;
 
-  switch (e.description) {
+        switch (e.description) {
 
-    case 'Shipment picked up':
-      estatus = 'Paquete recolectado';
-      break;
+          case 'Shipment picked up':
+            estatus = 'Paquete recolectado';
+            break;
 
-    case 'Shipment is out with courier for delivery':
-      estatus = 'En ruta para entrega';
-      break;
+          case 'Shipment is out with courier for delivery':
+            estatus = 'En ruta para entrega';
+            break;
 
-    case 'Delivered':
-      estatus = 'Entregado';
-      break;
-  }
+          case 'Delivered':
+            estatus = 'Entregado';
+            break;
+        }
 
-  return {
-    desStatus: estatus,
-    labelC: e.location,
-    fecha: e.date,
-    tipo: 'DHL'
-  };
+        return {
+          desStatus: estatus,
+          labelC: e.location,
+          fecha: e.date,
+          tipo: 'DHL'
+        };
 
-}).reverse();
-// Elimina los eventos DHL anteriores
-//this.listaHistorialEstatusProducto =
-  //this.listaHistorialEstatusProducto.filter(x => x.tipo !== 'DHL');
+      }).reverse();
+      // Elimina los eventos DHL anteriores
+      //this.listaHistorialEstatusProducto =
+      //this.listaHistorialEstatusProducto.filter(x => x.tipo !== 'DHL');
 
-// Buscar el último PEV
-const indexPEV = this.listaHistorialEstatusProducto.findIndex(
-  (x: any) => x.cveStatus === 'RCC' || x.cveStatus === 'PEV'
-);
-console.log("ANTES DEL SPLICE");
-console.table(this.listaHistorialEstatusProducto);
+      // Buscar el último PEV
+      const indexPEV = this.listaHistorialEstatusProducto.findIndex(
+        (x: any) => x.cveStatus === 'RCC' || x.cveStatus === 'PEV'
+      );
 
-if (this.subasta?.mestatus.cveStatus === 'RCC') {
+      if (this.subasta?.mestatus.cveStatus === 'RCC') {
 
-    this.listaHistorialEstatusProducto.splice(
-        indexPEV + 1,
-        0,
-        ...eventosDHL
-    );
+        this.listaHistorialEstatusProducto.splice(
+          indexPEV + 1,
+          0,
+          ...eventosDHL
+        );
 
-}
-if (this.subasta?.mestatus.cveStatus === 'PEV') {
+      }
+      if (this.subasta?.mestatus.cveStatus === 'PEV') {
 
-    this.listaHistorialEstatusProducto.unshift(...eventosDHL);
+        this.listaHistorialEstatusProducto.unshift(...eventosDHL);
 
-} 
+      }
 
-this.productoEntregadoDHL = seguimiento.events.some(
-  (e: any) => e.description === 'Delivered'
-);
+      this.productoEntregadoDHL = seguimiento.events.some(
+        (e: any) => e.description === 'Delivered'
+      );
 
-console.log(this.listaHistorialEstatusProducto);
-
-      console.log(this.listaSeguimiento);
     });
   }
 
- getHistorialEstatus(IdSubasta: number, callback?: () => void) {
-  console.log('SE VOLVIÓ A CARGAR EL HISTORIAL');
-  this.subastasService.GetHistorialEstatusSubasta(IdSubasta).subscribe({
-    next: (historial: any) => {
-      this.listaHistorialEstatusProducto = historial;
-      console.log("Historiaaaa",this.listaHistorialEstatusProducto);
-      console.table("treeeent",this.listaHistorialEstatusProducto);
+  getHistorialEstatus(IdSubasta: number, callback?: () => void) {
+    this.subastasService.GetHistorialEstatusSubasta(IdSubasta).subscribe({
+      next: (historial: any) => {
+        this.listaHistorialEstatusProducto = historial;
 
-      if (callback) {
-        callback();
+        if (callback) {
+          callback();
+        }
       }
-    }
-  });
-}
+    });
+  }
 
 
 
@@ -919,6 +888,24 @@ console.log(this.listaHistorialEstatusProducto);
     //   "typeCode": "business"
     // }
   }
+  createRecoleccionModel() {
+    this.recoleccionRequestModel = {
+      idSubasta: this.subasta!.id,
+      nombre: `${this.subasta!.musuarios.nombre} ${this.subasta!.musuarios.apellido}`,
+      telefono: this.subasta!.musuarios.telefono,
+      correo: this.subasta!.direccion.correo,
+      codigoPostal: this.subasta!.direccion.codigoPostal,
+      ciudad: this.subasta!.direccion.municipio,
+      direccion1: `${this.subasta!.direccion.calle} ${this.subasta!.direccion.numeroExt}`,
+      direccion2: `${this.subasta!.direccion.colonia} ${this.subasta!.direccion.numeroInt ?? ''}`,
+      numeroGuia: '', // Se llena después de generar la guía
+      peso: this.subasta!.peso,
+      largo: this.subasta!.largo,
+      ancho: this.subasta!.profundidad,
+      alto: this.subasta!.ancho,
+      horarecolecta: this.subasta?.horaRecolecta
+    };
+  }
 
 
   async procesarPago() {
@@ -934,9 +921,7 @@ console.log(this.listaHistorialEstatusProducto);
       mail: this.tarjeta.mail,
       phone: this.tarjeta.phone
     }
-    // console.log(this.selectedCard)
-    // console.log(_card)
-    // console.log(omitir)
+
     if (!this.ss.isValidModel(_card, omitir)) {
       this.ss.showNotification('error', 'Datos faltantes');
       return;
@@ -945,7 +930,6 @@ console.log(this.listaHistorialEstatusProducto);
         this.ss.showNotification('error', 'El mes de expiración de la tarjeta no es válido.', 3000);
         return;
       }
-      // console.log(this.tarjeta)
       let r = await this.ss.showConfirmMessage('¿Desea proceder con el pago?');
       if (r) {
         if (_card.id) {
@@ -955,7 +939,6 @@ console.log(this.listaHistorialEstatusProducto);
           this.modeloComprobante.metodoPago = metodoPagoDescripcion;
           this.textoLoading = 'Procesando pago...'
           this.GenerarCargo('', d_id, _card.id)
-          console.log(d_id)
         } else {
           this.tokenizarTarjeta(_card);
         }
@@ -1041,6 +1024,8 @@ console.log(this.listaHistorialEstatusProducto);
     this.ss.setLocalStorageEncodedKey('tmp_direccion_eg', this.miDireccionEntrega.id);
     this.ss.setLocalStorageEncodedKey('tmp_ticket_model', JSON.stringify(this.modeloComprobante));
     this.ss.setLocalStorageEncodedKey('tmp_paqueteria_model', JSON.stringify(this.paqueteriaRequestModel));
+    this.ss.setLocalStorageEncodedKey('tmp_recoleccion_model',JSON.stringify(this.recoleccionRequestModel)
+);
   }
 
   async GenerarCargo(tokenId: string, deviceSessionId: any, card_id?: any) {
@@ -1064,7 +1049,6 @@ console.log(this.listaHistorialEstatusProducto);
     this.loading = true;
     let responseCharge = await this.getChargePaymentResponse(dataCharge, card_id);
 
-    console.log(responseCharge);
     if (responseCharge.success) {
       let res: any = card_id ? responseCharge.result : JSON.parse(responseCharge.result.message);
       if (res.error_code || res.error_message) {
@@ -1086,6 +1070,7 @@ console.log(this.listaHistorialEstatusProducto);
       this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.PreparacionEnvio, true);
     } else {
       this.createPaqueteriaModel();
+      this.createRecoleccionModel();
       this.setToXubaComprobante(response)
       this.moveTo3DAuth(response);
     }
@@ -1112,7 +1097,6 @@ console.log(this.listaHistorialEstatusProducto);
 
         // this.closeModal();
         // this.getInitialData(this.subasta.id);
-        console.log('Estatus actualizado:', response);
         if (generaGuia) {
           this.generarGuiaDeEnvio();
         } else {
@@ -1133,20 +1117,50 @@ console.log(this.listaHistorialEstatusProducto);
     this.textoLoading = 'Generando guia...'
     this.loading = true;
     this.createPaqueteriaModel();
+    this.createRecoleccionModel();
     //this.probarGuia();
+     
 
     setTimeout(() => {
-      console.log(this.paqueteriaRequestModel);
-      console.log(JSON.stringify(this.paqueteriaRequestModel));
-      console.log('intentar generar guia de envio');
       this.subastasService.generarGuiaPaqueteria(this.paqueteriaRequestModel).subscribe({
-        next: (response) => {
+        next: (response: any) => {
+          this.recoleccionRequestModel.numeroGuia = response.shipmentTrackingNumber;
+          console.log("respuesta de guia")
+          console.log(response)
+          console.log(this.recoleccionRequestModel)
+
+          if (!this.subasta?.entregaSucursal) {
+            console.log('Antes de generar recolección');
+
+
+            this.subastasService.generarRecoleccion(this.recoleccionRequestModel)
+
+              .subscribe({
+                next: (resp: any) => {
+                  console.log(resp)
+                },
+                error: (err: any) => {
+                  console.error('Error al crear la recolección', err);
+                }
+              });
+
+          }
+
           this.loading = false;
           this.closeModal();
           this.getInitialData(true);
-          console.log('Guía de envío generada exitosamente:', response);
-          this.ss.showNotification('success', 'Pago procesado correctamente');
 
+          if (!this.subasta?.entregaSucursal) {
+            this.ss.showNotification(
+              'success',
+              'Pago procesado correctamente. DHL recogerá el paquete en el domicilio del vendedor.'
+            );
+          } else {
+            this.ss.showNotification(
+              'success',
+              'Pago procesado correctamente. La guía de envío fue generada con éxito.'
+            );
+          }
           setTimeout(() => { this.openComprobante(); }, 350);
         },
         error: (error) => {
@@ -1331,8 +1345,7 @@ console.log(this.listaHistorialEstatusProducto);
     if (this.tarjetas.length > 0) {
       this.tarjetas = this.tarjetas.filter(x => x.id_user === idUsuario);
     }
-    console.log('L487: obtener tarjetas ')
-    console.log(this.tarjetas)
+
   }
 
   changeTarjetaSeleccionada() {
@@ -1394,7 +1407,6 @@ console.log(this.listaHistorialEstatusProducto);
   }
 
   // async print(){
-  //   console.log('Printing ticket...')
   //   setTimeout(() => {
   //    this.ss.ImprimirTicket();
   //  }, 250);
@@ -1413,7 +1425,6 @@ console.log(this.listaHistorialEstatusProducto);
 
 
   async downloadComprobante() {
-    console.log('descargar compronbante')
     const timestamp = Date.now();
     const _filename = `xuba_pay-${this.subasta!.id}-${timestamp}.pdf`;
     const element: any = document.getElementById('printContainer');

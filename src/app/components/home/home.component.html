@@ -838,17 +838,20 @@ s
 
                 <div class="tw:flex tw:flex-row tw:gap-6">
 
-                  <div class="tw:flex tw:flex-col tw:gap-1">
+                  <div class="tw:w-full tw:flex tw:flex-col tw:gap-1">
 
-                    <label class="tw:text-sm tw:text-gray-500">
+                    <label class="tw:text-sm tw:font-semibold tw:text-gray-700">
                       Hora de recolecta
                     </label>
 
-                    <select name="horaDomicilioInicio" [(ngModel)]="horaRecolecta">
+                    <select class="form-select tw:w-full" name="horaDomicilioInicio" [(ngModel)]="horaRecolecta">
+
                       <option value="">Seleccione una hora</option>
+
                       <option *ngFor="let hora of horarios" [value]="hora">
                         {{ hora }}
                       </option>
+
                     </select>
 
                   </div>
@@ -1021,23 +1024,21 @@ s
 
             <div class="form-row">
               <div class="form-group">
-                <label for="precio">Expiracion (MM)</label>
-                <input type="text" [(ngModel)]="tarjeta.expiration_month"
-                  [ngClass]="{'disabled-in': selectedCard.id, 'bg-white':!selectedCard.id}" [disabled]="selectedCard.id"
-                  (input)="onInput($event, tarjeta.expiration_month)" maxlength="2" id="expiracionm"
-                  name="expiracionm" />
+                <label>Expiración (MM/YY)</label>
+                <input type="text" [(ngModel)]="tarjetaExpiracion"
+                  [ngClass]="{'disabled-in': selectedCard.id, 'bg-white': !selectedCard.id}"
+                  [disabled]="selectedCard.id" (input)="formatearExpiracion($event)" maxlength="5" placeholder="MM/YY"
+                  id="expiracion" name="expiracion">
               </div>
+
               <div class="form-group">
-                <label for="compraDirecta">Expiracion (YY)</label>
-                <input type="text" [(ngModel)]="tarjeta.expiration_year"
-                  [ngClass]="{'disabled-in': selectedCard.id, 'bg-white':!selectedCard.id}" [disabled]="selectedCard.id"
-                  (input)="onInput($event, tarjeta.expiration_year)" maxlength="2" id="expiraciony"
-                  name="expiraciony" />
-              </div>
-              <div class="form-group">
-                <label for="compraDirecta">CCV</label>
-                <input type="text" class="bg-white" [(ngModel)]="tarjeta.cvv2"
-                  (input)="onInput($event, tarjeta.expiration_year)" maxlength="4" id="ccv" name="ccv" />
+                <label>CCV</label>
+                <input [type]="mostrarCVV ? 'text' : 'password'" class="form-control" [(ngModel)]="tarjeta.cvv2"
+                  autocomplete="off" maxlength="4" id="ccv" name="ccv">
+
+                <i class="bi" [ngClass]="mostrarCVV ? 'bi-eye-slash' : 'bi-eye'" (click)="mostrarCVV = !mostrarCVV"
+                  style="cursor:pointer">
+                </i>
               </div>
             </div>
             <div class="form-row">

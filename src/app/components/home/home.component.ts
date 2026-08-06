@@ -33,14 +33,14 @@ interface ISubasta {
   horaRecolecta?: string;
   idVendedor?: number;
   descripcion?: string;
-  precio: number | null; 
+  precio: number | null;
   apuesta: number | null;
   compraDirecta: boolean;
   marca: string;
   modelo: string;
   puja?: number;
   horas?: number | null;
-  valorOferta:number | null;
+  valorOferta: number | null;
   peso: number | null;
   largo: number | null;
   ancho: number | null;
@@ -50,8 +50,8 @@ interface ISubasta {
   premium: boolean;
   comisionBanco?: number;
   comisionXuba?: number;
-  flete?:number;
-  comisionFlete?:number;
+  flete?: number;
+  comisionFlete?: number;
   ganacia?: number | null;
   url?: string;
   nuevo?: boolean;
@@ -120,7 +120,7 @@ interface ISubasta {
 
 export class HomeComponent implements OnInit {
   title = 'XUBA';
-  public usuario!: Signal<Usuario|null>;
+  public usuario!: Signal<Usuario | null>;
   public isLoggedIn!: Signal<boolean>;
   @Output() close = new EventEmitter<void>();
   openModal: boolean = false;
@@ -152,8 +152,10 @@ export class HomeComponent implements OnInit {
     mail: '',
     phone: '',
   };
+  tarjetaExpiracion = '';
+  mostrarCVV = false;
   showingInAside = 'menu';
-  clasesAside = {one:'', two:''}
+  clasesAside = { one: '', two: '' }
   notificaciones: any[] = [];
   paginaNotificaciones = 1;
   cargandoMasNotificaciones = false;
@@ -174,8 +176,8 @@ export class HomeComponent implements OnInit {
   cargandoMasVendedoresFavoritos = false;
   hayMasVendedoresFavoritos = true;
   imagesPreview: any[] = [];
-  itemsLoaderNotificaciones: any = [1,2,3,4,5,6,7,8];
-  loginForm: any = {usuario:null, pass: null};
+  itemsLoaderNotificaciones: any = [1, 2, 3, 4, 5, 6, 7, 8];
+  loginForm: any = { usuario: null, pass: null };
   precioSubastaPremium: number = 17.5;
   // loginForm!: FormGroup;
   // errorLogin = '';
@@ -208,9 +210,9 @@ export class HomeComponent implements OnInit {
   url3DS: string | null = null;
   modeloComprobante: any = {};
   porcentajeValorInicial: number = 0;
-  highlight: string= 'alto'
+  highlight: string = 'alto'
   textoLoading: string = '';
- 
+
   validRegisteredMail: any = null;
   aceptarTerminosCrearSubasta: boolean = false;
   isDarkMode = false;
@@ -226,75 +228,75 @@ export class HomeComponent implements OnInit {
     private lss: LocalSignalsService,
     private authService: AuthService,
     private openPayService: OpenPayService,
-    private signalRNotiService: SignalRNotificationService, 
-    private ss: SharedService, 
+    private signalRNotiService: SignalRNotificationService,
+    private ss: SharedService,
     private busquedaService: BusquedaService,
     private router: Router,
     private subastaService: SubastasService,
     private auctionService: AuctionService,
-    private renderer: Renderer2, 
+    private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document) {
-      effect(() => {
-        if (this.lss.triggerFunction()) {
+    effect(() => {
+      if (this.lss.triggerFunction()) {
         // this.miFuncion();
         this.getSubastasSeguidas();
-          this.lss.triggerFunction.set(false);
-        }
-      });
-      // this.checkTheme();
-      this.usuario = this.authService.currentUser;
-      this.isLoggedIn = computed(() => !!this.usuario());
-      this.busquedaService.terminoBusqueda$.subscribe(
-        termino => this.terminoBusqueda = termino
-      );
-      // OpenPay.setId('mz5jjyzabcb3zzpevo0l');
-      // OpenPay.setApiKey('pk_f2da5530e74d4c7fbf292d886aba5e50');
-      // OpenPay.setSandboxMode(true);
-      OpenPay.setId(environment.openPayId);
-      OpenPay.setApiKey(environment.openPayApiKey);
-      OpenPay.setSandboxMode(environment.openPaySandBox);
-      if(this.isLoggedIn()){
-        console.log(this.usuario());
-        this.conectarSignalR(this.usuario()!.id);
-        this.getInformacionUsuario(this.usuario()!.id);
+        this.lss.triggerFunction.set(false);
       }
+    });
+    // this.checkTheme();
+    this.usuario = this.authService.currentUser;
+    this.isLoggedIn = computed(() => !!this.usuario());
+    this.busquedaService.terminoBusqueda$.subscribe(
+      termino => this.terminoBusqueda = termino
+    );
+    // OpenPay.setId('mz5jjyzabcb3zzpevo0l');
+    // OpenPay.setApiKey('pk_f2da5530e74d4c7fbf292d886aba5e50');
+    // OpenPay.setSandboxMode(true);
+    OpenPay.setId(environment.openPayId);
+    OpenPay.setApiKey(environment.openPayApiKey);
+    OpenPay.setSandboxMode(environment.openPaySandBox);
+    if (this.isLoggedIn()) {
+      console.log(this.usuario());
+      this.conectarSignalR(this.usuario()!.id);
+      this.getInformacionUsuario(this.usuario()!.id);
+    }
 
-      effect(() => console.log('¿Está logueado?', this.isLoggedIn()));
-      this.subasta = {
-        id: 0,
-        caption: '',
-        descripcion: '',
-        precio: null,
-        compraDirecta: false,
-        marca: '',
-        modelo: '',
-        nuevo: false, 
-        peso: null,
-        largo: null,
-        ancho: null,
-        profundidad: null,
-        idDireccion: null,
-        // puja: 0,
-        mimagenesSubasta: [],
-        horas: null,
-        apuesta: null,
-        // imagenesPreview: [],
-        premium: false,
-        
-        valorOferta: null,
-        comisionBanco: 0,
-        comisionXuba: 0,
-        flete:0,
-        comisionFlete:0,
-        ganacia: 0,
-        url: '',
-        entregaSucursal:true,
-        horaRecolecta: ''
-        
-      };
-      this.imagesPreview = [];
-      this.clearAllLocalTmp();
-      this.checkFirstLogin();
+    effect(() => console.log('¿Está logueado?', this.isLoggedIn()));
+    this.subasta = {
+      id: 0,
+      caption: '',
+      descripcion: '',
+      precio: null,
+      compraDirecta: false,
+      marca: '',
+      modelo: '',
+      nuevo: false,
+      peso: null,
+      largo: null,
+      ancho: null,
+      profundidad: null,
+      idDireccion: null,
+      // puja: 0,
+      mimagenesSubasta: [],
+      horas: null,
+      apuesta: null,
+      // imagenesPreview: [],
+      premium: false,
+
+      valorOferta: null,
+      comisionBanco: 0,
+      comisionXuba: 0,
+      flete: 0,
+      comisionFlete: 0,
+      ganacia: 0,
+      url: '',
+      entregaSucursal: true,
+      horaRecolecta: ''
+
+    };
+    this.imagesPreview = [];
+    this.clearAllLocalTmp();
+    this.checkFirstLogin();
     // this.getSubastasSeguidas();
     // this.getDireccionesEnvio();
     // const formControls: { [key: string]: any } = {};
@@ -302,33 +304,33 @@ export class HomeComponent implements OnInit {
     //   formControls[field.name] = ['', Validators.required];
     // });
     // this.loginForm = this.fb.group(formControls);
-    
+
   }
 
-  dejarSeguirSubasta(idSubasta: number, index: number, event: Event){
+  dejarSeguirSubasta(idSubasta: number, index: number, event: Event) {
     event.stopPropagation();
     this.splicingIndex = index;
-    
+
     setTimeout(() => {
       this.auctions.splice(index, 1);
       this.splicingIndex = -1;
       this.subastaService.dejarDeSeguirSubasta(this.infoUsuario.id, idSubasta.toString()).subscribe({
-      next: (data) => {
-        console.log('resultado seguir subasta');
-        console.log(data);
-        this.getSubastasSeguidas();
-        this.lss.ejecutarFuncionByID(idSubasta);
-        this.lss.toogleFollowedIDG(idSubasta);
+        next: (data) => {
+          console.log('resultado seguir subasta');
+          console.log(data);
+          this.getSubastasSeguidas();
+          this.lss.ejecutarFuncionByID(idSubasta);
+          this.lss.toogleFollowedIDG(idSubasta);
 
-      },
-      error: (error) => {
-        console.error('Error al agregar subasta seguida:', error);
-      }
-    })
+        },
+        error: (error) => {
+          console.error('Error al agregar subasta seguida:', error);
+        }
+      })
     }, 300);
     // this.auctions.splice(index, 1);
     // this.classAsideItem = 'animate__fadeOutLeft'
-    
+
   }
 
   // checkTheme(){
@@ -338,10 +340,10 @@ export class HomeComponent implements OnInit {
   //   localStorage.setItem('theme', tema!);
   // }
 
-  checkFirstLogin(){
+  checkFirstLogin() {
     let first = this.ss.getLocalStorageEncodedKey('first_home');
     let subasta = this.ss.getLocalStorageEncodedKey('first_xubasta');
-    if(first){
+    if (first) {
       setTimeout(() => {
         // this.openModalCreateAuction();
         this.ss.removeLocalStorageEncodedKey('first_home');
@@ -350,7 +352,7 @@ export class HomeComponent implements OnInit {
       }, 550);
     }
 
-    if(subasta){
+    if (subasta) {
       setTimeout(() => {
         this.openModalCreateAuction();
         this.ss.removeLocalStorageEncodedKey('first_xubasta');
@@ -358,7 +360,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  getInformacionUsuario(idUsuario: number){
+  getInformacionUsuario(idUsuario: number) {
     this.authService.consultarDatosUsuario(idUsuario).subscribe({
       next: (response: any) => {
         this.infoUsuario = response;
@@ -369,9 +371,9 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  
 
-  clearAllLocalTmp(){
+
+  clearAllLocalTmp() {
     this.ss.removeLocalStorageEncodedKey('transaction_id');
     this.ss.removeLocalStorageEncodedKey('tmp_subasta_model');
     this.ss.removeLocalStorageEncodedKey('tmp_paqueteria_model');
@@ -386,38 +388,86 @@ export class HomeComponent implements OnInit {
   }
 
 
- ngOnInit(): void {
+  ngOnInit(): void {
 
-  for (let h = 9; h <= 18; h++) {
+    for (let h = 9; h <= 18; h++) {
 
-    for (let m = 0; m < 60; m += 10) {
+      for (let m = 0; m < 60; m += 10) {
 
-      if (h === 18 && m > 0) {
-        break;
+        if (h === 18 && m > 0) {
+          break;
+        }
+
+        this.horarios.push(
+          `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+        );
+
       }
-
-      this.horarios.push(
-        `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-      );
 
     }
 
   }
+  formatearHora(hora: string): string {
 
+    const [h, m] = hora.split(':').map(Number);
+
+    const periodo = h >= 12 ? 'PM' : 'AM';
+    const hora12 = h % 12 || 12;
+
+    return `${hora12}:${String(m).padStart(2, '0')} ${periodo}`;
+  }
+  formatearExpiracion(event: any) {
+  let valor = event.target.value.replace(/\D/g, '');
+
+  // Máximo 4 números (MMYY)
+  if (valor.length > 4) {
+    valor = valor.substring(0, 4);
+  }
+
+  // Validar mes
+  if (valor.length >= 2) {
+    let mes = parseInt(valor.substring(0, 2), 10);
+
+    if (mes > 12) {
+      mes = 12;
+    }
+
+    if (mes <= 0) {
+      mes = 1;
+    }
+
+    valor = mes.toString().padStart(2, '0') + valor.substring(2);
+  }
+
+  // Validar año
+  if (valor.length === 4) {
+    let anio = parseInt(valor.substring(2, 4), 10);
+
+    if (anio < 26) {
+      anio = 26;
+    }
+
+    valor = valor.substring(0, 2) + anio.toString().padStart(2, '0');
+  }
+
+  // Agregar "/"
+  if (valor.length > 2) {
+    valor = valor.substring(0, 2) + '/' + valor.substring(2);
+  }
+
+  this.tarjetaExpiracion = valor;
 }
-formatearHora(hora: string): string {
+ocultarCVV(valor: string): string {
+  return valor ? '•'.repeat(valor.length) : '';
+}
+cambiarCVV(event: any) {
+  const valor = event.target.value.replace(/\D/g, '');
 
- const [h, m] = hora.split(':').map(Number);
-
-  const periodo = h >= 12 ? 'PM' : 'AM';
-  const hora12 = h % 12 || 12;
-
-  return `${hora12}:${String(m).padStart(2, '0')} ${periodo}`;
+  this.tarjeta.cvv2 = valor.substring(0, 4);
 }
 
-  
 
-  initSubastaEntity(){
+  initSubastaEntity() {
     this.tipoSubasta = 'general';
     this.tipoEntrega = 'sucursal';
     this.subasta = {
@@ -441,8 +491,8 @@ formatearHora(hora: string): string {
       valorOferta: null,
       comisionBanco: 0,
       comisionXuba: 0,
-      flete:0,
-      comisionFlete:0,
+      flete: 0,
+      comisionFlete: 0,
       ganacia: 0,
       url: '',
       nuevo: false,
@@ -453,7 +503,7 @@ formatearHora(hora: string): string {
     this.imagesPreview = [];
   }
 
-  acceptTerms(){
+  acceptTerms() {
     this.terminosRevisados = true;
   }
 
@@ -486,7 +536,7 @@ formatearHora(hora: string): string {
     window.location.reload();
   }
 
-  toggleFollowed(){
+  toggleFollowed() {
     this.expandido = !this.expandido;
   }
 
@@ -494,7 +544,7 @@ formatearHora(hora: string): string {
     this.url3DS = url;
   }
 
-  changeTarjetaSeleccionada(){
+  changeTarjetaSeleccionada() {
     // this.tarjeta = this.selectedCard;
     Object.assign(this.tarjeta, this.selectedCard);
   }
@@ -509,16 +559,16 @@ formatearHora(hora: string): string {
     );
   }
 
-  openProfilePage(){
+  openProfilePage() {
     this.router.navigate(['/profile']);
   }
 
-  openUserPage(user: any){
+  openUserPage(user: any) {
     this.router.navigate(['/userpage', user]);
   }
 
   closeModal() {
-    if(this.loading) return;
+    if (this.loading) return;
     this.close.emit();
     this.openModal = false;
     this.openModalPoliticas = false;
@@ -528,32 +578,32 @@ formatearHora(hora: string): string {
     this.aceptarTerminosCrearSubasta = false;
   }
 
-  openModalForResetPassword(){
+  openModalForResetPassword() {
     this.openModalResetPassword = true;
   }
 
-  checkDataForChangePassword(){
-    if(!this.validRegisteredMail || this.validRegisteredMail == undefined || this.validRegisteredMail.trim() ===''){
+  checkDataForChangePassword() {
+    if (!this.validRegisteredMail || this.validRegisteredMail == undefined || this.validRegisteredMail.trim() === '') {
       this.ss.showNotification('warning', 'Ingrese un correo valido');
       return;
     }
-    let model = {correo: this.validRegisteredMail};
+    let model = { correo: this.validRegisteredMail };
     this.loading = true;
     this.authService.consultarCorreoExistente(model).subscribe({
       next: (response: any) => {
         console.log(response)
         this.loading = false;
-        if(response.success){
+        if (response.success) {
           this.enviarCorreoRecuperacionContrasenia();
           //enviar el correo y mostrar ensaje
           // this.closeModal();
           // this.ss.showNotification('success', 'Se ha enviado un correo con un enlace para actualizar tu contrasenia', 4000)
         }
         else {
-          this.ss.showNotification('error',response.mensaje, 2500);
+          this.ss.showNotification('error', response.mensaje, 2500);
           return;
         }
-      }, 
+      },
       error: (err) => {
         this.loading = false;
         console.log(err)
@@ -561,21 +611,21 @@ formatearHora(hora: string): string {
     })
   }
 
-  enviarCorreoRecuperacionContrasenia(){
+  enviarCorreoRecuperacionContrasenia() {
     this.loading = true;
-    let model = {correo: this.validRegisteredMail}
+    let model = { correo: this.validRegisteredMail }
     this.authService.generarTokenRecuperacionContra(model).subscribe({
-      next:(value: any) => {
+      next: (value: any) => {
         this.loading = false;
         console.log(value);
-        if(value.success){
+        if (value.success) {
           this.closeModal();
           this.ss.showNotification('success', 'Se ha enviado un correo con un enlace para actualizar tu contrasenia', 4000)
         } else {
-          this.ss.showNotification('error',value.mensaje, 2500);
+          this.ss.showNotification('error', value.mensaje, 2500);
           return;
         }
-      }, 
+      },
       error: (err) => {
         this.loading = false;
         console.log(err)
@@ -584,14 +634,14 @@ formatearHora(hora: string): string {
       }
     })
   }
-  
-  nextStep(){
+
+  nextStep() {
     // console.log(this.subasta)
     // this.validarModelData();
-   
+
     // this.subasta.horas = this.tipoSubasta ==='premium'? this.subasta.horas:100;
     // if(this.tipoSubasta !== 'premium'){
-      // this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50:100 ;
+    // this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50:100 ;
     // }
     // let result = this.ss.isValidModelV2(this.subasta, ['url']);
     // if(!result.valid){
@@ -605,42 +655,51 @@ formatearHora(hora: string): string {
     //   this.ss.showNotification('error', 'Informacion incompleta');
     //   // valid = false;
     // }
-    if((this.selectedTab < 2 && this.tipoSubasta === 'general') || (this.selectedTab < 3 && this.tipoSubasta === 'premium')){
+    if ((this.selectedTab < 2 && this.tipoSubasta === 'general') || (this.selectedTab < 3 && this.tipoSubasta === 'premium')) {
       this.selectedTab++;
     } else {
-      if(this.isValidModelSubasta() && this.isValidNoNegativeValues()){
+      if (this.isValidModelSubasta() && this.isValidNoNegativeValues()) {
         // this.ss.showNotification('success', 'todo correcto')
         let userData = this.authService.getUserData();
         this.subasta.idVendedor = userData.id;
         this.subasta.mimagenesSubasta = this.getClearBase64(this.subasta.mimagenesSubasta);
-        if(this.tipoSubasta === 'premium'){
-          if(this.checkDataPago()){
+        if (this.tipoSubasta === 'premium') {
+          const partes = this.tarjetaExpiracion.split('/');
+          if (partes.length !== 2) {
+            this.ss.showNotification('warning', 'La fecha de expiración no es válida');
+            return;
+          }
+
+          this.tarjeta.expiration_month = partes[0] ?? '';
+          this.tarjeta.expiration_year = partes[1] ?? '';
+          if (this.checkDataPago()) {
             // if(!this.subasta.valorOferta || this.subasta.valorOferta === undefined || this.subasta.valorOferta <= 0){
             //   this.ss.showNotification('warning','El incremento de oferta no es valido');
             //   return;
             // }
             this.subasta.premium = true;
             this.loading = true;
-            if(this.selectedCard.id){
+            if (this.selectedCard.id) {
               this.setComprobanteModel();
               let d_id = this.ss.getDeviceSessionID();
               let metodoPagoDescripcion = `Tarjeta • ${this.selectedCard.brand} • **** ${this.selectedCard.card_number}`;
               this.modeloComprobante.metodoPago = metodoPagoDescripcion;
               this.textoLoading = 'Procesando pago...'
-              this.GenerarCargo('',d_id, this.selectedCard.id)
+              this.GenerarCargo('', d_id, this.selectedCard.id)
               console.log(d_id)
+
             } else {
-              this.tokenizarTarjeta(this.selectedCard);
+              this.tokenizarTarjeta(this.tarjeta);
             }
             // this.tokenizarTarjeta();
           }
         } else {
-         
+
           // if(this.checkDataSubasta()){
-            this.subasta.premium = false;
-            // this.subasta.valorOferta = this.subasta.apuesta! < 100 ? 50:100;
-            this.loading = true;
-            this.saveNewSubasta();  
+          this.subasta.premium = false;
+          // this.subasta.valorOferta = this.subasta.apuesta! < 100 ? 50:100;
+          this.loading = true;
+          this.saveNewSubasta();
           // }
         }
       }
@@ -652,37 +711,37 @@ formatearHora(hora: string): string {
       //   this.ss.showNotification('warning','Solo puedes subir 5 imagenes');
       //   return;
       // }
-     
+
       //console.log(this.subasta.mimagenesSubasta);
-     
+
     }
   }
 
-  isValidModelSubasta(){
+  isValidModelSubasta() {
     let isValid = true;
-    this.subasta.entregaSucursal = this.tipoEntrega === 'sucursal'? true:false;
+    this.subasta.entregaSucursal = this.tipoEntrega === 'sucursal' ? true : false;
     this.subasta.horaRecolecta = this.horaRecolecta + ':00';
     if (this.tipoEntrega === 'domicilio') {
 
-  if (
-    this.horaRecolecta < '09:00' ||
-    this.horaRecolecta > '18:00'
-  ) {
-    this.ss.showNotification(
-      'warning',
-      'La hora de recolecta debe estar entre las 9:00 AM y las 6:00 PM.'
-    );
-    return false;
-  }
+      if (
+        this.horaRecolecta < '09:00' ||
+        this.horaRecolecta > '18:00'
+      ) {
+        this.ss.showNotification(
+          'warning',
+          'La hora de recolecta debe estar entre las 9:00 AM y las 6:00 PM.'
+        );
+        return false;
+      }
 
-}
-    this.subasta.horas = this.tipoSubasta ==='premium'? this.subasta.horas:100;
-    if(this.tipoSubasta !== 'premium'){
-      this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50:100 ;
+    }
+    this.subasta.horas = this.tipoSubasta === 'premium' ? this.subasta.horas : 100;
+    if (this.tipoSubasta !== 'premium') {
+      this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50 : 100;
     }
     let result = this.ss.isValidModelV2(this.subasta, ['url']);
-    if(!result.valid){
-      let texto = result.prop === 'mimagenesSubasta'? 'Seleccione al menos una imagen':`Informacion faltante: ${result.prop}`;
+    if (!result.valid) {
+      let texto = result.prop === 'mimagenesSubasta' ? 'Seleccione al menos una imagen' : `Informacion faltante: ${result.prop}`;
       this.ss.showNotification('warning', texto, 6000);
       isValid = false;
       // return;
@@ -691,50 +750,50 @@ formatearHora(hora: string): string {
   }
 
 
-  isValidNoNegativeValues(){
-    if(this.subasta.peso! <= 0){
+  isValidNoNegativeValues() {
+    if (this.subasta.peso! <= 0) {
       this.ss.showNotification('warning', 'El peso del producto no es valido');
       return false;
     }
-  
-    if(this.subasta.precio! <= 0){
+
+    if (this.subasta.precio! <= 0) {
       this.ss.showNotification('warning', 'El precio es invalido');
       return false;
     }
-    if(this.subasta.ancho! <= 0){
-     this.ss.showNotification('warning', 'El alto del producto no es valido');
-     return false;
+    if (this.subasta.ancho! <= 0) {
+      this.ss.showNotification('warning', 'El alto del producto no es valido');
+      return false;
     }
-    if(this.subasta.largo! <= 0){
-     this.ss.showNotification('warning', 'El largo del producto no es valido');
-     return false;
+    if (this.subasta.largo! <= 0) {
+      this.ss.showNotification('warning', 'El largo del producto no es valido');
+      return false;
     }
-    if(this.subasta.profundidad! <= 0){
-     this.ss.showNotification('warning', 'El valor de profundidad no es valido');
-     return false;
-    }
-  
-    if(this.subasta.horas! <= 0 || this.subasta.horas! > 100 || (this.tipoSubasta === 'premium' && this.subasta.horas! < 1)){
-     this.ss.showNotification('warning', 'El tiempo no es valido');
-     return false;
+    if (this.subasta.profundidad! <= 0) {
+      this.ss.showNotification('warning', 'El valor de profundidad no es valido');
+      return false;
     }
 
-    if(this.subasta.valorOferta! <= 0 || this.subasta.valorOferta! > this.subasta.precio!){
-     this.ss.showNotification('warning', 'El aumento de oferta no es valido');
-     return false;
+    if (this.subasta.horas! <= 0 || this.subasta.horas! > 100 || (this.tipoSubasta === 'premium' && this.subasta.horas! < 1)) {
+      this.ss.showNotification('warning', 'El tiempo no es valido');
+      return false;
+    }
+
+    if (this.subasta.valorOferta! <= 0 || this.subasta.valorOferta! > this.subasta.precio!) {
+      this.ss.showNotification('warning', 'El aumento de oferta no es valido');
+      return false;
     }
     // if(this.tipoSubasta === 'premium' && (this.subasta.horas! <= 0))
     return true;
-      //  return;
-       
-      
+    //  return;
+
+
   }
 
-  validarNumerosNegativos(obj: any){
+  validarNumerosNegativos(obj: any) {
     // let res: any = {valid: true, prop: null}
     // for (const key in obj) {
     //   const value = obj[key];
-  
+
     //   if (typeof value === "number") {
     //     if (value <= 0 || Number.isNaN(value)) {
     //       res = {valid: false, prop: key}
@@ -746,277 +805,277 @@ formatearHora(hora: string): string {
 
   }
 
-  validarModelData(){
-    
-    if(!this.ss.isValidModel(this.subasta, ['id','descripcion', 'premium', 'url', 'valorOferta'])){
+  validarModelData() {
+
+    if (!this.ss.isValidModel(this.subasta, ['id', 'descripcion', 'premium', 'url', 'valorOferta'])) {
       //this.ss.showNotification('error', 'Informacion incompleta');
       //valid = false;
       return;
     }
   }
 
-  setValorHoras(){
-    if(this.tipoSubasta === 'general'){
+  setValorHoras() {
+    if (this.tipoSubasta === 'general') {
       this.subasta.horas = 100;
-      this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50:100 ;
-      if(this.subasta.mimagenesSubasta.length > 5){
+      this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50 : 100;
+      if (this.subasta.mimagenesSubasta.length > 5) {
         this.subasta.mimagenesSubasta.splice(5);
         this.imagesPreview.splice(5);
       }
-        
+
     } else {
       this.subasta.horas = null;
       this.subasta.valorOferta = null;
       this.calcularValorInicial();
     }
-   
+
   }
 
-  hasErrors(){
+  hasErrors() {
 
   }
 
   getTiempoRelativo(fecha: Date | string, fechaServidor: Date | string): string {
     const ahora = new Date(fechaServidor).getTime();
     const fechaInput = new Date(fecha).getTime();
-  
+
     const diffMs = ahora - fechaInput;
-  
+
     const segundos = Math.floor(diffMs / 1000);
     const minutos = Math.floor(segundos / 60);
     const horas = Math.floor(minutos / 60);
     const dias = Math.floor(horas / 24);
-  
+
     if (segundos < 10) {
       return 'ahora';
     }
-  
+
     if (segundos < 60) {
       return `hace ${segundos} seg`;
     }
-  
+
     if (minutos < 60) {
       return `hace ${minutos} min`;
     }
-  
+
     if (horas < 24) {
       return `hace ${horas} hr`;
     }
-  
+
     return `hace ${dias} d`;
   }
 
- getNotificaciones(reset: boolean = false) {
+  getNotificaciones(reset: boolean = false) {
 
-  if (this.cargandoMasNotificaciones || !this.hayMasNotificaciones) {
-    return;
-  }
-
-  if (reset) {
-    this.paginaNotificaciones = 1;
-    this.notificaciones = [];
-    this.hayMasNotificaciones = true;
-  }
-
-  this.cargandoMasNotificaciones = true;
-  //this.loadingNotificaciones = true;
-
-  const userData = this.authService.getUserData();
-
-  console.log('Solicitando página:', this.paginaNotificaciones);
-
-  this.subastaService.getNotifications(
-    userData.id,
-    this.paginaNotificaciones
-  ).subscribe({
-
-    next: (data: any) => {
-
-      console.log('Página recibida:', this.paginaNotificaciones);
-      console.log('Cantidad recibida:', data.length);
-      console.log('Datos:', data);
-
-      if (data.length < 10) {
-        this.hayMasNotificaciones = false;
-      }
-
-      this.notificaciones.push(...data);
-
-      console.log('Total de notificaciones:', this.notificaciones.length);
-
-      this.paginaNotificaciones++;
-
-      console.log('Siguiente página:', this.paginaNotificaciones);
-
-      //this.loadingNotificaciones = false;
-      this.cargandoMasNotificaciones = false;
-    },
-
-    error: (err) => {
-
-      console.error('Error obteniendo notificaciones:', err);
-
-      this.loadingNotificaciones = false;
-      this.cargandoMasNotificaciones = false;
+    if (this.cargandoMasNotificaciones || !this.hayMasNotificaciones) {
+      return;
     }
 
-  });
+    if (reset) {
+      this.paginaNotificaciones = 1;
+      this.notificaciones = [];
+      this.hayMasNotificaciones = true;
+    }
 
-}
-onScrollNotifications(event: any) {
+    this.cargandoMasNotificaciones = true;
+    //this.loadingNotificaciones = true;
 
-  const element = event.target;
+    const userData = this.authService.getUserData();
 
-  console.log(
-    "scrollTop:", element.scrollTop,
-    "clientHeight:", element.clientHeight,
-    "scrollHeight:", element.scrollHeight
-  );
+    console.log('Solicitando página:', this.paginaNotificaciones);
 
-  const alFinal =
-    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+    this.subastaService.getNotifications(
+      userData.id,
+      this.paginaNotificaciones
+    ).subscribe({
 
-  if (alFinal) {
-    console.log("Pidiendo página", this.paginaNotificaciones);
-    this.getNotificaciones();
+      next: (data: any) => {
+
+        console.log('Página recibida:', this.paginaNotificaciones);
+        console.log('Cantidad recibida:', data.length);
+        console.log('Datos:', data);
+
+        if (data.length < 10) {
+          this.hayMasNotificaciones = false;
+        }
+
+        this.notificaciones.push(...data);
+
+        console.log('Total de notificaciones:', this.notificaciones.length);
+
+        this.paginaNotificaciones++;
+
+        console.log('Siguiente página:', this.paginaNotificaciones);
+
+        //this.loadingNotificaciones = false;
+        this.cargandoMasNotificaciones = false;
+      },
+
+      error: (err) => {
+
+        console.error('Error obteniendo notificaciones:', err);
+
+        this.loadingNotificaciones = false;
+        this.cargandoMasNotificaciones = false;
+      }
+
+    });
+
   }
-}
+  onScrollNotifications(event: any) {
+
+    const element = event.target;
+
+    console.log(
+      "scrollTop:", element.scrollTop,
+      "clientHeight:", element.clientHeight,
+      "scrollHeight:", element.scrollHeight
+    );
+
+    const alFinal =
+      element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+    if (alFinal) {
+      console.log("Pidiendo página", this.paginaNotificaciones);
+      this.getNotificaciones();
+    }
+  }
   getMisSeguidores(reset: boolean = false) {
 
-  if (this.cargandoMasSeguidores || !this.hayMasSeguidores) {
-    return;
-  }
-
-  if (reset) {
-    this.paginaSeguidores = 1;
-    this.followers = [];
-    this.hayMasSeguidores = true;
-  }
-
-  //this.loadingNotificaciones = true;
-  this.cargandoMasSeguidores = true;
-
-  const userData = this.authService.getUserData();
-
-  console.log('Solicitando página:', this.paginaSeguidores);
-
-  this.subastaService.getSeguidores(
-    userData.id,
-    this.paginaSeguidores
-  ).subscribe({
-
-    next: (data: any) => {
-
-      console.log('Página recibida:', this.paginaSeguidores);
-      console.log('Cantidad recibida:', data.length);
-
-      if (data.length < 10) {
-        this.hayMasSeguidores = false;
-      }
-
-      this.followers.push(...data);
-
-      this.paginaSeguidores++;
-
-     // this.loadingNotificaciones = false;
-      this.cargandoMasSeguidores = false;
-    },
-
-    error: (err) => {
-
-      console.error('Error al cargar seguidores', err);
-
-      this.loadingNotificaciones = false;
-      this.cargandoMasSeguidores = false;
+    if (this.cargandoMasSeguidores || !this.hayMasSeguidores) {
+      return;
     }
 
-  });
+    if (reset) {
+      this.paginaSeguidores = 1;
+      this.followers = [];
+      this.hayMasSeguidores = true;
+    }
 
-}
-onScrollSeguidores(event: any) {
+    //this.loadingNotificaciones = true;
+    this.cargandoMasSeguidores = true;
 
-  const element = event.target;
+    const userData = this.authService.getUserData();
 
-  const alFinal =
-    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+    console.log('Solicitando página:', this.paginaSeguidores);
 
-  if (alFinal) {
-    console.log('Pidiendo página', this.paginaSeguidores);
-    this.getMisSeguidores();
+    this.subastaService.getSeguidores(
+      userData.id,
+      this.paginaSeguidores
+    ).subscribe({
+
+      next: (data: any) => {
+
+        console.log('Página recibida:', this.paginaSeguidores);
+        console.log('Cantidad recibida:', data.length);
+
+        if (data.length < 10) {
+          this.hayMasSeguidores = false;
+        }
+
+        this.followers.push(...data);
+
+        this.paginaSeguidores++;
+
+        // this.loadingNotificaciones = false;
+        this.cargandoMasSeguidores = false;
+      },
+
+      error: (err) => {
+
+        console.error('Error al cargar seguidores', err);
+
+        this.loadingNotificaciones = false;
+        this.cargandoMasSeguidores = false;
+      }
+
+    });
+
   }
+  onScrollSeguidores(event: any) {
 
-}
+    const element = event.target;
+
+    const alFinal =
+      element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+    if (alFinal) {
+      console.log('Pidiendo página', this.paginaSeguidores);
+      this.getMisSeguidores();
+    }
+
+  }
 
   getVendedoresFavoritos(reset: boolean = false) {
 
-  if (this.cargandoMasVendedoresFavoritos || !this.hayMasVendedoresFavoritos) {
-    return;
-  }
-
-  if (reset) {
-    this.paginaVendedoresFavoritos = 1;
-    this.favoritos = [];
-    this.hayMasVendedoresFavoritos = true;
-  }
-
-  this.cargandoMasVendedoresFavoritos = true;
- // this.loadingNotificaciones = true;
-
-  let userData = this.authService.getUserData();
-
-  this.subastaService.GetVendedoresSeguidos(
-    userData.id,
-    this.paginaVendedoresFavoritos
-  ).subscribe({
-
-    next: (data: any) => {
-
-      if (data.length < 10) {
-        this.hayMasVendedoresFavoritos = false;
-      }
-
-      this.favoritos.push(...data);
-
-      this.paginaVendedoresFavoritos++;
-
-      //this.loadingNotificaciones = false;
-      this.cargandoMasVendedoresFavoritos = false;
-    },
-
-    error: (err) => {
-
-      console.error('Error al cargar vendedores favoritos', err);
-
-      this.loadingNotificaciones = false;
-      this.cargandoMasVendedoresFavoritos = false;
+    if (this.cargandoMasVendedoresFavoritos || !this.hayMasVendedoresFavoritos) {
+      return;
     }
 
-  });
+    if (reset) {
+      this.paginaVendedoresFavoritos = 1;
+      this.favoritos = [];
+      this.hayMasVendedoresFavoritos = true;
+    }
 
-}
-onScrollVendedoresFavoritos(event: any) {
+    this.cargandoMasVendedoresFavoritos = true;
+    // this.loadingNotificaciones = true;
 
-  const element = event.target;
+    let userData = this.authService.getUserData();
 
-  const alFinal =
-    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+    this.subastaService.GetVendedoresSeguidos(
+      userData.id,
+      this.paginaVendedoresFavoritos
+    ).subscribe({
 
-  if (alFinal) {
-    this.getVendedoresFavoritos();
+      next: (data: any) => {
+
+        if (data.length < 10) {
+          this.hayMasVendedoresFavoritos = false;
+        }
+
+        this.favoritos.push(...data);
+
+        this.paginaVendedoresFavoritos++;
+
+        //this.loadingNotificaciones = false;
+        this.cargandoMasVendedoresFavoritos = false;
+      },
+
+      error: (err) => {
+
+        console.error('Error al cargar vendedores favoritos', err);
+
+        this.loadingNotificaciones = false;
+        this.cargandoMasVendedoresFavoritos = false;
+      }
+
+    });
+
+  }
+  onScrollVendedoresFavoritos(event: any) {
+
+    const element = event.target;
+
+    const alFinal =
+      element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+    if (alFinal) {
+      this.getVendedoresFavoritos();
+    }
+
   }
 
-}
-
-  changeHomeIndex(index: number){
+  changeHomeIndex(index: number) {
     this.currentHomeIndex = index;
   }
 
 
-  changeAside(option: any){
+  changeAside(option: any) {
     // if(option === 'notifications'){
     //   this.getNotificaciones();
     // }
-    switch(option){
+    switch (option) {
       case 'following': this.getSubastasSeguidas();
         break;
       case 'notifications': this.getNotificaciones(true);
@@ -1036,9 +1095,9 @@ onScrollVendedoresFavoritos(event: any) {
 
   }
 
-  backToMenuAside(){
+  backToMenuAside() {
     this.clasesAside.two = 'animate__fadeOutRight'
-    if(this.seguidasIntervalID){
+    if (this.seguidasIntervalID) {
       clearInterval(this.seguidasIntervalID);
     }
     setTimeout(() => {
@@ -1047,17 +1106,17 @@ onScrollVendedoresFavoritos(event: any) {
     }, 260);
   }
 
-  toShort(val: string){
+  toShort(val: string) {
     return val.length > 41 ? val.substring(0, 41) + '...' : val;
   }
 
-  checkDataSubasta(){
+  checkDataSubasta() {
     console.log(this.subasta)
     let valid = true;
-    if(!this.ss.isValidModel(this.subasta, ['id','descripcion', 'premium', 'url', 'valorOferta'])){
-        this.ss.showNotification('error', 'Informacion incompleta');
-        valid = false;
-      }
+    if (!this.ss.isValidModel(this.subasta, ['id', 'descripcion', 'premium', 'url', 'valorOferta'])) {
+      this.ss.showNotification('error', 'Informacion incompleta');
+      valid = false;
+    }
     return valid;
     // let valid = true;
     // let userData = this.authService.getUserData();
@@ -1118,12 +1177,12 @@ onScrollVendedoresFavoritos(event: any) {
   //   return;
   //  }
   // //  return;
-   
+
   // }
 
-  checkDataPago(){
+  checkDataPago() {
     let valid = true;
-    let omitir = this.ss.isValidValue(this.selectedCard.id) ? ['card_number']:['id'];
+    let omitir = this.ss.isValidValue(this.selectedCard.id) ? ['card_number'] : ['id'];
     const _card = {
       card_number: this.tarjeta.card_number,
       cvv2: this.tarjeta.cvv2,
@@ -1141,30 +1200,30 @@ onScrollVendedoresFavoritos(event: any) {
     //   valid = false;
     // }
     // 
-    if(!this.ss.isValidModel(_card, omitir)){
+    if (!this.ss.isValidModel(_card, omitir)) {
       this.ss.showNotification('error', 'Datos faltantes');
       valid = false;
     } else {
-      if(+_card.expiration_month > 12){
+      if (+_card.expiration_month > 12) {
         this.ss.showNotification('error', 'El mes de expiración de la tarjeta no es válido.', 3000);
         valid = false;
       }
     }
-    return valid;    
+    return valid;
   }
 
-  handleError(data: any){
+  handleError(data: any) {
     this.loading = false;
     console.log(data);
   }
 
-  getClearBase64(array: any[]){
-    for(let i of array){
+  getClearBase64(array: any[]) {
+    for (let i of array) {
       console.log(i)
       let url = i.url;
       let index = url.indexOf('base64');
-      let firstPart = url.substring(0,  index + 7);
-      i.url = url.replace(firstPart,'');
+      let firstPart = url.substring(0, index + 7);
+      i.url = url.replace(firstPart, '');
     }
     return array;
   }
@@ -1172,41 +1231,41 @@ onScrollVendedoresFavoritos(event: any) {
 
   // Evitar que los clics dentro del contenido del modal cierren el modal
   onContentClick(event: MouseEvent) {
-    if(this.loading) return;
+    if (this.loading) return;
     event.stopPropagation();
   }
 
-  getComisionesUsuario(idUsuario: number){
+  getComisionesUsuario(idUsuario: number) {
     this.subastaService.getComisionesCrearSubasta(idUsuario).subscribe({
-        next: (val) => {
-          this.listaComisiones = val;
-          console.log(val)
-        },
-        error: (err) => {
-          console.log(err)
-        }
+      next: (val) => {
+        this.listaComisiones = val;
+        console.log(val)
+      },
+      error: (err) => {
+        console.log(err)
+      }
     })
   }
 
-  getGanancia(){
+  getGanancia() {
     let totalComision = 0;
-    if(this.listaComisiones.length > 0){
-      for(let c of this.listaComisiones){
-       switch(c.tipoComision){
-        case 'Porcentaje': let porcentajeValor = (c.porcentaje * this.subasta.precio!) / 100;
-          totalComision += porcentajeValor;
-          break;
-        case 'Pago':
-          totalComision += c.porcentaje;
-          break;
-       }
+    if (this.listaComisiones.length > 0) {
+      for (let c of this.listaComisiones) {
+        switch (c.tipoComision) {
+          case 'Porcentaje': let porcentajeValor = (c.porcentaje * this.subasta.precio!) / 100;
+            totalComision += porcentajeValor;
+            break;
+          case 'Pago':
+            totalComision += c.porcentaje;
+            break;
+        }
       }
     }
     return this.subasta.precio! - totalComision;
   }
 
-  openModalCreateAuction(){
-    if(this.isLoggedIn()){
+  openModalCreateAuction() {
+    if (this.isLoggedIn()) {
       this.getComisionesUsuario(this.usuario()!.id);
       this.getDireccionesEnvio(this.usuario()!.id, 'envio');
       this.getTarjetasUsuario(this.usuario()!.id);
@@ -1218,21 +1277,21 @@ onScrollVendedoresFavoritos(event: any) {
     this.openModalPoliticas = true;
   }
 
-  marcarNotificacionAbrir(notificacion: any, subasta: Subasta){
+  marcarNotificacionAbrir(notificacion: any, subasta: Subasta) {
     console.log(subasta)
     this.subastaService.marcarVistaNotificacion(notificacion.id).subscribe({
       next: (response) => {
         console.log(response)
         console.log(notificacion)
-        if(notificacion.titulo === 'Subasta Rechazada'){
-          localStorage.setItem('TpTbIdx','1');
-          localStorage.setItem('TpSbTbIdx','1');
+        if (notificacion.titulo === 'Subasta Rechazada') {
+          localStorage.setItem('TpTbIdx', '1');
+          localStorage.setItem('TpSbTbIdx', '1');
           localStorage.setItem('FNToReject', 'T');
           this.router.navigate(['/profile']);
         } else {
-           this.abrirDetalleSubasta(subasta);
+          this.abrirDetalleSubasta(subasta);
         }
-       
+
       },
       error: (err) => {
         console.log(err)
@@ -1248,7 +1307,7 @@ onScrollVendedoresFavoritos(event: any) {
     this.getDatosSubasta(subasta.id)
   }
 
-  async getTarjetasUsuario(idUsuario: number){
+  async getTarjetasUsuario(idUsuario: number) {
     // this.tarjetas = await this.ss.loadLocalData('Cq@3K$K$RD') ?? []; 
     // if(this.tarjetas.length > 0){
     //   this.tarjetas = this.tarjetas.filter(x => x.id_user === idUsuario);
@@ -1272,34 +1331,34 @@ onScrollVendedoresFavoritos(event: any) {
   }
 
 
-  getNewCardModel(){
-    return  {
-      id:null,
+  getNewCardModel() {
+    return {
+      id: null,
       holder_name: '',
       holder_lastname: '',
       card_number: '',
       expiration_month: '',
       expiration_year: '',
       cvv2: '',
-      mail:'',
+      mail: '',
       phone: '',
     };
   }
 
 
-  getDatosSubasta(id: number){
+  getDatosSubasta(id: number) {
     this.loading = true;
     this.subastaService.getAuctionById(id).subscribe({
       next: (subasta) => {
-        let tiempoVence = subasta.tiempoVence?? '00:00:00';
+        let tiempoVence = subasta.tiempoVence ?? '00:00:00';
         let segundos: number, minutos: number, horas: number;
         let _tiempoRestante = tiempoVence.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
         console.log(_tiempoRestante);
         this.loading = false;
-        if(_tiempoRestante > 0){
+        if (_tiempoRestante > 0) {
           this.router.navigate(['/subasta-detalle', subasta.id, 'SubastasPremium']);
         } else {
-          let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario:'comprador'});
+          let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario: 'comprador' });
           let encoded = this.ss.encodeToBase64(dataParams);
           this.router.navigate(['/subasta-terminada', encoded]);
         }
@@ -1313,100 +1372,100 @@ onScrollVendedoresFavoritos(event: any) {
 
   getSubastasSeguidas(reset: boolean = false) {
 
-  if (this.cargandoMasSubastas || !this.hayMasSubastas) {
-    return;
-  }
-
-  if (reset) {
-    this.paginaSubastas = 1;
-    this.auctions = [];
-    this.hayMasSubastas = true;
-  }
-
-  const usuario = this.authService.currentUser();
-
-  if (!usuario) {
-    console.warn('Usuario no logueado, no se cargan subastas seguidas');
-    return;
-  }
-
-  this.cargandoMasSubastas = true;
- // this.loadingNotificaciones = true;
-
-  const idUsuario = usuario.id;
-
-  console.log('Solicitando página:', this.paginaSubastas);
-
-  this.auctionService.getAuctions(idUsuario, this.paginaSubastas).subscribe({
-
-    next: (data) => {
-
-      console.log('Página recibida:', this.paginaSubastas);
-      console.log('Cantidad recibida:', data.length);
-
-      if (data.length < 10) {
-        this.hayMasSubastas = false;
-      }
-
-      const nuevasSubastas = data.map(subasta => ({
-        ...subasta,
-        tiempoVence: subasta.tiempoVence ?? '00:00:00',
-        vencida: false,
-        venceSegundos: this.tiempoStringASegundos(subasta.tiempoVence)
-      }));
-
-      this.auctions.push(...nuevasSubastas);
-
-      this.auctionsId = this.auctions.map(subasta => subasta.id);
-
-      this.setTimer(this.auctions);
-
-      this.paginaSubastas++;
-
-     // this.loadingNotificaciones = false;
-      this.cargandoMasSubastas = false;
-
-      console.log('Total subastas:', this.auctions.length);
-      console.log('Siguiente página:', this.paginaSubastas);
-
-    },
-
-    error: (error) => {
-
-      this.loadingNotificaciones = false;
-      this.cargandoMasSubastas = false;
-
-      console.error('Error cargando subastas:', error);
-
+    if (this.cargandoMasSubastas || !this.hayMasSubastas) {
+      return;
     }
 
-  });
+    if (reset) {
+      this.paginaSubastas = 1;
+      this.auctions = [];
+      this.hayMasSubastas = true;
+    }
 
-}
-onScrollSubastas(event: any) {
+    const usuario = this.authService.currentUser();
 
-  const element = event.target;
+    if (!usuario) {
+      console.warn('Usuario no logueado, no se cargan subastas seguidas');
+      return;
+    }
 
-  const alFinal =
-    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+    this.cargandoMasSubastas = true;
+    // this.loadingNotificaciones = true;
 
-  console.log({
-    scrollTop: element.scrollTop,
-    clientHeight: element.clientHeight,
-    scrollHeight: element.scrollHeight,
-    alFinal
-  });
+    const idUsuario = usuario.id;
 
-  if (alFinal) {
-    console.log('Pidiendo página', this.paginaSubastas);
-    this.getSubastasSeguidas();
+    console.log('Solicitando página:', this.paginaSubastas);
+
+    this.auctionService.getAuctions(idUsuario, this.paginaSubastas).subscribe({
+
+      next: (data) => {
+
+        console.log('Página recibida:', this.paginaSubastas);
+        console.log('Cantidad recibida:', data.length);
+
+        if (data.length < 10) {
+          this.hayMasSubastas = false;
+        }
+
+        const nuevasSubastas = data.map(subasta => ({
+          ...subasta,
+          tiempoVence: subasta.tiempoVence ?? '00:00:00',
+          vencida: false,
+          venceSegundos: this.tiempoStringASegundos(subasta.tiempoVence)
+        }));
+
+        this.auctions.push(...nuevasSubastas);
+
+        this.auctionsId = this.auctions.map(subasta => subasta.id);
+
+        this.setTimer(this.auctions);
+
+        this.paginaSubastas++;
+
+        // this.loadingNotificaciones = false;
+        this.cargandoMasSubastas = false;
+
+        console.log('Total subastas:', this.auctions.length);
+        console.log('Siguiente página:', this.paginaSubastas);
+
+      },
+
+      error: (error) => {
+
+        this.loadingNotificaciones = false;
+        this.cargandoMasSubastas = false;
+
+        console.error('Error cargando subastas:', error);
+
+      }
+
+    });
+
+  }
+  onScrollSubastas(event: any) {
+
+    const element = event.target;
+
+    const alFinal =
+      element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+    console.log({
+      scrollTop: element.scrollTop,
+      clientHeight: element.clientHeight,
+      scrollHeight: element.scrollHeight,
+      alFinal
+    });
+
+    if (alFinal) {
+      console.log('Pidiendo página', this.paginaSubastas);
+      this.getSubastasSeguidas();
+    }
+
   }
 
-}
-
-  setTimer(litaItems: any[]){
+  setTimer(litaItems: any[]) {
     this.seguidasIntervalID = setInterval(() => {
-      for(let item of litaItems){
+      for (let item of litaItems) {
         if (item.venceSegundos > 0) {
           item.venceSegundos--;
         }
@@ -1418,7 +1477,7 @@ onScrollSubastas(event: any) {
     const [h, m, s] = tiempo.split(':').map(Number);
     return h * 3600 + m * 60 + s;
   }
-  
+
   // 2. Función para convertir segundos a "hh:mm:ss"
   segundosATiempoString(segundos: number) {
     const h = String(Math.floor(segundos / 3600)).padStart(2, '0');
@@ -1455,102 +1514,102 @@ onScrollSubastas(event: any) {
     // this.idSubastaConectada = nuevoId;
   }
 
- getSubastasGanadas(reset: boolean = false) {
+  getSubastasGanadas(reset: boolean = false) {
 
-  if (this.cargandoMasSubastasGanadas || !this.hayMasSubastasGanadas) {
-    return;
-  }
-
-  if (reset) {
-    this.paginaSubastasGanadas = 1;
-    this.auctionsWin = [];
-    this.hayMasSubastasGanadas = true;
-  }
-
-  const usuario = this.authService.currentUser();
-
-  if (!usuario) {
-    console.warn('Usuario no logueado, no se cargan subastas ganadas');
-    return;
-  }
-
-  //this.loadingNotificaciones = true;
-  this.cargandoMasSubastasGanadas = true;
-
-  const idUsuario = usuario.id;
-
-  console.log('Solicitando página:', this.paginaSubastasGanadas);
-
-  this.subastaService.getSubastasGanadas(
-    idUsuario,
-    this.paginaSubastasGanadas
-  ).subscribe({
-
-    next: (data) => {
-
-      console.log('Página recibida:', this.paginaSubastasGanadas);
-      console.log('Cantidad recibida:', data.length);
-      console.log(data)
-
-      if (data.length < 10) {
-        this.hayMasSubastasGanadas = false;
-      }
-
-      this.auctionsWin.push(...data);
-
-      this.paginaSubastasGanadas++;
-
-      //this.loadingNotificaciones = false;
-      this.cargandoMasSubastasGanadas = false;
-
-      console.log('Total:', this.auctionsWin.length);
-    },
-
-    error: (error) => {
-
-      this.loadingNotificaciones = false;
-      this.cargandoMasSubastasGanadas = false;
-
-      console.error('Error cargando subastas:', error);
-
+    if (this.cargandoMasSubastasGanadas || !this.hayMasSubastasGanadas) {
+      return;
     }
 
-  });
+    if (reset) {
+      this.paginaSubastasGanadas = 1;
+      this.auctionsWin = [];
+      this.hayMasSubastasGanadas = true;
+    }
 
-}
+    const usuario = this.authService.currentUser();
 
-onScrollSubastasGanadas(event: any) {
+    if (!usuario) {
+      console.warn('Usuario no logueado, no se cargan subastas ganadas');
+      return;
+    }
 
-  const element = event.target;
+    //this.loadingNotificaciones = true;
+    this.cargandoMasSubastasGanadas = true;
 
-  const alFinal =
-    element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+    const idUsuario = usuario.id;
 
-  if (alFinal) {
-    console.log('Pidiendo página', this.paginaSubastasGanadas);
-    this.getSubastasGanadas();
+    console.log('Solicitando página:', this.paginaSubastasGanadas);
+
+    this.subastaService.getSubastasGanadas(
+      idUsuario,
+      this.paginaSubastasGanadas
+    ).subscribe({
+
+      next: (data) => {
+
+        console.log('Página recibida:', this.paginaSubastasGanadas);
+        console.log('Cantidad recibida:', data.length);
+        console.log(data)
+
+        if (data.length < 10) {
+          this.hayMasSubastasGanadas = false;
+        }
+
+        this.auctionsWin.push(...data);
+
+        this.paginaSubastasGanadas++;
+
+        //this.loadingNotificaciones = false;
+        this.cargandoMasSubastasGanadas = false;
+
+        console.log('Total:', this.auctionsWin.length);
+      },
+
+      error: (error) => {
+
+        this.loadingNotificaciones = false;
+        this.cargandoMasSubastasGanadas = false;
+
+        console.error('Error cargando subastas:', error);
+
+      }
+
+    });
+
   }
 
-}
+  onScrollSubastasGanadas(event: any) {
+
+    const element = event.target;
+
+    const alFinal =
+      element.scrollTop + element.clientHeight >= element.scrollHeight - 20;
+
+    if (alFinal) {
+      console.log('Pidiendo página', this.paginaSubastasGanadas);
+      this.getSubastasGanadas();
+    }
+
+  }
   onFileChange(event: any) {
     const files = event.target.files;
     let maxFileCount = this.tipoSubasta === 'general' ? 5 : 100;
     let maxCantAdd = maxFileCount - this.subasta.mimagenesSubasta.length;
-    let restFilesCount = files && files.length > maxCantAdd ? maxCantAdd: files.length;
+    let restFilesCount = files && files.length > maxCantAdd ? maxCantAdd : files.length;
     // if (files && files.length + this.subasta.mimagenesSubasta.length <= maxFileCount) {
-      if(restFilesCount > 0){
-        for (let i = 0; i < restFilesCount; i++) {
-          // for (let i = 0; i < files.length && this.subasta.mimagenesSubasta.length < maxFileCount; i++) {
-            const reader = new FileReader();
-            reader.onload = (e: any) => {
-              this.subasta.mimagenesSubasta.push({url: e.target.result});
-              this.imagesPreview!.push({url: e.target.result});
-              // this.imagenes.push(e.target.result);
-            };
-            reader.readAsDataURL(files[i]);
-          // }
-        }
+    if (restFilesCount > 0) {
+      for (let i = 0; i < restFilesCount; i++) {
+        // for (let i = 0; i < files.length && this.subasta.mimagenesSubasta.length < maxFileCount; i++) {
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.subasta.mimagenesSubasta.push({ url: e.target.result });
+          this.imagesPreview!.push({ url: e.target.result });
+          // this.imagenes.push(e.target.result);
+        };
+        reader.readAsDataURL(files[i]);
+        // }
       }
+    }
   }
 
   eliminarImagen(index: number) {
@@ -1559,41 +1618,41 @@ onScrollSubastasGanadas(event: any) {
     // this.imagenes
   }
 
-  setComprobanteModel(){
+  setComprobanteModel() {
     let clienteNombre = `${this.usuario()?.nombre} ${this.usuario()?.apellido}`
     const timestamp = Date.now();
 
     this.modeloComprobante = {
-      estatus:'',
-      fecha:'',
-      idTransaction:'',
+      estatus: '',
+      fecha: '',
+      idTransaction: '',
       metodoPago: '',
-      cliente: clienteNombre ,
-      correo:'',
-      ordenXuba:`NAX-PREMIUM_${timestamp}-${this.usuario()?.id}`,
-      total:this.precioSubastaPremium,
-      subtotal:this.precioSubastaPremium,
-      envio:0,
-      nombreArticulo:`NAX#${this.subasta.caption}-${this.subasta.descripcion?.substring(0,10)}`,
+      cliente: clienteNombre,
+      correo: '',
+      ordenXuba: `NAX-PREMIUM_${timestamp}-${this.usuario()?.id}`,
+      total: this.precioSubastaPremium,
+      subtotal: this.precioSubastaPremium,
+      envio: 0,
+      nombreArticulo: `NAX#${this.subasta.caption}-${this.subasta.descripcion?.substring(0, 10)}`,
       idArticulo: 0,
-      descripcion: this.subasta.descripcion?.substring(0,10),
-      cantidad:1,
+      descripcion: this.subasta.descripcion?.substring(0, 10),
+      cantidad: 1,
       noAutorizacion: '',
     };
   }
 
-  generarModeloCargo(deviceSessionId: any, encodedAuth: string){
+  generarModeloCargo(deviceSessionId: any, encodedAuth: string) {
     let userData = this.authService.getUserData();
-    const dataCharge:any = {
+    const dataCharge: any = {
       'amount': this.precioSubastaPremium,
       'description': 'Pago subasta premium vendedor ' + userData.id,
-      'name':this.tarjeta.holder_name,       
-      'lastName':this.tarjeta.holder_lastname,
-      'email':this.tarjeta.mail,
-      'phone':this.tarjeta.phone,
+      'name': this.tarjeta.holder_name,
+      'lastName': this.tarjeta.holder_lastname,
+      'email': this.tarjeta.mail,
+      'phone': this.tarjeta.phone,
       'use_3d_secure': true,
       'device_session_id': deviceSessionId,
-      'redirect_url':  `${environment.threeds_redirect_url}/${encodedAuth}` 
+      'redirect_url': `${environment.threeds_redirect_url}/${encodedAuth}`
     };
 
     return dataCharge;
@@ -1613,37 +1672,37 @@ onScrollSubastasGanadas(event: any) {
     this.textoLoading = 'Procesando pago...'
     this.setComprobanteModel();
     let r = await this.ss.tokenizarTarjeta(card);
-    if(r.ok){
+    if (r.ok) {
       this.modeloComprobante.metodoPago = r.metodo_desc;
       this.GenerarCargo(r.token_id, r.deviceSessionId);
     } else {
       this.loading = false;
-      this.ss.showNotification('error',r.msg, 6000)
+      this.ss.showNotification('error', r.msg, 6000)
     }
   }
-  
-  async getChargePaymentResponse(dataChargeModel: any, card_id?: any){
-    let responseCharge = await new Promise<any>((res,rej) => {
-      if(card_id){
+
+  async getChargePaymentResponse(dataChargeModel: any, card_id?: any) {
+    let responseCharge = await new Promise<any>((res, rej) => {
+      if (card_id) {
         this.openPayService.GenerarCargoSecureCard(dataChargeModel).subscribe({
           next: (response: any) => {
             this.loading = false;
-            res({success: true, result: response});
-          }, 
+            res({ success: true, result: response });
+          },
           error: (error: any) => {
             this.loading = false;
-            res({success: false, result: error});
+            res({ success: false, result: error });
           }
         });
       } else {
         this.openPayService.GenerarCargo(dataChargeModel).subscribe({
           next: (response: any) => {
             this.loading = false;
-            res({success: true, result: response});
-          }, 
+            res({ success: true, result: response });
+          },
           error: (error: any) => {
             this.loading = false;
-            res({success: false, result: error});
+            res({ success: false, result: error });
           }
         });
       }
@@ -1651,7 +1710,7 @@ onScrollSubastasGanadas(event: any) {
     return responseCharge;
   }
 
-  setResponseComprobanteData(response: any){
+  setResponseComprobanteData(response: any) {
     this.modeloComprobante.noAutorizacion = response.authorization;
     this.modeloComprobante.idTransaction = response.id;
     this.modeloComprobante.fecha = response.operation_date;
@@ -1659,12 +1718,12 @@ onScrollSubastasGanadas(event: any) {
     this.modeloComprobante.correo = this.tarjeta.mail;
   }
 
-  async GenerarCargo(tokenId: string, deviceSessionId: any, card_id?: any){
-    let dataParamsEndAuth = JSON.stringify({id: -1, tu:'vendedor', rt: 'home', mtap: false, process:'payment-premium'});
+  async GenerarCargo(tokenId: string, deviceSessionId: any, card_id?: any) {
+    let dataParamsEndAuth = JSON.stringify({ id: -1, tu: 'vendedor', rt: 'home', mtap: false, process: 'payment-premium' });
     let encodedAuth = this.ss.encodeToBase64(dataParamsEndAuth);
 
-    const dataCharge:any = this.generarModeloCargo(deviceSessionId, encodedAuth!);
-    if(card_id){
+    const dataCharge: any = this.generarModeloCargo(deviceSessionId, encodedAuth!);
+    if (card_id) {
       dataCharge.idTarjeta = card_id;
       dataCharge.customerId = this.infoUsuario.customer_Id
       dataCharge.deviceSessionId = deviceSessionId
@@ -1676,9 +1735,9 @@ onScrollSubastasGanadas(event: any) {
     let responseCharge = await this.getChargePaymentResponse(dataCharge, card_id);
 
     console.log(responseCharge);
-    if(responseCharge.success) {
-      let res: any = card_id ? responseCharge.result: JSON.parse(responseCharge.result.message);
-      if(res.error_code || res.error_message){
+    if (responseCharge.success) {
+      let res: any = card_id ? responseCharge.result : JSON.parse(responseCharge.result.message);
+      if (res.error_code || res.error_message) {
         let textoError = this.ss.getMensajeTextoErrorOpenPay(res.error_code ?? res.error_message);
         this.ss.showNotification('error', textoError, 6000);
       } else {
@@ -1686,14 +1745,14 @@ onScrollSubastasGanadas(event: any) {
       }
 
     } else {
-      this.ss.showNotification('error','Hubo un problema al generar el cargo'); 
+      this.ss.showNotification('error', 'Hubo un problema al generar el cargo');
       return;
     }
   }
 
-  afterProcessCharge(response: any){
+  afterProcessCharge(response: any) {
     this.setResponseComprobanteData(response);
-    if(response.status === 'completed'){
+    if (response.status === 'completed') {
       this.saveNewSubasta();
       //this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.Pagado, true);
     } else {
@@ -1702,40 +1761,40 @@ onScrollSubastasGanadas(event: any) {
     }
   }
 
-  moveTo3DAuth(response: any){
+  moveTo3DAuth(response: any) {
     setTimeout(() => {
-      let dataParams = JSON.stringify({'id': -1,'tid':response.id , 'tu':'comprador', 'rt': response.payment_method.url, 'mtap': true});
+      let dataParams = JSON.stringify({ 'id': -1, 'tid': response.id, 'tu': 'comprador', 'rt': response.payment_method.url, 'mtap': true });
       let encoded = this.ss.encodeToBase64(dataParams);
-      this.router.navigate(['/payment-callback',encoded]);
+      this.router.navigate(['/payment-callback', encoded]);
     }, 100);
   }
 
-  setToXubaComprobante(response: any){
+  setToXubaComprobante(response: any) {
     this.ss.setLocalStorageEncodedKey('transaction_id', response.id);
-    this.ss.setLocalStorageEncodedKey('tmp_subasta_model',  JSON.stringify(this.subasta));
+    this.ss.setLocalStorageEncodedKey('tmp_subasta_model', JSON.stringify(this.subasta));
     this.ss.setLocalStorageEncodedKey('tmp_ticket_model', JSON.stringify(this.modeloComprobante));
   }
 
-  GenerarCargo_old(tokenId: string, deviceSessionId: any){
+  GenerarCargo_old(tokenId: string, deviceSessionId: any) {
     let userData = this.authService.getUserData();
     // const deviceSessionId = OpenPay.deviceData.setup('payment-form', 'device-session-id');
     //let dataParamsEndAuth = JSON.stringify({idSubasta: -1, autoRedirect: false, redirectTo: 'home', moveToAuthPage:false, tipoUsuario:'vendedor', process:'payment-premium' });
-    let dataParamsEndAuth = JSON.stringify({id: -1, tu:'vendedor', rt: 'home', mtap: false, process:'payment-premium'});
+    let dataParamsEndAuth = JSON.stringify({ id: -1, tu: 'vendedor', rt: 'home', mtap: false, process: 'payment-premium' });
 
     let encodedAuth = this.ss.encodeToBase64(dataParamsEndAuth);
 
-   
-    const dataCharge  = {
+
+    const dataCharge = {
       'token': tokenId,
       'amount': this.precioSubastaPremium,
       'description': 'Pago subasta premium vendedor ' + userData.id,
-      'name':this.tarjeta.holder_name,       
-      'lastName':this.tarjeta.holder_lastname,
-      'email':this.tarjeta.mail,
-      'phone':this.tarjeta.phone,
+      'name': this.tarjeta.holder_name,
+      'lastName': this.tarjeta.holder_lastname,
+      'email': this.tarjeta.mail,
+      'phone': this.tarjeta.phone,
       'use_3d_secure': true,
       'device_session_id': deviceSessionId,
-      'redirect_url':  `${environment.threeds_redirect_url}/${encodedAuth}` 
+      'redirect_url': `${environment.threeds_redirect_url}/${encodedAuth}`
     };
     console.log(dataCharge)
     this.openPayService.GenerarCargo(dataCharge).subscribe({
@@ -1750,16 +1809,16 @@ onScrollSubastasGanadas(event: any) {
       // }
       next: (response: any) => {
         this.loading = false;
-        
+
         console.log('CARGO COMPLETADO')
         console.log(response);
-       let res = JSON.parse(response.message);
+        let res = JSON.parse(response.message);
         console.log(res);
 
-        if(res.error_code){
+        if (res.error_code) {
           let textoError = this.ss.getMensajeTextoErrorOpenPay(res.error_code);
           this.ss.showNotification('error', textoError, 6000);
-        } 
+        }
         else {
           this.modeloComprobante.noAutorizacion = res.authorization;
           this.modeloComprobante.idTransaction = res.id;
@@ -1767,7 +1826,7 @@ onScrollSubastasGanadas(event: any) {
           this.modeloComprobante.estatus = 'Completado';
           this.modeloComprobante.correo = res.customer.email;
           let estatusCargo = '';
-          if(res.status === 'completed'){
+          if (res.status === 'completed') {
             estatusCargo = 'Completado';
             this.saveNewSubasta();
             //this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.Pagado, true);
@@ -1781,15 +1840,15 @@ onScrollSubastasGanadas(event: any) {
             // localStorage.setItem(encodedKeyTicket!, JSON.stringify(this.modeloComprobante));
 
             this.ss.setLocalStorageEncodedKey('transaction_id', res.id);
-            this.ss.setLocalStorageEncodedKey('tmp_subasta_model',  JSON.stringify(this.subasta));
+            this.ss.setLocalStorageEncodedKey('tmp_subasta_model', JSON.stringify(this.subasta));
             this.ss.setLocalStorageEncodedKey('tmp_ticket_model', JSON.stringify(this.modeloComprobante));
             setTimeout(() => {
               // let dataParams = JSON.stringify({transaction_id: res.id, idSubasta: -1, tipoUsuario:'vendedor', autoRedirect: true, redirectTo:res.payment_method.url, moveToAuthPage: true});
               // let dataParams = JSON.stringify({transaction_id: res.id, idSubasta: -1, tipoUsuario:'vendedor', autoRedirect: true, redirectTo:res.payment_method.url, moveToAuthPage: true});
-              let dataParams = JSON.stringify({id: -1,tid:res.id , tu:'comprador', rt: res.payment_method.url, mtap: true});
+              let dataParams = JSON.stringify({ id: -1, tid: res.id, tu: 'comprador', rt: res.payment_method.url, mtap: true });
 
               let encoded = this.ss.encodeToBase64(dataParams);
-              this.router.navigate(['/payment-callback',encoded]);
+              this.router.navigate(['/payment-callback', encoded]);
             }, 100);
           }
 
@@ -1797,27 +1856,27 @@ onScrollSubastasGanadas(event: any) {
       },
       error: (error: any) => {
         this.loading = false;
-        this.ss.showNotification('error','Hubo un problema al generar el cargo');  
+        this.ss.showNotification('error', 'Hubo un problema al generar el cargo');
       }
     });
 
   }
 
-  calcularValorInicial(){
-    this.subasta.apuesta = (this.subasta.precio! * this.porcentajeValorInicial) /100
-    this.subasta.valorOferta =  this.subasta.apuesta * 0.6;
+  calcularValorInicial() {
+    this.subasta.apuesta = (this.subasta.precio! * this.porcentajeValorInicial) / 100
+    this.subasta.valorOferta = this.subasta.apuesta * 0.6;
   }
 
-  saveNewSubasta(){
+  saveNewSubasta() {
     console.log('horaRecolecta:', this.subasta.horaRecolecta);
-  console.log('JSON:', JSON.stringify(this.subasta));
+    console.log('JSON:', JSON.stringify(this.subasta));
     this.subastaService.crearSubasta(this.subasta).subscribe({
       next: (response) => this.saveSubastaSuccess(response),
       error: (err) => this.handleError(err),
     })
   }
 
-  saveSubastaSuccess(data: any){
+  saveSubastaSuccess(data: any) {
     console.log(data)
     this.loading = false;
     this.openModal = false;
@@ -1833,11 +1892,11 @@ onScrollSubastasGanadas(event: any) {
     };
     this.initSubastaEntity();
     this.selectedTab = 0;
-    this.ss.showNotification('success','Subasta creada con éxito');
+    this.ss.showNotification('success', 'Subasta creada con éxito');
     return;
   }
 
-  getDireccionesEnvio(idUsuario: number, tipo: string){
+  getDireccionesEnvio(idUsuario: number, tipo: string) {
     this.subastaService.GetDireccionesUsuario(idUsuario, tipo).subscribe({
       next: (response: any) => {
         console.log('Addresses fetched successfully:', response);
@@ -1847,7 +1906,7 @@ onScrollSubastasGanadas(event: any) {
         console.error('Error fetching addresses:', error);
       }
     }
-  );
+    );
   }
 
 
@@ -1858,7 +1917,7 @@ onScrollSubastasGanadas(event: any) {
   //     'Content-Type': 'application/json',
   //     // 'Authorization': 'Basic $credentials',
   //     };
-     
+
   //     final apiBankUrl = 'http://173.208.155.152:8001/api/Cargos/GenerarCargo';
   //     var dataCharge = {
   //       'token': token,
@@ -1887,7 +1946,7 @@ onScrollSubastasGanadas(event: any) {
   //     throw Exception('Error inesperado: $e');
   //   }
   // }
-  
+
 
   logout() {
     console.log('Cerrando sesión...');
@@ -1896,28 +1955,28 @@ onScrollSubastasGanadas(event: any) {
   }
 
   onLogin() {
-    if (!this.loginForm.usuario ||  this.loginForm.usuario.trim() === '' || !this.loginForm.pass || this.loginForm.pass.trim() === '') {
+    if (!this.loginForm.usuario || this.loginForm.usuario.trim() === '' || !this.loginForm.pass || this.loginForm.pass.trim() === '') {
       this.ss.showNotification('error', 'Informacion incorrecta');
       return;
-    } 
+    }
 
     // const { telefono, contra } = this.loginForm.value;
 
-    const correo='';
+    const correo = '';
     this.loading = true;
     this.authService.login(this.loginForm.usuario.trim(), this.loginForm.pass.trim(), correo).subscribe({
       next: (usuario: any) => {
         this.loading = false;
-        if(usuario.correoValidado){
-          this.authService.setUser(usuario); 
+        if (usuario.correoValidado) {
+          this.authService.setUser(usuario);
           this.ss.showNotification('success', 'Inicio de sesión exitoso');
           this.conectarSignalR(this.usuario()!.id);
         } else {
-          this.ss.showNotification('error', 'Para continuar primero valida tu correo',3500);
+          this.ss.showNotification('error', 'Para continuar primero valida tu correo', 3500);
         }
         // console.log('Login exitoso:', usuario);
 
-       
+
       },
       error: (err) => {
         this.loading = false;
@@ -1932,7 +1991,7 @@ onScrollSubastasGanadas(event: any) {
   onInput(event: any, atributo: any, fn?: (value: any) => void) {
     const soloNumeros = event.target.value.replace(/[^0-9]/g, '');
     atributo = soloNumeros;
-    event.target.value = soloNumeros; 
+    event.target.value = soloNumeros;
     fn?.(soloNumeros);
   }
 

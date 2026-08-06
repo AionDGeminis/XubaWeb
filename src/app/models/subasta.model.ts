@@ -64,5 +64,8 @@ export interface ImagenSubasta {
     ancho: number;
     profundidad:number;
     urlGuia: string;
+    entregaSucursal: boolean;
+    horaRecolecta: string;
+    fechaRecoleccion: string;
   }
   

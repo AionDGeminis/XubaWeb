@@ -1088,6 +1088,7 @@ export class SharedService {
       expiration_year: tarjeta.expiration_year,
       cvv2: tarjeta.cvv2
     };
+    console.log(dataToken);
     let respuesta = await new Promise<any>((resolve) => {
       OpenPay.token.create(dataToken,
         (response: any) => {
@@ -1098,6 +1099,11 @@ export class SharedService {
           // this.GenerarCargo(token_id, deviceSessionId);
         },
         (error: any) => {
+          console.log(error);
+console.log(error.data);
+console.log(error.data.description);
+console.log(error.data.error_code);
+
           let res_error = error.data;
           let errorMessage = this.getTextoErrorTokenOpenPay(res_error.description);
           resolve({ ok: false, msg: errorMessage, innerMsg: error.error, error })

@@ -1569,3 +1569,78 @@ input[type="checkbox"] {
 .noleida{
   background: #dff9fb;
 }
+/* ===========================
+   TABLETS
+=========================== */
+@media (max-width: 992px){
+
+  .cart-modal-container{
+    width: 95%;
+    max-width: 750px;
+  }
+
+  .w-5{
+    width: 10%;
+  }
+
+  .w-15{
+    width: 25%;
+  }
+
+}
+
+
+/* ===========================
+   CELULARES
+=========================== */
+@media (max-width: 768px){
+
+  .cart-modal-container{
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer{
+    padding: 15px;
+  }
+
+  .modal-title{
+    font-size: 1.2rem;
+  }
+
+  .form-row{
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-group{
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .label-final-price{
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .w-5{
+    width: 18%;
+  }
+
+  .w-15{
+    width: 40%;
+  }
+
+  .modal-footer{
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .modal-footer .btn{
+    width: 100%;
+    margin: 5px 0;
+  }
+
+}
