@@ -194,20 +194,7 @@
     margin-top:3px;
 
 }
-.descripcion-producto{
-    max-height:150px;
-    overflow-y:auto;
-    padding-right:5px;
-    line-height:1.5;
-    word-break:break-word;
-}
-.descripcion-producto{
-    width:410px;
-}
 
-.descripcion-producto{
-    margin-left: -30px;
-}
 
 .winner-avatar{
     width: 70px;
@@ -610,4 +597,34 @@
 .btn-regresar i{
     font-size: 22px;
     font-weight: bold;
+}
+.descripcion-producto{
+    width: 100%;
+    max-width: 100%;
+    min-height: 120px;
+
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+
+    line-height: 1.6;
+    text-align: justify;
+
+    overflow-y: auto;
+    max-height: 180px;
+}
+
+@media (max-width: 768px){
+    .descripcion-producto{
+        font-size: .95rem;
+    }
+}
+.mensaje-recoleccion {
+  border: 1px solid #28AAE2;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 10px 0;
+  color: #1f2937;
+  background: #fff;
+  font-size: 15px;
 }

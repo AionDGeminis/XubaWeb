@@ -62,8 +62,6 @@
         Wallet</button>
       <button class="btn-tab-card w-20" (click)="setCurrentTabPage(4)" [ngClass]="{'active': tabIndex === 4}">Datos
         fiscales</button>
-      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(2)"
-        [ngClass]="{'active': tabIndex === 2}">Estadisticas</button>
     </div>
 
     <div class="w-100 d-block d-sm-none">
@@ -83,8 +81,6 @@
         [ngClass]="{'active': tabIndex === 4}">
         <i class="fas fa-book"></i>
       </button>
-      <button title="Estadisticas" class="btn-tab-card w-20" (click)="setCurrentTabPage(2)"
-        [ngClass]="{'active': tabIndex === 2}"><i class="fas fa-chart-bar"></i></button>
     </div>
     <!-- Datos personales -->
     <ng-container *ngIf="tabIndex === 0">
@@ -1241,6 +1237,10 @@
           </div>
 
           <ng-container>
+            <h5 class="text-primary">
+              <i class="fas fa-shopping-cart"></i>
+              Solo llena lo primeros datos si quieres comprar o vender.
+            </h5>
 
             <div class="animate__animated animate__fadeInLeft fast-animation">
               <div class="ps-3">
@@ -1277,6 +1277,7 @@
                   <div class="form-group">
                     <label>Regimen Fiscal</label>
                     <select class="form-select" [(ngModel)]="datosFiscales.regimenFiscal" name="regimenFiscal">
+                      <option selected value="" disabled>Seleccionar una</option>
 
                       <option *ngFor="let reg of listaRegimenes" [value]="reg.regimenFiscal">{{reg.descripcion}}
                       </option>
@@ -1287,6 +1288,7 @@
                   <div class="form-group">
                     <label>Uso de CFDI</label>
                     <select class="form-select" [(ngModel)]="datosFiscales.usoCFDI" name="usoCFDI">
+                      <option selected value="" disabled>Seleccionar una</option>
 
                       <option *ngFor="let uso of listaUsoCfdi" [value]="uso.usoCfdi">{{uso.descripcion}}</option>
 
@@ -1358,6 +1360,12 @@
                     <input type="text" (input)="checkStateAndCity()" [(ngModel)]="datosFiscales.estado" name="estado">
                   </div>
                 </div>
+                <h5 class="text-success mt-4">
+                  <i class="fas fa-store"></i>
+                  ¿Quieres vender? Completa los siguientes apartados.
+                </h5>
+
+
                 <div class="mt-2" *ngIf="esFronteraNorte">
                   <p>¿Cuentas con el estimulo de impuestos fronterizo?</p>
                   <div class="tipo-subasta pt-2 pb-2">
@@ -1526,8 +1534,13 @@
                         <p><strong>DÉCIMA PRIMERA. Jurisdicción:</strong> Ciudad Juárez, Chihuahua.</p>
                       </div>
                       <div class="w-100 text-end">
-                        <button class="btn btn-light btn-outline-dark btn-sm me-2">No acepto</button>
-                        <button class="btn btn-sm btn-xuba">Acepto contrato</button>
+                        <button class="btn btn-light btn-outline-dark btn-sm me-2" (click)="terminosAceptado = false">
+                          No acepto
+                        </button>
+
+                        <button class="btn btn-sm btn-xuba" (click)="aceptarContrato()">
+                          Acepto contrato
+                        </button>
                       </div>
                     </section>
                   </div>

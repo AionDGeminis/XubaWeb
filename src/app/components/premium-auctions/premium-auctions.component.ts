@@ -316,15 +316,15 @@ prev() {
 
   getDatosSubasta(id: number){
     this.loading = false;
-    this.subastaService.getAuctionById(id).subscribe({
-      next: (subasta) => {
-        let tiempoVence = subasta.tiempoVence?? '00:00:00';
+    this.subastaService.ConsultarSubastaOfertarId(id).subscribe({
+      next: (detalleSubasta) => {
+        let tiempoVence = detalleSubasta.tiempoVence?? '00:00:00';
         let segundos: number, minutos: number, horas: number;
-        let _tiempoRestante = tiempoVence.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
+        let _tiempoRestante = tiempoVence.split(':').reduce((acc: number, time: string) => { return (60 * acc) + Number(time);}, 0);
         console.log(_tiempoRestante);
         this.loading = false;
         if(_tiempoRestante > 0){
-          this.router.navigate(['/subasta-detalle', subasta.id, 'SubastasPremium']);
+          this.router.navigate(['/subasta-detalle', detalleSubasta.id, 'SubastasPremium']);
         } else {
           let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario:'comprador'});
           let encoded = this.ss.encodeToBase64(dataParams);

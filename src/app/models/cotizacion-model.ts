@@ -23,5 +23,6 @@ export interface RecoleccionModel {
   largo: number;
   ancho: number;
   alto: number;
+  fecharecoleccion: string;
   horarecolecta: string;
 }

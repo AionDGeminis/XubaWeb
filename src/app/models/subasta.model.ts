@@ -68,4 +68,29 @@ export interface ImagenSubasta {
     horaRecolecta: string;
     fechaRecoleccion: string;
   }
+   export interface detalleSubasta {
+    id: number;
+    caption: string;
+    descripcion: string;
+    ofertaActual: number;
+    valorOferta: number;
+    largo: number;
+    ancho: number;
+    profundidad: number;
+    peso: number;
+    idVendedor: number;
+    usuarioVendedor: string;
+    estado: string;
+    municipio: string;
+    codigoPostal: string;
+    tiempoVence: string;
+    vistas: number;
+    ofertas: number;
+    imagenes: Imagen[];
+  }
+
+  export interface Imagen {
+  idImagen: number;
+  url: string;
+ }
   

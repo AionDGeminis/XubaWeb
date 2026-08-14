@@ -290,7 +290,7 @@ s
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
           <div class="followers-list" style="height:700px; overflow-y:auto;" (scroll)="onScrollSeguidores($event)">
-            <div class="follower-card" *ngFor="let f of followers" (click)="openUserPage(f.id)">
+            <div class="follower-card" *ngFor="let f of followers" (click)="openUserPage(f.idVendedor)">
               <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
               <div class="follower-info">
                 <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
@@ -853,9 +853,17 @@ s
                       </option>
 
                     </select>
+                    <div
+  class="tw:mt-3 tw:rounded-lg tw:border tw:border-amber-200 tw:bg-amber-50 tw:p-3">
+  <div class="tw:flex tw:items-start tw:gap-2">
+    <i class="fas fa-info-circle tw:text-amber-600 tw:mt-1"></i>
+    <span class="tw:text-sm tw:text-amber-800">
+      Al seleccionar esta opción, la recolección se realizará el siguiente día hábil en la hora seleccionada.
+    </span>
+  </div>
 
                   </div>
-
+                  </div>
                 </div>
               </div>
               <!-- <label class="mt-2">
@@ -937,7 +945,7 @@ s
         <div *ngIf="tipoSubasta === 'premium'" class="descripcion-section">
           <div class="desc-premium">
             <strong>Subasta Premium:</strong> Tu producto tendrá mayor visibilidad y beneficios exclusivos.
-            <br>PRECIO:<strong class="price-subasta-premium">&nbsp;${{precioSubastaPremium}} MXN</strong>
+            <br>PRECIO:<strong class="price-subasta-premium">&nbsp;${{Premium}} MXN</strong>
           </div>
         </div>
         <!-- <div class="form-group mt-3" *ngIf="tipoSubasta === 'premium'">
@@ -1011,7 +1019,7 @@ s
               </div>
             </div>
             <div class="mb-2 label-final-price">
-              Total a Pagar: <strong>${{precioSubastaPremium}}</strong>
+              Total a Pagar: <strong>${{Premium}}</strong>
             </div>
             <div class="form-row">
               <div class="form-group">
@@ -1032,7 +1040,7 @@ s
               </div>
 
               <div class="form-group">
-                <label>CCV</label>
+                <label>CVV</label>
                 <input [type]="mostrarCVV ? 'text' : 'password'" class="form-control" [(ngModel)]="tarjeta.cvv2"
                   autocomplete="off" maxlength="4" id="ccv" name="ccv">
 

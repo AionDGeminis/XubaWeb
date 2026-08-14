@@ -347,14 +347,12 @@ export class NavbarComponent implements OnInit {
   window.history.back();
 }
 
-  openUserPage(user: any){
-    this.fnToggleMenu();
-    setTimeout(() => {
-      this.router.navigate(['/userpage', user]);
-    }, 100);
-   
-    
-  }
+openUserPage(user: any){
+  this.fnToggleMenu();
+  setTimeout(() => {
+    this.router.navigate(['/userpage', user]);
+  }, 100);
+}
 
 
   changeAside(option: any){

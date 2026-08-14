@@ -321,7 +321,7 @@
                 <i class="fas fa-arrow-left"></i>&nbsp; volver
               </button>
               <div class="followers-list">
-                <div class="follower-card"  *ngFor="let f of followers"  (click)="openUserPage(f.id)">
+                <div class="follower-card"  *ngFor="let f of followers"  (click)="openUserPage(f.idVendedor)">
                   <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
                   <div class="follower-info">
                     <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
@@ -352,7 +352,7 @@
                 <i class="fas fa-arrow-left"></i>&nbsp; volver
               </button>
               <div class="followers-list">
-                <div class="follower-card"  *ngFor="let f of favoritos"  (click)="openUserPage(f.id)">
+                <div class="follower-card"  *ngFor="let f of favoritos"  (click)="openUserPage(f.usuarioVendedor.id)">
                   <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
                   <div class="follower-info">
                     <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>

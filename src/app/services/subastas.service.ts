@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from "rxjs/operators";
 
 import { Subasta } from '../models/subasta.model';
+import { PerfilVendedor } from '../models/UserPage.model';
 import { UrlCodec } from '@angular/common/upgrade';
 // const API_BASE_URL = (window as any).apiBaseUrl;
 import { environment as env, headers, auth_headers, test_headers } from '../environment/environment';
@@ -149,8 +150,8 @@ export class SubastasService {
     return this.http.post(`${this.apiPaqueteria}/DHL/Cotizar`, dataModel, { headers: test_headers }).pipe(map(res => res));
   }
 
-  getComisionesCrearSubasta(idUsuario: number) {
-    return this.http.get<any>(`${env.base_url}/Facturacion/ConsultarComisionesImpuestos/${idUsuario}/CrearSubasta`, { headers: test_headers });
+  getComisionesCrearSubasta(idUsuario: number, aplica: string) {
+    return this.http.get<any>(`${env.base_url}/Facturacion/ConsultarComisionesImpuestos/${idUsuario}/${aplica}`, { headers: test_headers });
   }
 
   GetPaqueteriaSeguimiento(noguia: string) {
@@ -270,7 +271,12 @@ export class SubastasService {
   updateSubastaRechazada(data: any) {
     return this.http.post(`${env.base_url}/Subastas/EditarSubastaRechazada`, data, { headers: test_headers }).pipe(map(res => res));
   }
+  ConsultarSubastaOfertarId(idSubasta: number) {
+  return this.http.get<any>(`${env.base_url}/subastas/ConsultarSubastaOfertarId?idSubasta=${idSubasta}`);}
 
+ ConsultarPerfilVendedorId(idVendedor: number) {
+  return this.http.get<PerfilVendedor>( `${env.base_url}/Vendedores/ConsultarPerfilVendedorId`,{ params: { idVendedor } } );
+}
   registrarVista(data: any) {
     return this.http.post(`${env.base_url}/subastas/RegistrarVista`, data, { headers: test_headers }).pipe(map(res => res));
   }

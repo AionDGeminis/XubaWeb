@@ -44,6 +44,7 @@ export class MyAuctionDetailComponent {
   paginaOfertas = 1;
   totalRegistrosOfertas = 0;
   hayMasOfertas = true;
+  entregaSucursal = false;
   totalRegistrosVistas = 0;
   mostrarModalContraoferta = false;
   mostrarModalFinalizar = false;
@@ -465,7 +466,7 @@ export class MyAuctionDetailComponent {
   }
   getComisionesUsuario(idUsuario: number) {
 
-    this.subastasService.getComisionesCrearSubasta(idUsuario)
+    this.subastasService.getComisionesCrearSubasta(idUsuario, 'crearSubasta')
       .subscribe({
 
         next: (resp: any) => {

@@ -308,7 +308,7 @@ export class ProfileComponent implements OnInit {
       // }
       // localStorage.removeItem('BCK-TO-PG');
       // this.checkSavedIndexPage();
-      // this.getInformacionListafiscal();
+      //this.getInformacionListafiscal();
       // this.setLockedPage();
       this.loadInitData();
   }
@@ -320,6 +320,8 @@ export class ProfileComponent implements OnInit {
     OpenPay.setId(environment.openPayId);
     OpenPay.setApiKey(environment.openPayApiKey);
     OpenPay.setSandboxMode(environment.openPaySandBox);
+
+    this.getInformacionListafiscal();
   }
 
   loadInitData(){
@@ -640,21 +642,34 @@ export class ProfileComponent implements OnInit {
      }, 50);
       // localStorage.removeItem('FNToReject');
     } else {
-      this.selectedTipoSubasta = this.ListTipoSubastaCreadas[0];
-        this.currentTipoSubasta = 'Activa';
+      const saved = localStorage.getItem('TipoSubastaPerfil');
+
+if (saved) {
+    this.selectedTipoSubasta = JSON.parse(saved);
+    this.currentTipoSubasta = this.selectedTipoSubasta.tipo;
+} else {
+    this.selectedTipoSubasta = this.ListTipoSubastaCreadas[0];
+    this.currentTipoSubasta = 'Activa';
+}
     }
     console.log(this.selectedTipoSubasta)
     console.log(this.currentTipoSubasta)
   }
 
-  setTipoSubastaPG(tipo: any){
-    console.log(tipo)
-    this.selectedTipoSubasta = tipo;
-    this.currentTipoSubasta = this.selectedTipoSubasta.tipo;
-    this.open = false;
-    this.onChangeTipoSubasta();
-    console.log(this.currentTipoSubasta)
+ setTipoSubastaPG(tipo: any){
+  this.selectedTipoSubasta = tipo;
+  this.currentTipoSubasta = tipo.tipo;
+
+  if (this.tabSubastasIndex === 1) {
+    localStorage.setItem(
+      'TipoSubastaPerfil',
+      JSON.stringify(tipo)
+    );
   }
+
+  this.open = false;
+  this.onChangeTipoSubasta();
+}
 
   // setSubasta
 
@@ -1105,32 +1120,38 @@ export class ProfileComponent implements OnInit {
 
   updateDatosFiscales(){
     let plataformaDigital = this.datosFiscales.actividadPlataformaDigital === 'SI'? true:false;
-    let upd = {
-      idUsuario: this.infoUsuario.id,
-      nombre: this.datosFiscales.nombreComercial,
-      curp: this.datosFiscales.curp,
-      razonSocial: this.datosFiscales.nombreComercial,
-      regimenFiscal: this.datosFiscales.regimenFiscal,
-      paginaWeb: this.datosFiscales.sitioWeb,
-      telefono: this.datosFiscales.telefono,
-      tipoPersona:this.datosFiscales.tipoPersona,
-      rfc:this.datosFiscales.rfc,
-      usoCfdi:this.datosFiscales.usoCFDI,
-      correoElectronico:this.datosFiscales.correo,
-      plataformasDigitales: plataformaDigital,
-      tipoFacturacion:this.datosFiscales.tipoValidacion, //Sellos CuentaTerceros
-      direccion: {
-        numeroExterior: this.datosFiscales.noExterior,
-        numeroInterior: this.datosFiscales.noInterior,
-        calle: this.datosFiscales.calle,
-        codigoPostal: this.datosFiscales.codigoPostal,
-        colonia: this.datosFiscales.colonia,
-        ciudad: this.datosFiscales.ciudad,
-        municipio: this.datosFiscales.municipio,
-        estado: this.datosFiscales.estado,
-        pais: this.datosFiscales.pais
-      }
-    }
+   let upd = {
+  idUsuario: this.infoUsuario.id,
+  nombre: this.datosFiscales.nombreComercial,
+  curp: this.datosFiscales.curp,
+  razonSocial: this.datosFiscales.nombreComercial,
+  regimenFiscal: this.datosFiscales.regimenFiscal,
+  paginaWeb: this.datosFiscales.sitioWeb,
+  telefono: this.datosFiscales.telefono,
+  tipoPersona: this.datosFiscales.tipoPersona,
+  rfc: this.datosFiscales.rfc,
+  usoCfdi: this.datosFiscales.usoCFDI,
+  correoElectronico: this.datosFiscales.correo,
+
+  // Solo si existen
+  plataformasDigitales: this.datosFiscales.actividadPlataformaDigital
+    ? this.datosFiscales.actividadPlataformaDigital === 'SI'
+    : null,
+
+  tipoFacturacion: this.datosFiscales.tipoValidacion || null,
+
+  direccion: {
+    numeroExterior: this.datosFiscales.noExterior,
+    numeroInterior: this.datosFiscales.noInterior,
+    calle: this.datosFiscales.calle,
+    codigoPostal: this.datosFiscales.codigoPostal,
+    colonia: this.datosFiscales.colonia,
+    ciudad: this.datosFiscales.ciudad,
+    municipio: this.datosFiscales.municipio,
+    estado: this.datosFiscales.estado,
+    pais: this.datosFiscales.pais
+  }
+}
     this.loading = true;
     console.log(upd)
     console.log(this.idOrganizacion)
@@ -2604,4 +2625,11 @@ export class ProfileComponent implements OnInit {
           predeterminada: false
         }
       }
+  
+ aceptarContrato() {
+  this.terminosAceptado = true;
+
+  // Aquí puedes llamar al API para guardar la aceptación
+  // o continuar con el siguiente paso.
+}
 }

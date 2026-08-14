@@ -13,52 +13,55 @@ import { OpenPayService } from '../../services/openpay.service';
 
 @Component({
   selector: 'app-auth-callback',
-  imports: [CommonModule,Logob64redComponent ],
+  imports: [CommonModule, Logob64redComponent],
   templateUrl: './auth-callback.component.html',
   styleUrl: './auth-callback.component.css'
 })
-export class AuthCallbackComponent implements OnInit{
-  
-  public usuario!: Signal<Usuario|null>;
+export class AuthCallbackComponent implements OnInit {
+
+  public usuario!: Signal<Usuario | null>;
   public isLoggedIn!: Signal<boolean>;
   jsonParams: any = {};
   hasPermiso: boolean = false;
-  redirectAutoTime: number = 10; 
+  redirectAutoTime: number = 10;
   modeloComprobante: any = {}
   currentStatusPayment = 'process';
   classComprobanteModal = '';
   intentos: number = 0;
-  showContent: any = {success:false,error:false,waiting:false, nodisponible:false, actualizando:false, error_ap: false}
+  showContent: any = { success: false, error: false, waiting: false, nodisponible: false, actualizando: false, error_ap: false }
   checkingStatus: boolean = false;
   tituloErrorGeneral = '';
+  recoleccionRequestModel: any = {};
+  subasta: any;
+
 
   // showRedirecting: boolean = false;
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
-    private ss: SharedService, 
+    private ss: SharedService,
     private subastaService: SubastasService,
     private openPayService: OpenPayService,
-    private router: Router ){
-      this.usuario = this.authService.currentUser;
-      this.isLoggedIn = computed(() => !!this.usuario());
-      let dataParams: any = this.route.snapshot.params['responseData'];
-     
-      let decoded = this.ss.decodeFromBase64(dataParams);
-      if(decoded){
-        this.hasPermiso = true;
-        this.jsonParams = JSON.parse(decoded);
-        console.log(this.jsonParams)
-        // this.jsonParams.moveToAuthPage ?? false;
-        this.jsonParams.mtap ?? false;
-      } else {
-        this.hasPermiso = false;
-      }
-      // console.log(this.jsonParams);
+    private router: Router) {
+    this.usuario = this.authService.currentUser;
+    this.isLoggedIn = computed(() => !!this.usuario());
+    let dataParams: any = this.route.snapshot.params['responseData'];
+
+    let decoded = this.ss.decodeFromBase64(dataParams);
+    if (decoded) {
+      this.hasPermiso = true;
+      this.jsonParams = JSON.parse(decoded);
+      console.log(this.jsonParams)
+      // this.jsonParams.moveToAuthPage ?? false;
+      this.jsonParams.mtap ?? false;
+    } else {
+      this.hasPermiso = false;
+    }
+    // console.log(this.jsonParams);
   }
 
   ngOnInit(): void {
-    if(this.jsonParams.mtap){
+    if (this.jsonParams.mtap) {
       this.startAuthCountdown();
     } else {
       this.checkCurrentChargeStatus();
@@ -67,46 +70,46 @@ export class AuthCallbackComponent implements OnInit{
     // console.log(idDireccion)
   }
 
-  startAuthCountdown(){
-    if(this.redirectAutoTime > 0){
+  startAuthCountdown() {
+    if (this.redirectAutoTime > 0) {
       this.redirectAutoTime--;
       setTimeout(() => {
         this.startAuthCountdown();
       }, 1000);
-    } else{
-      if(this.redirectAutoTime === 0){
+    } else {
+      if (this.redirectAutoTime === 0) {
         window.location.href = this.jsonParams.rt;
       }
     }
   }
 
-  checkCurrentChargeStatus(){
+  checkCurrentChargeStatus() {
     // let encodedKeyDataTransactionID =  this.ss.encodeToBase64('transaction_id');
     // let transactionID = localStorage.getItem(encodedKeyDataTransactionID!);
     let transactionID = this.ss.getLocalStorageEncodedKey('transaction_id');
     console.log(transactionID)
-    if(this.intentos < 5){
+    if (this.intentos < 5) {
       this.openPayService.VerificarEstatusCargo(transactionID!).subscribe({
-        next:(response: any)=>{
+        next: (response: any) => {
           console.log(response)
-          switch(response.status){
+          switch (response.status) {
             case 'in_process':
-                this.setShowContent('waiting');
-                this.intentos++;
-                setTimeout(() => {
-                  this.checkCurrentChargeStatus();
-                }, 20000);
+              this.setShowContent('waiting');
+              this.intentos++;
+              setTimeout(() => {
+                this.checkCurrentChargeStatus();
+              }, 20000);
               break;
             case 'completed':
-                this.setShowContent('actualizando');
-                this.checkCurrentProcess();
+              this.setShowContent('actualizando');
+              this.checkCurrentProcess();
               break;
             default:
-                this.setShowContent('error');
+              this.setShowContent('error');
               break;
           }
-        }, 
-        error:(err) => {
+        },
+        error: (err) => {
           console.log(err)
         }
       });
@@ -118,18 +121,19 @@ export class AuthCallbackComponent implements OnInit{
   }
 
 
-  checkCurrentProcess(){
+
+  checkCurrentProcess() {
     let _status = this.jsonParams.process;//localStorage.getItem('current_payment_status');
     console.log(_status);
-    switch(_status){
-      case 'payment-premium': 
-          this.saveNewSubasta();
+    switch (_status) {
+      case 'payment-premium':
+        this.saveNewSubasta();
         break;
       case 'payment-winner':
-          this.CambiarEstatusSubasta(this.jsonParams.id,AuctionStatus.PreparacionEnvio);
+        this.CambiarEstatusSubasta(this.jsonParams.id, AuctionStatus.PreparacionEnvio);
         break;
       case 'payment-guide-return':
-          this.CambiarEstatusReclamo(this.jsonParams.idc);
+        this.CambiarEstatusReclamo(this.jsonParams.idc);
         break;
     }
     // switch(_status){
@@ -159,26 +163,26 @@ export class AuthCallbackComponent implements OnInit{
   }
 
 
-  setShowContent(status: string){
-    this.showContent =  {success:false,error:false,waiting:false, nodisponible:false}
+  setShowContent(status: string) {
+    this.showContent = { success: false, error: false, waiting: false, nodisponible: false }
     this.showContent[status] = true;
   }
 
-  
-  saveNewSubasta(){
+
+  saveNewSubasta() {
     // let encodedKeyDataSubasta =  this.ss.encodeToBase64('tmp_subasta_model');
     let created = localStorage.getItem('isXubastaCreated');
-    if(created && created === 'CREATED'){
+    if (created && created === 'CREATED') {
       console.log('ya guardada');
       this.showComprobanteCargo();
     } else {
       let subastaString = this.ss.getLocalStorageEncodedKey('tmp_subasta_model');
-      let subasta = subastaString?  JSON.parse(subastaString!): null;
+      let subasta = subastaString ? JSON.parse(subastaString!) : null;
       console.log(subasta);
-      if(subasta){
+      if (subasta) {
         this.subastaService.crearSubasta(subasta).subscribe({
           next: (response) => {
-            this.ss.showNotification('success','Subasta creada exitosamente', 2000)
+            this.ss.showNotification('success', 'Subasta creada exitosamente', 2000)
             this.showComprobanteCargo();
             localStorage.setItem('isXubastaCreated', 'CREATED');
           },
@@ -191,13 +195,13 @@ export class AuthCallbackComponent implements OnInit{
     }
   }
 
-  
+
 
   CambiarEstatusSubasta(idSubasta: number, nuevoEstatus: number) {
     console.log(this.jsonParams)
     let updated = localStorage.getItem('isXubastaUpdated');
     // if(!this.loading) this.loading = true;
-    if(updated && updated === 'UPDATED'){
+    if (updated && updated === 'UPDATED') {
       this.generarGuiaDeEnvio(false);
     } else {
       this.subastaService.actualizarEstatusSubasta(idSubasta, nuevoEstatus).subscribe({
@@ -206,21 +210,21 @@ export class AuthCallbackComponent implements OnInit{
           // let encodedKeyPaqueteria = this.ss.encodeToBase64('tmp_paqueteria_model');
           // this.loading = false;
           // this.ss.showNotification('success','Informacion actualizada correctamente');
-         
+
           // this.closeModal();
           // this.getInitialData(this.subasta.id);
           // console.log('Estatus actualizado:', response);
           // if(generaGuia){
-            localStorage.setItem('isXubastaUpdated', 'UPDATED');
-            this.generarGuiaDeEnvio(false);
-            
+          localStorage.setItem('isXubastaUpdated', 'UPDATED');
+          this.generarGuiaDeEnvio(false);
+
           // } else {
-            // this.getInitialData(true);
+          // this.getInitialData(true);
           // }
           // 
-        },  
+        },
         error: (error) => {
-          this.ss.showNotification('error','Hubo un problema al cambiar estatus');
+          this.ss.showNotification('error', 'Hubo un problema al cambiar estatus');
           // this.loading = false;
           // setTimeout(() => { this.showContent =  {success:true,error:false,waiting:false, nodisponible:false} }, 350);
           console.error('Error al actualizar estatus:', error);
@@ -232,27 +236,27 @@ export class AuthCallbackComponent implements OnInit{
   async CambiarEstatusReclamo(idReclamo: number) {
     console.log(this.usuario())
     let updated = localStorage.getItem('isClaimUpdated');
-    if(updated && updated === 'UPDATED'){
+    if (updated && updated === 'UPDATED') {
       this.generarGuiaDeEnvio(true);
     } else {
-      let reclamo = {idReclamo: idReclamo, idEstatus: ReclamoEstatus.EnvioPagado , idUsuarioXuba: this.usuario()!.id}
+      let reclamo = { idReclamo: idReclamo, idEstatus: ReclamoEstatus.EnvioPagado, idUsuarioXuba: this.usuario()!.id }
       // let r = await this.ss.showConfirmMessage('¿Desea proceder con el reembolso al cliente sin reenvio del producto?');
       // if(r){
-        // this.loading = true;
-        this.subastaService.changeReclamoEstatus(reclamo).subscribe({
-          next:(res) => {
-            console.log(res);
-            localStorage.setItem('isClaimUpdated', 'UPDATED');
-            this.generarGuiaDeEnvio(true);
-            // this.loading = false;
-            // this.ss.showNotification('success', 'Estatus del reclamo actualizado');
-          }, 
-          error: (err) => {
-            this.ss.showNotification('error','Hubo un problema al cambiar estatus de reclamo');
-            console.error('Error al actualizar estatus reclamo:', err);
-            // this.loading = false;
-          }
-        })
+      // this.loading = true;
+      this.subastaService.changeReclamoEstatus(reclamo).subscribe({
+        next: (res) => {
+          console.log(res);
+          localStorage.setItem('isClaimUpdated', 'UPDATED');
+          this.generarGuiaDeEnvio(true);
+          // this.loading = false;
+          // this.ss.showNotification('success', 'Estatus del reclamo actualizado');
+        },
+        error: (err) => {
+          this.ss.showNotification('error', 'Hubo un problema al cambiar estatus de reclamo');
+          console.error('Error al actualizar estatus reclamo:', err);
+          // this.loading = false;
+        }
+      })
       // }
       // this.subastaService.actualizarEstatusSubasta(idReclamo, nuevoEstatus).subscribe({
       //   next: (response) => {
@@ -260,14 +264,14 @@ export class AuthCallbackComponent implements OnInit{
       //     // let encodedKeyPaqueteria = this.ss.encodeToBase64('tmp_paqueteria_model');
       //     // this.loading = false;
       //     // this.ss.showNotification('success','Informacion actualizada correctamente');
-         
+
       //     // this.closeModal();
       //     // this.getInitialData(this.subasta.id);
       //     // console.log('Estatus actualizado:', response);
       //     // if(generaGuia){
       //       localStorage.setItem('isXubastaUpdated', 'UPDATED');
       //       this.generarGuiaDeEnvio();
-            
+
       //     // } else {
       //       // this.getInitialData(true);
       //     // }
@@ -283,84 +287,116 @@ export class AuthCallbackComponent implements OnInit{
     }
   }
 
-  generarGuiaDeEnvio(forReturn: boolean){
+  generarGuiaDeEnvio(forReturn: boolean) {
     // this.textoLoading = 'Generando guia...'
     // this.loading = true;
     // this.createPaqueteriaModel();
     // setTimeout(() => {
-      // console.log(this.paqueteriaRequestModel);
-      // console.log(JSON.stringify(this.paqueteriaRequestModel));
-      // console.log('intentar generar guia de envio');
-      // let encodedKeyPaqueteria = this.ss.encodeToBase64('tmp_paqueteria_model');
-      // let pm = localStorage.getItem(encodedKeyPaqueteria!);
-      let guide = localStorage.getItem('isGuideGenerated');
-      if(guide && guide === 'CREATED'){
-        this.showComprobanteCargo();
-      } else {
-        let paqueteriaModelString = this.ss.getLocalStorageEncodedKey('tmp_paqueteria_model');
-        let paqueteriaModel = paqueteriaModelString?  JSON.parse(paqueteriaModelString!): null;
-        if(paqueteriaModel){
-          console.log(paqueteriaModel);
-          this.subastaService.generarGuiaPaqueteria(paqueteriaModel).subscribe({
-            next: (response) => {
-              console.log(response)
-              // this.loading = false;
-              // this.closeModal(); subasta test 11384
-              // this.getInitialData(true);tmp_direccion_eg
-              // console.log('Guía de envío generada exitosamente:', response);
-              localStorage.setItem('isGuideGenerated', 'CREATED');
-              if(forReturn){
-                this.showComprobanteCargo();
-                // localStorage.setItem('isGuideGenerated', 'CREATED');
-              } else {
-                let idDireccion = this.ss.getLocalStorageEncodedKey('tmp_direccion_eg');
-                this.saveDireccionEntregaGanador(+idDireccion!);
-              }
-             
-              // this.ss.showNotification('success','Pago procesado correctamente');
-              // this.showComprobanteCargo();
-              // localStorage.setItem('isGuideGenerated', 'CREATED');
+    // console.log(this.paqueteriaRequestModel);
+    // console.log(JSON.stringify(this.paqueteriaRequestModel));
+    // console.log('intentar generar guia de envio');
+    // let encodedKeyPaqueteria = this.ss.encodeToBase64('tmp_paqueteria_model');
+    // let pm = localStorage.getItem(encodedKeyPaqueteria!);
+    let guide = localStorage.getItem('isGuideGenerated');
+    if (guide && guide === 'CREATED') {
+      this.showComprobanteCargo();
+    } else {
+      let paqueteriaModelString = this.ss.getLocalStorageEncodedKey('tmp_paqueteria_model');
+      let recoleccionString = this.ss.getLocalStorageEncodedKey('tmp_recoleccion_model');
+      let recoleccionModel = recoleccionString
+        ? JSON.parse(recoleccionString)
+        : null;
+      let paqueteriaModel = paqueteriaModelString ? JSON.parse(paqueteriaModelString!) : null;
+      if (paqueteriaModel) {
+        console.log(paqueteriaModel);
+        this.subastaService.generarGuiaPaqueteria(paqueteriaModel).subscribe({
+          next: (response) => {
+            console.log(response)
+            console.log('Antes de generar recolección');
 
-              // setTimeout(() => { this.openComprobante(); }, 350);
-            },
-            error: (error) => {
-              // this.loading = false;
-              this.ss.showNotification('error','Hubo un problema al generar la guia de envio');
-              // // this.showComprobante = true;
-              // // this.openComprobante();
-              // this.showContent =  {success:false,error:true,waiting:false, nodisponible:false}
-              // setTimeout(() => { this.openComprobante(); }, 350);
-              console.error('Error al generar la guía de envío:', error.error);
+            recoleccionModel.numeroGuia = (response as any).shipmentTrackingNumber;
+            console.log(recoleccionModel);
+            // this.loading = false;
+            // this.closeModal(); subasta test 11384
+            // this.getInitialData(true);tmp_direccion_eg
+            // console.log('Guía de envío generada exitosamente:', response);
+            if (!paqueteriaModel.entregaSucursal) {
+              console.log('Antes de generar recolección');
+
+              this.subastaService.generarRecoleccion(recoleccionModel)
+                .subscribe({
+                  next: (resp: any) => {
+
+                    if (!resp.success) {
+                      console.error('DHL rechazó la recolección:', resp);
+                      this.ss.showNotification('error', 'DHL rechazó la recolección.');
+                      return;
+                    }
+
+                    console.log('Recolección creada', resp);
+                    this.ss.showNotification(
+                      'success',
+                      'La recolección fue programada correctamente.'
+                    );
+                  }
+                });
             }
-          });
-        }
+
+            localStorage.setItem('isGuideGenerated', 'CREATED');
+
+            if (forReturn) {
+              this.showComprobanteCargo();
+              // localStorage.setItem('isGuideGenerated', 'CREATED');
+            } else {
+              let idDireccion = this.ss.getLocalStorageEncodedKey('tmp_direccion_eg');
+              this.saveDireccionEntregaGanador(+idDireccion!);
+            }
+
+            // this.ss.showNotification('success','Pago procesado correctamente');
+            // this.showComprobanteCargo();
+            // localStorage.setItem('isGuideGenerated', 'CREATED');
+
+            // setTimeout(() => { this.openComprobante(); }, 350);
+          },
+          error: (error) => {
+            // this.loading = false;
+            this.ss.showNotification('error', 'Hubo un problema al generar la guia de envio');
+            // // this.showComprobante = true;
+            // // this.openComprobante();
+            // this.showContent =  {success:false,error:true,waiting:false, nodisponible:false}
+            // setTimeout(() => { this.openComprobante(); }, 350);
+            console.error('Error al generar la guía de envío:', error.error);
+          }
+        });
       }
-     
+    }
+
     // }, 200);
   }
 
-  saveDireccionEntregaGanador(id: number){
 
-    let model = {idSubasta:this.jsonParams.id,idDireccion: id}
+  saveDireccionEntregaGanador(id: number) {
+
+    let model = { idSubasta: this.jsonParams.id, idDireccion: id }
     console.log(model)
     this.subastaService.saveDireccionEntregaComprador(model).subscribe({
-      next: (data) =>{
-        this.ss.showNotification('success','Pago procesado correctamente');
+      next: (data) => {
+        this.ss.showNotification('success', 'Pago procesado correctamente');
         this.showComprobanteCargo();
         localStorage.setItem('isGuideGenerated', 'CREATED');
-      }, 
+      },
       error: (err) => {
-        this.ss.showNotification('error','Hubo un problema al guardar la direccion de entrega');
+        this.ss.showNotification('error', 'Hubo un problema al guardar la direccion de entrega');
         console.error('Error al guardar direccion de entrega ganador:', err.error);
       }
     })
   }
 
 
-  showComprobanteCargo(){
-    let dataTicketString =  this.ss.getLocalStorageEncodedKey('tmp_ticket_model');
-    let dataTicket = dataTicketString?  JSON.parse(dataTicketString!): null;
-    if(dataTicket){
+  showComprobanteCargo() {
+    let dataTicketString = this.ss.getLocalStorageEncodedKey('tmp_ticket_model');
+    let dataTicket = dataTicketString ? JSON.parse(dataTicketString!) : null;
+    if (dataTicket) {
       // this.ss.showNotification('success','Subasta creada exitosamente', 2000)
       this.modeloComprobante = dataTicket;
       this.setShowContent('success');
@@ -368,11 +404,11 @@ export class AuthCallbackComponent implements OnInit{
     }
   }
 
-  downloadComprobante(){
+  downloadComprobante() {
     let orden_xuba = this.modeloComprobante.ordenXuba;
-    orden_xuba = orden_xuba.replace('#','');
+    orden_xuba = orden_xuba.replace('#', '');
     const timestamp = Date.now();
-    const _filename = `xuba_payment-${orden_xuba}-${timestamp}.pdf`; 
+    const _filename = `xuba_payment-${orden_xuba}-${timestamp}.pdf`;
     const element: any = document.getElementById('printContainer');
     const opt: any = {
       margin: 2,
@@ -385,7 +421,7 @@ export class AuthCallbackComponent implements OnInit{
   }
 
 
-  toFormatDate(date: any){
+  toFormatDate(date: any) {
     // const fechaStr = "2025-10-24T23:55:32-06:00";
     const fecha = new Date(date);
 
@@ -400,15 +436,15 @@ export class AuthCallbackComponent implements OnInit{
     return formato;
   }
 
-  changeTemporalStatus(status: string){
+  changeTemporalStatus(status: string) {
     this.currentStatusPayment = status;
   }
 
   // volverAVentanaOrigen(){
   //   this.router.navigate(['profile'])
   // }
- 
-  beforeRedirect(){
+
+  beforeRedirect() {
     this.ss.removeLocalStorageEncodedKey('transaction_id');
     this.ss.removeLocalStorageEncodedKey('tmp_subasta_model');
     this.ss.removeLocalStorageEncodedKey('tmp_paqueteria_model');
@@ -421,15 +457,15 @@ export class AuthCallbackComponent implements OnInit{
   }
 
 
-  async backHome(){
+  async backHome() {
     console.log(this.jsonParams)
     let r = await this.ss.showConfirmMessage('¿Desea salir de esta pagina?');
-    if(r){
+    if (r) {
       this.beforeRedirect();
-     
+
       let _rt = '';
-      if(this.jsonParams.rt === 'subasta-terminada'){
-        let dataParams = JSON.stringify({ idSubasta: this.jsonParams.id, tipoUsuario:this.jsonParams.tu});
+      if (this.jsonParams.rt === 'subasta-terminada') {
+        let dataParams = JSON.stringify({ idSubasta: this.jsonParams.id, tipoUsuario: this.jsonParams.tu });
         let encoded = this.ss.encodeToBase64(dataParams);
         // this.router.navigate([this.jsonParams.rt])
         // setTimeout(() => {
@@ -447,6 +483,6 @@ export class AuthCallbackComponent implements OnInit{
         this.router.navigate([_rt])
       }, 200);
     }
-   
+
   }
 }

@@ -178,28 +178,21 @@ export class GeneralAuctionsComponent implements OnInit {
   //   // console.log('Subasta express seleccionada:', subasta);
   //   this.router.navigate(['/subasta', subasta.id, 'Subastas Premium']);
   // }
-  getDatosSubasta(id: number) {
-    this.loading = true;
-    this.subastaService.getAuctionById(id).subscribe({
-      next: (subasta) => {
-        let tiempoVence = subasta.tiempoVence ?? '00:00:00';
-        let segundos: number, minutos: number, horas: number;
-        let _tiempoRestante = tiempoVence.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
-        this.loading = false;
-        if (_tiempoRestante > 0) {
-          this.router.navigate(['/subasta-detalle', subasta.id, 'Generales']);
-        } else {
-          let dataParams = JSON.stringify({ idSubasta: id, tipoUsuario: 'comprador' });
-          let encoded = this.ss.encodeToBase64(dataParams);
-          this.router.navigate(['/subasta-terminada', encoded]);
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching auction details:', err);
-        this.loading = false;
-      }
-    })
-  }
+ getDatosSubasta(id: number) {
+  this.loading = true;
+
+  this.subastaService.ConsultarSubastaOfertarId(id).subscribe({
+    next: (subasta) => {
+      this.loading = false;
+
+      this.router.navigate(['/subasta-detalle', subasta.id, 'Generales']);
+    },
+    error: (err) => {
+      console.error('Error fetching auction details:', err);
+      this.loading = false;
+    }
+  });
+}
 
   toCurrency(valor: number): string {
     return this.ss.toCurrency(valor);

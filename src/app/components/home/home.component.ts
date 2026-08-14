@@ -30,7 +30,7 @@ declare var OpenPay: any;
 interface ISubasta {
   id?: number;
   caption: string;
-  horaRecolecta?: string;
+  horaRecolecta?: string | null;
   idVendedor?: number;
   descripcion?: string;
   precio: number | null;
@@ -178,7 +178,7 @@ export class HomeComponent implements OnInit {
   imagesPreview: any[] = [];
   itemsLoaderNotificaciones: any = [1, 2, 3, 4, 5, 6, 7, 8];
   loginForm: any = { usuario: null, pass: null };
-  precioSubastaPremium: number = 17.5;
+  Premium: number = 0;
   // loginForm!: FormGroup;
   // errorLogin = '';
   loading: boolean = false;
@@ -291,7 +291,7 @@ export class HomeComponent implements OnInit {
       ganacia: 0,
       url: '',
       entregaSucursal: true,
-      horaRecolecta: ''
+      horaRecolecta: null
 
     };
     this.imagesPreview = [];
@@ -417,54 +417,54 @@ export class HomeComponent implements OnInit {
     return `${hora12}:${String(m).padStart(2, '0')} ${periodo}`;
   }
   formatearExpiracion(event: any) {
-  let valor = event.target.value.replace(/\D/g, '');
+    let valor = event.target.value.replace(/\D/g, '');
 
-  // Máximo 4 números (MMYY)
-  if (valor.length > 4) {
-    valor = valor.substring(0, 4);
-  }
-
-  // Validar mes
-  if (valor.length >= 2) {
-    let mes = parseInt(valor.substring(0, 2), 10);
-
-    if (mes > 12) {
-      mes = 12;
+    // Máximo 4 números (MMYY)
+    if (valor.length > 4) {
+      valor = valor.substring(0, 4);
     }
 
-    if (mes <= 0) {
-      mes = 1;
+    // Validar mes
+    if (valor.length >= 2) {
+      let mes = parseInt(valor.substring(0, 2), 10);
+
+      if (mes > 12) {
+        mes = 12;
+      }
+
+      if (mes <= 0) {
+        mes = 1;
+      }
+
+      valor = mes.toString().padStart(2, '0') + valor.substring(2);
     }
 
-    valor = mes.toString().padStart(2, '0') + valor.substring(2);
-  }
+    // Validar año
+    if (valor.length === 4) {
+      let anio = parseInt(valor.substring(2, 4), 10);
 
-  // Validar año
-  if (valor.length === 4) {
-    let anio = parseInt(valor.substring(2, 4), 10);
+      if (anio < 26) {
+        anio = 26;
+      }
 
-    if (anio < 26) {
-      anio = 26;
+      valor = valor.substring(0, 2) + anio.toString().padStart(2, '0');
     }
 
-    valor = valor.substring(0, 2) + anio.toString().padStart(2, '0');
+    // Agregar "/"
+    if (valor.length > 2) {
+      valor = valor.substring(0, 2) + '/' + valor.substring(2);
+    }
+
+    this.tarjetaExpiracion = valor;
   }
-
-  // Agregar "/"
-  if (valor.length > 2) {
-    valor = valor.substring(0, 2) + '/' + valor.substring(2);
+  ocultarCVV(valor: string): string {
+    return valor ? '•'.repeat(valor.length) : '';
   }
+  cambiarCVV(event: any) {
+    const valor = event.target.value.replace(/\D/g, '');
 
-  this.tarjetaExpiracion = valor;
-}
-ocultarCVV(valor: string): string {
-  return valor ? '•'.repeat(valor.length) : '';
-}
-cambiarCVV(event: any) {
-  const valor = event.target.value.replace(/\D/g, '');
-
-  this.tarjeta.cvv2 = valor.substring(0, 4);
-}
+    this.tarjeta.cvv2 = valor.substring(0, 4);
+  }
 
 
   initSubastaEntity() {
@@ -821,6 +821,7 @@ cambiarCVV(event: any) {
       if (this.subasta.mimagenesSubasta.length > 5) {
         this.subasta.mimagenesSubasta.splice(5);
         this.imagesPreview.splice(5);
+
       }
 
     } else {
@@ -828,6 +829,7 @@ cambiarCVV(event: any) {
       this.subasta.valorOferta = null;
       this.calcularValorInicial();
     }
+    this.getComisionesUsuario(this.usuario()!.id, 'Premium');
 
   }
 
@@ -1235,16 +1237,40 @@ cambiarCVV(event: any) {
     event.stopPropagation();
   }
 
-  getComisionesUsuario(idUsuario: number) {
-    this.subastaService.getComisionesCrearSubasta(idUsuario).subscribe({
+  getComisionesUsuario(idUsuario: number, aplica: string) {
+    this.subastaService.getComisionesCrearSubasta(idUsuario, aplica).subscribe({
       next: (val) => {
+        console.log('RESPUESTA:', val);
+
         this.listaComisiones = val;
-        console.log(val)
+
+        const premium = this.listaComisiones.find(
+          (c: any) => c.concepto?.trim().toLowerCase() === 'pago subasta premium'
+        );
+
+        const comisionApp = this.listaComisiones.find(
+          (c: any) => c.concepto?.trim().toLowerCase() === 'pasarela de pago'
+        );
+
+        console.log('PREMIUM:', val);
+        console.log('COMISION APP:', comisionApp);
+
+        if (premium && comisionApp) {
+
+          const Premium = Number(premium.porcentaje);
+          const porcentajeComision = Number(comisionApp.porcentaje);
+
+          this.Premium = Number( ((Premium * 1.16) + (Premium * (porcentajeComision * 1.16) / 100)).toFixed(2));
+
+          console.log('Costo Premium:', Premium);
+          console.log('Comisión:', porcentajeComision);
+          console.log('PRECIO FINAL:', this.Premium);
+        }
       },
       error: (err) => {
-        console.log(err)
+        console.error('Error:', err);
       }
-    })
+    });
   }
 
   getGanancia() {
@@ -1266,7 +1292,7 @@ cambiarCVV(event: any) {
 
   openModalCreateAuction() {
     if (this.isLoggedIn()) {
-      this.getComisionesUsuario(this.usuario()!.id);
+      this.getComisionesUsuario(this.usuario()!.id, 'crearSubasta');
       this.getDireccionesEnvio(this.usuario()!.id, 'envio');
       this.getTarjetasUsuario(this.usuario()!.id);
     }
@@ -1348,11 +1374,11 @@ cambiarCVV(event: any) {
 
   getDatosSubasta(id: number) {
     this.loading = true;
-    this.subastaService.getAuctionById(id).subscribe({
+    this.subastaService.ConsultarSubastaOfertarId(id).subscribe({
       next: (subasta) => {
         let tiempoVence = subasta.tiempoVence ?? '00:00:00';
         let segundos: number, minutos: number, horas: number;
-        let _tiempoRestante = tiempoVence.split(':').reduce((acc, time) => (60 * acc) + +time, 0);
+        let _tiempoRestante = tiempoVence.split(':').reduce((acc: number, time: string) => { return (60 * acc) + Number(time); }, 0);
         console.log(_tiempoRestante);
         this.loading = false;
         if (_tiempoRestante > 0) {
@@ -1630,8 +1656,8 @@ cambiarCVV(event: any) {
       cliente: clienteNombre,
       correo: '',
       ordenXuba: `NAX-PREMIUM_${timestamp}-${this.usuario()?.id}`,
-      total: this.precioSubastaPremium,
-      subtotal: this.precioSubastaPremium,
+      total: this.Premium,
+      subtotal: this.Premium,
       envio: 0,
       nombreArticulo: `NAX#${this.subasta.caption}-${this.subasta.descripcion?.substring(0, 10)}`,
       idArticulo: 0,
@@ -1644,7 +1670,7 @@ cambiarCVV(event: any) {
   generarModeloCargo(deviceSessionId: any, encodedAuth: string) {
     let userData = this.authService.getUserData();
     const dataCharge: any = {
-      'amount': this.precioSubastaPremium,
+      'amount': this.Premium,
       'description': 'Pago subasta premium vendedor ' + userData.id,
       'name': this.tarjeta.holder_name,
       'lastName': this.tarjeta.holder_lastname,
@@ -1786,7 +1812,7 @@ cambiarCVV(event: any) {
 
     const dataCharge = {
       'token': tokenId,
-      'amount': this.precioSubastaPremium,
+      'amount': this.Premium,
       'description': 'Pago subasta premium vendedor ' + userData.id,
       'name': this.tarjeta.holder_name,
       'lastName': this.tarjeta.holder_lastname,
