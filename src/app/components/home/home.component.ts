@@ -221,7 +221,7 @@ export class HomeComponent implements OnInit {
   classAsideItem = '';
   splicingIndex = -1;
   tipoEntrega: 'sucursal' | 'domicilio' = 'sucursal';
-  horaRecolecta: any;
+  horaRecolecta: string | null = null;
   horaDomicilioFin: any;
   horarios: string[] = [];
   constructor(
@@ -720,12 +720,12 @@ export class HomeComponent implements OnInit {
   isValidModelSubasta() {
     let isValid = true;
     this.subasta.entregaSucursal = this.tipoEntrega === 'sucursal' ? true : false;
-    this.subasta.horaRecolecta = this.horaRecolecta + ':00';
     if (this.tipoEntrega === 'domicilio') {
+      this.subasta.horaRecolecta = this.horaRecolecta + ':00';
 
       if (
-        this.horaRecolecta < '09:00' ||
-        this.horaRecolecta > '18:00'
+        this.horaRecolecta! < '09:00' ||
+        this.horaRecolecta!  >'18:00'
       ) {
         this.ss.showNotification(
           'warning',
@@ -739,7 +739,7 @@ export class HomeComponent implements OnInit {
     if (this.tipoSubasta !== 'premium') {
       this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50 : 100;
     }
-    let result = this.ss.isValidModelV2(this.subasta, ['url']);
+    let result = this.ss.isValidModelV2(this.subasta, ['url','horaRecolecta']);
     if (!result.valid) {
       let texto = result.prop === 'mimagenesSubasta' ? 'Seleccione al menos una imagen' : `Informacion faltante: ${result.prop}`;
       this.ss.showNotification('warning', texto, 6000);

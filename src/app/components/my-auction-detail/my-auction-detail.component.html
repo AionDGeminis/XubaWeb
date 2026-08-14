@@ -700,14 +700,18 @@
 
           </div>
 
-          <div class="mensaje-recoleccion">
+          <div class="mensaje-recoleccion" *ngIf="!subasta.entregaSucursal || subasta.idEstatus == 13">
             <div class="winner-right">
+              <div *ngIf="!subasta.entregaSucursal || subasta.idEstatus == 13">
+                
 
-              <div>
                 <span *ngIf="subasta.entregaSucursal; else recoleccion">
                   Llévalo lo antes posible a tu sucursal más cercana.
                 </span>
 
+              </div>
+
+              <div>
                 <ng-template #recoleccion>
                   <span *ngIf="subasta.fechaRecolecta; else sinFecha">
                     Fecha de recolección:
@@ -719,6 +723,7 @@
                   </ng-template>
                 </ng-template>
               </div>
+
 
             </div>
           </div>

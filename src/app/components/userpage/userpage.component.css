@@ -1274,3 +1274,29 @@
     height:45px;
 }
 
+@media (max-width: 575.98px) {
+
+    /* Margen para la sección de ubicación */
+    .pc-info {
+        width: calc(100% - 24px);
+        margin-left: 12px;
+        margin-right: 12px;
+        box-sizing: border-box;
+    }
+
+    /* Margen para las estadísticas */
+    .pc-metrics {
+        width: calc(100% - 24px);
+        margin-left: 12px;
+        margin-right: 12px;
+        box-sizing: border-box;
+    }
+
+    /* Evita que el contenido interno se salga */
+    .pc-stat {
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+}
+
