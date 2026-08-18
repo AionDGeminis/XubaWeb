@@ -129,6 +129,11 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     this.subastasService.ConsultarSubastaOfertarId(IdSubasta).subscribe(sub => {
       console.log(sub)
       this.detallesubasta = sub;
+      if(this.detallesubasta.tiempoVence === '00:00:00'){
+        let dataParams = JSON.stringify({ idSubasta: IdSubasta, tipoUsuario: 'comprador' });
+          let encoded = this.ss.encodeToBase64(dataParams);
+          this.router.navigate(['/subasta-terminada', encoded]);
+      }
       this.valorApuesta = sub.ofertaActual;
       this.siguienteApuesta = sub.ofertaActual + sub.valorOferta;
       this.loading = false;
@@ -673,14 +678,14 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     console.log('Generating cotización model format');
     console.log(this.subasta)
     var cotizacion = {
-      "codigoPostalOrigen": this.subasta.codigoPostal,
-      "ciudadOrigen": this.subasta.municipio,
+      "codigoPostalOrigen": this.detallesubasta.codigoPostal,
+      "ciudadOrigen": this.detallesubasta.municipio,
       "codigoPostalDestino": this.direccionEntrega.codigoPostal,
       "ciudadDestino": this.direccionEntrega.municipio,
-      "peso": this.subasta!.peso,
-      "logitud": this.subasta!.largo,
-      "ancho": this.subasta!.profundidad,
-      "altura": this.subasta!.ancho,
+      "peso": this.detallesubasta!.peso,
+      "logitud": this.detallesubasta!.largo,
+      "ancho": this.detallesubasta!.profundidad,
+      "altura": this.detallesubasta!.ancho,
       "fechaEnvio": this.getCotizarFecha()
     }
     return cotizacion;

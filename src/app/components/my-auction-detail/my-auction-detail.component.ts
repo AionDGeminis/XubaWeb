@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SharedService } from '../../services/shared.service';
 import { AuctionService } from '../../services/auction.service';
 import { CommonModule, DOCUMENT } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subasta } from '../../models/subasta.model';
 import { FormsModule } from '@angular/forms';
 
@@ -54,6 +55,16 @@ export class MyAuctionDetailComponent {
   minCaracteres = 30;
   subastaCancelada = false;
   estatusActual: any = {};
+  mostrarModalGuiaEnvio = false;
+  guiaEnvioUrl: SafeResourceUrl | null = null;
+
+
+get estatusDHLActual(): any {
+  return this.listaHistorialDHL?.length
+    ? this.listaHistorialDHL[0]
+    : null;
+}
+
   private intervalId: any;
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -65,7 +76,8 @@ export class MyAuctionDetailComponent {
     private ss: SharedService,
     private auctionService: AuctionService,
     private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private sanitizer: DomSanitizer
   ) {
     const id = +this.route.snapshot.paramMap.get('id')!;
     console.log(id)
@@ -354,6 +366,7 @@ export class MyAuctionDetailComponent {
           };
 
         }).reverse();
+        this.listaHistorialDHL = eventosDHL;
 
         // Buscar "Enviado"
         const indexEnviado = this.listaHistorial.findIndex(x => x.idEstatus == 13);
@@ -730,20 +743,43 @@ export class MyAuctionDetailComponent {
   }
   abrirGuiaEnvio() {
 
-    if (
-      !this.subasta.guiaEnvio ||
-      this.subasta.guiaEnvio === 'Guía no disponible'
-    ) {
-
+    if (!this.subasta.guiaEnvio || this.subasta.guiaEnvio === 'Guía no disponible') {
       this.toastr.warning('La guía de envío aún no está disponible.');
       return;
+    }
 
+    if (window.innerWidth <= 767) {
+
+      this.mostrarModalGuiaEnvio = true;
+      this.document.body.style.overflow = 'hidden';
+
+      return;
     }
 
     window.open(this.subasta.guiaEnvio, '_blank');
-
-
   }
+
+  cerrarModalGuiaEnvio() {
+    this.mostrarModalGuiaEnvio = false;
+    this.document.body.style.overflow = 'auto';
+  }
+descargarGuia() {
+  if (!this.subasta.guiaEnvio || this.subasta.guiaEnvio === 'Guía no disponible') {
+    this.toastr.warning('La guía de envío aún no está disponible.');
+    return;
+  }
+
+  const link = this.document.createElement('a');
+  link.href = this.subasta.guiaEnvio;
+  link.setAttribute('download', 'guia-envio.pdf'); // fuerza descarga
+  link.style.display = 'none';
+  this.document.body.appendChild(link);
+  link.click();
+  this.document.body.removeChild(link);
+}
+
+
+
   regresar(): void {
     this.router.navigate(['/profile']);
   }

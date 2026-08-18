@@ -180,8 +180,9 @@ export class GeneralAuctionsComponent implements OnInit {
   // }
  getDatosSubasta(id: number) {
   this.loading = true;
+  this.router.navigate(['/subasta-detalle', id, 'Generales']);
 
-  this.subastaService.ConsultarSubastaOfertarId(id).subscribe({
+  /*this.subastaService.ConsultarSubastaOfertarId(id).subscribe({
     next: (subasta) => {
       this.loading = false;
 
@@ -191,7 +192,7 @@ export class GeneralAuctionsComponent implements OnInit {
       console.error('Error fetching auction details:', err);
       this.loading = false;
     }
-  });
+  });*/
 }
 
   toCurrency(valor: number): string {

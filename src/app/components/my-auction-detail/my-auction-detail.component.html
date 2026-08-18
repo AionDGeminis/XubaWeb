@@ -17,8 +17,8 @@
         <div>
 
           <h3 class="fw-bold mb-1">
-            {{ estatusActual?.estatus }}
-          </h3>
+  {{ estatusDHLActual?.estatus || estatusActual?.estatus }}
+</h3>
 
           <small class="text-muted">
             {{ listaHistorial[0]?.descripcion }}
@@ -541,7 +541,7 @@
             </span>
 
             <span class="badge rounded-pill bg-primary">
-              {{ subasta.estatus }}
+              {{ estatusDHLActual?.estatus || subasta.estatus }}
             </span>
 
           </div>
@@ -703,7 +703,7 @@
           <div class="mensaje-recoleccion" *ngIf="!subasta.entregaSucursal || subasta.idEstatus == 13">
             <div class="winner-right">
               <div *ngIf="!subasta.entregaSucursal || subasta.idEstatus == 13">
-                
+
 
                 <span *ngIf="subasta.entregaSucursal; else recoleccion">
                   Llévalo lo antes posible a tu sucursal más cercana.
@@ -794,18 +794,19 @@
 
 
                 <div class="timeline-dot" [class.active]=" 
-                listaHistorialDHL.length > 0
-                ? item.idEstatus == subasta.idEstatus
-                : ultimo">
-                </div>
+  listaHistorialDHL.length > 0
+    ? (item.tipo === 'DHL' && item === listaHistorialDHL[0])
+    : ultimo
+">
+</div>
 
                 <div class="timeline-content">
 
                   <div class="timeline-title" [class.active]="
-      listaHistorialDHL.length > 0
-        ? item.idEstatus == subasta.idEstatus
-        : ultimo
-    ">
+  listaHistorialDHL.length > 0
+    ? (item.tipo === 'DHL' && item === listaHistorialDHL[0])
+    : ultimo
+">
                     {{ item.estatus }}
                   </div>
 
@@ -1328,6 +1329,33 @@
 
       </div>
 
+    </div>
+    <div *ngIf="mostrarModalGuiaEnvio" class="modal-guia-envio" (click)="cerrarModalGuiaEnvio()">
+      <div class="modal-guia-contenido" (click)="$event.stopPropagation()">
+        <div class="modal-guia-header">
+          <h5>
+            <i class="fa fa-truck me-2"></i>
+            Guía de envío
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="cerrarModalGuiaEnvio()">
+          </button>
+        </div>
+        <div class="modal-guia-body">
+  <iframe *ngIf="guiaEnvioUrl" [src]="guiaEnvioUrl" class="guia-iframe"></iframe>
+</div>
+<div class="modal-guia-footer">
+  <button
+  type="button"
+  class="btn btn-descargar-guia"
+  (click)="descargarGuia()"
+>
+  <i class="fa fa-download me-2"></i>
+  Descargar guía
+</button>
+</div>
+
+
+      </div>
     </div>
 
   </div> <!-- fin container-fluid -->

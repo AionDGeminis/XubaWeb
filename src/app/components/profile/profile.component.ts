@@ -2452,7 +2452,8 @@ if (saved) {
 
   getDatosSubasta(id: number){
       this.loading = true;
-      this.subastasService.getAuctionById(id).subscribe({
+       this.router.navigate(['/subasta-detalle', id, 'MyAuctionsPage']);
+      /*this.subastasService.getAuctionById(id).subscribe({
         next: subasta => {
           this.loading = false;
           let tiempoVence = subasta.tiempoVence?? '00:00:00';
@@ -2471,7 +2472,7 @@ if (saved) {
             console.error('Error fetching auction data:', err);
             this.loading = false;
           }
-      })
+      })*/
   }
 
   openImagesViewer(imagenes: any[], $event: any){

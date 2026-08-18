@@ -628,3 +628,83 @@
   background: #fff;
   font-size: 15px;
 }
+/* Modal de guía */
+.modal-guia-envio {
+  display: none;
+}
+
+/* SOLO MÓVIL */
+@media (max-width: 767px) {
+
+  .modal-guia-envio {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 10px;
+  }
+
+  .modal-guia-contenido {
+    width: 100%;
+    height: 95vh;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal-guia-header {
+    background: linear-gradient(90deg, #ee3d83 0%, #3b6edc 100%);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-guia-header h5 {
+    margin: 0;
+    font-weight: bold;
+  }
+
+  .modal-guia-body {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .guia-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .modal-guia-footer {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background: white;
+  }
+
+  .modal-guia-footer .btn {
+    flex: 1;
+  }
+  .modal-guia-footer .btn-descargar-guia {
+  background: linear-gradient(90deg, #ee3d83 0%, #3b6edc 100%);
+  border: none;
+  color: white;
+  font-weight: bold;
+}
+
+.modal-guia-footer .btn-descargar-guia:hover {
+  color: white;
+}
+}
+.guia-pdf {
+  width: 100%;
+  height: 100%;
+  border: none;
+}

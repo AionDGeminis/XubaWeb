@@ -340,21 +340,30 @@
                 <div class="tw:text-sm mt-3 text-center">
                   <i class="fas fa-ruler"></i> Dimensiones del producto
                   <br>
-                  <div class="row">
-                    <div class="col-sm-3 ">
-                      <div class="dims">Largo: [{{this.detallesubasta!.largo}}cm]</div>
-                    </div>
-                    <div class="col-sm-3 ">
-                      <div class="dims">Alto: [{{this.detallesubasta!.ancho}}cm]</div>
-                    </div>
-                    <div class="col-sm-3 ">
-                      <div class="dims">Profundidad: [{{this.detallesubasta!.profundidad}}cm]</div>
-                    </div>
-                    <div class="col-sm-3 ">
-                      <div class="dims">Peso [{{this.detallesubasta!.peso}}kg]</div>
+                  <div class="row justify-content-center g-2">
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Largo: [{{detallesubasta!.largo}}cm]
+                      </div>
                     </div>
 
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Alto: [{{detallesubasta!.ancho}}cm]
+                      </div>
+                    </div>
 
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Profundidad: [{{detallesubasta!.profundidad}}cm]
+                      </div>
+                    </div>
+
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Peso [{{detallesubasta!.peso}}kg]
+                      </div>
+                    </div>
                   </div>
                   <!-- <img src="images/dhl.png" class="tw:h-15 w-auto d-block m-auto" alt=""> -->
                 </div>
