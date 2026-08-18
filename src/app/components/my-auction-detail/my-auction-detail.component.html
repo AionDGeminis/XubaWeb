@@ -1339,7 +1339,11 @@
           </button>
         </div>
         <div class="modal-guia-body">
-          <iframe *ngIf="guiaEnvioUrl" [src]="guiaEnvioUrl" class="guia-iframe"></iframe>
+          <img
+            [src]="subasta.guiaEnvioWebp"
+            class="guia-imagen"
+            alt="Guía de envío"
+          >
         </div>
         <div class="modal-guia-footer">
           <button type="button" class="btn btn-descargar-guia" (click)="descargarGuia()">
