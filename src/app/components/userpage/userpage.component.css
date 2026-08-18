@@ -1315,4 +1315,31 @@
 .auction-row.premium-auction td:last-child {
     border-right: 2px solid #d4af37 !important;
 }
+@media (max-width: 575.98px) {
+
+    .mobile-card {
+        padding: 8px !important;
+        border-radius: 14px !important;
+        overflow: hidden;
+    }
+
+    .mobile-card .img-auct {
+        height: 80px;
+        width: 80px;
+        margin-bottom: 5px !important;
+    }
+
+    .mobile-card h5 {
+        margin: 4px 0;
+    }
+
+    .mobile-card p {
+        margin: 4px 0;
+    }
+
+    .mobile-card .btn-offer {
+        margin-top: 6px !important;
+        height: 38px;
+    }
+}
 

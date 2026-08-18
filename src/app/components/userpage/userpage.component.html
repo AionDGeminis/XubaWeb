@@ -178,19 +178,19 @@
         <!-- Datos personales -->
         <div class="auction-summary">
 
-    <div class="auction-summary-icon">
-        <i class="fas fa-shopping-bag"></i>
-    </div>
+            <div class="auction-summary-icon">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
 
-    <div class="auction-summary-info">
-        <h4>
-            {{infoUsuario?.nombre}} tiene
-            <span>{{subastasActivas.length}}</span>
-            subastas activas
-        </h4>
-    </div>
+            <div class="auction-summary-info">
+                <h4>
+                    {{infoUsuario?.nombre}} tiene
+                    <span>{{subastasActivas.length}}</span>
+                    subastas activas
+                </h4>
+            </div>
 
-</div>
+        </div>
 
 
         <!-- Direcciones -->
@@ -216,9 +216,8 @@
 
                     <tbody>
 
-                       <tr class="auction-row"
-    [class.premium-auction]="subasta.premium"
-    *ngFor="let subasta of subastasActivas | paginate:{ itemsPerPage: pageSize, currentPage: page }">
+                        <tr class="auction-row" [class.premium-auction]="subasta.premium"
+                            *ngFor="let subasta of subastasActivas | paginate:{ itemsPerPage: pageSize, currentPage: page }">
 
                             <td>
                                 <img [src]="subasta.url" (error)="onImgError($event)" class="img-auct"
@@ -264,9 +263,8 @@
 
             <div class="w-100 d-block d-sm-none">
 
-               <div class="mobile-card"
-    [class.premium-auction]="subasta.premium"
-    *ngFor="let subasta of subastasActivas | paginate:{ itemsPerPage: pageSize, currentPage: page }">
+                <div class="mobile-card" [class.premium-auction]="subasta.premium"
+                    *ngFor="let subasta of subastasActivas | paginate:{ itemsPerPage: pageSize, currentPage: page }">
 
                     <img [src]="subasta.url" (error)="onImgError($event)" class="img-auct mb-3">
 
