@@ -59,11 +59,11 @@ export class MyAuctionDetailComponent {
   guiaEnvioUrl: SafeResourceUrl | null = null;
 
 
-get estatusDHLActual(): any {
-  return this.listaHistorialDHL?.length
-    ? this.listaHistorialDHL[0]
-    : null;
-}
+  get estatusDHLActual(): any {
+    return this.listaHistorialDHL?.length
+      ? this.listaHistorialDHL[0]
+      : null;
+  }
 
   private intervalId: any;
   constructor(private route: ActivatedRoute,
@@ -90,7 +90,6 @@ get estatusDHLActual(): any {
 
     this.subastasService.ConsultarDetalleSeguimientoId(IdSubasta).subscribe({
 
-
       next: (sub: any) => {
         console.log(sub);
 
@@ -111,19 +110,11 @@ get estatusDHLActual(): any {
           x => x.idEstatus === this.subasta.idEstatus
         );
 
-        // Por el momento la línea de tiempo es igual al historial
-
-        console.log("historial de estatus xuba")
-        console.log(this.listaHistorial);
+     
 
         this.listaHistorial.sort((a: any, b: any) =>
           new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
         );
-
-        /*this.listaHistorial = this.listaHistorial.filter(
-          (item: any, index: number, array: any[]) =>
-            index === array.findIndex(x => x.estatus === item.estatus)
-        );*/
 
         // Si está Enviado o Entregado, agregar los eventos de DHL
         const posicion = this.listaHistorial.findIndex(item => item.idEstatus === 13);
@@ -741,6 +732,7 @@ get estatusDHLActual(): any {
     console.log('Volver a activar la subasta');
 
   }
+
   abrirGuiaEnvio() {
 
     if (!this.subasta.guiaEnvio || this.subasta.guiaEnvio === 'Guía no disponible') {
@@ -752,7 +744,7 @@ get estatusDHLActual(): any {
 
       this.mostrarModalGuiaEnvio = true;
       this.document.body.style.overflow = 'hidden';
-
+      
       return;
     }
 
@@ -763,20 +755,22 @@ get estatusDHLActual(): any {
     this.mostrarModalGuiaEnvio = false;
     this.document.body.style.overflow = 'auto';
   }
-descargarGuia() {
-  if (!this.subasta.guiaEnvio || this.subasta.guiaEnvio === 'Guía no disponible') {
-    this.toastr.warning('La guía de envío aún no está disponible.');
-    return;
-  }
 
-  const link = this.document.createElement('a');
-  link.href = this.subasta.guiaEnvio;
-  link.setAttribute('download', 'guia-envio.pdf'); // fuerza descarga
-  link.style.display = 'none';
-  this.document.body.appendChild(link);
-  link.click();
-  this.document.body.removeChild(link);
-}
+
+  descargarGuia() {
+    if (!this.subasta.guiaEnvio || this.subasta.guiaEnvio === 'Guía no disponible') {
+      this.toastr.warning('La guía de envío aún no está disponible.');
+      return;
+    }
+
+    const link = this.document.createElement('a');
+    link.href = this.subasta.guiaEnvio;
+    link.setAttribute('download', 'guia-envio.pdf'); // fuerza descarga
+    link.style.display = 'none';
+    this.document.body.appendChild(link);
+    link.click();
+    this.document.body.removeChild(link);
+  }
 
 
 
