@@ -1299,4 +1299,20 @@
     }
 
 }
+.premium-auction {
+    border: 2px solid #d4af37 !important;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.45);
+}
+.auction-row.premium-auction td {
+    border-top: 2px solid #d4af37 !important;
+    border-bottom: 2px solid #d4af37 !important;
+}
+
+.auction-row.premium-auction td:first-child {
+    border-left: 2px solid #d4af37 !important;
+}
+
+.auction-row.premium-auction td:last-child {
+    border-right: 2px solid #d4af37 !important;
+}
 

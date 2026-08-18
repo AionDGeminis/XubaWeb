@@ -102,6 +102,8 @@ export class NavbarComponent implements OnInit {
   aceptarTerminos: boolean = false;
   openModalPoliticas: boolean = false;
   showBack: boolean = false;
+  showBackSubastaTerminada: boolean = false;
+  origenSubastaTerminada: 'notificaciones' | 'perfil' = 'perfil';
   modeloComprobante: any = {}
   emailContacto = 'soporte@xuba.mx'
   notificaciones: any[] = [];
@@ -214,6 +216,7 @@ export class NavbarComponent implements OnInit {
         // console.log('Ruta actual:', this.currentRoute);
         this.showSearch = this.currentRoute.includes('home');
         this.showBack = !this.currentRoute.includes('home');
+        this.showBackSubastaTerminada = this.currentRoute.includes('subasta-terminada');
 
         this.paramParts = this.currentRoute.split('/');
         // console.log(this.paramParts)
@@ -446,7 +449,8 @@ getSubastasSeguidas(){
     }
   }
 
-  abrirDetalleSubasta(subasta: Subasta): void {
+  abrirDetalleSubasta(subasta: Subasta,  origen: 'notificaciones' | 'perfil' = 'perfil'): void {
+    this.origenSubastaTerminada = origen;
     this.classMenu = 'menu-closed';
     setTimeout(() => { 
       this.isOpenHiddenMenu = false;
@@ -970,6 +974,25 @@ getSubastasSeguidas(){
     }, 50);
     this.router.navigate(['/search-result']);
   }
+ regresarSubastaTerminada() {
+  if (this.origenSubastaTerminada === 'notificaciones') {
+    // ✅ Si entraste desde notificaciones → regresar al home
+    this.router.navigate(['/home']);
+    setTimeout(() => {
+      this.changeAside('notifications');
+    }, 100);
+  } else if (this.origenSubastaTerminada === 'perfil') {
+    // ✅ Si entraste desde perfil → regresar al perfil
+    this.router.navigate(['/profile']);
+  } else {
+    // Fallback por si no hay origen definido
+    this.router.navigate(['/home']);
+  }
+}
+
+
+
+
 
   
 // =========================================================================
