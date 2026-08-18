@@ -729,6 +729,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     const nuevoId = this.detallesubasta!.id.toString();
     if (this.idSubastaConectada && this.idSubastaConectada !== nuevoId) {
       this.signalRService.leaveSubasta(this.idSubastaConectada);
+      console.log("saliendo de subasta")
     }
     this.signalRService.connectToSubasta(nuevoId, this.authService.idUsuario, (datos: any[]) => {
       const actual = datos[0];

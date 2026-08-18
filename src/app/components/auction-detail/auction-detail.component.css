@@ -2971,3 +2971,48 @@ body { background: var(--bg); color: var(--text); } */
     margin-left: 25px;
   }
 }
+.contenedor-botones {
+  flex-shrink: 0;
+  padding: 8px 16px;
+}
+
+.botones-navegacion {
+  display: flex;
+  align-items: center;          /* centra verticalmente */
+  justify-content: center;      /* centra horizontalmente */
+  gap: 12px;                    /* espacio entre elementos */
+  width: 100%;
+ }
+
+.glass-btn {
+  flex: 0;              /* evita que se estiren */
+  min-width: 150px;      /* ancho mínimo más pequeño */
+  padding: 10px 20px;     /* menos espacio interno */
+  font-size: 14px;      /* texto más chico */
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;   /* bordes más compactos */
+  color: #ec4899;
+  cursor: pointer;
+}
+
+.glass-label {
+  border-radius: 50px;
+  padding: 10px 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.usuario-mayor {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.va-ganando {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ec4899;
+}
