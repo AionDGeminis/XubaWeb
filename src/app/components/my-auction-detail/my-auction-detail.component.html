@@ -17,8 +17,8 @@
         <div>
 
           <h3 class="fw-bold mb-1">
-  {{ estatusDHLActual?.estatus || estatusActual?.estatus }}
-</h3>
+            {{ estatusDHLActual?.estatus || estatusActual?.estatus }}
+          </h3>
 
           <small class="text-muted">
             {{ listaHistorial[0]?.descripcion }}
@@ -794,19 +794,17 @@
 
 
                 <div class="timeline-dot" [class.active]=" 
-  listaHistorialDHL.length > 0
-    ? (item.tipo === 'DHL' && item === listaHistorialDHL[0])
-    : ultimo
-">
-</div>
+                listaHistorialDHL.length > 0
+                ? (item.tipo === 'DHL' && item === listaHistorialDHL[0])
+                : ultimo">
+                </div>
 
                 <div class="timeline-content">
 
                   <div class="timeline-title" [class.active]="
-  listaHistorialDHL.length > 0
-    ? (item.tipo === 'DHL' && item === listaHistorialDHL[0])
-    : ultimo
-">
+                  listaHistorialDHL.length > 0
+                  ? (item.tipo === 'DHL' && item === listaHistorialDHL[0])
+                  : ultimo">
                     {{ item.estatus }}
                   </div>
 
@@ -1341,18 +1339,14 @@
           </button>
         </div>
         <div class="modal-guia-body">
-  <iframe *ngIf="guiaEnvioUrl" [src]="guiaEnvioUrl" class="guia-iframe"></iframe>
-</div>
-<div class="modal-guia-footer">
-  <button
-  type="button"
-  class="btn btn-descargar-guia"
-  (click)="descargarGuia()"
->
-  <i class="fa fa-download me-2"></i>
-  Descargar guía
-</button>
-</div>
+          <iframe *ngIf="guiaEnvioUrl" [src]="guiaEnvioUrl" class="guia-iframe"></iframe>
+        </div>
+        <div class="modal-guia-footer">
+          <button type="button" class="btn btn-descargar-guia" (click)="descargarGuia()">
+            <i class="fa fa-download me-2"></i>
+            Descargar guía
+          </button>
+        </div>
 
 
       </div>
