@@ -110,7 +110,7 @@ export class MyAuctionDetailComponent {
           x => x.idEstatus === this.subasta.idEstatus
         );
 
-     
+
 
         this.listaHistorial.sort((a: any, b: any) =>
           new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
@@ -744,7 +744,7 @@ export class MyAuctionDetailComponent {
 
       this.mostrarModalGuiaEnvio = true;
       this.document.body.style.overflow = 'hidden';
-      
+
       return;
     }
 
@@ -763,13 +763,13 @@ export class MyAuctionDetailComponent {
       return;
     }
 
-    const link = this.document.createElement('a');
-    link.href = this.subasta.guiaEnvio;
-    link.setAttribute('download', 'guia-envio.pdf'); // fuerza descarga
-    link.style.display = 'none';
-    this.document.body.appendChild(link);
-    link.click();
-    this.document.body.removeChild(link);
+    if (!this.subasta?.guiaEnvio) {
+      this.toastr.warning('La guía no está disponible.');
+      return;
+    }
+
+    this.subastasService.DescargarGuiaDhl(this.subasta.guiaEnvio);
+
   }
 
 

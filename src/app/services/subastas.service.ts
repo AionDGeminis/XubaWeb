@@ -78,6 +78,7 @@ export class SubastasService {
   getAuctionById(id: number): Observable<Subasta> {
     return this.http.get<Subasta>(`${env.base_url}/subastas/ConsultaSubataId/${id}`, { headers: test_headers }).pipe(map(res => res));
   }
+
   ConsultarDetalleSeguimientoId(idSubasta: number) {
     return this.http.get(
       `${env.base_url}/subastas/ConsultarDetalleSeguimientoId`,
@@ -88,6 +89,12 @@ export class SubastasService {
       }
     );
   }
+
+  DescargarGuiaDhl(url: string) {
+    const link = `${env.base_url}/DHL/DescargarGuia?url=${encodeURIComponent(url)}`
+    window.location.href = link;
+  }
+
   ConsultarUltimasVistas(data: any): Observable<any> {
     return this.http.post(
       `${env.base_url}/subastas/ConsultarUltimasVistas`,
@@ -137,7 +144,7 @@ export class SubastasService {
     return this.http.post(`${this.apiPaqueteria}/DHL/Envio`, data, { headers: test_headers }).pipe(map(res => res));
   }
   generarRecoleccion(model: any) {
-    return this.http.post( `${this.apiPaqueteria}/DHL/SolicitarRecoleccion`,model);
+    return this.http.post(`${this.apiPaqueteria}/DHL/SolicitarRecoleccion`, model);
   }
 
   saveDireccionEntregaComprador(modelData: any) {
@@ -272,11 +279,12 @@ export class SubastasService {
     return this.http.post(`${env.base_url}/Subastas/EditarSubastaRechazada`, data, { headers: test_headers }).pipe(map(res => res));
   }
   ConsultarSubastaOfertarId(idSubasta: number) {
-  return this.http.get<any>(`${env.base_url}/subastas/ConsultarSubastaOfertarId?idSubasta=${idSubasta}`);}
+    return this.http.get<any>(`${env.base_url}/subastas/ConsultarSubastaOfertarId?idSubasta=${idSubasta}`);
+  }
 
- ConsultarPerfilVendedorId(idVendedor: number) {
-  return this.http.get<PerfilVendedor>( `${env.base_url}/Vendedores/ConsultarPerfilVendedorId`,{ params: { idVendedor } } );
-}
+  ConsultarPerfilVendedorId(idVendedor: number) {
+    return this.http.get<PerfilVendedor>(`${env.base_url}/Vendedores/ConsultarPerfilVendedorId`, { params: { idVendedor } });
+  }
   registrarVista(data: any) {
     return this.http.post(`${env.base_url}/subastas/RegistrarVista`, data, { headers: test_headers }).pipe(map(res => res));
   }
