@@ -17,79 +17,82 @@ import { PerfilVendedor, SubastaActiva } from '../../models/UserPage.model';
   styleUrl: './userpage.component.css'
 })
 export class UserpageComponent {
- infoUsuario: PerfilVendedor | null = null;
+  infoUsuario: PerfilVendedor | null = null;
   editInfoUsuario: any = {
     id: 0,
-    telefono:'',
-    correo:'',
-    contra:''
+    telefono: '',
+    correo: '',
+    contra: ''
   }
   loading: boolean = false;
   tabIndex: number = 0;
   imageProfileSrc: string = 'images/nofound5.jpg'
+  idVendedor: number = 0;
   idUsuario: number = 0;
   subastasActivas: SubastaActiva[] = [];
   subastasPremium: Subasta[] = [];
-subastasExpress: Subasta[] = [];
-subastasTerminadas: Subasta[] = [];
+  subastasExpress: Subasta[] = [];
+  subastasTerminadas: Subasta[] = [];
 
-filtroActual = 'Todas';
+  filtroActual = 'Todas';
 
-ordenActual = 'recientes';
+  ordenActual = 'recientes';
   intervalId: any;
   allLoading: boolean = false;
-  page = 1;          
+  page = 1;
   pageSize = 10;
 
-  constructor(private subastasService: SubastasService,private authService: AuthService, private route: ActivatedRoute, private router: Router, private ss: SharedService) {
+  constructor(private subastasService: SubastasService, private authService: AuthService, private route: ActivatedRoute, private router: Router, private ss: SharedService) {
     let dataParams: any = this.route.snapshot.params;
     console.log('Parámetros:', dataParams);
-    this.idUsuario = dataParams['id'];
-      console.log('ID recibido:', this.idUsuario);
-    if(this.idUsuario && this.idUsuario > 0){
-      // this.getSubastasUsuario();
-      this.getInformacionUsuario(this.idUsuario);
+    this.idVendedor = Number(dataParams['id']);
+    this.idUsuario = Number(this.authService.idUsuario);
+
+    if (this.idVendedor > 0 && this.idUsuario > 0) {
+      this.getInformacionUsuario(this.idVendedor, this.idUsuario);
     }
     localStorage.removeItem('BCK-TO-PG');
     console.log(dataParams)
   }
 
-  setCurrentTab(index: number){
+  setCurrentTab(index: number) {
 
   }
 
-getInformacionUsuario(idVendedor: number) {
-  this.allLoading = true;
+  getInformacionUsuario(idVendedor: number, idUsuario: number) {
+    this.allLoading = true;
 
-  this.subastasService.ConsultarPerfilVendedorId(idVendedor).subscribe({
-    next: (response: PerfilVendedor) => {
-      this.allLoading = false;
+    this.subastasService.ConsultarPerfilVendedorId(idVendedor, idUsuario).subscribe({
+      next: (response: PerfilVendedor) => {
+        this.allLoading = false;
+        console.log("Informacion")
+        console.log(response)
 
-      this.infoUsuario = response;
-      this.imageProfileSrc = response.imgPerfil;
+        this.infoUsuario = response;
+        this.imageProfileSrc = response.imgPerfil;
 
-      this.subastasActivas = response.subastasActivas || [];
+        this.subastasActivas = response.subastasActivas || [];
 
-      for (const p of this.subastasActivas) {
-        p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);
-        p.short_desc = this.toShort(p.descripcion);
+        for (const p of this.subastasActivas) {
+          p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);
+          p.short_desc = this.toShort(p.descripcion);
+        }
+
+        this.setTimer(this.subastasActivas);
+      },
+
+      error: (err) => {
+        this.allLoading = false;
+        console.error('Error perfil vendedor:', err);
       }
+    });
+  }
 
-      this.setTimer(this.subastasActivas);
-    },
 
-    error: (err) => {
-      this.allLoading = false;
-      console.error('Error perfil vendedor:', err);
-    }
-  });
-}
 
-  
-
-  setTimer(litaItems: any[]){
+  setTimer(litaItems: any[]) {
     this.intervalId = setInterval(() => {
-      for(let item of litaItems){
+      for (let item of litaItems) {
         if (item.venceSegundos > 0) {
           item.venceSegundos--;
         }
@@ -108,10 +111,10 @@ getInformacionUsuario(idVendedor: number) {
     return h * 3600 + m * 60 + s;
   }
 
-  toShort(val: string){
+  toShort(val: string) {
     return val.length > 41 ? val.substring(0, 41) + '...' : val;
   }
-  
+
   // 2. Función para convertir segundos a "hh:mm:ss"
   segundosATiempoString(segundos: number) {
     const h = String(Math.floor(segundos / 3600)).padStart(2, '0');
@@ -121,53 +124,53 @@ getInformacionUsuario(idVendedor: number) {
   }
 
 
-  openSubastaDetalle(id: number){
+  openSubastaDetalle(id: number) {
     this.router.navigate(['/subasta-detalle', id, 'MyAuctionsPage']);
   }
   toggleSeguir() {
-  if (!this.infoUsuario) {
-    return;
-  }
+    if (!this.infoUsuario) {
+      return;
+    }
 
-  const data = {
-    idVendedor: this.infoUsuario.idVendedor
-  };
+    const data = {
+      idVendedor: this.infoUsuario.idVendedor
+    };
 
-  console.log('Datos para seguir:', data);
+    console.log('Datos para seguir:', data);
 
-  if (this.infoUsuario.siguiendo) {
+    if (this.infoUsuario.siguiendo) {
 
-    this.subastasService.noseguirVendedor(data).subscribe({
-      next: (response: any) => {
-        console.log('Dejaste de seguir:', response);
+      this.subastasService.noseguirVendedor(data).subscribe({
+        next: (response: any) => {
+          console.log('Dejaste de seguir:', response);
 
-        if (this.infoUsuario) {
-          this.infoUsuario.siguiendo = false;
-          this.infoUsuario.seguidores--;
+          if (this.infoUsuario) {
+            this.infoUsuario.siguiendo = false;
+            this.infoUsuario.seguidores--;
+          }
+        },
+        error: (err) => {
+          console.error('Error al dejar de seguir:', err);
         }
-      },
-      error: (err) => {
-        console.error('Error al dejar de seguir:', err);
-      }
-    });
+      });
 
-  } else {
+    } else {
 
-    this.subastasService.seguirVendedor(data).subscribe({
-      next: (response: any) => {
-        console.log('Ahora sigues al vendedor:', response);
+      this.subastasService.seguirVendedor(data).subscribe({
+        next: (response: any) => {
+          console.log('Ahora sigues al vendedor:', response);
 
-        if (this.infoUsuario) {
-          this.infoUsuario.siguiendo = true;
-          this.infoUsuario.seguidores++;
+          if (this.infoUsuario) {
+            this.infoUsuario.siguiendo = true;
+            this.infoUsuario.seguidores++;
+          }
+        },
+        error: (err) => {
+          console.error('Error al seguir al vendedor:', err);
         }
-      },
-      error: (err) => {
-        console.error('Error al seguir al vendedor:', err);
-      }
-    });
+      });
+    }
   }
-}
 
 
 }

@@ -1321,6 +1321,7 @@
         padding: 8px !important;
         border-radius: 14px !important;
         overflow: hidden;
+        margin-bottom: 8px !important;
     }
 
     .mobile-card .img-auct {

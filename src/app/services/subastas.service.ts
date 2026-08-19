@@ -274,8 +274,8 @@ export class SubastasService {
   ConsultarSubastaOfertarId(idSubasta: number) {
   return this.http.get<any>(`${env.base_url}/subastas/ConsultarSubastaOfertarId?idSubasta=${idSubasta}`);}
 
- ConsultarPerfilVendedorId(idVendedor: number) {
-  return this.http.get<PerfilVendedor>( `${env.base_url}/Vendedores/ConsultarPerfilVendedorId`,{ params: { idVendedor } } );
+ ConsultarPerfilVendedorId(idVendedor: number, idUsuario: number) {
+  return this.http.get<PerfilVendedor>( `${env.base_url}/Vendedores/ConsultarPerfilVendedorId`,{ params: { idVendedor, idUsuario } } );
 }
   registrarVista(data: any) {
     return this.http.post(`${env.base_url}/subastas/RegistrarVista`, data, { headers: test_headers }).pipe(map(res => res));

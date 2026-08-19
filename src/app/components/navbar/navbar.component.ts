@@ -347,7 +347,7 @@ export class NavbarComponent implements OnInit {
   }
 
   backToPage() {
-  window.history.back();
+  this.router.navigate(['/home']);
 }
 
 openUserPage(user: any){

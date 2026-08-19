@@ -1,4 +1,4 @@
-<div class="main-detail-wrapper">
+<div class="main-detail-wrapper" [class.dark-mode]="modoOscuro">
   <app-loader *ngIf="loading"></app-loader>
 
   <!-- Mobile Bottom Sheet Container (en Desktop se comporta como display: contents) -->
@@ -20,9 +20,19 @@
             style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 4px 2px;">
             <div></div>
           </div>
+          <label class="theme-switch">
+  <input
+    type="checkbox"
+    [checked]="modoOscuro"
+    (change)="cambiarTema()"
+  >
 
-          <!-- Ant / Sig (SÓLO ESCRITORIO) -->
-          
+  <span class="theme-slider">
+    <i class="fas fa-sun sun-icon"></i>
+    <i class="fas fa-moon moon-icon"></i>
+    <span class="switch-circle"></span>
+  </span>
+</label>
 
           <div class="scroll-thin left-auctions-list"
             style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 2px;">
@@ -56,10 +66,20 @@
             <p
               style="font-size: 9px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
               Vendido por</p>
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-              <div style="flex: 1; text-align: left !important;">
-                <p class="" (click)="openUserPage(detallesubasta.idVendedor)"
-                  style="font-weight: 700; font-size: 13px; color: var(--text);">{{ detallesubasta.usuarioVendedor }}
+            <div class="Vendido">
+              <div class="marco">
+                <p class="usuario" (click)="openUserPage(detallesubasta.idVendedor)">{{ detallesubasta.usuarioVendedor
+                  }}
+                  <span>
+                    <a class="icon-link icon-link-hover">
+                      Perfil
+                      <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+                        <path
+                          d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                      </svg>
+                    </a>
+                  </span>
+
                 </p>
                 <div style="display: flex; align-items: center; gap: 3px;">
                   <i class="fas fa-star" style="color: #f59e0b; font-size: 10px;"></i>
@@ -196,29 +216,29 @@
 
     <!-- Banner ganando -->
     <div class="contenedor-botones">
-  <div class="botones-navegacion">
-    <button (click)="irAAnterior()" class="glass-btn">
-      <i class="fas fa-chevron-left"></i> Ant
-    </button>
+      <div class="botones-navegacion">
+        <button (click)="irAAnterior()" class="glass-btn">
+          <i class="fas fa-chevron-left"></i> Ant
+        </button>
 
-    <!-- Si hay usuarioMayor lo muestra, si no muestra "Conectando..." -->
-    <div *ngIf="usuarioMayor; else conectando" 
-         [class]="'glass glass-label fast-animation animate__animated ' + animatedClass">
-      <span class="usuario-mayor">{{usuarioMayor}}</span>
-      <span class="va-ganando">Va Ganando! 🏆</span>
-    </div>
+        <!-- Si hay usuarioMayor lo muestra, si no muestra "Conectando..." -->
+        <div *ngIf="usuarioMayor; else conectando"
+          [class]="'glass glass-label fast-animation animate__animated ' + animatedClass">
+          <span class="usuario-mayor">{{usuarioMayor}}</span>
+          <span class="va-ganando">Va Ganando! 🏆</span>
+        </div>
 
-    <ng-template #conectando>
-      <div class="glass glass-label">
-        <span class="usuario-mayor">Conectando...</span>
+        <ng-template #conectando>
+          <div class="glass glass-label">
+            <span class="usuario-mayor">Conectando...</span>
+          </div>
+        </ng-template>
+
+        <button (click)="irASiguiente()" class="glass-btn">
+          Sig <i class="fas fa-chevron-right"></i>
+        </button>
       </div>
-    </ng-template>
-
-    <button (click)="irASiguiente()" class="glass-btn">
-      Sig <i class="fas fa-chevron-right"></i>
-    </button>
-  </div>
-</div>
+    </div>
 
 
 

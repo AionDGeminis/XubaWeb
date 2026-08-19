@@ -87,6 +87,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   isviewerOpen: boolean = false;
   imagesListViewer: any[] = [];
   currentIndexImageViewer: number = 0;
+  modoOscuro = false;
   classNavigateImg: string = '';
   @ViewChild('titulo', { static: false }) tituloElement!: ElementRef;
   @ViewChild('descripcion', { static: false }) descripcionElement!: ElementRef;
@@ -190,6 +191,9 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       });
     });
   }
+  cambiarTema() {
+  this.modoOscuro = !this.modoOscuro;
+}
   iniciarTimerReal() {
 
     if (this.intervalTiempo) {

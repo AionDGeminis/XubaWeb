@@ -290,7 +290,7 @@ s
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
           <div class="followers-list" style="height:700px; overflow-y:auto;" (scroll)="onScrollSeguidores($event)">
-            <div class="follower-card" *ngFor="let f of followers" (click)="openUserPage(f.idVendedor)">
+            <div class="follower-card" *ngFor="let f of followers" (click)="openUserPage(f.id)">
               <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
               <div class="follower-info">
                 <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
