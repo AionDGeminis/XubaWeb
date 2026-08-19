@@ -88,6 +88,13 @@ export class SubastasService {
       }
     );
   }
+  
+  
+  DescargarGuiaDhl(url: string) {
+    const link = `${env.base_url}/DHL/DescargarGuia?url=${encodeURIComponent(url)}`
+    window.location.href = link;
+  }
+  
   ConsultarUltimasVistas(data: any): Observable<any> {
     return this.http.post(
       `${env.base_url}/subastas/ConsultarUltimasVistas`,
