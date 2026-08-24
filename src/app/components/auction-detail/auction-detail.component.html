@@ -21,18 +21,14 @@
             <div></div>
           </div>
           <label class="theme-switch">
-  <input
-    type="checkbox"
-    [checked]="modoOscuro"
-    (change)="cambiarTema()"
-  >
+            <input type="checkbox" [checked]="modoOscuro" (change)="cambiarTema()">
 
-  <span class="theme-slider">
-    <i class="fas fa-sun sun-icon"></i>
-    <i class="fas fa-moon moon-icon"></i>
-    <span class="switch-circle"></span>
-  </span>
-</label>
+            <span class="theme-slider">
+              <i class="fas fa-sun sun-icon"></i>
+              <i class="fas fa-moon moon-icon"></i>
+              <span class="switch-circle"></span>
+            </span>
+          </label>
 
           <div class="scroll-thin left-auctions-list"
             style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 2px;">
@@ -68,8 +64,7 @@
               Vendido por</p>
             <div class="Vendido">
               <div class="marco">
-                <p class="usuario" (click)="openUserPage(detallesubasta.idVendedor)">{{ detallesubasta.usuarioVendedor
-                  }}
+                <p class="usuario" (click)="openUserPage(detallesubasta.idVendedor)">{{ detallesubasta.usuarioVendedor}}
                   <span>
                     <a class="icon-link icon-link-hover">
                       Perfil
@@ -266,6 +261,10 @@
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-heart " [ngClass]="{'followed-i': isFollowed}"></i>
         </button>
+        <button class="glass" (click)="abrirmodalofertadirecta()"
+          style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-gavel"></i>
+        </button>
       </div>
 
 
@@ -323,18 +322,18 @@
 </div>
 
 
-<div *ngIf="showModalShippingPrices" class="cart-modal-backdrop">
+<div *ngIf="showModalShippingPrices" class="cart-modal-backdrop" [class.dark-mode]="modoOscuro">
   <div class="cart-modal-container" (click)="onContentClick($event)">
-    <div class="modal-header bg-main-header text-white">
+    <div class="modal-headerr bg-main-header ">
       <h3 class="modal-title">
-        <span class="text-white tw:text-base tw:font-light">Precios de envio estimados</span>
+        <span class="textf">Precios de envio estimados</span>
       </h3>
       <button class="close-button" (click)="closeShippingPricesModal()">
         <span class="text-white">&times;</span>
       </button>
     </div>
 
-    <div class="modal-body">
+    <div class="modal-body" [class.dark-mode]="modoOscuro">
 
       <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
         <form class="form-productos pl-2 pr-2">
@@ -344,8 +343,7 @@
 
               <ng-container *ngIf="direcciones.length > 0">
                 <label for="cantidadPuja">Direccion de entrega</label>
-                <select class="form-select f-arial tw:font-bold" name="direcionentrega" id="direcionentrega"
-                  style="color:#353b48 !important;padding-left: 10px; padding-top: 5px;padding-bottom: 5px;"
+                <select class="form-select f-arial tw:font-bold datos" name="direcionentrega" id="direcionentrega"
                   [disabled]="loadingCotizacion" [(ngModel)]="direccionEntrega" (change)="changeDireccionEntrega()">
                   <option *ngFor="let item of direcciones" [ngValue]="item">
                     {{item.calle}} {{item.numeroExt}} {{item.numeroInt}}, {{item.municipio}}
@@ -399,7 +397,7 @@
                 </div>
                 <div class="tw:text-sm mt-3 text-center">
                   <i class="fas fa-shield-alt"></i> Servicio operado y garantizado por DHL Express.
-                  <img src="images/dhl.png" class="tw:h-15 w-auto d-block m-auto" alt="">
+                  <img src="images/dhl.png"  class="tw:h-15 w-auto d-block m-auto imagen-blanca" alt="">
                 </div>
                 <ng-container *ngIf="!loadingCotizacion && listaTiposEnvio!.length === 0">
                   <div class="w-100 text-center px-2 py-2">
@@ -434,42 +432,77 @@
     </div>
     <div class="modal-footer text-start pb-3 pe-3">
       <div>
-        <button class="btn btn-dark me-2" (click)="closeShippingPricesModal()">
+        <button class="btn btn-secondary" (click)="closeShippingPricesModal()">
           Cerrar
         </button>
 
       </div>
     </div>
   </div>
-</div>
 
+  <div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()">
+    <!-- Contador de imágenes -->
+    <div class="viewer-counter"
+      style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: white; font-size: 18px; font-weight: 700; z-index: 101;">
+      {{ currentIndexImageViewer + 1 }} / {{ imagesListViewer.length }}
+    </div>
 
+    <button class="close-viewer" (click)="closeModalViewer()">
+      <i class="fas fa-times"></i>
+    </button>
 
+    <button class="nav-btn prev" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('prev', $event)"
+      [class.disabled]="currentIndexImageViewer === 0">
+      <i class="fas fa-chevron-left"></i>
+    </button>
 
-<div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()">
-  <!-- Contador de imágenes -->
-  <div class="viewer-counter"
-    style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: white; font-size: 18px; font-weight: 700; z-index: 101;">
-    {{ currentIndexImageViewer + 1 }} / {{ imagesListViewer.length }}
+    <div class="viewer-content" (click)="$event.stopPropagation()">
+      <img [class]="'fast-animation  animate__animated ' + classNavigateImg"
+        [src]="imagesListViewer[currentIndexImageViewer].url" style="background: #bdc3c7;">
+    </div>
+
+    <button class="nav-btn next" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('next', $event)"
+      [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+
   </div>
+</div> <!-- main-detail-wrapper -->
 
-  <button class="close-viewer" (click)="closeModalViewer()">
-    <i class="fas fa-times"></i>
-  </button>
 
-  <button class="nav-btn prev" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('prev', $event)"
-    [class.disabled]="currentIndexImageViewer === 0">
-    <i class="fas fa-chevron-left"></i>
-  </button>
+<!-- MODAL OFERTA DIRECTA -->
+<div class="modal-ofertadirecta" [class.dark-mode]="modoOscuro" *ngIf="mostrarmodalofertadirecta">
+  <div class="margen">
+    <div class="d-flex justify-content-between align-items-center mb-3  ">
+      <h5 class="fw-bold mb-0 coloroferta-h5">
+        Hacer oferta
+      </h5>
 
-  <div class="viewer-content" (click)="$event.stopPropagation()">
-    <img [class]="'fast-animation  animate__animated ' + classNavigateImg"
-      [src]="imagesListViewer[currentIndexImageViewer].url" style="background: #bdc3c7;">
+      <button type="button" class="btn-close" (click)="cerrarmodalofertadirecta()">
+      </button>
+
+    </div>
+    <div class="botones-oferta-container">
+
+      <button class="botones-oferta" type="button" (click)="botones(20)">$20.00</button>
+      <button class="botones-oferta" type="button" (click)="botones(50)">$50.00</button>
+      <button class="botones-oferta" type="button" (click)="botones(100)">$100.00</button>
+
+    </div>
+    
+    <input [(ngModel)]="ofertar" type="number" class="input-oferta" appSoloDecimal placeholder="Ingresa tu catidad personalizada">
+    <label class="letras">
+      Revisa tu oferta antes de enviarla.
+    </label>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button type="button" class="boton-prinsipal" (click)="apuestaPersonalizada(ofertar)" >
+        <i class="fas fa-gavel"></i>
+        Ofertar
+      </button>
+
+    </div>
+
   </div>
-
-  <button class="nav-btn next" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('next', $event)"
-    [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
-    <i class="fas fa-chevron-right"></i>
-  </button>
 
 </div>

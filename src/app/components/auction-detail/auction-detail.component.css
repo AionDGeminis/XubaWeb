@@ -2008,6 +2008,19 @@ button {
   position: relative;
 }
 
+.dark-mode .cart-modal-container {
+  background-color: #18181b;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
 .w-10 {
   width: 10%;
 }
@@ -3039,10 +3052,7 @@ body { background: var(--bg); color: var(--text); } */
   font-size: 13px; 
     color: #38bdf8;  
   cursor: pointer
-}
-/* =========================
-   TEMA CLARO
-========================= */
+ }
 
 .main-detail-wrapper {
   --bg: #f5f6fa;
@@ -3062,10 +3072,6 @@ body { background: var(--bg); color: var(--text); } */
     color .3s ease;
 }
 
-
-/* =========================
-   TEMA OSCURO
-========================= */
 
 .main-detail-wrapper.dark-mode {
   --bg: #0b0b0f;
@@ -3089,10 +3095,6 @@ body { background: var(--bg); color: var(--text); } */
 }
 
 
-/* =========================
-   TARJETAS
-========================= */
-
 .main-detail-wrapper .glass {
   background: var(--card);
   color: var(--text);
@@ -3105,19 +3107,10 @@ body { background: var(--bg); color: var(--text); } */
 }
 
 
-/* =========================
-   TARJETAS DE SUBASTAS
-========================= */
-
 .main-detail-wrapper.dark-mode .card-left {
   background: #18181f;
   border-color: rgba(236, 72, 153, .25) !important;
 }
-
-
-/* =========================
-   TEXTOS
-========================= */
 
 .main-detail-wrapper.dark-mode
 p,
@@ -3130,38 +3123,18 @@ p,
 }
 
 
-/* Texto secundario */
-
 .main-detail-wrapper.dark-mode .text-secondary {
   color: var(--text2) !important;
 }
 
 
-/* =========================
-   TIMER
-========================= */
-
 .main-detail-wrapper.dark-mode {
   --timer-bg: #24242c;
 }
 
-
-/* =========================
-   OPENPAY
-========================= */
-
 .main-detail-wrapper.dark-mode {
   --openpay-bg: #18181e;
 }
-
-
-
-
-
-/* =========================
-   TRANSICIÓN
-========================= */
-
 .main-detail-wrapper,
 .main-detail-wrapper .glass,
 .main-detail-wrapper .card-left,
@@ -3285,4 +3258,189 @@ p,
 .column-center,
 .column-right {
   border: none !important;
+}
+.modal-ofertadirecta{
+   position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0,0,0,.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.margen{
+  width: 500px;
+      max-width: 90%;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+}
+.coloroferta {
+  color:linear-gradient(to right, #ec4899, #8b5cf6, #3b82f6);
+}
+.botones-oferta{
+ background: #636e72;
+ width: 150px;   /* ancho */
+height: 40px;  /* alto */
+margin:  1px;
+
+}
+.boton-prinsipal{
+  background: linear-gradient(to right, #ec4899, #8b5cf6, #3b82f6);
+   width: 600px;   /* ancho */
+
+}
+.letras{
+  color: #000;
+}
+.coloroferta-h5 {
+  color: #ec4899;
+}
+.dark-mode .margen{
+  width: 500px;
+      max-width: 90%;
+      background: #262626;
+      border-radius: 12px;
+      padding: 20px;
+}
+.dark-mode .botones-oferta{
+ background: #3C3C3C;
+ width: 150px;   /* ancho */
+height: 40px;  /* alto */
+}
+.dark-mode .letras{
+  color: white;
+}
+.input-oferta {
+  /* MODO CLARO */
+  width: 100%;
+  height: 45px;
+  background: #fff;
+  border: 1px solid #999;
+  border-radius: 10px;
+  color: #333;
+  padding: 0 12px;
+  font-size: 18px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input-oferta::placeholder {
+  color: #777;
+}
+
+/* MODO OSCURO */
+.modal-ofertadirecta.dark-mode .input-oferta {
+  background: #222;
+  border-color: #aaa;
+  color: #ddd;
+}
+
+.modal-ofertadirecta.dark-mode .input-oferta::placeholder {
+  color: #ccc;
+}
+.botones-oferta-container {
+  margin-bottom: 8px;
+}
+
+.modal-ofertadirecta.dark-mode .btn-close {
+  filter: invert(1);
+}
+@media (max-width: 768px) {
+  .botones-oferta-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+}
+.datos{
+  color:#353b48 !important;
+  padding-left: 10px; 
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+/* =========================
+   MODAL - MODO OSCURO
+   ========================= */
+
+.modal-body.dark-mode {
+  background-color: #18181b !important;
+  color: #000000 !important;
+}
+
+/* Texto */
+.modal-body.dark-mode label,
+.modal-body.dark-mode h4,
+.modal-body.dark-mode h5,
+.modal-body.dark-mode .tw\:text-sm {
+  color: #fff !important;
+}
+
+/* Select */
+.modal-body.dark-mode .form-select.datos {
+  background-color: #232329 !important;
+  color: #fff !important;
+  border-color: #3f3f46 !important;
+}
+
+/* Opciones del select */
+.modal-body.dark-mode .form-select.datos option {
+  background-color: #232329;
+  color: #fff;
+}
+
+/* Encabezado Servicio / Precio */
+.modal-body.dark-mode .prices-shipping-container.bg-dark {
+  background-color: #232329 !important;
+  color: #fff !important;
+}
+
+/* Servicios de envío */
+.modal-body.dark-mode .prices-shipping-container {
+  background-color: #232329;
+  color: #fff;
+}
+
+/* Nombre del servicio */
+.modal-body.dark-mode .shipname {
+  color: #fff;
+}
+
+/* Precio */
+.modal-body.dark-mode .shipprice {
+  color: #61c0f8;
+}
+
+/* Dimensiones */
+.modal-body.dark-mode .dims {
+  background-color: #232329;
+  color: #fff;
+  border-color: #3f3f46;
+}
+
+/* Texto gris que tienes directamente en HTML */
+.modal-body.dark-mode h5[style] {
+  color: #a1a1aa !important;
+}
+.modal-headerr {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #000000;
+  background: transparent !important;
+  
+}
+
+.textf{
+  color: #ec4899;
+}
+
+.imagen-blanca {
+  filter: brightness(0) invert(0);
+}
+.dark-mode .imagen-blanca {
+  filter: brightness(0) invert(1);
 }

@@ -14,6 +14,9 @@ import Swal from 'sweetalert2'
 import { SharedService } from '../../services/shared.service';
 import { AuctionService } from '../../services/auction.service';
 import { LoaderComponent } from '../loader/loader.component';
+import { SoloDecimalDirective } from '../../directives/solo-decimal.directive';
+
+
 
 @Component({
   selector: 'app-auction-detail',
@@ -23,7 +26,8 @@ import { LoaderComponent } from '../loader/loader.component';
     OfertaPersonalizadaModalComponent,
     VerticalPremiumAuctionsComponent,
     FormsModule,
-    LoaderComponent
+    LoaderComponent,
+    SoloDecimalDirective
   ],
   templateUrl: './auction-detail.component.html',
   styleUrls: ['./auction-detail.component.css']
@@ -87,7 +91,9 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   isviewerOpen: boolean = false;
   imagesListViewer: any[] = [];
   currentIndexImageViewer: number = 0;
+  mostrarmodalofertadirecta: boolean = false;
   modoOscuro = false;
+  ofertar: number = 0;
   classNavigateImg: string = '';
   @ViewChild('titulo', { static: false }) tituloElement!: ElementRef;
   @ViewChild('descripcion', { static: false }) descripcionElement!: ElementRef;
@@ -130,10 +136,10 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     this.subastasService.ConsultarSubastaOfertarId(IdSubasta).subscribe(sub => {
       console.log(sub)
       this.detallesubasta = sub;
-      if(this.detallesubasta.tiempoVence === '00:00:00'){
+      if (this.detallesubasta.tiempoVence === '00:00:00') {
         let dataParams = JSON.stringify({ idSubasta: IdSubasta, tipoUsuario: 'comprador' });
-          let encoded = this.ss.encodeToBase64(dataParams);
-          this.router.navigate(['/subasta-terminada', encoded]);
+        let encoded = this.ss.encodeToBase64(dataParams);
+        this.router.navigate(['/subasta-terminada', encoded]);
       }
       this.valorApuesta = sub.ofertaActual;
       this.siguienteApuesta = sub.ofertaActual + sub.valorOferta;
@@ -192,8 +198,15 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
   cambiarTema() {
-  this.modoOscuro = !this.modoOscuro;
-}
+    this.modoOscuro = !this.modoOscuro;
+
+    if (this.modoOscuro) {
+      localStorage.setItem('tema', 'Oscuro');
+    } else {
+      localStorage.setItem('tema', '');
+    }
+
+  }
   iniciarTimerReal() {
 
     if (this.intervalTiempo) {
@@ -265,13 +278,13 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     // this.usuario()!.id
     this.getPremium();
     this.route.paramMap.subscribe(params => {
-  const id = Number(params.get('id'));
+      const id = Number(params.get('id'));
 
-  if (id) {
-    console.log('Cargando nueva subasta:', id);
-    this.getInitialData(id);
-  }
-});
+      if (id) {
+        console.log('Cargando nueva subasta:', id);
+        this.getInitialData(id);
+      }
+    });
     // this.subastasService.getAuctionById(id).subscribe(sub => {
     //   this.subasta = sub;
 
@@ -295,31 +308,33 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     //     this.conectarSignalR();
     //   });
     // }); 
+    this.modoOscuro = localStorage.getItem('tema') === 'Oscuro';
+    console.log("valor de tema oscuro " + this.modoOscuro)
 
   }
- getDatosSubastaGenerales(id: number) {
-  this.loading = true;
+  getDatosSubastaGenerales(id: number) {
+    this.loading = true;
 
-  this.subastasService.ConsultarSubastaOfertarId(id).subscribe({
-    next: (detalleSubasta: any) => {
-      let tiempoVence = detalleSubasta.tiempoVence ?? '00:00:00';
-      let _tiempoRestante = tiempoVence.split(':').reduce((acc: number, time: string) => (60 * acc) + Number(time), 0);
-      this.loading = false;
-      if (_tiempoRestante <= 0) {
-        let dataParams = JSON.stringify({
-          idSubasta: id,
-          tipoUsuario: 'comprador'
-        });
-        let encoded = this.ss.encodeToBase64(dataParams);
-        this.router.navigate(['/subasta-terminada', encoded]);
+    this.subastasService.ConsultarSubastaOfertarId(id).subscribe({
+      next: (detalleSubasta: any) => {
+        let tiempoVence = detalleSubasta.tiempoVence ?? '00:00:00';
+        let _tiempoRestante = tiempoVence.split(':').reduce((acc: number, time: string) => (60 * acc) + Number(time), 0);
+        this.loading = false;
+        if (_tiempoRestante <= 0) {
+          let dataParams = JSON.stringify({
+            idSubasta: id,
+            tipoUsuario: 'comprador'
+          });
+          let encoded = this.ss.encodeToBase64(dataParams);
+          this.router.navigate(['/subasta-terminada', encoded]);
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching auction details:', err);
+        this.loading = false;
       }
-    },
-    error: (err) => {
-      console.error('Error fetching auction details:', err);
-      this.loading = false;
-    }
-  });
-}
+    });
+  }
 
   getVendedoresSeguidos(idUsuario: number) {
     this.subastasService.GetVendedoresSeguidos(idUsuario).subscribe({
@@ -336,7 +351,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   getVistasOfertas() {
     this.subastasService.registrarVista(this.detallesubasta!.id).subscribe({
       next: (vistas: any) => {
-        this.detallesubasta.vistas  = vistas.totalVistas
+        this.detallesubasta.vistas = vistas.totalVistas
         this.detallesubasta.ofertas = vistas.totalPujas
       }
     })
@@ -488,9 +503,9 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     return isFollowed;
   }
 
- openUserPage(idVendedor: number) {
-  this.router.navigate(['/userpage', idVendedor]);
-}
+  openUserPage(idVendedor: number) {
+    this.router.navigate(['/userpage', idVendedor]);
+  }
 
   getSubastasSeguidas() {
     const usuario = this.authService.currentUser();
@@ -602,16 +617,16 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   verificarSiSiguiendo(): void {
-  const idUsuario = Number(this.authService.idUsuario);
+    const idUsuario = Number(this.authService.idUsuario);
 
-  this.subastasService.ConsultarSiSiguiendo(
-    idUsuario,
-    this.detallesubasta.id
-  ).subscribe({
-    next: res => this.isFollowed = res === true,
-    error: err => console.error('Error seguimiento:', err)
-  });
-}
+    this.subastasService.ConsultarSiSiguiendo(
+      idUsuario,
+      this.detallesubasta.id
+    ).subscribe({
+      next: res => this.isFollowed = res === true,
+      error: err => console.error('Error seguimiento:', err)
+    });
+  }
 
   toggleSeguir(): void {
     const idUsuario = Number(this.authService.idUsuario);
@@ -820,6 +835,14 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       this.renderer.removeClass(this.botonApuesta.nativeElement, 'animate__headShake');
     }, 1300);
   }
+  
+  apuestaPersonalizada(oferta: number){
+    const monto =  oferta + this.valorApuesta
+    console.log(monto)
+
+    this.realizarApuesta(monto , false)
+
+  }
 
   // Envía la apuesta
   realizarApuesta(monto: number, compraDirecta = false): void {
@@ -919,51 +942,51 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   irASiguiente(): void {
 
-  // PREMIUM: navegación infinita
-  if (this.origen === 'SubastasPremium') {
+    // PREMIUM: navegación infinita
+    if (this.origen === 'SubastasPremium') {
 
-    if (this.indiceActual >= this.lista.length - 1) {
-      this.indiceActual = 0;
+      if (this.indiceActual >= this.lista.length - 1) {
+        this.indiceActual = 0;
+      } else {
+        this.indiceActual++;
+      }
+
     } else {
+
+      // Otras subastas: mostrar alerta al llegar al final
+      if (this.indiceActual >= this.lista.length - 1) {
+        Swal.fire({
+          icon: 'info',
+          title: 'No hay más subastas',
+          text: 'Ya no hay más subastas disponibles.',
+          confirmButtonText: 'Aceptar'
+        });
+
+        return;
+      }
+
       this.indiceActual++;
     }
 
-  } else {
+    this.currentIndexImage = 0;
+    this.classAnimate.imageContainer = 'animate__fadeOutLeft';
 
-    // Otras subastas: mostrar alerta al llegar al final
-    if (this.indiceActual >= this.lista.length - 1) {
-      Swal.fire({
-        icon: 'info',
-        title: 'No hay más subastas',
-        text: 'Ya no hay más subastas disponibles.',
-        confirmButtonText: 'Aceptar'
-      });
+    this.subasta = this.lista[this.indiceActual];
 
-      return;
-    }
+    this.router.navigate([
+      '/subasta-detalle',
+      this.subasta!.id,
+      this.origen
+    ]);
 
-    this.indiceActual++;
+    this.resetDatos();
+    this.isFollowed = false;
+    this.actualizarVista();
+
+    setTimeout(() => {
+      this.classAnimate.imageContainer = 'animate__fadeInRight';
+    }, 300);
   }
-
-  this.currentIndexImage = 0;
-  this.classAnimate.imageContainer = 'animate__fadeOutLeft';
-
-  this.subasta = this.lista[this.indiceActual];
-
-  this.router.navigate([
-    '/subasta-detalle',
-    this.subasta!.id,
-    this.origen
-  ]);
-
-  this.resetDatos();
-  this.isFollowed = false;
-  this.actualizarVista();
-
-  setTimeout(() => {
-    this.classAnimate.imageContainer = 'animate__fadeInRight';
-  }, 300);
-}
   actualizarVista() {
     this.imagenActual = this.subasta!.url;
     this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
@@ -1085,7 +1108,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       next: (subasta) => {
         let tiempoVence = subasta.tiempoVence ?? '00:00:00';
         let segundos: number, minutos: number, horas: number;
-        let _tiempoRestante = tiempoVence.split(':')  .reduce((acc: number, time: string) => {return (60 * acc) + Number(time);}, 0);
+        let _tiempoRestante = tiempoVence.split(':').reduce((acc: number, time: string) => { return (60 * acc) + Number(time); }, 0);
         console.log(_tiempoRestante);
         // this.loading = false;
         if (_tiempoRestante > 0) {
@@ -1108,5 +1131,26 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     })
   }
+
+  abrirmodalofertadirecta(){
+    console.log('ABRIENDO MODAL');
+    this.mostrarmodalofertadirecta = true
+  }
+
+  cerrarmodalofertadirecta(){
+   this.mostrarmodalofertadirecta = false;
+  }
+
+ofertardirecto(monto: number): void{
+ 
+
+
+}
+
+botones(numero: number){
+  this.ofertar = numero ;
+
+}
+
 
 }
