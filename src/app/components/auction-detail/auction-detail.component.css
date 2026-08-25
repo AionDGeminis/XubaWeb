@@ -3346,7 +3346,7 @@ height: 40px;  /* alto */
   margin-bottom: 8px;
 }
 
-.modal-ofertadirecta.dark-mode .btn-close {
+.dark-mode .btn-close {
   filter: invert(1);
 }
 @media (max-width: 768px) {
@@ -3458,7 +3458,7 @@ height: 40px;  /* alto */
 
 .modal-contenido-descripcion {
   width: 90%;
-  max-width: 600px;
+  max-width: 800px;
   max-height: 80vh;
   background: #fefeff;
   color: rgb(0, 0, 0);
@@ -3533,6 +3533,259 @@ height: 40px;  /* alto */
   margin-bottom: 6px;
   color: #ec4899;
 }
+/* =========================================
+   CARACTERÍSTICAS / MEDIDAS
+========================================= */
+
+.modal-body-descripcion .row {
+  display: flex;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.modal-body-descripcion .row > .col-6 {
+  flex: 1;
+  min-width: 0;
+}
+
+
+/* =========================================
+   TÍTULOS
+========================================= */
+
+.modal-body-descripcion .row .detalle-modall {
+  display: flex;
+  align-items: center;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  color: #ec4899;
+
+  margin: 0 0 14px 0;
+}
+
+
+/* =========================================
+   CARACTERÍSTICAS
+========================================= */
+
+.modal-body-descripcion .row > .col-6:first-child p {
+  margin: 0;
+  padding: 6px 0;
+
+  font-size: 13px;
+  color: #555;
+
+  line-height: 2.9;
+
+  min-height: 145px;
+
+  /* Rayitas */
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(100% - 1px),
+    #e5e5e5 calc(100% - 1px)
+  );
+
+  background-size: 100% 42px;
+  background-repeat: repeat-y;
+}
+
+
+/* =========================================
+   MEDIDAS
+========================================= */
+
+.modal-body-descripcion .row > .col-6:last-child p {
+  margin: 0;
+
+  padding: 8px 18px;
+
+  min-height: 145px;
+
+  background-color: #f7f7fa;
+
+  border-radius: 14px;
+
+  font-size: 13px;
+  color: #555;
+
+  line-height: 2.9;
+
+  box-sizing: border-box;
+
+  /* Rayitas */
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(100% - 1px),
+    #e5e5e5 calc(100% - 1px)
+  );
+
+  background-size: 100% 42px;
+  background-repeat: repeat-y;
+}
+
+
+/* =========================================
+   MODO OSCURO
+========================================= */
+
+.modal-descripcion.dark-mode
+.modal-body-descripcion .row > .col-6:first-child p {
+  color: #ddd;
+
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(100% - 1px),
+    #3f3f46 calc(100% - 1px)
+  );
+}
+
+.modal-descripcion.dark-mode
+.modal-body-descripcion .row > .col-6:last-child p {
+  background-color: #232329;
+  color: #ddd;
+
+  background-image: linear-gradient(
+    to bottom,
+    transparent calc(100% - 1px),
+    #3f3f46 calc(100% - 1px)
+  );
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .modal-body-descripcion .row {
+    gap: 12px;
+  }
+
+  .modal-body-descripcion .row > .col-6 {
+    width: 50%;
+  }
+
+  .modal-body-descripcion .row .detalle-modall {
+    font-size: 14px;
+  }
+
+  .modal-body-descripcion .row > .col-6:first-child p,
+  .modal-body-descripcion .row > .col-6:last-child p {
+    font-size: 11px;
+  }
+
+}
+
+/* =========================================
+   INFORMACIÓN IMPORTANTE
+========================================= */
+
+.informacion-importante {
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 15px 18px;
+
+  margin: 20px 0;
+
+  background: #fcecf7;
+
+  border-radius: 14px;
+}
+
+/* Icono */
+
+.informacion-icono {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  color: #ec4899;
+
+  font-size: 20px;
+}
+
+/* Texto */
+
+.informacion-texto {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.informacion-texto strong {
+  font-size: 14px;
+  font-weight: 700;
+
+  color: #18233a;
+}
+
+.informacion-texto span {
+  font-size: 11px;
+  font-weight: 500;
+
+  color: #4f5363;
+}
+
+
+/* =========================================
+   MODO OSCURO
+========================================= */
+
+.modal-descripcion.dark-mode .informacion-importante {
+  background: #30232d;
+}
+
+.modal-descripcion.dark-mode .informacion-texto strong {
+  color: #fff;
+}
+
+.modal-descripcion.dark-mode .informacion-texto span {
+  color: #d1d1d5;
+}
+
+.modal-descripcion.dark-mode .informacion-icono {
+  color: #ec4899;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .informacion-importante {
+    padding: 13px 15px;
+    gap: 10px;
+  }
+
+  .informacion-texto strong {
+    font-size: 13px;
+  }
+
+  .informacion-texto span {
+    font-size: 10px;
+  }
+
+}
+
+
 
 .detalle-modal p {
   margin: 0;
@@ -3554,3 +3807,4 @@ height: 40px;  /* alto */
 .usuario {
   margin: 0;
 }
+

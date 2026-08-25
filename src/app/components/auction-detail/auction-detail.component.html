@@ -339,8 +339,7 @@
       <h3 class="modal-title">
         <span class="textf">Precios de envio estimados</span>
       </h3>
-      <button class="close-button textt-white" (click)="closeShippingPricesModal()">
-        x
+      <button type="button" class="btn-close" (click)="closeShippingPricesModal()">
       </button>
     </div>
 
@@ -525,8 +524,7 @@
     <div class="modal-header-descripcion">
       <h3 class="detalle-modall">{{detallesubasta.caption}}</h3>
 
-      <button class="btn-cerrar" (click)="cerrarmodaldescripcion()">
-        ×
+      <button type="button" class="btn-close" (click)="cerrarmodaldescripcion()">
       </button>
     </div>
 
@@ -538,25 +536,39 @@
 
       <div class="row">
          <div class="col-6">
-          <h4 class="detalle-modall">Caracteristicas</h4>
+          <h4 class="detalle-modall"> <i class="bi bi-box-seam icono-detalle"></i> Caracteristicas</h4>
           <p>
-            Modelo: {{ detallesubasta.modelo }} <br>
+            <i class="bi bi-patch-check-fill"></i>
             Marca: {{ detallesubasta.marca }} <br>
+           <i class="bi bi-card-text"></i>
+            Modelo: {{ detallesubasta.modelo }} <br>
+            <i class="bi" [ngClass]="detallesubasta.nuevo ? 'bi-stars ' : 'bi-box-seam '"></i>
+            Estado: {{ detallesubasta.nuevo ? 'Nuevo' : 'Usado' }}
           </p>
         </div>
 
         <div class="col-6">
-          <h4 class="detalle-modall">Medidas</h4>
+          <h4 class="detalle-modall"><i class="bi bi-bounding-box"></i>Medidas</h4>
           <p>
+              <i class="bi bi-arrows"></i>
             Largo: {{ detallesubasta.largo }} cm<br>
+             <i class="bi bi-arrows-vertical icono-detalle"></i>
             Ancho: {{ detallesubasta.ancho }} cm<br>
+            <i class="bi bi-arrows-angle-expand icono-detalle"></i>
             Profundidad: {{ detallesubasta.profundidad }} cm
           </p>
         </div>
-       
-
-
       </div>
+        <div class="informacion-importante">
+  <div class="informacion-icono">
+    <i class="bi bi-info-circle"></i>
+  </div>
+
+  <div class="informacion-texto">
+    <strong>Información importante</strong>
+    <span>Revisa bien las características y medidas del producto antes de ofertar.</span>
+  </div>
+</div>
 
     </div>
 
