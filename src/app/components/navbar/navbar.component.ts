@@ -356,6 +356,10 @@ openUserPage(user: any){
     this.router.navigate(['/userpage', user]);
   }, 100);
 }
+abrirRegistro() {
+  console.log('CLICK EN REGÍSTRATE');
+  this.router.navigate(['/preregistro']);
+}
 
 
   changeAside(option: any){

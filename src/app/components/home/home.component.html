@@ -34,8 +34,7 @@
             [ngClass]="{'active': currentHomeIndex === 2}"><i class="fas fa-bolt"></i>Express</div>
           <!-- <div class="menu-item" ><i class="fas fa-wallet"></i>Wallet</div> -->
           <!-- <div class="menu-item" title="Ver politicas de uso" (click)="openModalPoliticasFn()"><i class="fas fa-book" ></i>Politica de uso</div> -->
-          <div class="menu-item" title="Informacion de contacto" (click)="changeAside('contact')"><i
-              class="fas fa-phone"></i>Contacto</div>
+          
           <hr>
           <div class="menu-item" title="Cerrar sesion" (click)="logout()"><i class="fas fa-power-off"></i>Cerrar sesion
           </div>
@@ -62,7 +61,7 @@
         <div class="text-center">
           <a (click)="openModalForResetPassword()" class="small cpointer text-decoration-none text-primary">¿Olvidaste
             tu contraseña?</a><br>
-          <a href="#" class="small text-decoration-none text-success">Regístrate</a>
+          <a  class="small text-decoration-none text-success cursor: pointer; " (click)="abrirRegistro()">Regístrate</a>
         </div>
       </form>
 
@@ -456,8 +455,8 @@ s
 
     <!-- Links fila 1 -->
     <div style="display: flex; flex-wrap: wrap; gap: 32px; margin-bottom: 12px;">
-      <a class="cpointer" (click)="openModalPoliticasFn()"
-        style="font-size: 13px; color: #333; text-decoration: none;">Politicas de uso</a>
+      <a class="cpointer" 
+        style="font-size: 13px; color: #333; text-decoration: none;" (click)="abrirpoliticasdeuso()">Politicas de uso</a>
       <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;">Aviso Legal</a>
       <!-- <a href="#" style="font-size: 13px; color: #333; text-decoration: none;">Condiciones de Uso</a> -->
       <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;">Aviso de Privacidad</a>
@@ -476,14 +475,14 @@ s
 
   </footer>
 </div>
- <div class="col-sm-2 bg-info">
+ <!--<div class="col-sm-2 bg-info">
     <ng-container *ngIf="!isLoggedIn(); else loggedIn">
       <app-login (mostrarRegistro)="abrirRegistroModal()"></app-login>
     </ng-container>
     <ng-template #loggedIn>
       <app-followed-auctions (abrirDetalle)="abrirDetalle($event)"></app-followed-auctions>
-    </ng-template>
-  </div> 
+    </ng-template> 
+  </div> -->
 <app-notifications *ngIf="mostrarNoti" class="overlay-notificaciones"></app-notifications>
 
 <div class="registro-modal-overlay" *ngIf="mostrarRegistro">
@@ -1043,10 +1042,6 @@ s
                 <label>CVV</label>
                 <input [type]="mostrarCVV ? 'text' : 'password'" class="form-control" [(ngModel)]="tarjeta.cvv2"
                   autocomplete="off" maxlength="4" id="ccv" name="ccv">
-
-                <i class="bi" [ngClass]="mostrarCVV ? 'bi-eye-slash' : 'bi-eye'" (click)="mostrarCVV = !mostrarCVV"
-                  style="cursor:pointer">
-                </i>
               </div>
             </div>
             <div class="form-row">

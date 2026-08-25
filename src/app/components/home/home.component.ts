@@ -91,9 +91,9 @@ interface ISubasta {
     XpressAuctionsComponent,
     GeneralAuctionsComponent,
     PremiumAuctionsComponent,
-    FollowedAuctionsComponent,
+   // FollowedAuctionsComponent,
     NotificationsComponent,
-    LoginComponent,
+   // LoginComponent,
     RegisterComponent,
     // ReactiveFormsModule,
     FormsModule,
@@ -545,10 +545,25 @@ export class HomeComponent implements OnInit {
     this.url3DS = url;
   }
 
-  changeTarjetaSeleccionada() {
-    // this.tarjeta = this.selectedCard;
-    Object.assign(this.tarjeta, this.selectedCard);
+changeTarjetaSeleccionada() {
+  Object.assign(this.tarjeta, this.selectedCard);
+
+  if (this.selectedCard.id) {
+    this.tarjetaExpiracion =
+      `${this.selectedCard.expiration_month}/${this.selectedCard.expiration_year}`;
+
+    this.tarjeta.cvv2 = this.selectedCard.cvv2;
+  } else {
+    this.tarjetaExpiracion = '';
+    this.tarjeta.cvv2 = '';
   }
+}
+abrirRegistro() {
+  this.router.navigate(['/preregistro']);
+}
+abrirpoliticasdeuso() {
+  this.router.navigate(['/politica-de-uso']);
+}
   /**
    * Navega a la ruta de detalle con id y origen como queryParam.
    */

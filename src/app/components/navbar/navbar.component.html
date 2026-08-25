@@ -118,7 +118,12 @@
         <button type="submit" class="btn btn-xuba w-100 mb-3 fw-bold" (click)="onLogin()">Login</button>
         <div class="text-center">
           <a href="#" class="small text-decoration-none text-primary">¿Olvidaste tu contraseña?</a><br>
-          <a href="#" class="small text-decoration-none text-success">Regístrate</a>
+          <a
+  href="javascript:void(0)"
+  class="small text-decoration-none text-success"
+  (click)="abrirRegistro()">
+  Regístrate
+</a>
         </div>
       </div>
       <div class="menu px-3" *ngIf="isLoggedIn()">

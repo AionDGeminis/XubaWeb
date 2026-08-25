@@ -117,7 +117,7 @@
               <p style="font-size: 11px; color: var(--text2); line-height: 1.7;">
                 {{detallesubasta.descripcion?.slice(0, 200) }}
                 <span>
-                  <a class="icon-link icon-link-hover" (click)="abrirmodaldescripcion()">
+                  <a class="icon-link icon-link-hover" style="cursor: pointer"  (click)="abrirmodaldescripcion()">
                     Ver mas
                     <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
                       <path
@@ -339,8 +339,8 @@
       <h3 class="modal-title">
         <span class="textf">Precios de envio estimados</span>
       </h3>
-      <button class="close-button" (click)="closeShippingPricesModal()">
-        <span class="text-white">&times;</span>
+      <button class="close-button textt-white" (click)="closeShippingPricesModal()">
+        x
       </button>
     </div>
 

@@ -3,13 +3,14 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { Usuario } from '../../models/subasta.model';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';;
 import { HttpClientModule } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
+  imports: [ReactiveFormsModule, CommonModule, HttpClientModule,  RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -67,6 +68,6 @@ export class LoginComponent implements OnInit {
   }
 
 abrirRegistro() {
-  this.mostrarRegistro.emit();
+  this.router.navigate(['/preregistro']);
 }
 }
