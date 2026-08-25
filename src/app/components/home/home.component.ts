@@ -91,9 +91,9 @@ interface ISubasta {
     XpressAuctionsComponent,
     GeneralAuctionsComponent,
     PremiumAuctionsComponent,
-    // FollowedAuctionsComponent,
+    FollowedAuctionsComponent,
     NotificationsComponent,
-    // LoginComponent,
+    LoginComponent,
     RegisterComponent,
     // ReactiveFormsModule,
     FormsModule,
@@ -175,6 +175,7 @@ export class HomeComponent implements OnInit {
   paginaVendedoresFavoritos = 1;
   cargandoMasVendedoresFavoritos = false;
   hayMasVendedoresFavoritos = true;
+  mostrarmodalcontacto: boolean = false;
   imagesPreview: any[] = [];
   itemsLoaderNotificaciones: any = [1, 2, 3, 4, 5, 6, 7, 8];
   loginForm: any = { usuario: null, pass: null };
@@ -2025,5 +2026,11 @@ export class HomeComponent implements OnInit {
     return this.ss.toCurrency(valor);
   }
 
+  abrirmodalcontacto(){
+    this.mostrarmodalcontacto = true;
+  }
+cerrarmodalcontacto(){
+  this.mostrarmodalcontacto = false;
+}
 
 }

@@ -1644,3 +1644,68 @@ input[type="checkbox"] {
   }
 
 }
+.modal-contacto {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-contacto-contenido {
+  width: 400px;
+  max-width: 90%;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.modal-contacto-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.modal-contacto-header h5 {
+  margin: 0;
+  color: #ec4899;
+  font-weight: 700;
+}
+
+.contacto-item {
+  margin-bottom: 20px;
+}
+
+.contacto-titulo {
+  color: #087cff;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.contacto-titulo i {
+  margin-right: 4px;
+}
+
+.contacto-dato {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* BOTÓN */
+.btn-contacto {
+  border: none;
+  border-radius: 50px;
+  padding: 8px 18px;
+  background: linear-gradient(to right, #ec4899, #6366f1);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}

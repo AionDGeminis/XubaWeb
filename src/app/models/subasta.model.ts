@@ -78,8 +78,11 @@ export interface ImagenSubasta {
     ancho: number;
     profundidad: number;
     peso: number;
+    marca: string;
+    modelo: string;
     idVendedor: number;
     usuarioVendedor: string;
+    fotoVendedor: string;
     estado: string;
     municipio: string;
     codigoPostal: string;

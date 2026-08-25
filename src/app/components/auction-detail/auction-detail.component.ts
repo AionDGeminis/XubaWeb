@@ -92,6 +92,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   imagesListViewer: any[] = [];
   currentIndexImageViewer: number = 0;
   mostrarmodalofertadirecta: boolean = false;
+  mostrarmodaldescripcion: boolean = false;
   modoOscuro = false;
   ofertar: number = 0;
   classNavigateImg: string = '';
@@ -835,12 +836,12 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       this.renderer.removeClass(this.botonApuesta.nativeElement, 'animate__headShake');
     }, 1300);
   }
-  
-  apuestaPersonalizada(oferta: number){
-    const monto =  oferta + this.valorApuesta
+
+  apuestaPersonalizada(oferta: number) {
+    const monto = oferta + this.valorApuesta
     console.log(monto)
 
-    this.realizarApuesta(monto , false)
+    this.realizarApuesta(monto, false)
 
   }
 
@@ -1132,25 +1133,26 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     })
   }
 
-  abrirmodalofertadirecta(){
+  abrirmodalofertadirecta() {
     console.log('ABRIENDO MODAL');
     this.mostrarmodalofertadirecta = true
   }
 
-  cerrarmodalofertadirecta(){
-   this.mostrarmodalofertadirecta = false;
+  cerrarmodalofertadirecta() {
+    this.mostrarmodalofertadirecta = false;
   }
 
-ofertardirecto(monto: number): void{
- 
+  botones(numero: number) {
+    this.ofertar = numero;
+  }
 
+  abrirmodaldescripcion() {
+    this.mostrarmodaldescripcion = true
+  }
 
-}
-
-botones(numero: number){
-  this.ofertar = numero ;
-
-}
+  cerrarmodaldescripcion() {
+    this.mostrarmodaldescripcion = false;
+  }
 
 
 }

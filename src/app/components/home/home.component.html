@@ -461,7 +461,7 @@ s
       <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;">Aviso Legal</a>
       <!-- <a href="#" style="font-size: 13px; color: #333; text-decoration: none;">Condiciones de Uso</a> -->
       <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;">Aviso de Privacidad</a>
-      <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;">Contactanos</a>
+     <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;" (click)="abrirmodalcontacto()">Contactanos</a>
     </div>
 
     <!-- Links fila 2 -->
@@ -476,14 +476,14 @@ s
 
   </footer>
 </div>
-<!-- <div class="col-sm-2 bg-info">
+ <div class="col-sm-2 bg-info">
     <ng-container *ngIf="!isLoggedIn(); else loggedIn">
       <app-login (mostrarRegistro)="abrirRegistroModal()"></app-login>
     </ng-container>
     <ng-template #loggedIn>
       <app-followed-auctions (abrirDetalle)="abrirDetalle($event)"></app-followed-auctions>
     </ng-template>
-  </div> -->
+  </div> 
 <app-notifications *ngIf="mostrarNoti" class="overlay-notificaciones"></app-notifications>
 
 <div class="registro-modal-overlay" *ngIf="mostrarRegistro">
@@ -1297,4 +1297,73 @@ s
     </div>
     <!-- </div> -->
   </div>
+</div>
+<div
+  class="modal-contacto" *ngIf="mostrarmodalcontacto"
+  (click)="cerrarmodalcontacto()">
+
+  <div
+    class="modal-contacto-contenido"
+    (click)="$event.stopPropagation()">
+
+    <!-- ENCABEZADO -->
+    <div class="modal-contacto-header">
+
+      <h5>
+        Información de contacto
+      </h5>
+
+      <button
+        type="button"
+        class="btn-close"
+        (click)="cerrarmodalcontacto()">
+      </button>
+
+    </div>
+
+    <div class="contacto-item">
+
+      <div class="contacto-titulo">
+        <i class="fas fa-map-marker-alt"></i>
+        Dirección
+      </div>
+
+      <div class="contacto-dato">
+        Cd. Juarez, Chihuahua, Mexico<br>
+        candelilla #9314, Infonavit ampliación<br>
+        aeropuerto 32665
+      </div>
+
+    </div>
+
+    <!-- TELÉFONO -->
+    <div class="contacto-item">
+
+      <div class="contacto-titulo">
+        <i class="fas fa-phone-alt"></i>
+        Telefono
+      </div>
+
+      <div class="contacto-dato">
+        6564185727
+      </div>
+
+    </div>
+
+
+    <div class="contacto-item">
+
+      <div class="contacto-titulo">
+        <i class="fas fa-envelope"></i>
+        Correo
+      </div>
+
+      <div class="contacto-dato">
+  soporte&#64;xuba.mx
+</div>
+
+    </div>
+
+  </div>
+
 </div>
