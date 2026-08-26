@@ -3467,7 +3467,7 @@ height: 40px;  /* alto */
 }
 .dark-mode .modal-contenido-descripcion {
   width: 90%;
-  max-width: 600px;
+  max-width: 800px;
   max-height: 80vh;
   background: #181818;
   color: rgb(255, 255, 255);
