@@ -35,11 +35,6 @@
       <div class="profile-avatar-xs d-block m-auto">
         <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario" class="d-block m-auto">
       </div>
-      <!-- <label class="btn btn-sm btn-light btn-circle pt-2" 
-        style="position: absolute;right: calc(50% - 70px);top:100px;">
-          <input type="file" accept="image/*"  (change)="onFileChange($event)" hidden />
-          <i class="fas fa-camera"></i>
-        </label> -->
     </div>
 
     <h2>{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h2>
@@ -126,12 +121,6 @@
             <i class="fas fa-save tw:text-xs"></i>
             Guardar cambios
           </button>
-          <!-- <button class="btn-sm btn-secondary" (click)="openModal('recarga')" >
-              <i class="fas fa-save"></i> 
-              Guardar cambios
-            </button> -->
-
-          <!-- <button class="btn-xuba btn-pill smaller-txt" (click)="saveInfoChange()">Guardar cambios</button> -->
         </form>
       </div>
 
@@ -142,15 +131,10 @@
             <i class="fas fa-map"></i>
             Direcciones
           </h3>
-          <!-- <button  class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
-              <i class="fas fa-plus tw:text-xs"></i>
-              Direccion
-            </button> -->
           <button class="btn-sm btn-secondary" (click)="openModal('direccion')">
             <i class="fas fa-plus"></i>
             Direccion
           </button>
-          <!-- <button  class="btn-secondary" (click)="openModal('direccion')"> <i class="fas fa-plus"></i> Direccion</button> -->
         </div>
         <hr>
         <table class="table table-striped w-100">
@@ -176,17 +160,6 @@
             </td>
           </tr>
         </table>
-
-        <!-- <ul class="address-list">
-            <li *ngFor="let d of direcciones">
-              {{d.calle}} #{{d.numeroExt}}, {{d.municipio}}  <span [ngClass]="{'label-tdent': d.tipo === 'entrega', 'label-tdenv': d.tipo === 'envio'}">{{d.tipo}}</span>
-              <span>
-                <button class="btn-link">Editar</button>
-                <button class="btn-link">Eliminar</button>
-              </span>
-            </li>
-          </ul> -->
-        <!-- <button class="btn-secondary" (click)="openModal('direccion')">Agregar nueva dirección</button> -->
       </div>
 
 
@@ -195,32 +168,19 @@
       <div class="profile-card">
         <div class="d-flex between">
           <h3>Reclamos abiertos</h3>
-          <!-- <button (click)="openModal('disputa')" class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
-              <i class="fas fa-plus tw:text-xs"></i>
-              Reclamo
-            </button> -->
+
           <button class="btn-sm btn-secondary" (click)="openModal('disputa')">
             <i class="fas fa-plus"></i>
             Reclamo
           </button>
-          <!-- <button class="btn-secondary" (click)="openModal('disputa')">Crear nuevo reclamo</button> -->
         </div>
 
         <ul class="claim-list">
           <li *ngFor="let rec of listaReclamosAbiertos">
             #{{rec.idReclamo}} - {{rec.categoria}} [{{rec.caption}}]
             <span>
-              <!-- <button class="btn-link" (click)="openDetalleReclamo(rec)">Ver</button> -->
-              <!-- <button class="btn-link">Cerrar</button> -->
             </span>
           </li>
-          <!-- <li>
-              #1235 - Daño en el envío
-              <span>
-                <button class="btn-link">Ver</button>
-                <button class="btn-link">Cerrar</button>
-              </span>
-            </li> -->
         </ul>
 
       </div>
@@ -229,17 +189,12 @@
       <div class="profile-card">
         <h3 class="mb-0" style="display: flex;justify-content:space-between;">
           Mis xubastas
-          <!-- <button (click)="moveToCreateSubasta()" class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
-              <i class="fas fa-plus tw:text-xs"></i>
-              Nueva
-            </button> -->
           <button class="btn-sm btn-secondary" (click)="moveToCreateSubasta()">
             <i class="fas fa-plus"></i>
             Nueva
           </button>
         </h3>
 
-        <!-- <p class="pt-0 mt-0 d-block d-sm-none">{{getCurrenSubastaName()}}</p> -->
         <hr>
         <div class="w-100 mb-2 ">
           <button class="btn-tab-card w-50 " [ngClass]="{'active': tabSubastasIndex === 0}"
@@ -247,28 +202,7 @@
           <button class="btn-tab-card w-50 " [ngClass]="{'active': tabSubastasIndex === 1}"
             (click)="setCurrentTabSubastas(1)">Creadas</button>
         </div>
-        <!-- <label class="lbl-select f-arial ps-2">Filtrar xubastas por estatus</label> -->
-        <!-- <p class="tw:text-red-500 fw-bold">Tailwind funcionando</p> -->
 
-        <!-- <div class="p-1 w-100 bg-dark" style="border-radius: 5px;">
-           
-
-            <select class="form-select" [(ngModel)]="currentTipoSubasta" (change)="onChangeTipoSubasta()">
-              <ng-container *ngIf="tabSubastasIndex === 0">
-                 <option value="todas">Todas</option>
-                 <option value="participadas">Participando</option>
-                 <option value="ganadas">Ganadas</option>
-              </ng-container>
-              <ng-container *ngIf="tabSubastasIndex === 1">
-                 <option value="Activa">Activas</option>
-                 <option value="Finalizada">Terminadas</option>
-                 <option value="Por Aprobar">Por Aprobar</option>
-                 <option value="Rechazada">Por Revisar</option>
-                 <option value="Cancelada">Canceladas</option>
-              </ng-container>
-              
-           </select>
-          </div> -->
         <div class="relative inline-block text-left dropdown-container w-100 " *ngIf="tabSubastasIndex === 0">
           <button type="button"
             class="btn-select-xuba mt-2 mb-2 tw:relative tw:p-0 tw:text-white tw:px-2 tw:py-1 tw:rounded-lg w-100"
@@ -305,21 +239,6 @@
           </button>
           <div class="tw:relative w-100">
             <div *ngIf="open" class="tw:absolute w-100  tw:w-56 tw:rounded-xl border-xuba tw:shadow-lg pt-3 pb-3">
-              <!-- <ul class="tw:py-2">
-                  <li *ngFor="let ts of ListTipoSubastaCreadas">
-                    <div >
-                      <button  class="tw:w-full tw:text-left tw:px-4 tw:py-2 tw:hover:bg-gray-100" (click)="setTipoSubastaPG(ts)">
-                        <span [ngStyle]="{'background': ts.bg}" class="badge">{{ts.label}} </span> 
-                        <span *ngIf="ts.tipo === 'Rechazada' && totalSubastasPorRevisar > 0" class="tw:inline-flex ms-2 tw:items-center tw:justify-center tw:min-w-[20px] tw:h-5 tw:px-1.5 tw:rounded-full tw:bg-red-500 tw:text-white tw:text-xs tw:font-bold">
-                          {{totalSubastasPorRevisar}}
-                        </span>
-                      </button>
-                      
-                    </div>
-                   
-                    
-                  </li>
-                </ul> -->
               <button class="s-tag f-arial me-2" [ngClass]="{'s-tag-active': currentTipoSubasta === ts.tipo}"
                 *ngFor="let ts of ListTipoSubastaCreadas" (click)="setTipoSubastaPG(ts)">
                 {{ts.label}}
@@ -504,308 +423,7 @@
         <br><br>
         <br><br>
       </div>
-
-      <!-- <div class="profile-card">
-          <h3 class="mb-0" style="display: flex;justify-content:space-between;">Mis subastas creadas
-            <button class="btn btn-sm btn-info" (click)="moveToCreateSubasta()"><i class="fas fa-plus"></i> Nueva</button>
-          </h3>
-          <p class="pt-0 mt-0 d-block d-sm-none">{{getCurrenSubastaName()}}</p>
-          <hr>
-          <div class="w-100 mb-2 d-none d-sm-block">
-            <button class="btn-tab-card w-20 " [ngClass]="{'active': tabSubastasIndex === 0}" (click)="setCurrentTabSubastas(0)">Activas</button>
-            <button class="btn-tab-card w-20 " [ngClass]="{'active': tabSubastasIndex === 1}" (click)="setCurrentTabSubastas(1)">Terminadas</button>
-            <button class="btn-tab-card w-20 " [ngClass]="{'active': tabSubastasIndex === 2}" (click)="setCurrentTabSubastas(2)">Por aprobar</button>
-            <button class="btn-tab-card w-20 " [ngClass]="{'active': tabSubastasIndex === 3}" (click)="setCurrentTabSubastas(3)">Por revisar</button>
-            <button class="btn-tab-card w-20" [ngClass]="{'active': tabSubastasIndex === 4}" (click)="setCurrentTabSubastas(4)">Denegadas</button>
-          </div>
-
-          <table class="table table-striped w-100 text-center d-none d-sm-table">
-
-            <ng-container *ngIf="tabSubastasIndex === 0">
-              <tr >
-                <th class="w-10">Img</th>
-                <th class="w-10">Titulo</th>
-                <th class="w-30">Descripcion</th>
-                <th class="w-20">Precio</th>
-                <th class="w-20">Tiempo</th>
-              </tr>
-              <tr class="row-selectable" *ngFor="let subasta of listaSubastas" (click)="openSubastaDetalle(subasta)">
-                <td style="width:100px">
-                  <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
-                </td>
-                <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
-                <td class="td-desc">{{subasta.short_desc}}</td>
-                <td >{{toCurrency(subasta.extraInfo.precio)}}</td>
-                <td >{{segundosATiempoString(subasta.tiempoVence!)}}</td>
-              </tr>
-            </ng-container>
-            
-            <ng-container *ngIf="tabSubastasIndex === 1">
-              <tr>
-                <th class="w-10">Img</th>
-                <th class="w-10">Titulo</th>
-                <th class="w-30">Descripcion</th>
-                <th class="w-20">Precio</th>
-                <th class="w-20">Estatus</th>
-              </tr>
-              <tr class="w-100 row-selectable" *ngFor="let subasta of listaSubastas" (click)="openSubastaDetalle(subasta)">
-                <td  style="width:50px !important">
-                  <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)" class="d-block img-fluid img-auct" alt="Auction Image">
-                </td>
-                <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
-                <td class="td-desc">{{subasta.short_desc}}</td>
-                <td >{{ toCurrency(subasta.extraInfo.precio) }}</td>
-                <td >
-                  <div class="p-0 bg-none"> 
-                    <span class="status-indicator" >
-                      {{ subasta.desStatus}}
-                    </span>
-                    </div>
-                  <div class="p-0 bg-none">
-                    <button *ngIf="subasta.desStatus === 'Pagado'" class="btn btn-sm btn-danger" (click)="openLabelModal($event, subasta)">
-                      <i class="fa fa-file-pdf"></i> abrir
-                    </button>
-                  </div>
-                </td>
-              </tr> 
-            </ng-container>
-            <ng-container *ngIf="tabSubastasIndex === 2">
-              <tr>
-                <th class="w-10">Img</th>
-                <th class="w-30">Titulo</th>
-                <th class="w-30">Descripcion</th>
-                <th class="w-30">Precio</th>
-              </tr>
-              <tr class="row-selectable" *ngFor="let subasta of listaSubastas" (click)="openSubastaDetalle(subasta)">
-                <td  style="width:100px">
-                  <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
-                </td>
-                <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
-                <td class="td-desc">{{subasta.short_desc}}</td>
-                <td >{{toCurrency(subasta.extraInfo.precio)}}</td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="tabSubastasIndex === 3">
-              <tr>
-                <th class="w-10">Img</th>
-                <th class="w-30">Titulo</th>
-                <th class="w-30">Descripcion</th>
-                <th class="w-30">Precio</th>
-              </tr>
-              <tr class="row-selectable" *ngFor="let subasta of listaSubastas" (click)="openSubastaDetalle(subasta)">
-                <td  style="width:100px">
-                  <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
-                </td>
-                <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
-                <td class="td-desc">{{subasta.short_desc}}</td>
-                <td>{{toCurrency(subasta.extraInfo.precio)}}</td>
-              </tr>
-            </ng-container>
-            <ng-container *ngIf="tabSubastasIndex === 4">
-              <tr>
-                <th class="w-10">Img</th>
-                <th class="w-30">Titulo</th>
-                <th class="w-30">Descripcion</th>
-                <th class="w-30">Precio</th>
-              </tr>
-             
-              <tr class="row-selectable" *ngFor="let subasta of listaSubastas" (click)="openSubastaDetalle(subasta)">
-                <td style="width:100px">
-                  <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
-                </td>
-                <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
-                <td class="td-desc">{{subasta.short_desc}}</td>
-                <td>{{toCurrency(subasta.extraInfo.precio)}}</td>
-              </tr>
-            </ng-container>
-          </table>
-
-
-          <div class="w-100 mb-2 d-block d-sm-none">
-            <button class="btn-tab-card w-20" [ngClass]="{'active': tabSubastasIndex === 0}" (click)="setCurrentTabSubastas(0)"><i class="fas fa-clock"></i></button>
-            <button class="btn-tab-card w-20" [ngClass]="{'active': tabSubastasIndex === 1}" (click)="setCurrentTabSubastas(1)"><i class="fas fa-stop-circle"></i></button>
-            <button class="btn-tab-card w-20" [ngClass]="{'active': tabSubastasIndex === 2}" (click)="setCurrentTabSubastas(2)"><i class="fas fa-hourglass-half"></i></button>
-            <button class="btn-tab-card w-20" [ngClass]="{'active': tabSubastasIndex === 3}" (click)="setCurrentTabSubastas(3)"><i class="fas fa-edit"></i></button>
-            <button class="btn-tab-card w-20" [ngClass]="{'active': tabSubastasIndex === 4}" (click)="setCurrentTabSubastas(4)"><i class="fas fa-ban"></i></button>
-          </div>
-
-          <div class="w-100 d-sm-none d-block">
-            <ng-container *ngIf="tabSubastasIndex === 0">
-              <div class="w-100"  *ngFor="let subasta of listaSubastas">
-                <div class="row">
-                  <div class="col-5">Img</div>
-                  <div class="col-7">
-                    <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid w-50 ms-auto img-auct" alt="Auction Image">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Titulo</div>
-                  <div class="col-7 text-end f-arial">
-                    {{subasta.caption}} # {{subasta.id}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Descripcion</div>
-                  <div class="col-7 text-end f-arial">{{subasta.short_desc}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Precio</div>
-                  <div class="col-7 text-end f-arial">{{toCurrency(subasta.extraInfo.precio)}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Tiempo</div>
-                  <div class="col-7 text-end f-arial">{{segundosATiempoString(subasta.tiempoVence!)}}</div>
-                </div>
-               
-                <div class="line-divider">
-                </div>
-              </div>
-            </ng-container>
-
-            <ng-container *ngIf="tabSubastasIndex === 1">
-              <div class="w-100"  *ngFor="let subasta of listaSubastas" >
-                <div class="row">
-                  <div class="col-5">Img</div>
-                  <div class="col-7">
-                    <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid w-50 ms-auto img-auct " alt="Auction Image">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Titulo</div>
-                  <div class="col-7 text-end f-arial">
-                    {{subasta.caption}} # {{subasta.id}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Descripcion</div>
-                  <div class="col-7 text-end f-arial">{{subasta.short_desc}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Precio</div>
-                  <div class="col-7 text-end f-arial">{{toCurrency(subasta.extraInfo.precio)}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Estatus</div>
-                  <div class="col-7 text-end">
-                    <div class="p-0 bg-none"> 
-                      <span class="status-indicator" >
-                        {{ subasta.desStatus}}
-                      </span>
-                      </div>
-                    <div class="p-0 bg-none">
-                      <button *ngIf="subasta.desStatus === 'Pagado'" class="btn btn-sm btn-danger" (click)="openLabelModal($event, subasta)">
-                        <i class="fa fa-file-pdf"></i> abrir
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row mt-1  pt-1 px-3">
-                  <button class="btn-xuba btn-pill pt-1 pb-1" (click)="openSubastaDetalle(subasta)">
-                   Ver Detalles
-                  </button>
-                </div>
-                <div class="line-divider">
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="tabSubastasIndex === 2">
-              <div class="w-100"  *ngFor="let subasta of listaSubastas">
-                <div class="row">
-                  <div class="col-5">Img</div>
-                  <div class="col-7">
-                    <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid w-50 ms-auto img-auct" alt="Auction Image">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Titulo</div>
-                  <div class="col-7 text-end f-arial">
-                    {{subasta.caption}} # {{subasta.id}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Descripcion</div>
-                  <div class="col-7 text-end f-arial">{{subasta.short_desc}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Precio</div>
-                  <div class="col-7 text-end f-arial">{{toCurrency(subasta.extraInfo.precio)}}</div>
-                </div>
-                <div class="row mt-1  pt-1 px-3">
-                  <button class="btn-xuba btn-pill pt-1 pb-1" (click)="openSubastaDetalle(subasta)">
-                   Ver Detalles
-                  </button>
-                </div>
-                <div class="line-divider">
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="tabSubastasIndex === 3">
-              <div class="w-100"  *ngFor="let subasta of listaSubastas" >
-                <div class="row">
-                  <div class="col-5">Img</div>
-                  <div class="col-7">
-                    <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid w-50 ms-auto img-auct" alt="Auction Image">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Titulo</div>
-                  <div class="col-7 text-end f-arial">
-                    {{subasta.caption}} # {{subasta.id}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Descripcion</div>
-                  <div class="col-7 text-end f-arial">{{subasta.short_desc}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Precio</div>
-                  <div class="col-7 text-end f-arial">{{toCurrency(subasta.extraInfo.precio)}}</div>
-                </div>
-                <div class="row mt-1  pt-1 px-3">
-                  <button class="btn-xuba btn-pill pt-1 pb-1" (click)="openSubastaDetalle(subasta)">
-                   Ver Detalles
-                  </button>
-                </div>
-                <div class="line-divider">
-                </div>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="tabSubastasIndex === 4">
-              <div class="w-100"  *ngFor="let subasta of listaSubastas">
-                <div class="row">
-                  <div class="col-5">Img</div>
-                  <div class="col-7">
-                    <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null" (click)="openImagesViewer(subasta.imagenes, $event)"  (error)="onImgError($event)"  class="d-block img-fluid w-50 ms-auto img-auct" alt="Auction Image">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Titulo</div>
-                  <div class="col-7  text-end f-arial">
-                    {{subasta.caption}} # {{subasta.id}}
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Descripcion</div>
-                  <div class="col-7 text-end f-arial">{{subasta.short_desc}}</div>
-                </div>
-                <div class="row">
-                  <div class="col-5">Precio</div>
-                  <div class="col-7 text-end f-arial">{{toCurrency(subasta.extraInfo.precio)}}</div>
-                </div>
-                <div class="row mt-1  pt-1 px-3">
-                  <button class="btn-xuba btn-pill pt-1 pb-1" (click)="openSubastaDetalle(subasta)">
-                   Ver Detalles
-                  </button>
-                </div>
-                <div class="line-divider">
-                </div>
-              </div>
-            </ng-container>
-          </div>
-
-        </div> -->
     </ng-container>
-
 
     <ng-container *ngIf="tabIndex === 2">
       <div class="row m-auto w-100">
@@ -1078,9 +696,6 @@
       <div class="profile-card">
         <div class="header-row">
           <h3>Movimientos de pago</h3>
-
-
-          <!-- <button class="btn-sm btn-secondary" (click)="openModal('recarga')" ><i class="fas fa-plus"></i> Agregar saldo</button> -->
         </div>
         <div class="row">
           <h5 class="saldo">{{toCurrency(currentMDX)}} Moneda digital</h5>
@@ -1088,29 +703,6 @@
         </div>
         <hr>
         <div class=" tw:p-6 tw:rounded-2xl  tw:border-slate-800">
-
-          <!-- HEADER -->
-          <!-- <div class="tw:flex tw:items-center tw:justify-between tw:mb-6">
-              <div>
-                <h2 class="tw:text-sm tw:font-bold tw:text-white">
-                  Movimientos de pago
-                </h2>
-          
-                <p class="tw:text-slate-400 tw:mt-1">
-                  Historial de pagos realizados y pagos recibidos
-                </p>
-              </div>
-          
-              <button
-                class="tw:bg-blue-600 hover:tw:bg-blue-500 tw:text-white tw:px-4 tw:py-2 tw:rounded-lg tw:font-medium tw:transition"
-              >
-                Descargar reporte
-              </button>
-            </div> -->
-
-
-
-
         </div>
         <table class="styled-table w-100 d-none d-sm-table">
           <thead>
@@ -1239,7 +831,7 @@
           <ng-container>
             <h5 class="text-primary">
               <i class="fas fa-shopping-cart"></i>
-              Solo llena lo primeros datos si quieres comprar o vender.
+              Solo llena lo primeros datos si quieres comprar o vender para recibir facturas.
             </h5>
 
             <div class="animate__animated animate__fadeInLeft fast-animation">
@@ -1264,7 +856,6 @@
                     <label>Pais</label>
                     <select class="form-select" [(ngModel)]="datosFiscales.pais" name="pais">
                       <option value="MEXICO">Mexico</option>
-
                     </select>
                   </div>
                 </div>
@@ -1360,6 +951,11 @@
                     <input type="text" (input)="checkStateAndCity()" [(ngModel)]="datosFiscales.estado" name="estado">
                   </div>
                 </div>
+
+                <div class="w-100 text-center mt-3 mb-3">
+                  <button class="btn-xuba btn-pill" (click)="saveInformacionFiscal()">Guardar cambios</button>
+                </div>
+                
                 <h5 class="text-success mt-4">
                   <i class="fas fa-store"></i>
                   ¿Quieres vender? Completa los siguientes apartados.
@@ -1405,9 +1001,6 @@
                     </label>
                   </div>
                 </div>
-              </div>
-              <div class="w-100 text-center mt-3 mb-3">
-                <button class="btn-xuba btn-pill" (click)="saveInformacionFiscal()">Guardar cambios</button>
               </div>
 
               <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
