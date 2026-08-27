@@ -11,6 +11,7 @@ export interface PerfilVendedor{
     seguidores: number,
     antiguedad: string,
     siguiendo: boolean,
+    subastasExpress: SubastaActiva[];
     subastasActivas:  SubastaActiva[];
 }
 
@@ -20,6 +21,7 @@ export interface SubastaActiva{
     caption: string,
     descripcion: string,
     premium: boolean,
+    nuevo: boolean,
     apuesta: number,
     tiempoVence: string;
     venceSegundos?: number;

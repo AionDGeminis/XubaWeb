@@ -7,17 +7,23 @@
 
         <div class="w-100 bg-xuba2 text-center pt-5 pb-4">
 
+            <!-- FOTO -->
             <div class="profile-avatar">
                 <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
             </div>
 
+
+            <!-- NOMBRE -->
             <h4 class="fw-bold mt-3 mb-2 fs1">
-                {{infoUsuario?.nombre}}
+                {{infoUsuario.nombre}}
             </h4>
 
-            <h5 class="user-calificacion">
+
+            <!-- USUARIO Y CALIFICACIÓN -->
+            <h5 class="user-calificacion mb-3">
+
                 <span class="text-dark">
-                    [{{infoUsuario?.usuario ?? 'ND'}}]
+                    [{{infoUsuario.usuario ?? 'ND'}}]
                 </span>
 
                 &nbsp;
@@ -25,77 +31,80 @@
                 <i class="fas fa-star"></i>
 
                 <span style="color:#bdc3c7;">
-                    {{infoUsuario?.calificacion}}
+                    {{infoUsuario.calificacion}}
                 </span>
+
             </h5>
 
-            <!-- Botón Seguir -->
-            <button class="btn-follow mt-3" (click)="toggleSeguir()">
 
-                <i class="fas fa-user-plus"></i>
-
-                {{ infoUsuario?.siguiendo ? 'Siguiendo' : 'Segir' }}
-            </button>
-
-        </div>
-
-
-
-        <div class="profile-card">
-            <div class="pc-stat">
-                <div class="pc-label">
-                    {{infoUsuario?.antiguedad}}
-                </div>
-            </div>
-
-            <hr class="pc-divider">
-
-            <!-- Ubicación -->
+            <!-- UBICACIÓN Y ANTIGÜEDAD -->
             <div class="pc-row location-row">
+
+                <!-- ANTIGÜEDAD -->
+                <div class="pc-stat">
+                    <div class="pc-label">
+                        {{infoUsuario.antiguedad}}
+                    </div>
+                </div>
+
+
+                <!-- UBICACIÓN -->
                 <div class="pc-icon">
                     <i class="fas fa-map-marker-alt"></i>
                 </div>
 
                 <div class="pc-location">
-                    <div class="pc-location-label">Desde</div>
-                    <div class="pc-location-city">{{infoUsuario?.municipio}}, {{infoUsuario?.estado}}</div>
-                    <div class="pc-location-country">México</div>
+
+                    <div class="pc-location-city">
+                        {{infoUsuario.municipio}}, {{infoUsuario.estado}}
+                    </div>
+
+                    <div class="pc-location-country">
+                        México
+                    </div>
+
                 </div>
+
             </div>
-            <hr class="pc-divider">
 
 
 
-            <hr class="pc-divider">
-
-            <!-- Estadísticas -->
+            <!-- MÉTRICAS -->
             <div class="pc-metrics">
 
                 <div class="pc-stat">
                     <i class="far fa-star pc-stat-icon"></i>
+
                     <div class="pc-value">
-                        {{infoUsuario?.subastasCreadas}}
+                        {{infoUsuario.subastasCreadas}}
                     </div>
+
                     <div class="pc-label">
-                        Subastas<br>creadas
+                        Subastas<br>
+                        creadas
                     </div>
                 </div>
 
                 <div class="pc-stat">
                     <i class="far fa-calendar-check pc-stat-icon"></i>
+
                     <div class="pc-value">
-                        {{infoUsuario?.subastasConcretadas}}
+                        {{infoUsuario.subastasConcretadas}}
                     </div>
+
                     <div class="pc-label">
-                        Ventas<br>exitosas
+                        Ventas<br>
+                        exitosas
                     </div>
                 </div>
 
                 <div class="pc-stat">
                     <i class="fas fa-users pc-stat-icon"></i>
+
                     <div class="pc-value">
-                        {{infoUsuario?.seguidores}}
+                        {{infoUsuario.seguidores}}
                     </div>
+
                     <div class="pc-label">
                         Seguidores
                     </div>
@@ -103,6 +112,15 @@
 
             </div>
 
+
+            <!-- BOTÓN SEGUIR -->
+            <button class="btn-follow mt-3" (click)="toggleSeguir()">
+
+                <i class="fas fa-user-plus"></i>
+
+                {{ infoUsuario.siguiendo ? 'Siguiendo' : 'Segir' }}
+
+            </button>
 
         </div>
 
@@ -123,15 +141,15 @@
             <div class="profile-avatar">
                 <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
             </div>
-            <h4 class="fw-bold mt-3 mb-2 fs1">{{infoUsuario?.nombre}}</h4>
-            <h5 class="user-calificacion"><span class="text-dark">[{{infoUsuario?.usuario ?? 'ND'}}]</span> &nbsp; <i
-                    class="fas fa-star"></i> <span style="color: #bdc3c7;">{{infoUsuario?.calificacion}}</span></h5>
+            <h4 class="fw-bold mt-3 mb-2 fs1">{{infoUsuario.nombre}}</h4>
+            <h5 class="user-calificacion"><span class="text-dark">[{{infoUsuario.usuario ?? 'ND'}}]</span> &nbsp; <i
+                    class="fas fa-star"></i> <span style="color: #bdc3c7;">{{infoUsuario.calificacion}}</span></h5>
             <!-- <div class=" mb-4" style="color:#48dbfb;">{{infoUsuario.correo}}</div> -->
             <button class="btn-follow mt-3" (click)="toggleSeguir()">
 
                 <i class="fas fa-user-plus"></i>
 
-                {{ infoUsuario?.siguiendo ? 'Siguiendo' : 'Seguir' }}
+                {{ infoUsuario.siguiendo ? 'Siguiendo' : 'Seguir' }}
             </button>
         </div>
         <div class="pc-info">
@@ -139,7 +157,7 @@
                 <div class="pc-value">
                 </div>
                 <div class="pc-label">
-                    {{infoUsuario?.antiguedad}}
+                    {{infoUsuario.antiguedad}}
                 </div>
             </div>
 
@@ -147,22 +165,22 @@
                 <i class="fas fa-map-pin"></i>
                 <div class="pc-info-content">
                     <span class="pc-info-label">Ubicacion</span>
-                    <span class="pc-info-value">{{infoUsuario?.municipio}}, {{infoUsuario?.estado}}</span>
+                    <span class="pc-info-value">{{infoUsuario.municipio}}, {{infoUsuario.estado}}</span>
                 </div>
             </div>
         </div>
         <div class="pc-metrics">
             <div class="pc-metric">
-                <div class="pc-value">{{infoUsuario?.subastasCreadas}}</div>
+                <div class="pc-value">{{infoUsuario.subastasCreadas}}</div>
                 <div class="pc-label">Subastas creadas</div>
             </div>
             <div class="pc-metric">
-                <div class="pc-value">{{infoUsuario?.subastasConcretadas}}</div>
+                <div class="pc-value">{{infoUsuario.subastasConcretadas}}</div>
                 <div class="pc-label">Ventas exitosas</div>
             </div>
 
             <div class="pc-metric pc-metric-wide">
-                <div class="pc-value">{{infoUsuario?.seguidores}}</div>
+                <div class="pc-value">{{infoUsuario.seguidores}}</div>
                 <div class="pc-label">Seguidores</div>
             </div>
         </div>
@@ -176,21 +194,92 @@
           <button class="btn-tab" (click)="setCurrentTab(2)" [ngClass]="{'active': tabIndex === 2}">Estadisticas</button>
         </div> -->
         <!-- Datos personales -->
-        <div class="auction-summary">
+        <div class="express-section">
 
-            <div class="auction-summary-icon">
-                <i class="fas fa-shopping-bag"></i>
+    <h3 class="fs1 mb-3">
+        Subastas express
+    </h3>
+
+    <div class="express-wrapper">
+
+        <button
+            *ngIf="mostrarFlechaIzquierda"
+            class="express-arrow express-arrow-left"
+            (click)="scrollIzquierda(contenedor)">
+
+            <i class="fas fa-chevron-left"></i>
+
+        </button>
+
+        <div
+            class="contenedor-items pt-2"
+            #contenedor
+            (scroll)="verificarScroll(contenedor)">
+
+            <div
+                class="express-item"
+                *ngFor="let subasta of infoUsuario.subastasExpress">
+
+                <div
+                    class="express-premium"
+                    *ngIf="subasta.premium">
+
+                    <i class="fas fa-gem"></i>
+
+                </div>
+
+                <img
+                    [src]="subasta.url"
+                    alt="Subasta"
+                    [class.express-premium-img]="subasta.premium" (click)="openSubastaDetalle(subasta.id); $event.stopPropagation()">
+
+                <div
+                    class="express-time"
+                    [class.express-time-premium]="subasta.premium">
+
+                    <i class="far fa-clock"></i>
+
+                    {{ segundosATiempoString(subasta.venceSegundos!) }}
+
+                </div>
+
+                <div class="express-name">
+                    {{ subasta.caption }}
+                </div>
+
+                <div class="express-id">
+                    #{{ subasta.id }}
+                </div>
+
             </div>
 
-            <div class="auction-summary-info">
-                <h4>
-                    {{infoUsuario?.nombre}} tiene
-                    <span>{{subastasActivas.length}}</span>
-                    subastas activas
-                </h4>
+            <div
+                class="no-express"
+                *ngIf="!infoUsuario.subastasExpress ||
+                       infoUsuario.subastasExpress.length === 0">
+
+                <i class="fas fa-gavel"></i>
+
+                <span>
+                    No hay subastas express disponibles
+                </span>
+
             </div>
 
         </div>
+
+        <button
+            *ngIf="mostrarFlechaDerecha"
+            class="express-arrow express-arrow-right"
+            (click)="scrollDerecha(contenedor)">
+
+            <i class="fas fa-chevron-right"></i>
+
+        </button>
+
+    </div>
+
+</div>
 
 
         <!-- Direcciones -->
@@ -217,7 +306,7 @@
                     <tbody>
 
                         <tr class="auction-row" [class.premium-auction]="subasta.premium"
-                            *ngFor="let subasta of subastasActivas | paginate:{ itemsPerPage: pageSize, currentPage: page }">
+                            *ngFor="let subasta of infoUsuario.subastasActivas| paginate:{ itemsPerPage: pageSize, currentPage: page }">
 
                             <td>
                                 <img [src]="subasta.url" (error)="onImgError($event)" class="img-auct"
@@ -233,8 +322,13 @@
                             </td>
 
                             <td class="price">
-                                {{subasta.apuesta | currency:'MXN'}}
+                                {{subasta.apuesta | currency:'MXN'}} 
+                                <div class=" oferta-actual">
+                                    Oferta actual
+                                </div>
                             </td>
+
+
 
                             <td class="time">
                                 {{segundosATiempoString(subasta.venceSegundos!)}}
@@ -248,7 +342,12 @@
                                     <i class="fas fa-gavel"></i>
 
                                 </button>
+                                
 
+                            </td>
+
+                              <td class="price" [class.estado-nuevo]="subasta.nuevo" [class.estado-usado]="!subasta.nuevo">
+                                {{subasta.nuevo ? 'Nuevo' : 'Usado'}}
                             </td>
 
                         </tr>
@@ -273,9 +372,31 @@
                     <p>{{subasta.short_desc}}</p>
 
                     <div class="d-flex justify-content-between mt-2">
-                        <strong>{{subasta.apuesta | currency:'MXN'}}</strong>
-                        <span>{{segundosATiempoString(subasta.venceSegundos!)}}</span>
-                    </div>
+
+    <div>
+        <strong>
+            {{subasta.apuesta | currency:'MXN'}}
+        </strong>
+
+        <div class="oferta-actual">
+            Oferta actual
+        </div>
+        <div
+            class="estado-producto"
+            [class.estado-nuevo]="subasta.nuevo"
+            [class.estado-usado]="!subasta.nuevo">
+
+            {{subasta.nuevo ? 'Nuevo' : 'Usado'}}
+
+        </div>
+    </div>
+
+   <span class="tiempo-responsive">
+    {{segundosATiempoString(subasta.venceSegundos!)}}
+</span>
+
+</div>
+                    
 
                     <button class="btn-offer w-100 mt-3" (click)="openSubastaDetalle(subasta.id)">
 

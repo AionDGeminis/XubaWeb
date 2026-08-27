@@ -80,6 +80,7 @@ export interface ImagenSubasta {
     peso: number;
     marca: string;
     modelo: string;
+    nuevo: boolean;
     idVendedor: number;
     usuarioVendedor: string;
     fotoVendedor: string;

@@ -17,7 +17,22 @@ import { PerfilVendedor, SubastaActiva } from '../../models/UserPage.model';
   styleUrl: './userpage.component.css'
 })
 export class UserpageComponent {
-  infoUsuario: PerfilVendedor | null = null;
+  infoUsuario: PerfilVendedor = {
+    idVendedor: 0,
+    nombre: '',
+    usuario: '',
+    imgPerfil: '',
+    calificacion: 0,
+    municipio: '',
+    estado: '',
+    subastasCreadas: 0,
+    subastasConcretadas: 0,
+    seguidores: 0,
+    antiguedad: '',
+    siguiendo: false,
+    subastasExpress: [],
+    subastasActivas: []
+   };
   editInfoUsuario: any = {
     id: 0,
     telefono: '',
@@ -31,7 +46,7 @@ export class UserpageComponent {
   idUsuario: number = 0;
   subastasActivas: SubastaActiva[] = [];
   subastasPremium: Subasta[] = [];
-  subastasExpress: Subasta[] = [];
+  subastasExpress: SubastaActiva[] = [];
   subastasTerminadas: Subasta[] = [];
 
   filtroActual = 'Todas';
@@ -41,6 +56,9 @@ export class UserpageComponent {
   allLoading: boolean = false;
   page = 1;
   pageSize = 10;
+  
+  mostrarFlechaIzquierda = false;
+  mostrarFlechaDerecha = true;
 
   constructor(private subastasService: SubastasService, private authService: AuthService, private route: ActivatedRoute, private router: Router, private ss: SharedService) {
     let dataParams: any = this.route.snapshot.params;
@@ -72,13 +90,20 @@ export class UserpageComponent {
         this.imageProfileSrc = response.imgPerfil;
 
         this.subastasActivas = response.subastasActivas || [];
+        this.subastasExpress = response.subastasExpress || [];
 
         for (const p of this.subastasActivas) {
           p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);
           p.short_desc = this.toShort(p.descripcion);
         }
+        for (const p of this.subastasExpress) {
+
+  p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);
+
+}
 
         this.setTimer(this.subastasActivas);
+        this.setTimer(this.subastasExpress);
       },
 
       error: (err) => {
@@ -170,6 +195,43 @@ export class UserpageComponent {
         }
       });
     }
+  }
+
+  verificarScroll(contenedor: HTMLElement) {
+
+  this.mostrarFlechaIzquierda = contenedor.scrollLeft > 0;
+  this.mostrarFlechaDerecha = true;
+
+  const llegoAlFinal =
+    contenedor.scrollLeft + contenedor.clientWidth >=
+    contenedor.scrollWidth - 50;
+
+ 
+}
+
+ scrollDerecha(contenedor: HTMLElement) {
+  const anchoVisible = contenedor.offsetWidth;
+
+  if (
+    contenedor.scrollLeft + anchoVisible >=
+    contenedor.scrollWidth - 20
+  ) {
+   ;   // <-- la misma función
+  }
+
+  contenedor.scrollBy({
+    left: anchoVisible,
+    behavior: 'smooth'
+  });
+
+  setTimeout(() => this.verificarScroll(contenedor), 300);
+}
+
+  scrollIzquierda(contenedor: HTMLElement) {
+    const anchoVisible = contenedor.offsetWidth;
+    contenedor.scrollBy({ left: -anchoVisible, behavior: 'smooth' });
+
+    setTimeout(() => this.verificarScroll(contenedor), 300);
   }
 
 
