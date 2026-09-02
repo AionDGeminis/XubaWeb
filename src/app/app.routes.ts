@@ -13,6 +13,7 @@ import { ValidateComponent } from './components/validate/validate.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
 import { MyAuctionDetailComponent } from './components/my-auction-detail/my-auction-detail.component';
 import { PoliticaDeUsoComponent } from './components/politica-de-uso/politica-de-uso.component';
+import { AvisoPrivacidadComponent } from './components/aviso-privacidad/aviso-privacidad.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
@@ -28,6 +29,7 @@ export const routes: Routes = [
     { path: 'validate/:userValidateData', component:ValidateComponent },
     { path: 'change-password/:userValidateData', component:ChangePasswordComponent },
     { path: 'politica-de-uso', component: PoliticaDeUsoComponent },
+    { path: 'aviso-de-privacidad', component: AvisoPrivacidadComponent},
     // { path: 'search-result/:paramSearch', component:SearchResultComponent },
     { path: '**', redirectTo: 'home' }
     // { path: '**', redirectTo: 'home' }

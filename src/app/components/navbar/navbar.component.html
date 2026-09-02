@@ -118,12 +118,9 @@
         <button type="submit" class="btn btn-xuba w-100 mb-3 fw-bold" (click)="onLogin()">Login</button>
         <div class="text-center">
           <a href="#" class="small text-decoration-none text-primary">¿Olvidaste tu contraseña?</a><br>
-          <a
-  href="javascript:void(0)"
-  class="small text-decoration-none text-success"
-  (click)="abrirRegistro()">
-  Regístrate
-</a>
+          <a href="javascript:void(0)" class="small text-decoration-none text-success" (click)="abrirRegistro()">
+            Regístrate
+          </a>
         </div>
       </div>
       <div class="menu px-3" *ngIf="isLoggedIn()">
@@ -211,7 +208,8 @@
           <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()">
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
-          <div class="auction-card" *ngFor="let subasta of auctionsWin" (click)="abrirDetalleSubasta(subasta, 'perfil')">
+          <div class="auction-card" *ngFor="let subasta of auctionsWin"
+            (click)="abrirDetalleSubasta(subasta, 'perfil')">
             <br>
             <img [src]="subasta.url" alt="">
             <div class="title">{{ subasta.caption }}</div>
@@ -261,7 +259,8 @@
           <div class="notification-list">
             <!-- Ítem 1 -->
             <div class="notification-item noleida" [ngClass]="{'noleida': noti.activa}"
-              *ngFor="let noti of notificaciones; let i = index;" (click)="abrirDetalleSubasta(noti.msubastas, 'notificaciones')">
+              *ngFor="let noti of notificaciones; let i = index;"
+              (click)="abrirDetalleSubasta(noti.msubastas, 'notificaciones')">
               <div class="notification-icon">
                 <i [class]="noti.icono"></i>
               </div>
@@ -275,51 +274,7 @@
             </div>
 
           </div>
-          <!-- <div class="notification n-superada">
-              <div class="content">
-                <div class="name" style="font-size:0.8em">
-                  <i class="fas fa-gavel"></i>&nbsp; Oferta Superada
-                </div>
-                <div class="message" style="font-size:0.9em">tu oferta en la subasta prueba ha sido superada</div>
-                <small style="font-size:0.7em">12/07/2025</small>
-              </div>
-            </div>
-            <div class="notification n-terminada">
-              <div class="content">
-                <div class="name" style="font-size:0.8em">
-                  <i class="fas fa-hourglass-end"></i>&nbsp; Subasta terminada
-                </div>
-                <div class="message" style="font-size:0.9em">El tiempo de la subasta prueba nombre subasta ha finalizado</div>
-                <small style="font-size:0.7em">12/07/2025</small>
-              </div>
-            </div>
-            <div class="notification n-ganador">
-              <div class="content">
-                <div class="name" style="font-size:0.8em">
-                  <i class="fas fa-trophy"></i>&nbsp; Ganador
-                </div>
-                <div class="message" style="font-size:0.9em">Felicidades, has ganado la subasta nombre prueba ejemplo</div>
-                <small style="font-size:0.7em">12/07/2025</small>
-              </div>
-            </div>
-            <div class="notification n-aprobada">
-              <div class="content">
-                <div class="name" style="font-size:0.8em">
-                  <i class="fas fa-badge-check"></i>&nbsp; Subasta Aprobada
-                </div>
-                <div class="message" style="font-size:0.9em">Tu subasta nombre ejemplo ha sido aprobada</div>
-                <small style="font-size:0.7em">12/07/2025</small>
-              </div>
-            </div>
-            <div class="notification n-cancelada">
-              <div class="content">
-                <div class="name" style="font-size:0.8em">
-                  <i class="fas fa-calendar-times"></i>&nbsp; Subasta Cancelada
-                </div>
-                <div class="message" style="font-size:0.9em">La subasta ha sido cancelada</div>
-                <small style="font-size:0.7em;color:#fff">12/07/2025</small>
-              </div>
-            </div> -->
+          
         </div>
       </ng-container>
     </div>
@@ -391,7 +346,7 @@
     <!-- =============  SECCION DE Contacto =============  -->
     <!-- ========================================  -->
     <div *ngIf="showingInAside === 'contact'" [class]="'fast-animation animate__animated ' + clasesAside.two">
-
+      
       <ng-container>
         <div class="py-2 px-3">
           <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">INFORMACION DE CONTACTO

@@ -840,14 +840,14 @@
               <hr>
               <div class="form-row">
                 <div class="form-group">
-                  <label>Nombre</label>
-                  <input type="text" [(ngModel)]="datosFiscales.nombreComercial" name="nomcomercial">
+                  <label>Razon social</label>
+                  <input type="text" [(ngModel)]="datosFiscales.razonSocial" name="nomcomercial">
                 </div>
               </div>
               <div class="form-row" *ngIf="datosFiscales.tipoPersona === 'sin datos fiscales'">
                 <div class="form-group">
                   <label>CURP</label>
-                  <input type="text" [(ngModel)]="datosFiscales.curp" name="curp">
+                  <input type="text" name="curp">
                 </div>
               </div>
               <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
@@ -878,7 +878,7 @@
                 <div class="form-row" *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
                   <div class="form-group">
                     <label>Uso de CFDI</label>
-                    <select class="form-select" [(ngModel)]="datosFiscales.usoCFDI" name="usoCFDI">
+                    <select class="form-select" [(ngModel)]="datosFiscales.usoCfdi" name="usoCFDI">
                       <option selected value="" disabled>Seleccionar una</option>
 
                       <option *ngFor="let uso of listaUsoCfdi" [value]="uso.usoCfdi">{{uso.descripcion}}</option>
@@ -889,7 +889,7 @@
                 <div class="form-row">
                   <div class="form-group">
                     <label>Correo electronico</label>
-                    <input type="text" [(ngModel)]="datosFiscales.correo" name="correo">
+                    <input type="text" [(ngModel)]="datosFiscales.correoElectronico" name="correo">
                   </div>
                 </div>
                 <hr>
@@ -905,11 +905,11 @@
                   </div>
                   <div class="form-group">
                     <label>Numero exterior</label>
-                    <input type="text" [(ngModel)]="datosFiscales.noExterior" name="noExterior">
+                    <input type="text" [(ngModel)]="datosFiscales.numeroExterior" name="noExterior">
                   </div>
                   <div class="form-group">
                     <label>Numero interior</label>
-                    <input type="text" [(ngModel)]="datosFiscales.noInterior" name="noInterior">
+                    <input type="text" [(ngModel)]="datosFiscales.numeroInterior" name="noInterior">
                   </div>
                 </div>
                 <div class="form-row">
@@ -953,51 +953,24 @@
                 </div>
 
                 <div class="w-100 text-center mt-3 mb-3">
-                  <button class="btn-xuba btn-pill" (click)="saveInformacionFiscal()">Guardar cambios</button>
+                  <button class="btn-xuba btn-pill" (click)="registrarDatosFiscales()">Guardar cambios</button>
                 </div>
-                
+
                 <h5 class="text-success mt-4">
                   <i class="fas fa-store"></i>
                   ¿Quieres vender? Completa los siguientes apartados.
                 </h5>
 
-
-                <div class="mt-2" *ngIf="esFronteraNorte">
-                  <p>¿Cuentas con el estimulo de impuestos fronterizo?</p>
-                  <div class="tipo-subasta pt-2 pb-2">
-                    <label>
-                      <input type="radio" name="impuestoFronterizo" value="SI"
-                        [(ngModel)]="datosFiscales.impuestoFronterizo" /> SI
-                    </label>
-                    <label class="ms-5">
-                      <input type="radio" name="impuestoFronterizo" value="NO"
-                        [(ngModel)]="datosFiscales.impuestoFronterizo" /> NO
-                    </label>
-                  </div>
-                </div>
-                <div class="mt-2 bg-light pt-2 ps-2">
-                  <p>¿Cuenta con la actividad económica de plataformas digitales?</p>
-                  <div class="tipo-subasta pt-2 pb-2">
-                    <label>
-                      <input type="radio" name="actividadPlataformaDigital" value="SI"
-                        [(ngModel)]="datosFiscales.actividadPlataformaDigital" /> SI
-                    </label>
-                    <label class="ms-5">
-                      <input type="radio" name="actividadPlataformaDigital" value="NO"
-                        [(ngModel)]="datosFiscales.actividadPlataformaDigital" /> NO
-                    </label>
-                  </div>
-                </div>
                 <div class="mt-2 bg-light pt-2 ps-2">
                   <p>Tipo de facturacion</p>
                   <div class="tipo-subasta pt-2 pb-2">
                     <label>
                       <input type="radio" name="tipoValidacion" value="Sellos"
-                        [(ngModel)]="datosFiscales.tipoValidacion" /> Sellos Fiscales
+                         /> Sellos Fiscales
                     </label>
                     <label class="ms-5">
                       <input type="radio" name="tipoValidacion" value="CuentaTerceros"
-                        [(ngModel)]="datosFiscales.tipoValidacion" /> A cuenta de terceros
+                         /> A cuenta de terceros
                     </label>
                   </div>
                 </div>
@@ -1006,7 +979,7 @@
               <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
 
                 <ng-container
-                  *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && datosFiscales.tipoValidacion === 'Sellos'">
+                  *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && tipoValidacion === 'Sellos'">
                   <div class="form-row">
                     <div class="form-group">
                       <label>Archivo CERT</label>
@@ -1039,7 +1012,7 @@
                   </div>
                 </ng-container>
                 <ng-container
-                  *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && datosFiscales.tipoValidacion === 'CuentaTerceros'">
+                  *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && tipoValidacion === 'CuentaTerceros'">
 
                   <div class="contrato-container">
                     <header class="contrato-header">

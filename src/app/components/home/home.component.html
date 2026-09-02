@@ -34,7 +34,7 @@
             [ngClass]="{'active': currentHomeIndex === 2}"><i class="fas fa-bolt"></i>Express</div>
           <!-- <div class="menu-item" ><i class="fas fa-wallet"></i>Wallet</div> -->
           <!-- <div class="menu-item" title="Ver politicas de uso" (click)="openModalPoliticasFn()"><i class="fas fa-book" ></i>Politica de uso</div> -->
-          
+
           <hr>
           <div class="menu-item" title="Cerrar sesion" (click)="logout()"><i class="fas fa-power-off"></i>Cerrar sesion
           </div>
@@ -61,7 +61,7 @@
         <div class="text-center">
           <a (click)="openModalForResetPassword()" class="small cpointer text-decoration-none text-primary">¿Olvidaste
             tu contraseña?</a><br>
-          <a  class="small text-decoration-none text-success cursor: pointer; " (click)="abrirRegistro()">Regístrate</a>
+          <a class="small text-decoration-none text-success cursor: pointer; " (click)="abrirRegistro()">Regístrate</a>
         </div>
       </form>
 
@@ -455,12 +455,13 @@ s
 
     <!-- Links fila 1 -->
     <div style="display: flex; flex-wrap: wrap; gap: 32px; margin-bottom: 12px;">
-      <a class="cpointer" 
-        style="font-size: 13px; color: #333; text-decoration: none;" (click)="abrirpoliticasdeuso()">Politicas de uso</a>
+      <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;"
+        (click)="abrirpoliticasdeuso()">Politicas de uso</a>
       <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;">Aviso Legal</a>
       <!-- <a href="#" style="font-size: 13px; color: #333; text-decoration: none;">Condiciones de Uso</a> -->
-      <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;">Aviso de Privacidad</a>
-     <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;" (click)="abrirmodalcontacto()">Contactanos</a>
+      <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;" (click)="abrirAvisoPrivacidad()">Aviso de Privacidad</a>
+      <a class="cpointer" style="font-size: 13px; color: #333; text-decoration: none;"
+        (click)="abrirmodalcontacto()">Contactanos</a>
     </div>
 
     <!-- Links fila 2 -->
@@ -475,7 +476,7 @@ s
 
   </footer>
 </div>
- <!--<div class="col-sm-2 bg-info">
+<!--<div class="col-sm-2 bg-info">
     <ng-container *ngIf="!isLoggedIn(); else loggedIn">
       <app-login (mostrarRegistro)="abrirRegistroModal()"></app-login>
     </ng-container>
@@ -852,16 +853,16 @@ s
                       </option>
 
                     </select>
-                    <div
-  class="tw:mt-3 tw:rounded-lg tw:border tw:border-amber-200 tw:bg-amber-50 tw:p-3">
-  <div class="tw:flex tw:items-start tw:gap-2">
-    <i class="fas fa-info-circle tw:text-amber-600 tw:mt-1"></i>
-    <span class="tw:text-sm tw:text-amber-800">
-      Al seleccionar esta opción, la recolección se realizará el siguiente día hábil en la hora seleccionada.
-    </span>
-  </div>
+                    <div class="tw:mt-3 tw:rounded-lg tw:border tw:border-amber-200 tw:bg-amber-50 tw:p-3">
+                      <div class="tw:flex tw:items-start tw:gap-2">
+                        <i class="fas fa-info-circle tw:text-amber-600 tw:mt-1"></i>
+                        <span class="tw:text-sm tw:text-amber-800">
+                          Al seleccionar esta opción, la recolección se realizará el siguiente día hábil en la hora
+                          seleccionada.
+                        </span>
+                      </div>
 
-                  </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1147,103 +1148,6 @@ s
 </div>
 
 
-
-<!-- ============= -->
-<!-- MODAL POLITICAS -->
-<!-- ============ -->
-
-<div *ngIf="openModalPoliticas" class="cart-modal-backdrop">
-  <div class="cart-modal-container" (click)="onContentClick($event)">
-    <div class="modal-header bg-main-header text-white">
-      <h3 class="modal-title">
-        <!-- <i class="fas fa-shopping-cart "></i> -->
-        <span class="text-white">Politicas de uso XUBA</span>
-      </h3>
-      <button class="close-button" (click)="closeModal()">
-        <span class="text-white">&times;</span>
-      </button>
-    </div>
-
-    <div class="modal-body">
-      <div class="policy-content px-2 py-3">
-        <h3 class="mb-3 text-center text-primary fw-bold">
-          Políticas de Uso
-        </h3>
-        <ol class="policy-list ps-3">
-          <li>
-            <strong>Registro de usuario:</strong><br>
-            Todos los usuarios deben proporcionar información verídica y actualizada al registrarse en la plataforma.
-          </li>
-          <br>
-          <li>
-            <strong>Confidencialidad:</strong><br>
-            La información personal de los usuarios será tratada con estricta confidencialidad conforme a nuestra
-            política de privacidad.
-          </li><br>
-          <li>
-            <strong>Uso adecuado:</strong><br>
-            Está prohibido utilizar la plataforma para actividades ilícitas, fraudulentas o que atenten contra la moral
-            y las buenas costumbres.
-          </li><br>
-          <li>
-            <strong>Propiedad intelectual:</strong><br>
-            Todo el contenido publicado en la plataforma debe respetar los derechos de autor y propiedad intelectual de
-            terceros.
-          </li><br>
-          <li>
-            <strong>Responsabilidad de las ofertas:</strong><br>
-            Los usuarios son responsables de las ofertas realizadas y deben cumplir con los compromisos adquiridos en
-            las subastas.
-          </li><br>
-          <li>
-            <strong>Comportamiento:</strong><br>
-            Se espera un trato respetuoso entre los usuarios. No se tolerarán insultos, amenazas o cualquier forma de
-            acoso.
-          </li><br>
-          <li>
-            <strong>Suspensión de cuentas:</strong><br>
-            La plataforma se reserva el derecho de suspender o eliminar cuentas que incumplan estas políticas.
-          </li><br>
-          <li>
-            <strong>Modificaciones:</strong><br>
-            Las políticas de uso pueden ser modificadas en cualquier momento. Los cambios serán notificados
-            oportunamente.
-          </li><br>
-          <li>
-            <strong>Soporte:</strong><br>
-            Para cualquier duda o inconveniente, los usuarios pueden contactar al equipo de soporte a través de los
-            canales oficiales.
-          </li><br>
-          <li>
-            <strong>Procesador de pagos:</strong><br>
-            Las transacciones serán efectuadas mediante la pasarela de Openpay..
-          </li><br>
-          <li>
-            <strong>Aceptación:</strong><br>
-            El uso de la plataforma implica la aceptación total de estas políticas de uso.
-          </li>
-        </ol>
-        <div class="text-end mt-4">
-          <small class="" style="color:#bdc3c7;">Última actualización: julio 2025</small>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer text-start">
-
-      <!-- Botones para el paso del carrito -->
-      <div>
-        <button class="btn btn-dark" (click)="closeModal()">
-          Cerrar
-        </button>
-        <!-- <button class="btn btn-success btn-add-cart"  (click)="nextStep()">
-         
-        </button> -->
-      </div>
-    </div>
-    <!-- </div> -->
-  </div>
-</div>
-
 <!-- MODAL ENVIAR CORREO CAMBIO PASSWORD -->
 
 <div *ngIf="openModalResetPassword" class="cart-modal-backdrop">
@@ -1293,13 +1197,9 @@ s
     <!-- </div> -->
   </div>
 </div>
-<div
-  class="modal-contacto" *ngIf="mostrarmodalcontacto"
-  (click)="cerrarmodalcontacto()">
+<div class="modal-contacto" *ngIf="mostrarmodalcontacto" (click)="cerrarmodalcontacto()">
 
-  <div
-    class="modal-contacto-contenido"
-    (click)="$event.stopPropagation()">
+  <div class="modal-contacto-contenido" (click)="$event.stopPropagation()">
 
     <!-- ENCABEZADO -->
     <div class="modal-contacto-header">
@@ -1308,10 +1208,7 @@ s
         Información de contacto
       </h5>
 
-      <button
-        type="button"
-        class="btn-close"
-        (click)="cerrarmodalcontacto()">
+      <button type="button" class="btn-close" (click)="cerrarmodalcontacto()">
       </button>
 
     </div>
@@ -1354,8 +1251,8 @@ s
       </div>
 
       <div class="contacto-dato">
-  soporte&#64;xuba.mx
-</div>
+        soporte&#64;xuba.mx
+      </div>
 
     </div>
 

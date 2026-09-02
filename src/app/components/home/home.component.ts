@@ -91,9 +91,9 @@ interface ISubasta {
     XpressAuctionsComponent,
     GeneralAuctionsComponent,
     PremiumAuctionsComponent,
-   // FollowedAuctionsComponent,
+    // FollowedAuctionsComponent,
     NotificationsComponent,
-   // LoginComponent,
+    // LoginComponent,
     RegisterComponent,
     // ReactiveFormsModule,
     FormsModule,
@@ -545,25 +545,29 @@ export class HomeComponent implements OnInit {
     this.url3DS = url;
   }
 
-changeTarjetaSeleccionada() {
-  Object.assign(this.tarjeta, this.selectedCard);
+  changeTarjetaSeleccionada() {
+    Object.assign(this.tarjeta, this.selectedCard);
 
-  if (this.selectedCard.id) {
-    this.tarjetaExpiracion =
-      `${this.selectedCard.expiration_month}/${this.selectedCard.expiration_year}`;
+    if (this.selectedCard.id) {
+      this.tarjetaExpiracion =
+        `${this.selectedCard.expiration_month}/${this.selectedCard.expiration_year}`;
 
-    this.tarjeta.cvv2 = this.selectedCard.cvv2;
-  } else {
-    this.tarjetaExpiracion = '';
-    this.tarjeta.cvv2 = '';
+      this.tarjeta.cvv2 = this.selectedCard.cvv2;
+    } else {
+      this.tarjetaExpiracion = '';
+      this.tarjeta.cvv2 = '';
+    }
   }
-}
-abrirRegistro() {
-  this.router.navigate(['/preregistro']);
-}
-abrirpoliticasdeuso() {
-  this.router.navigate(['/politica-de-uso']);
-}
+  abrirRegistro() {
+    this.router.navigate(['/preregistro']);
+  }
+  abrirpoliticasdeuso() {
+    this.router.navigate(['/politica-de-uso']);
+  }
+
+  abrirAvisoPrivacidad() {
+    this.router.navigate(['/aviso-de-privacidad'])
+  }
   /**
    * Navega a la ruta de detalle con id y origen como queryParam.
    */
@@ -741,7 +745,7 @@ abrirpoliticasdeuso() {
 
       if (
         this.horaRecolecta! < '09:00' ||
-        this.horaRecolecta!  >'18:00'
+        this.horaRecolecta! > '18:00'
       ) {
         this.ss.showNotification(
           'warning',
@@ -755,7 +759,7 @@ abrirpoliticasdeuso() {
     if (this.tipoSubasta !== 'premium') {
       this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50 : 100;
     }
-    let result = this.ss.isValidModelV2(this.subasta, ['url','horaRecolecta']);
+    let result = this.ss.isValidModelV2(this.subasta, ['url', 'horaRecolecta']);
     if (!result.valid) {
       let texto = result.prop === 'mimagenesSubasta' ? 'Seleccione al menos una imagen' : `Informacion faltante: ${result.prop}`;
       this.ss.showNotification('warning', texto, 6000);
@@ -1276,7 +1280,7 @@ abrirpoliticasdeuso() {
           const Premium = Number(premium.porcentaje);
           const porcentajeComision = Number(comisionApp.porcentaje);
 
-          this.Premium = Number( ((Premium * 1.16) + (Premium * (porcentajeComision * 1.16) / 100)).toFixed(2));
+          this.Premium = Number(((Premium * 1.16) + (Premium * (porcentajeComision * 1.16) / 100)).toFixed(2));
 
           console.log('Costo Premium:', Premium);
           console.log('Comisión:', porcentajeComision);
@@ -2041,11 +2045,11 @@ abrirpoliticasdeuso() {
     return this.ss.toCurrency(valor);
   }
 
-  abrirmodalcontacto(){
+  abrirmodalcontacto() {
     this.mostrarmodalcontacto = true;
   }
-cerrarmodalcontacto(){
-  this.mostrarmodalcontacto = false;
-}
+  cerrarmodalcontacto() {
+    this.mostrarmodalcontacto = false;
+  }
 
 }
