@@ -1,0 +1,171 @@
+/* ================================
+   CONTENEDOR PRINCIPAL
+================================ */
+.politicas-container {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: #f5f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ================================
+   TARJETA
+================================ */
+.politicas-card {
+  width: 100%;
+  max-width: 950px;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+}
+
+/* ================================
+   HEADER
+================================ */
+.politicas-header {
+  background: #ffffff;
+  color: #fd30b8;
+  padding: 22px 30px;
+  border-bottom: 4px solid #ffffff;
+  justify-content: center;
+  display: flex;
+}
+
+.politicas-header h2 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+/* ================================
+   BODY
+================================ */
+.politicas-body {
+  padding: 35px 40px 30px;
+}
+
+.titulo {
+  text-align: center;
+  color: #fd0df9;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+/* ================================
+   LISTA DE POLÍTICAS
+================================ */
+.policy-list {
+  padding-left: 25px;
+  margin: 0;
+}
+
+.policy-list li {
+  padding-left: 8px;
+  margin-bottom: 1px;
+  line-height: 1.7;
+  color: #444;
+  font-size: 15px;
+}
+
+.policy-list li::marker {
+  font-weight: bold;
+}
+
+.policy-list strong {
+  color: #212529;
+  font-weight: 700;
+}
+
+ul {
+    list-style-type: disc;
+    padding-left: 25px;
+    text-align: left;
+    
+}
+
+ul li {
+    display: list-item;
+    margin-bottom: 8px;
+    
+}
+/* ================================
+   ACTUALIZACIÓN
+================================ */
+.ultima-actualizacion {
+  text-align: right;
+  margin-top: 35px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.ultima-actualizacion small {
+  color: #8a8a8a;
+  font-size: 13px;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+
+  .politicas-container {
+    padding: 20px 10px;
+  }
+
+  .politicas-header {
+    padding: 18px 20px;
+  }
+
+  .politicas-header h2 {
+    font-size: 21px;
+  }
+
+  .politicas-body {
+    padding: 25px 20px;
+  }
+
+  .titulo {
+    font-size: 22px;
+  }
+
+  .policy-list {
+    padding-left: 22px;
+  }
+
+  .policy-list li {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .politicas-container {
+    padding: 10px 5px;
+  }
+
+  .politicas-card {
+    border-radius: 8px;
+  }
+
+  .politicas-header h2 {
+    font-size: 19px;
+  }
+
+  .politicas-body {
+    padding: 20px 15px;
+  }
+
+  .titulo {
+    font-size: 20px;
+  }
+
+  .policy-list li {
+    font-size: 13px;
+  }
+}

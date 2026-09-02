@@ -54,6 +54,7 @@ export class AuthService {
     { og:'8', rp:'q' }, { og:'9', rp:'p' }, { og:'+', rp:'F' }, { og:'/', rp:'h' },
     { og:'=', rp:'g' }
   ];
+ 
   
   constructor(private http: HttpClient, private ss: SharedService)  {
 

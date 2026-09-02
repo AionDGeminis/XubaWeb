@@ -48,6 +48,8 @@ export class PaymentComponent implements OnInit {
     mail:'',
     phone: '',
   };
+  mostrarCVV = false;
+  tarjetaExpiracion = '';
   modeloComprobante: any = {};
   selectedCard: any = {};
   loading: boolean = false;
@@ -65,6 +67,36 @@ export class PaymentComponent implements OnInit {
       OpenPay.setApiKey(environment.openPayApiKey);
       OpenPay.setSandboxMode(environment.openPaySandBox);
   }
+  formatearExpiracion(event: any) {
+  let valor = event.target.value.replace(/\D/g, '');
+
+  if (valor.length > 4) {
+    valor = valor.substring(0, 4);
+  }
+
+  if (valor.length >= 2) {
+    let mes = parseInt(valor.substring(0, 2), 10);
+
+    if (mes > 12) mes = 12;
+    if (mes <= 0) mes = 1;
+
+    valor = mes.toString().padStart(2, '0') + valor.substring(2);
+  }
+
+  if (valor.length === 4) {
+    let anio = parseInt(valor.substring(2, 4), 10);
+
+    if (anio < 26) anio = 26;
+
+    valor = valor.substring(0, 2) + anio.toString().padStart(2, '0');
+  }
+
+  if (valor.length > 2) {
+    valor = valor.substring(0, 2) + '/' + valor.substring(2);
+  }
+
+  this.tarjetaExpiracion = valor;
+}
 
   
   closeModal(): void {
@@ -156,8 +188,8 @@ export class PaymentComponent implements OnInit {
       'phone':this.tarjeta.phone,      
       'use_3d_secure': true,
       'device_session_id': deviceSessionId,
-      'redirect_url':  `${environment.threeds_redirect_url}/${encodedAuth}` 
-      // 'redirect_url': `http://localhost:4200/payment-callback/${encodedAuth}` 
+     'redirect_url':  `${environment.threeds_redirect_url}/${encodedAuth}` 
+     //'redirect_url': `http://localhost:4200/payment-callback/${encodedAuth}` 
       // 'redirect_url': 'https://www.xuba.mx/subasta-terminada/eyJpZFN1YmFzdGEiOjU1MzUsInRpcG9Vc3VhcmlvIjoiY29tcHJhZG9yIn0%3D' 
       // window.open(res.payment_method.url, '_blank');
 // 

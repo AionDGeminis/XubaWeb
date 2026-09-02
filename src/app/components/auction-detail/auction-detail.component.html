@@ -1,4 +1,4 @@
-<div class="main-detail-wrapper">
+<div class="main-detail-wrapper" [class.dark-mode]="modoOscuro">
   <app-loader *ngIf="loading"></app-loader>
 
   <!-- Mobile Bottom Sheet Container (en Desktop se comporta como display: contents) -->
@@ -20,18 +20,15 @@
             style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 4px 2px;">
             <div></div>
           </div>
+          <label class="theme-switch">
+            <input type="checkbox" [checked]="modoOscuro" (change)="cambiarTema()">
 
-          <!-- Ant / Sig (SÓLO ESCRITORIO) -->
-          <div class="d-none d-lg-flex" style="flex-shrink: 0; gap: 6px; width: 100%;">
-            <button (click)="irAAnterior()" class="glass-btn"
-              style="flex: 1; color: var(--text); border: none; border-radius: 10px; padding: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">
-              <i class="fas fa-chevron-left"></i> Ant
-            </button>
-            <button (click)="irASiguiente()" class="glass-btn"
-              style="flex: 1; color: var(--text); border: none; border-radius: 10px; padding: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">
-              Sig <i class="fas fa-chevron-right"></i>
-            </button>
-          </div>
+            <span class="theme-slider">
+              <i class="fas fa-sun sun-icon"></i>
+              <i class="fas fa-moon moon-icon"></i>
+              <span class="switch-circle"></span>
+            </span>
+          </label>
 
           <div class="scroll-thin left-auctions-list"
             style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 2px;">
@@ -62,39 +59,49 @@
 
           <!-- Vendedor -->
           <div class="glass" style="flex-shrink: 0; border-radius: 16px; padding: 12px;">
-            <p
-              style="font-size: 9px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
+            <p style="font-size: 9px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
               Vendido por</p>
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-              <div style="flex: 1; text-align: left !important;">
-                <p class="" (click)="openUserPage(subasta.musuarios.id)"
-                  style="font-weight: 700; font-size: 13px; color: var(--text);">{{ subasta.musuarios.usuario}}</p>
+            <div class="Vendido">
+              <div class="marco">
+                <div class="usuario-contenedor">
+                 <img [src]="detallesubasta.fotoVendedor" class="imagen-usuario">
+                <p class="usuario" (click)="openUserPage(detallesubasta.idVendedor)">{{ detallesubasta.usuarioVendedor}}
+                  <span>
+                    <a class="icon-link icon-link-hover">
+                      Perfil
+                      <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+                        <path
+                          d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                      </svg>
+                    </a>
+                  </span>
+
+                </p>
+                </div>
                 <div style="display: flex; align-items: center; gap: 3px;">
                   <i class="fas fa-star" style="color: #f59e0b; font-size: 10px;"></i>
-                  <span style="font-size: 11px; color: var(--text2);">{{ subasta.musuarios.stars}}.0</span>
+                  <span style="font-size: 11px; color: var(--text2);">{{ detallesubasta.stars ?? 0 }}</span>
                   &nbsp;
                   <i class="fas fa-eye"></i>
-                  <span style="font-size: 11px; color: var(--text2);">{{vistasOfertas.vistas}}</span>
+                  <span style="font-size: 11px; color: var(--text2);">{{detallesubasta.vistas}}</span>
                   &nbsp;
                   <i class="fas fa-gavel"></i>
-                  <span style="font-size: 11px; color: var(--text2);">{{vistasOfertas.ofertas}}</span>
+                  <span style="font-size: 11px; color: var(--text2);">{{detallesubasta.ofertas}}</span>
                 </div>
               </div>
             </div>
-            <button class="w-100" *ngIf="isLoggedIn() && this.usuario()!.id !== this.subasta.musuarios.id"
+            <button class="w-100" *ngIf="isLoggedIn() && this.usuario()!.id !== this.subasta.idVendedor"
               [disabled]="lockButton"
-              [ngClass]="{'btn-fv': getSiguiendo(subasta.musuarios.id), 'btn-uv':!getSiguiendo(subasta.musuarios.id)}"
-              (click)="toggleSeguirVendedor(subasta.musuarios.id)"
+              [ngClass]="{'btn-fv': getSiguiendo(detallesubasta.idVendedor), 'btn-uv':!getSiguiendo(detallesubasta.idVendedor)}"
+              (click)="toggleSeguirVendedor(detallesubasta.idVendedor)"
               style="margin-left: auto; background: linear-gradient(to right, #ec4899, #8b5cf6); color: white; border: none; border-radius: 50px; padding: 6px 14px; font-size: 11px; font-weight: 600; cursor: pointer;">
               <i class="fas"
-                [ngClass]="{'fa-plus': !getSiguiendo(subasta.musuarios.id), 'fa-bookmark':getSiguiendo(subasta.musuarios.id)}"></i>
-              {{getSiguiendo(subasta.musuarios.id) ? 'Siguiendo':'Seguir'}}
+                [ngClass]="{'fa-plus': !getSiguiendo(detallesubasta.idVendedor), 'fa-bookmark':getSiguiendo(detallesubasta.idVendedor)}"></i>
+              {{getSiguiendo(detallesubasta.idVendedor) ? 'Siguiendo':'Seguir'}}
             </button>
             <p class="mt-2" style="font-size: 11px; color: var(--text2);">
               <i class="fas fa-map-marker-alt" style="color: #ec4899; margin-right: 4px;"></i>
-              Desde {{subasta.direccion? subasta.direccion.municipio:'' }}, {{subasta.direccion?
-              subasta.direccion.estado:''
-              }}
+              Desde {{detallesubasta.municipio }}, {{detallesubasta.estado }}
             </p>
           </div>
 
@@ -103,11 +110,21 @@
             style="flex: 1; min-height: 0; border-radius: 16px; padding: 12px; display: flex; flex-direction: column;">
             <h2
               style="font-size: 14px; font-weight: 800; color: #ec4899; margin-bottom: 3px; line-height: 1.3; flex-shrink: 0;">
-              {{subasta.caption}}</h2>
-            <p style="font-size: 10px; color: var(--text2); margin-bottom: 8px; flex-shrink: 0;">#{{subasta.id}}</p>
+              {{detallesubasta.caption}}</h2>
+            <p style="font-size: 10px; color: var(--text2); margin-bottom: 8px; flex-shrink: 0;">#{{detallesubasta.id}}
+            </p>
             <div class="scroll-thin" style="flex: 1; min-height: 0; overflow-y: auto;">
               <p style="font-size: 11px; color: var(--text2); line-height: 1.7;">
-                {{subasta.descripcion}}
+                {{detallesubasta.descripcion?.slice(0, 200) }}
+                <span>
+                  <a class="icon-link icon-link-hover" style="cursor: pointer"  (click)="abrirmodaldescripcion()">
+                    Ver mas
+                    <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+                      <path
+                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                    </svg>
+                  </a>
+                </span>
               </p>
             </div>
           </div>
@@ -127,7 +144,13 @@
               <span
                 style="font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: 2px;">{{tiempoVence}}</span>
             </div>
+            <button *ngIf="detallesubasta.precioCompraDirecta > 0" class="glass-btn w-100 mt-2"
+              (click)="realizarApuesta(detallesubasta.precioCompraDirecta, true)">
+              <i class="fas fa-bolt"></i>
+              Compra directa {{ toCurrency(detallesubasta.precioCompraDirecta) }}
+            </button>
           </div>
+
 
           <!-- Openpay -->
           <div
@@ -147,7 +170,7 @@
               <i class="fas fa-images" style="color: #ec4899;"></i> Galería
             </p>
             <div style="display: flex; gap: 6px; flex-shrink: 0; overflow-x: scroll;">
-              <div class="thumb" *ngFor="let images of subasta.mimagenesSubasta; let i = index;"
+              <div class="thumb" *ngFor="let images of detallesubasta.imagenes; let i = index;"
                 style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; flex-shrink: 0;">
                 <img [src]="images.url" (click)="setIndexImage(i)" class="w-100 g-thumb"
                   style="border-radius: 8px;flex-shrink: 0" [ngClass]="{'active': currentIndexImage === i}" alt="">
@@ -187,7 +210,7 @@
       <div style="flex: 1; min-width: 0; text-align: center;">
         <h2
           style="font-size: 0.9em; font-weight: 800; color: var(--text); margin: 0; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word;">
-          #{{subasta.id}} - {{subasta.caption}}
+          #{{detallesubasta.id}} - {{detallesubasta.caption}}
         </h2>
       </div>
 
@@ -198,18 +221,37 @@
     </div>
 
     <!-- Banner ganando -->
-    <div style="flex-shrink: 0; padding: 8px 16px;">
-      <div [class]="'glass glass-label fast-animation animate__animated ' + animatedClass" *ngIf="usuarioMayor"
-        style="border-radius: 50px; padding: 10px 24px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <span style="font-size: 14px; font-weight: 700; color: var(--text);"> {{usuarioMayor}}</span>
-        <span style="font-size: 14px; font-weight: 800; color: #ec4899;">Va Ganando! 🏆</span>
+    <div class="contenedor-botones">
+      <div class="botones-navegacion">
+        <button (click)="irAAnterior()" class="glass-btn">
+          <i class="fas fa-chevron-left"></i> Ant
+        </button>
+
+        <!-- Si hay usuarioMayor lo muestra, si no muestra "Conectando..." -->
+        <div *ngIf="usuarioMayor; else conectando"
+          [class]="'glass glass-label fast-animation animate__animated ' + animatedClass">
+          <span class="usuario-mayor">{{usuarioMayor}}</span>
+          <span class="va-ganando">Va Ganando! 🏆</span>
+        </div>
+
+        <ng-template #conectando>
+          <div class="glass glass-label">
+            <span class="usuario-mayor">Conectando...</span>
+          </div>
+        </ng-template>
+
+        <button (click)="irASiguiente()" class="glass-btn">
+          Sig <i class="fas fa-chevron-right"></i>
+        </button>
       </div>
     </div>
+
+
 
     <!-- Imagen producto -->
     <div class="detail-img-container">
       <div class="detail-img-wrapper">
-        <img [src]="subasta.mimagenesSubasta[currentIndexImage].url" (click)="openModalViewer()"
+        <img [src]="detallesubasta.imagenes[currentIndexImage].url" (click)="openModalViewer()"
           [class]="'fast-animation cursor-pointer animate__animated ' + classAnimate.imageContainer"
           alt="Imagen de la subasta" style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
       </div>
@@ -226,17 +268,21 @@
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-share-alt"></i>
         </button>
-        <button class="glass" (click)="toggleSingleSeguida(subasta.id, $event)"
+        <button class="glass" (click)="toggleSingleSeguida(detallesubasta.id, $event)"
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-heart " [ngClass]="{'followed-i': isFollowed}"></i>
+        </button>
+        <button class="glass" (click)="abrirmodalofertadirecta()"
+          style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-gavel"></i>
         </button>
       </div>
 
 
       <!-- Galería Flotante (SÓLO MÓVIL) -->
-      <div class="d-lg-none no-scrollbar" *ngIf="subasta.mimagenesSubasta && subasta.mimagenesSubasta.length > 1"
+      <div class="d-lg-none no-scrollbar" *ngIf="detallesubasta.imagenes && detallesubasta.imagenes.length > 1"
         style="position: absolute; left: 50%; transform: translateX(-50%); width: 80%; bottom: 14px; display: flex; gap: 6px; overflow-x: auto; padding: 4px; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(8px); border-radius: 12px; z-index: 10; justify-content: flex-start;">
-        <div class="thumb" *ngFor="let images of subasta.mimagenesSubasta; let i = index;"
+        <div class="thumb" *ngFor="let images of detallesubasta.imagenes; let i = index;"
           style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 6px; flex-shrink: 0; cursor: pointer; overflow: hidden; border: 1.5px solid transparent;"
           [style.borderColor]="currentIndexImage === i ? '#ec4899' : 'transparent'" (click)="setIndexImage(i)">
           <img [src]="images.url" class="w-100 h-100" style="object-fit: cover; display: block;" alt="">
@@ -287,18 +333,17 @@
 </div>
 
 
-<div *ngIf="showModalShippingPrices" class="cart-modal-backdrop">
+<div *ngIf="showModalShippingPrices" class="cart-modal-backdrop" [class.dark-mode]="modoOscuro">
   <div class="cart-modal-container" (click)="onContentClick($event)">
-    <div class="modal-header bg-main-header text-white">
+    <div class="modal-headerr bg-main-header ">
       <h3 class="modal-title">
-        <span class="text-white tw:text-base tw:font-light">Precios de envio estimados</span>
+        <span class="textf">Precios de envio estimados</span>
       </h3>
-      <button class="close-button" (click)="closeShippingPricesModal()">
-        <span class="text-white">&times;</span>
+      <button type="button" class="btn-close" (click)="closeShippingPricesModal()">
       </button>
     </div>
 
-    <div class="modal-body">
+    <div class="modal-body" [class.dark-mode]="modoOscuro">
 
       <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
         <form class="form-productos pl-2 pr-2">
@@ -308,8 +353,7 @@
 
               <ng-container *ngIf="direcciones.length > 0">
                 <label for="cantidadPuja">Direccion de entrega</label>
-                <select class="form-select f-arial tw:font-bold" name="direcionentrega" id="direcionentrega"
-                  style="color:#353b48 !important;padding-left: 10px; padding-top: 5px;padding-bottom: 5px;"
+                <select class="form-select f-arial tw:font-bold datos" name="direcionentrega" id="direcionentrega"
                   [disabled]="loadingCotizacion" [(ngModel)]="direccionEntrega" (change)="changeDireccionEntrega()">
                   <option *ngFor="let item of direcciones" [ngValue]="item">
                     {{item.calle}} {{item.numeroExt}} {{item.numeroInt}}, {{item.municipio}}
@@ -334,27 +378,36 @@
                 <div class="tw:text-sm mt-3 text-center">
                   <i class="fas fa-ruler"></i> Dimensiones del producto
                   <br>
-                  <div class="row">
-                    <div class="col-sm-3 ">
-                      <div class="dims">Largo: [{{this.subasta!.largo}}cm]</div>
-                    </div>
-                    <div class="col-sm-3 ">
-                      <div class="dims">Alto: [{{this.subasta!.ancho}}cm]</div>
-                    </div>
-                    <div class="col-sm-3 ">
-                      <div class="dims">Profundidad: [{{this.subasta!.profundidad}}cm]</div>
-                    </div>
-                    <div class="col-sm-3 ">
-                      <div class="dims">Peso [{{this.subasta!.peso}}kg]</div>
+                  <div class="row justify-content-center g-2">
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Largo: [{{detallesubasta!.largo}}cm]
+                      </div>
                     </div>
 
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Alto: [{{detallesubasta!.ancho}}cm]
+                      </div>
+                    </div>
 
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Profundidad: [{{detallesubasta!.profundidad}}cm]
+                      </div>
+                    </div>
+
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Peso [{{detallesubasta!.peso}}kg]
+                      </div>
+                    </div>
                   </div>
                   <!-- <img src="images/dhl.png" class="tw:h-15 w-auto d-block m-auto" alt=""> -->
                 </div>
                 <div class="tw:text-sm mt-3 text-center">
                   <i class="fas fa-shield-alt"></i> Servicio operado y garantizado por DHL Express.
-                  <img src="images/dhl.png" class="tw:h-15 w-auto d-block m-auto" alt="">
+                  <img src="images/dhl.png" class="tw:h-15 w-auto d-block m-auto imagen-blanca" alt="">
                 </div>
                 <ng-container *ngIf="!loadingCotizacion && listaTiposEnvio!.length === 0">
                   <div class="w-100 text-center px-2 py-2">
@@ -389,41 +442,135 @@
     </div>
     <div class="modal-footer text-start pb-3 pe-3">
       <div>
-        <button class="btn btn-dark me-2" (click)="closeShippingPricesModal()">
+        <button class="btn btn-secondary" (click)="closeShippingPricesModal()">
           Cerrar
         </button>
 
       </div>
     </div>
   </div>
+
+  <div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()">
+    <!-- Contador de imágenes -->
+    <div class="viewer-counter"
+      style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: white; font-size: 18px; font-weight: 700; z-index: 101;">
+      {{ currentIndexImageViewer + 1 }} / {{ imagesListViewer.length }}
+    </div>
+
+    <button class="close-viewer" (click)="closeModalViewer()">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <button class="nav-btn prev" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('prev', $event)"
+      [class.disabled]="currentIndexImageViewer === 0">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <div class="viewer-content" (click)="$event.stopPropagation()">
+      <img [class]="'fast-animation  animate__animated ' + classNavigateImg"
+        [src]="imagesListViewer[currentIndexImageViewer].url" style="background: #bdc3c7;">
+    </div>
+
+    <button class="nav-btn next" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('next', $event)"
+      [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+
+  </div>
+</div> <!-- main-detail-wrapper -->
+
+
+<!-- MODAL OFERTA DIRECTA -->
+<div class="modal-ofertadirecta" [class.dark-mode]="modoOscuro" *ngIf="mostrarmodalofertadirecta">
+  <div class="margen">
+    <div class="d-flex justify-content-between align-items-center mb-3  ">
+      <h5 class="fw-bold mb-0 coloroferta-h5">
+        Hacer oferta
+      </h5>
+
+      <button type="button" class="btn-close" (click)="cerrarmodalofertadirecta()">
+      </button>
+
+    </div>
+    <div class="botones-oferta-container">
+
+      <button class="botones-oferta" type="button" (click)="botones(20)">$20.00</button>
+      <button class="botones-oferta" type="button" (click)="botones(50)">$50.00</button>
+      <button class="botones-oferta" type="button" (click)="botones(100)">$100.00</button>
+
+    </div>
+
+    <input [(ngModel)]="ofertar" type="number" class="input-oferta" appSoloDecimal
+      placeholder="Ingresa tu catidad personalizada">
+    <label class="letras">
+      Revisa tu oferta antes de enviarla.
+    </label>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button type="button" class="boton-prinsipal" (click)="apuestaPersonalizada(ofertar)">
+        <i class="fas fa-gavel"></i>
+        Ofertar
+      </button>
+
+    </div>
+
+  </div>
+
 </div>
 
+<div class="modal-descripcion" [class.dark-mode]="modoOscuro" *ngIf="mostrarmodaldescripcion">
+  <div class="modal-contenido-descripcion">
 
+    <div class="modal-header-descripcion">
+      <h3 class="detalle-modall">{{detallesubasta.caption}}</h3>
 
+      <button type="button" class="btn-close" (click)="cerrarmodaldescripcion()">
+      </button>
+    </div>
 
-<div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()">
-  <!-- Contador de imágenes -->
-  <div class="viewer-counter"
-    style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: white; font-size: 18px; font-weight: 700; z-index: 101;">
-    {{ currentIndexImageViewer + 1 }} / {{ imagesListViewer.length }}
+    <div class="modal-body-descripcion">
+
+      <div class="detalle-modal">
+        <p>{{ detallesubasta.descripcion }}</p>
+      </div>
+
+      <div class="row">
+         <div class="col-6">
+          <h4 class="detalle-modall"> <i class="bi bi-box-seam icono-detalle"></i> Caracteristicas</h4>
+          <p>
+            <i class="bi bi-patch-check-fill"></i>
+            Marca: {{ detallesubasta.marca }} <br>
+           <i class="bi bi-card-text"></i>
+            Modelo: {{ detallesubasta.modelo }} <br>
+            <i class="bi" [ngClass]="detallesubasta.nuevo ? 'bi-stars ' : 'bi-box-seam '"></i>
+            Estado: {{ detallesubasta.nuevo ? 'Nuevo' : 'Usado' }}
+          </p>
+        </div>
+
+        <div class="col-6">
+          <h4 class="detalle-modall"><i class="bi bi-bounding-box"></i>Medidas</h4>
+          <p>
+              <i class="bi bi-arrows"></i>
+            Largo: {{ detallesubasta.largo }} cm<br>
+             <i class="bi bi-arrows-vertical icono-detalle"></i>
+            Ancho: {{ detallesubasta.ancho }} cm<br>
+            <i class="bi bi-arrows-angle-expand icono-detalle"></i>
+            Profundidad: {{ detallesubasta.profundidad }} cm
+          </p>
+        </div>
+      </div>
+        <div class="informacion-importante">
+  <div class="informacion-icono">
+    <i class="bi bi-info-circle"></i>
   </div>
 
-  <button class="close-viewer" (click)="closeModalViewer()">
-    <i class="fas fa-times"></i>
-  </button>
-
-  <button class="nav-btn prev" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('prev', $event)"
-    [class.disabled]="currentIndexImageViewer === 0">
-    <i class="fas fa-chevron-left"></i>
-  </button>
-
-  <div class="viewer-content" (click)="$event.stopPropagation()">
-    <img [class]="'fast-animation  animate__animated ' + classNavigateImg"
-      [src]="imagesListViewer[currentIndexImageViewer].url" style="background: #bdc3c7;">
+  <div class="informacion-texto">
+    <strong>Información importante</strong>
+    <span>Revisa bien las características y medidas del producto antes de ofertar.</span>
   </div>
+</div>
 
-  <button class="nav-btn next" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('next', $event)"
-    [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
-    <i class="fas fa-chevron-right"></i>
-  </button>
+    </div>
+
+  </div>
 </div>

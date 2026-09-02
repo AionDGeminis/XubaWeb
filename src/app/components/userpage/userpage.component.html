@@ -1,96 +1,192 @@
-<div class="profile-container  fast-animation  animate__animated animate__fadeInRight">
+<div class="profile-container fast-animation animate__animated animate__fadeInRight">
     <app-loader *ngIf="allLoading"></app-loader>
-      <!-- Panel izquierdo: Foto y datos básicos -->
-      <div class="profile-sidebar d-none d-sm-flex" style="position: relative;">
+
+    <!-- Panel izquierdo -->
+    <div class="profile-sidebar d-none d-sm-flex" style="position: relative;">
         <app-loader *ngIf="loading"></app-loader>
-        <div class="w-100 bg-xuba2 text-center pt-5 pb-2">
-            <div class="profile-avatar" > 
+
+        <div class="w-100 bg-xuba2 text-center pt-5 pb-4">
+
+            <!-- FOTO -->
+            <div class="profile-avatar">
                 <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
             </div>
-            <h4 class="fw-bold mt-3 mb-2 fs1">{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h4>
-            <h5 class="user-calificacion"><span class="text-dark">[{{infoUsuario.usuario ?? 'ND'}}]</span> &nbsp; <i class="fas fa-star"></i> <span style="color: #bdc3c7;">{{infoUsuario.stars}}</span></h5>
-            <!-- <div class=" mb-4" style="color:#48dbfb;">{{infoUsuario.correo}}</div> -->
-        </div>
-        
 
 
-        <div class="profile-card d-none">
-         
-            <div class="pc-info">
-                <div class="pc-row">
-                    <i class="fas fa-map-pin"></i>
-                    <div class="pc-info-content">
-                    <span class="pc-info-label">Ubicacion</span>
-                    <span class="pc-info-value">{{infoUsuario.direccion.municipio}}, {{infoUsuario.direccion.estado}}</span>
+            <!-- NOMBRE -->
+            <h4 class="fw-bold mt-3 mb-2 fs1">
+                {{infoUsuario.nombre}}
+            </h4>
+
+
+            <!-- USUARIO Y CALIFICACIÓN -->
+            <h5 class="user-calificacion mb-3">
+
+                <span class="text-dark">
+                    [{{infoUsuario.usuario ?? 'ND'}}]
+                </span>
+
+                &nbsp;
+
+                <i class="fas fa-star"></i>
+
+                <span style="color:#bdc3c7;">
+                    {{infoUsuario.calificacion}}
+                </span>
+
+            </h5>
+
+
+            <!-- UBICACIÓN Y ANTIGÜEDAD -->
+            <div class="pc-row location-row">
+
+                <!-- ANTIGÜEDAD -->
+                <div class="pc-stat">
+                    <div class="pc-label">
+                        {{infoUsuario.antiguedad}}
                     </div>
                 </div>
+
+
+                <!-- UBICACIÓN -->
+                <div class="pc-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+
+                <div class="pc-location">
+
+                    <div class="pc-location-city">
+                        {{infoUsuario.municipio}}, {{infoUsuario.estado}}
+                    </div>
+
+                    <div class="pc-location-country">
+                        México
+                    </div>
+
+                </div>
+
             </div>
+
+
+
+            <!-- MÉTRICAS -->
             <div class="pc-metrics">
-            <div class="pc-metric">
-                <div class="pc-value">{{infoUsuario.datosSubastas.subastasCreadas}}</div>
-                <div class="pc-label">Subastas creadas</div>
+
+                <div class="pc-stat">
+                    <i class="far fa-star pc-stat-icon"></i>
+
+                    <div class="pc-value">
+                        {{infoUsuario.subastasCreadas}}
+                    </div>
+
+                    <div class="pc-label">
+                        Subastas<br>
+                        creadas
+                    </div>
+                </div>
+
+                <div class="pc-stat">
+                    <i class="far fa-calendar-check pc-stat-icon"></i>
+
+                    <div class="pc-value">
+                        {{infoUsuario.subastasConcretadas}}
+                    </div>
+
+                    <div class="pc-label">
+                        Ventas<br>
+                        exitosas
+                    </div>
+                </div>
+
+                <div class="pc-stat">
+                    <i class="fas fa-users pc-stat-icon"></i>
+
+                    <div class="pc-value">
+                        {{infoUsuario.seguidores}}
+                    </div>
+
+                    <div class="pc-label">
+                        Seguidores
+                    </div>
+                </div>
+
             </div>
-            <div class="pc-metric">
-                <div class="pc-value">{{infoUsuario.datosSubastas.subastasParticipantes}}</div>
-                <div class="pc-label">Subastas participadas</div>
-            </div>
-      
-            <div class="pc-metric pc-metric-wide">
-                <div class="pc-value">{{infoUsuario.datosSubastas.subastasGanadas}}</div>
-                <div class="pc-label">Subastas ganadas</div>
-            </div>
-            </div>
-       
+
+
+            <!-- BOTÓN SEGUIR -->
+            <button class="btn-follow mt-3" (click)="toggleSeguir()">
+
+                <i class="fas fa-user-plus"></i>
+
+                {{ infoUsuario.siguiendo ? 'Siguiendo' : 'Segir' }}
+
+            </button>
+
         </div>
-       
+
         <!-- <button class="btn btn-sm btn-light btn-circle" style="position: absolute;right: 28%"><i class="fas fa-camera"></i></button> -->
-        
+
         <!-- <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: 28%">
           <input type="file" accept="image/*"  (change)="onFileChange($event)" hidden />
           <i class="fas fa-camera"></i>
         </label> -->
-  
-       
+
+
         <!-- <button class="btn-edit-photo"><i class="fas fa-file-image"></i> Cambiar foto</button> -->
         <!-- <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()"><i class="fas fa-upload"></i> Guardar cambio</button> -->
-      </div>
-    
-      <div class="row d-block d-sm-none">
+    </div>
+
+    <div class="row d-block d-sm-none">
         <div class="w-100 bg-xuba2 text-center pt-5 pb-2">
-          <div class="profile-avatar" > 
-              <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
-          </div>
-          <h4 class="fw-bold mt-3 mb-2 fs1">{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h4>
-          <h5 class="user-calificacion"><span class="text-dark">[{{infoUsuario.usuario ?? 'ND'}}]</span> &nbsp; <i class="fas fa-star"></i> <span style="color: #bdc3c7;">{{infoUsuario.stars}}</span></h5>
-          <!-- <div class=" mb-4" style="color:#48dbfb;">{{infoUsuario.correo}}</div> -->
+            <div class="profile-avatar">
+                <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
+            </div>
+            <h4 class="fw-bold mt-3 mb-2 fs1">{{infoUsuario.nombre}}</h4>
+            <h5 class="user-calificacion"><span class="text-dark">[{{infoUsuario.usuario ?? 'ND'}}]</span> &nbsp; <i
+                    class="fas fa-star"></i> <span style="color: #bdc3c7;">{{infoUsuario.calificacion}}</span></h5>
+            <!-- <div class=" mb-4" style="color:#48dbfb;">{{infoUsuario.correo}}</div> -->
+            <button class="btn-follow mt-3" (click)="toggleSeguir()">
+
+                <i class="fas fa-user-plus"></i>
+
+                {{ infoUsuario.siguiendo ? 'Siguiendo' : 'Seguir' }}
+            </button>
         </div>
         <div class="pc-info">
-          <div class="pc-row f-arial py-0 my-0 ps-3 pe-3">
-              <i class="fas fa-map-pin"></i>
-              <div class="pc-info-content">
-              <span class="pc-info-label">Ubicacion</span>
-              <span class="pc-info-value">{{infoUsuario.direccion.municipio}}, {{infoUsuario.direccion.estado}}</span>
-              </div>
-          </div>
+            <div class="pc-stat">
+                <div class="pc-value">
+                </div>
+                <div class="pc-label">
+                    {{infoUsuario.antiguedad}}
+                </div>
+            </div>
+
+            <div class="pc-row f-arial py-0 my-0 ps-3 pe-3">
+                <i class="fas fa-map-pin"></i>
+                <div class="pc-info-content">
+                    <span class="pc-info-label">Ubicacion</span>
+                    <span class="pc-info-value">{{infoUsuario.municipio}}, {{infoUsuario.estado}}</span>
+                </div>
+            </div>
         </div>
         <div class="pc-metrics">
-          <div class="pc-metric">
-              <div class="pc-value">{{infoUsuario.datosSubastas.subastasCreadas}}</div>
-              <div class="pc-label">Subastas creadas</div>
-          </div>
-          <div class="pc-metric">
-              <div class="pc-value">{{infoUsuario.datosSubastas.subastasParticipantes}}</div>
-              <div class="pc-label">Subastas participadas</div>
-          </div>
-    
-          <div class="pc-metric pc-metric-wide">
-              <div class="pc-value">{{infoUsuario.datosSubastas.subastasGanadas}}</div>
-              <div class="pc-label">Subastas ganadas</div>
-          </div>
-          </div>
-      </div>
-      <!-- Panel derecho: Información editable -->
-      <div class="profile-main">
+            <div class="pc-metric">
+                <div class="pc-value">{{infoUsuario.subastasCreadas}}</div>
+                <div class="pc-label">Subastas creadas</div>
+            </div>
+            <div class="pc-metric">
+                <div class="pc-value">{{infoUsuario.subastasConcretadas}}</div>
+                <div class="pc-label">Ventas exitosas</div>
+            </div>
+
+            <div class="pc-metric pc-metric-wide">
+                <div class="pc-value">{{infoUsuario.seguidores}}</div>
+                <div class="pc-label">Seguidores</div>
+            </div>
+        </div>
+    </div>
+    <!-- Panel derecho: Información editable -->
+    <div class="profile-main">
         <!-- <div class="w-100">
           <button class="btn-tab w-25" (click)="setCurrentTab(0)" [ngClass]="{'active': tabIndex === 0}">Subastas activas</button>
           <button class="btn-tab" (click)="setCurrentTab(1)" [ngClass]="{'active': tabIndex === 1}">Mis Xubastas</button>
@@ -98,90 +194,227 @@
           <button class="btn-tab" (click)="setCurrentTab(2)" [ngClass]="{'active': tabIndex === 2}">Estadisticas</button>
         </div> -->
         <!-- Datos personales -->
-      
-          <!-- Direcciones -->
-          <div class="profile-card">
-            <h3 class="fs1">Subastas activas</h3>
-            <table class="table table-striped w-100 text-center d-none d-sm-block">
+        <div class="express-section">
 
-                  <tr class="t-header bg-dark text-white">
-                    <th>Img</th>
-                    <th>Titulo</th>
-                    <th>Descripcion</th>
-                    <th>Precio</th>
-                    <th>Tiempo</th>
-                  </tr>
-                  <tr class="w-100 row-selectable" *ngFor="let subasta of subastasActivas | paginate: { itemsPerPage: pageSize, currentPage: page }" (click)="openSubastaDetalle(subasta)">
-                    <td class="w-20" style="width:100px">
-                      <img [src]="subasta.url" (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
-                    </td>
-                    <td class="w-20 td-caption">{{subasta.caption}}#{{subasta.id}}</td>
-                    <td class="w-20 td-desc">{{subasta.short_desc}}</td>
-                    <td class="w-20">${{subasta.apuesta}}</td>
-                    <td class="w-20">{{segundosATiempoString(subasta.venceSegundos!)}}</td>
-                  </tr>
-                
-              
-              </table>
-              <div class="w-100 d-sm-none d-block">
-                <!-- <ng-container *ngIf="tabCuentasIndex === 1"> -->
-                  <div class="w-100" *ngFor="let subasta of subastasActivas | paginate: { itemsPerPage: pageSize, currentPage: page }" (click)="openSubastaDetalle(subasta)">
-                    <div class="row">
-                      <div class="col-5 f-arial">Img</div>
-                      <div class="col-7 bg-dark-l">
-                        <img [src]="subasta.url" (error)="onImgError($event)"  class="d-block img-fluid img-auct" alt="Auction Image">
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-5 f-arial">Titulo</div>
-                      <div class="col-7">
-                        {{subasta.caption}}#{{subasta.id}}
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-5 f-arial">Descripcion</div>
-                      <div class="col-7">{{subasta.short_desc}}</div>
-                    </div>
-                    <div class="row">
-                      <div class="col-5 f-arial">Precio</div>
-                      <div class="col-7">${{subasta.apuesta}}</div>
-                    </div>
-                    <div class="row">
-                      <div class="col-5 f-arial">Tiempo</div>
-                      <div class="col-7">
-                        {{segundosATiempoString(subasta.venceSegundos!)}}
-                      </div>
-                    </div>
-                 
-                    <!-- <div class="row">
-                      <div class="col-5">Tiempo</div>
-                      <div class="col-7">{{segundosATiempoString(subasta.tiempoVence!)}}</div>
-                    </div> -->
-                    <div class="line-divider">
-                      <!-- &nbsp; -->
-                    </div>
-                  </div>
-                <!-- </ng-container> -->
-              </div>
-            <!-- <ul class="address-list">
-              <li *ngFor="let d of direcciones">
-                {{d.calle}} #{{d.numeroExt}}, {{d.municipio}}  <span [ngClass]="{'label-tdent': d.tipo === 'entrega', 'label-tdenv': d.tipo === 'envio'}">{{d.tipo}}</span>
+    <h3 class="fs1 mb-3">
+        Subastas express
+    </h3>
+
+    <div class="express-wrapper">
+
+        <button
+            *ngIf="mostrarFlechaIzquierda"
+            class="express-arrow express-arrow-left"
+            (click)="scrollIzquierda(contenedor)">
+
+            <i class="fas fa-chevron-left"></i>
+
+        </button>
+
+        <div
+            class="contenedor-items pt-2"
+            #contenedor
+            (scroll)="verificarScroll(contenedor)">
+
+            <div
+                class="express-item"
+                *ngFor="let subasta of infoUsuario.subastasExpress">
+
+                <div
+                    class="express-premium"
+                    *ngIf="subasta.premium">
+
+                    <i class="fas fa-gem"></i>
+
+                </div>
+
+                <img
+                    [src]="subasta.url"
+                    alt="Subasta"
+                    [class.express-premium-img]="subasta.premium" (click)="openSubastaDetalle(subasta.id); $event.stopPropagation()">
+
+                <div
+                    class="express-time"
+                    [class.express-time-premium]="subasta.premium">
+
+                    <i class="far fa-clock"></i>
+
+                    {{ segundosATiempoString(subasta.venceSegundos!) }}
+
+                </div>
+
+                <div class="express-name">
+                    {{ subasta.caption }}
+                </div>
+
+                <div class="express-id">
+                    #{{ subasta.id }}
+                </div>
+
+            </div>
+
+            <div
+                class="no-express"
+                *ngIf="!infoUsuario.subastasExpress ||
+                       infoUsuario.subastasExpress.length === 0">
+
+                <i class="fas fa-gavel"></i>
+
                 <span>
-                  <button class="btn-link">Editar</button>
-                  <button class="btn-link">Eliminar</button>
+                    No hay subastas express disponibles
                 </span>
-              </li>
-            </ul> -->
-            <!-- <button class="btn-secondary" (click)="openModal('direccion')">Agregar nueva dirección</button> -->
-          </div>
-          <pagination-controls
-          (pageChange)="page = $event"
-          previousLabel="Ant."
-          nextLabel="Sig."
-          
-        >
-        </pagination-controls>
-          <!-- Reclamos abiertos -->
-    
-      </div>
+
+            </div>
+
+        </div>
+
+        <button
+            *ngIf="mostrarFlechaDerecha"
+            class="express-arrow express-arrow-right"
+            (click)="scrollDerecha(contenedor)">
+
+            <i class="fas fa-chevron-right"></i>
+
+        </button>
+
     </div>
+
+</div>
+
+
+        <!-- Direcciones -->
+        <div class="profile-card">
+
+
+            <h3 class="fs1 mb-3">Subastas activas</h3>
+
+            <div class="table-cont-scroll">
+
+                <table class="auction-table d-none d-sm-table">
+
+                    <thead>
+                        <tr class="table-header">
+                            <th class="w-10">Img</th>
+                            <th class="w-20">Título</th>
+                            <th class="w-30">Descripción</th>
+                            <th class="w-15">Precio</th>
+                            <th class="w-15">Tiempo</th>
+                            <th class="w-10 text-center">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr class="auction-row" [class.premium-auction]="subasta.premium"
+                            *ngFor="let subasta of infoUsuario.subastasActivas| paginate:{ itemsPerPage: pageSize, currentPage: page }">
+
+                            <td>
+                                <img [src]="subasta.url" (error)="onImgError($event)" class="img-auct"
+                                    alt="Auction Image">
+                            </td>
+
+                            <td class="td-caption">
+                                {{subasta.caption}} #{{subasta.id}}
+                            </td>
+
+                            <td class="td-desc">
+                                {{subasta.short_desc}}
+                            </td>
+
+                            <td class="price">
+                                {{subasta.apuesta | currency:'MXN'}} 
+                                <div class=" oferta-actual">
+                                    Oferta actual
+                                </div>
+                            </td>
+
+
+
+                            <td class="time">
+                                {{segundosATiempoString(subasta.venceSegundos!)}}
+                            </td>
+
+                            <td class="text-center">
+
+                                <button class="btn-offer"
+                                    (click)="openSubastaDetalle(subasta.id); $event.stopPropagation()">
+
+                                    <i class="fas fa-gavel"></i>
+
+                                </button>
+                                
+
+                            </td>
+
+                              <td class="price" [class.estado-nuevo]="subasta.nuevo" [class.estado-usado]="!subasta.nuevo">
+                                {{subasta.nuevo ? 'Nuevo' : 'Usado'}}
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Móvil -->
+
+            <div class="w-100 d-block d-sm-none">
+
+                <div class="mobile-card" [class.premium-auction]="subasta.premium"
+                    *ngFor="let subasta of subastasActivas | paginate:{ itemsPerPage: pageSize, currentPage: page }">
+
+                    <img [src]="subasta.url" (error)="onImgError($event)" class="img-auct mb-3">
+
+                    <h5>{{subasta.caption}} #{{subasta.id}}</h5>
+
+                    <p>{{subasta.short_desc}}</p>
+
+                    <div class="d-flex justify-content-between mt-2">
+
+    <div>
+        <strong>
+            {{subasta.apuesta | currency:'MXN'}}
+        </strong>
+
+        <div class="oferta-actual">
+            Oferta actual
+        </div>
+        <div
+            class="estado-producto"
+            [class.estado-nuevo]="subasta.nuevo"
+            [class.estado-usado]="!subasta.nuevo">
+
+            {{subasta.nuevo ? 'Nuevo' : 'Usado'}}
+
+        </div>
+    </div>
+
+   <span class="tiempo-responsive">
+    {{segundosATiempoString(subasta.venceSegundos!)}}
+</span>
+
+</div>
+                    
+
+                    <button class="btn-offer w-100 mt-3" (click)="openSubastaDetalle(subasta.id)">
+
+                        Ver detalles
+                        <i class="fas fa-gavel ms-2"></i>
+
+                    </button>
+
+                    <div class="line-divider mt-3"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <pagination-controls (pageChange)="page = $event" previousLabel="Ant." nextLabel="Sig.">
+        </pagination-controls>
+        <!-- Reclamos abiertos -->
+
+    </div>
+</div>

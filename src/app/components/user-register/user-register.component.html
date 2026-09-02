@@ -2,31 +2,90 @@
 
 <div class="preregistro-container" *ngIf="!isRegistered">
     <div class="hero-section">
-      <img src="images/law.png" alt="Subasta" class="hero-img">
+      <img src="images/maso.png" alt="Subasta" class="hero-img">
       <div class="hero-content">
-        <h1>¡Preregístrate para la gran Xubasta!</h1>
-        <p>Personaliza tu experiencia y recibe acceso anticipado a las mejores ofertas.</p>
+        <h1>Unete a la gran Xubasta</h1>
+        <p>crea tu cuenta y accede a las mejores subastas del momenos.</p>
         <div class="countdown">Falta <span id="dias"></span> muy poco para el lanzamiento</div>
       </div>
+
+      <div class="benefits">
+
+    <div class="benefit-item">
+        <div class="benefit-icon">
+            <i class="bi bi-shield-check"></i>
+        </div>
+
+        <div class="benefit-text">
+            <strong>Seguro y confiable</strong>
+            <span>Tu información está protegida</span>
+        </div>
+    </div>
+
+
+    <div class="benefit-item">
+        <div class="benefit-icon">
+            <i class="bi bi-bell"></i>
+        </div>
+
+        <div class="benefit-text">
+            <strong>Notificaciones</strong>
+            <span>Recibe avisos de tus subastas</span>
+        </div>
+    </div>
+
+
+    <div class="benefit-item">
+        <div class="benefit-icon">
+            <i class="bi bi-star"></i>
+        </div>
+
+        <div class="benefit-text">
+            <strong>Experiencia premium</strong>
+            <span>Accede a ofertas exclusivas</span>
+        </div>
+    </div>
+
+</div>
     </div>
     <form class="preregistro-form">
+      <div class="form-header">
+
+    <div class="form-header-icon">
+        <i class="bi bi-person"></i>
+    </div>
+
+    <div class="form-header-text">
+        <h2>Crear cuenta</h2>
+        <p>Completa tus datos para comenzar</p>
+    </div>
+
+</div>
         <div class="form-row">
-            <div class="form-group">
+          
+            <div class="form-group input-icon">
                 <!-- <label for="marca">Marca</label> -->
+                  <i class="bi bi-person"></i>
                 <input type="text" placeholder="Nombre" name="nombre" [(ngModel)]="formData.nombre">            </div>
-            <div class="form-group">
+            <div class="form-group input-icon">
+               <i class="bi bi-person"></i>
                 <!-- <label for="modelo">Modelo</label> -->
                 <input type="text" placeholder="Apellido" name="apellido"  [(ngModel)]="formData.apellido">
             </div>
         </div>
-      <!-- <input type="text" placeholder="Nombre">
-      <input type="text" placeholder="Apellido"> -->
-      <input type="text" placeholder="Usuario" name="usuario"  [(ngModel)]="formData.usuario">
+
+      <div class="input-icon">
+        <i class="bi bi-person"></i>
+         <input type="text" placeholder="Usuario" name="usuario"  [(ngModel)]="formData.usuario">
+      </div>
+      
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group input-icon">
+          <i class="bi bi-telephone"></i>
             <input type="text" placeholder="Telefono" name="telefono" maxlength="18" (input)="onInput($event, 'formData')"  [(ngModel)]="formData.telefono">              
         </div>
-        <div class="form-group">
+        <div class="form-group input-icon">
+          <i class="bi bi-telephone"></i>
           <input type="text" placeholder="Confirmar Telefono" (paste)="$event.preventDefault()" name="ctelefono" maxlength="18" (input)="onInput($event, 'confirmar')"  [(ngModel)]="confirmar.telefono">              
 
             <!-- <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo"> -->
@@ -34,29 +93,50 @@
         
      </div>
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group input-icon">
             <!-- <label for="marca">Marca</label> -->
+              <i class="bi bi-envelope"></i>
             <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo">
 
             <!-- <input type="text" placeholder="Telefono" name="telefono" maxlength="18" (input)="onInput($event)"  [(ngModel)]="formData.telefono">               -->
         </div>
-        <div class="form-group">
+        <div class="form-group input-icon">
             <!-- <label for="modelo">Modelo</label> -->
+             <i class="bi bi-envelope"></i>
             <input type="email" placeholder="Confirmar Correo electrónico" (paste)="$event.preventDefault()" name="ccorreo"  [(ngModel)]="confirmar.correo">
             <!-- <input type="email" placeholder="Correo electrónico" name="correo"  [(ngModel)]="formData.correo"> -->
         </div>
 
      </div>
-     <h4 class="" style="font-size: 0.9em;">Me interesa</h4>
-     <div class="form-row">
-      
-      <label>
-        <input type="checkbox" name="icomprar" [(ngModel)]="intereses.comprar"> Comprar
-      </label>
-      <label>
-        <input type="checkbox" name="ivender" [(ngModel)]="intereses.vender"> Vender
-      </label>
-     </div>
+     <div class="intereses-section">
+
+    <h4>Me interesa</h4>
+
+    <div class="intereses-container">
+
+        <label class="interes-option">
+            <input
+                type="checkbox"
+                name="icomprar"
+                [(ngModel)]="intereses.comprar">
+            
+            <i class="bi bi-bag"></i>
+            <span>Comprar</span>
+        </label>
+
+        <label class="interes-option">
+            <input
+                type="checkbox"
+                name="ivender"
+                [(ngModel)]="intereses.vender">
+            
+            <i class="bi bi-tag"></i>
+            <span>Vender</span>
+        </label>
+
+    </div>
+
+</div>
      <h5 style="font-size: 1em;">Fecha de Nacimiento</h5>
      <div class="form-row form-row-3">
         <div class="form-group">
@@ -81,27 +161,76 @@
      </div>
       <!-- <input type="text" placeholder="Telefono">      
       <input type="email" placeholder="Correo electrónico"> -->
+      <h4 class="" style="font-size: 0.9em;">Contraseña</h4>
+      <div class="input-icon">
+
+    <i class="bi bi-lock"></i>
       <input type="password" placeholder="Contraseña" name="password"  [(ngModel)]="formData.contra">
+      </div>
+      <div class="input-icon">
+
+    <i class="bi bi-lock"></i>
       <input type="password" placeholder="Confirmar Contraseña"  name="repassword" [(ngModel)]="formData.repcontra">
+      </div>
       <!-- <input type="password" placeholder="Genero"> -->
+       <h4 class="" style="font-size: 0.9em;">Genero (opcional)</h4>
+       <div class="input-icon select-icon">
+
+    <i class="bi bi-gender-ambiguous"></i>
       <select class="form-select" [(ngModel)]="formData.genero" name="genero" >
         <option value="">Genero</option>
         <option value="H">Hombre</option>
         <option value="M">Mujer</option>
       </select>
+       </div>
       <!-- <label>
         <input type="checkbox"> Quiero recibir notificaciones y ofertas exclusivas
       </label> -->
-      <button class="glass-btn" type="button" (click)="onSubmit()">Preregistrarme</button>
+      <div class="terminos-container">
+
+    <label class="terminos-label">
+
+        <input
+            type="checkbox"
+            name="terminos"
+            >
+
+        <span>
+            Acepto los
+            <a href="#" (click)="$event.preventDefault()">
+                Términos y condiciones
+            </a>
+            y el
+            <a href="#" (click)="$event.preventDefault()">
+                Aviso de privacidad
+            </a>
+        </span>
+
+    </label>
+
+</div>
+      <button class="glass-btn" type="button" (click)="onSubmit()">Crear cuenta</button>
+      <div class="login-link">
+
+    <span>¿Ya tienes una cuenta?</span>
+
+    <a href="/login">
+        Inicia sesión
+    </a>
+
+</div>
+      
+      
     </form>
-    <div class="benefits">
+    
+   <!-- <div class="benefits">
       <h3>¿Por qué preregistrarte?</h3>
       <ul>
         <li>Acceso anticipado a subastas exclusivas</li>
         <li>Recibe un aviso cuando puedas comenzar a usar la aplicacion</li>
         <li>Recibiras 3 subastas premium Gratis</li>
       </ul>
-    </div>
+    </div> -->
     <!-- <div class="testimonials">
       <blockquote>“¡No puedo esperar para empezar a apostar!”</blockquote>
       <blockquote>“Me encanta poder elegir mis categorías favoritas desde el inicio.”</blockquote>

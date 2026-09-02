@@ -256,6 +256,11 @@
   font-weight: 600;
   margin: 0 1rem 0.3rem 1rem;
 }
+.auction-card .price-container {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
 
 .auction-card .actions {
   display: flex;
@@ -306,4 +311,16 @@
 
 .followed-i {
   color: #e84393;
+}
+
+.icon-premium {
+  color: #D4AF37;
+  font-size: 1.3rem;
+  filter: drop-shadow(0 2px 3px rgba(212, 175, 55, .35));
+  transition: .25s ease;
+}
+
+.icon-premium:hover {
+  color: #E6C75A;
+  transform: scale(1.12);
 }

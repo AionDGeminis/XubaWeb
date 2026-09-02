@@ -1,242 +1,840 @@
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
 .preregistro-container {
-    max-width: 900px;
-    margin: 40px auto;
+    width: 100%;
+    max-width: 1030px;
+    min-height: 680px;
+    margin: 35px auto;
+    display: flex;
     background: #fff;
     border-radius: 18px;
-    box-shadow: 0 4px 24px #0002;
-    padding: 0 0 32px 0;
     overflow: hidden;
-    font-family: 'Segoe UI', Arial, sans-serif;
-  }
-  
-  .hero-section {
-    display: flex;
-    align-items: center;
-    background: linear-gradient(90deg, #D4367A 0%, #28AAE2 100%);
-    color: #fff;
-    padding: 36px 32px 24px 32px;
-    border-radius: 18px 18px 0 0;
-    gap: 32px;
-  }
-  
-  .hero-img {
-    width: 180px;
-    height: 180px;
-    object-fit: contain;
-    background: #fff3;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px #0001;
-  }
-  
-  .hero-content h1 {
-    margin: 0 0 10px 0;
-    font-size: 2.1em;
-    font-weight: 700;
-    letter-spacing: -1px;
-  }
-  
-  .hero-content p {
-    margin: 0 0 12px 0;
-    font-size: 1.15em;
-    opacity: 0.95;
-  }
-  
-  .countdown {
-    background: #fff2;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 1.1em;
-    display: inline-block;
-    margin-top: 8px;
-  }
-  input::placeholder {
-    color: #8395a7;
+    box-shadow: 0 8px 35px rgba(0, 0, 0, 0.10);
+    border: 1px solid #e5e5e5;
 }
-  .preregistro-form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    background: #fff;
-    margin: 32px auto 0 auto;
-    width: 60%;
-    padding: 28px 24px 20px 24px;
-    border-radius: 14px;
-    box-shadow: 0 2px 8px #0001;
-    position: relative;
-    top: -40px;
-    z-index: 2;
-  }
 
-  .form-row {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 18px;
-    flex-wrap: wrap;
-  }
-  
-  .form-group {
+
+/* =========================================================
+   PANEL IZQUIERDO
+   ========================================================= */
+
+.hero-section {
+    width: 40%;
+    min-height: 680px;
+    padding: 45px 35px;
     display: flex;
     flex-direction: column;
-    flex: 1;
-    min-width: 160px;
-  }
-  .form-row-3 .form-group {
-    min-width: 0; /* Permite que los 3 se ajusten mejor */
-    flex-basis: 0;
-  }
-  
-  
-  .preregistro-form input,
-  .preregistro-form select {
-    padding: 10px 12px;
-    border: 1.5px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 1em;
-    background: #fafbfc;
-    transition: border 0.2s;
-  }
-  
-  .preregistro-form input:focus,
-  .preregistro-form select:focus {
-    border: 1.5px solid #ee0979;
-    outline: none;
-  }
-  
-  .preregistro-form label {
-    font-size: 0.98em;
-    color: #666;
-    display: flex;
     align-items: center;
-    gap: 8px;
-  }
-  
-  .preregistro-form button {
-    background: linear-gradient(90deg, #D4367A 0%, #28AAE2 100%);
-    color: #fff;
-    border: none;
-    border-radius: 20px;
-    padding: 12px 0;
-    font-weight: 600;
-    font-size: 1.1em;
-    cursor: pointer;
-    margin-top: 8px;
-    transition: background 0.4s;
-  }
-  .preregistro-form button:hover {
-    background: linear-gradient(90deg, #28AAE2 0%, #D4367A 100%);
-  }
-  
-  .benefits, .testimonials {
-    max-width: 600px;
-    margin: 0 auto 0 auto;
-    background: #f7f8fa;
-    border-radius: 14px;
-    box-shadow: 0 2px 8px #0001;
-    padding: 24px 24px 12px 24px;
-    margin-top: 18px;
-  }
-  
-  .benefits h3 {
-    margin-top: 0;
-    color: #ee0979;
-    font-size: 1.15em;
-    font-weight: 600;
-  }
-  
-  .benefits ul {
-    padding-left: 18px;
-    margin: 10px 0 0 0;
-    color: #444;
-    font-size: 1em;
-  }
-  
-  .testimonials blockquote {
-    margin: 12px 0 0 0;
-    padding-left: 16px;
-    border-left: 4px solid #ee0979;
-    color: #555;
-    font-style: italic;
-    background: #fff;
-    border-radius: 6px;
-    padding: 10px 16px;
-  }
-  
-  @media (max-width: 900px) {
-    .hero-section {
-      flex-direction: column;
-      text-align: center;
-      gap: 18px;
-      padding: 28px 10px 18px 10px;
-    }
-    .hero-img {
-      width: 120px;
-      height: 120px;
-    }
-    .preregistro-form {
-      max-width: 95vw;
-      padding: 18px 8px 12px 8px;
-      top: -20px;
-    }
-    .benefits, .testimonials {
-      max-width: 98vw;
-      padding: 14px 8px 8px 8px;
-    }
-  }
+    justify-content: center;
+    text-align: center;
+
+    background: linear-gradient(
+        145deg,
+        #df1980 0%,
+        #c32a91 35%,
+        #7650c7 65%,
+        #008fe8 100%
+    );
+
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
 
 
+/* Efecto de luz */
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    left: -100px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+}
+
+.hero-section::after {
+    content: "";
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    bottom: -180px;
+    right: -150px;
+    background: rgba(0, 174, 255, 0.12);
+    border-radius: 50%;
+}
 
 
+/* =========================================================
+   IMAGEN / LOGO
+   ========================================================= */
+
+.hero-img {
+    width: 125px;
+    height: 125px;
+    object-fit: contain;
+
+    background: rgba(255, 255, 255, 0.15);
+    padding: 22px;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.15),
+        inset 0 0 0 1px rgba(255,255,255,0.18);
+
+    margin-bottom: 35px;
+
+    position: relative;
+    z-index: 2;
+     transform: translateY(-60px);
+}
 
 
-  .thankyou-container {
-    min-height: 100vh;
+/* =========================================================
+   TEXTO DEL PANEL IZQUIERDO
+   ========================================================= */
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+     transform: translateY(-60px);
+}
+
+.hero-content h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    font-weight: 800;
+    margin: 0 auto 18px;
+    max-width: 350px;
+}
+
+.hero-content p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 auto 25px;
+    max-width: 330px;
+    color: rgba(255,255,255,0.92);
+}
+
+
+/* Ocultamos el countdown viejo */
+
+.countdown {
+    display: none;
+}
+
+
+/* =========================================================
+   BENEFICIOS
+   ========================================================= */
+
+.benefits {
+    width: 100%;
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+
+    position: relative;
+    z-index: 2;
+     transform: translateY(-90px);
+}
+
+.benefits h3 {
+    font-size: 16px;
+    margin-bottom: 18px;
+    font-weight: 700;
+}
+
+.benefits ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.benefits li {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 13px;
+    padding-left: 25px;
+    text-align: left;
+    position: relative;
+}
+
+.benefits li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    width: 18px;
+    height: 18px;
+
+    border-radius: 50%;
+    background: rgba(255,255,255,0.20);
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(90deg, #D4367A 0%,  #28AAE2 100%);
 
-    /* background: linear-gradient(120deg, #ff6a00 0%, #ee0979 100%); */
-  }
-  
-  .thankyou-card {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
+
+.preregistro-form {
+    width: 63%;
+    padding: 42px 45px;
     background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 4px 24px #0002;
-    padding: 48px 36px 36px 36px;
-    width: 50%;
-    text-align: center;
-  }
-  
-  .thankyou-icon {
-    font-size: 3.5em;
-    margin-bottom: 18px;
-  }
-  
-  .thankyou-card h1 {
-    margin: 0 0 16px 0;
-    color: #ee0979;
-    font-size: 2em;
-    font-weight: 700;
-  }
-  
-  .thankyou-card p {
-    color: #444;
-    font-size: 1.1em;
-    margin-bottom: 10px;
-  }
-  
-  .thankyou-note {
-    font-size: 0.98em;
-    color: #888;
-    margin-top: 18px;
-  }
-  
-  .thankyou-note a {
-    color: #ee0979;
-    text-decoration: underline;
-  }
 
-  .w-30{
-    width: 30%;
-  }
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+/* =========================================================
+   FILAS
+   ========================================================= */
+
+.form-row {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+
+/* =========================================================
+   INPUTS Y SELECTS
+   ========================================================= */
+
+.preregistro-form input:not([type="checkbox"]),
+.preregistro-form select {
+    width: 100%;
+    height: 48px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d9dce2;
+    border-radius: 7px;
+
+    background: #fff;
+
+    padding: 0 15px;
+
+    font-size: 14px;
+    color: #303746;
+
+    outline: none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+
+/* Placeholder */
+
+.preregistro-form input::placeholder {
+    color: #89919e;
+    opacity: 1;
+}
+
+
+/* Focus */
+
+.preregistro-form input:not([type="checkbox"]):focus,
+.preregistro-form select:focus {
+    border-color: #c92a8c;
+
+    box-shadow:
+        0 0 0 3px rgba(201, 42, 140, 0.10);
+
+    background: #fff;
+}
+
+
+/* Select */
+
+.preregistro-form select {
+    cursor: pointer;
+    color: #737b88;
+}
+
+
+/* =========================================================
+   CHECKBOX
+   ========================================================= */
+
+.preregistro-form input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    accent-color: #d62a87;
+    cursor: pointer;
+}
+
+.preregistro-form label {
+    font-size: 14px;
+    color: #555e6c;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* =========================================================
+   TÍTULOS
+   ========================================================= */
+
+.preregistro-form h4,
+.preregistro-form h5 {
+    margin: 3px 0 -5px;
+    color: #293242;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   BOTÓN
+   ========================================================= */
+
+.glass-btn {
+    width: 100%;
+    height: 50px;
+
+    border: none;
+    border-radius: 7px;
+
+    background: linear-gradient(
+        90deg,
+        #d72883 0%,
+        #9b48bd 48%,
+        #168fdc 100%
+    );
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    margin-top: 3px;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+}
+
+.glass-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 18px rgba(160, 50, 170, 0.25);
+}
+
+.glass-btn:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   FECHA DE NACIMIENTO
+   ========================================================= */
+
+.form-row-3 {
+    gap: 10px;
+}
+
+.form-row-3 .form-group {
+    flex: 1;
+}
+
+
+/* =========================================================
+   MENSAJE DE GRACIAS
+   ========================================================= */
+
+.thankyou-container {
+    width: 100%;
+    min-height: 600px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+}
+
+.thankyou-card {
+    width: 100%;
+    max-width: 600px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 50px;
+
+    text-align: center;
+
+    box-shadow: 0 10px 35px rgba(0,0,0,0.10);
+
+    border: 1px solid #e8e8e8;
+}
+
+.thankyou-icon {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+.thankyou-card h1 {
+    color: #293242;
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.thankyou-card p {
+    color: #687180;
+    line-height: 1.6;
+}
+
+.thankyou-note {
+    margin-top: 25px;
+}
+
+.thankyou-card a {
+    color: #d32983;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .preregistro-container {
+        width: 94%;
+        margin: 25px auto;
+    }
+
+    .hero-section {
+        width: 38%;
+        padding: 30px 25px;
+    }
+
+    .preregistro-form {
+        width: 62%;
+        padding: 35px 30px;
+    }
+
+    .hero-content h1 {
+        font-size: 27px;
+    }
+
+    .hero-content p {
+        font-size: 14px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - MÓVIL
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .preregistro-container {
+        width: 94%;
+        margin: 15px auto;
+
+        display: block;
+
+        min-height: auto;
+
+        border-radius: 15px;
+    }
+
+    .hero-section {
+        width: 100%;
+        min-height: 330px;
+
+        padding: 35px 25px;
+    }
+
+    .hero-img {
+        width: 90px;
+        height: 90px;
+
+        padding: 16px;
+
+        margin-bottom: 20px;
+    }
+
+    .hero-content h1 {
+        font-size: 27px;
+    }
+
+    .hero-content p {
+        font-size: 14px;
+    }
+
+    .benefits {
+        margin-top: 20px;
+        padding-top: 18px;
+    }
+
+    .benefits li {
+        font-size: 13px;
+    }
+
+    .preregistro-form {
+        width: 100%;
+        padding: 30px 22px;
+        box-sizing: border-box;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .form-row-3 {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .form-row-3 .form-group {
+        min-width: 0;
+    }
+
+    .preregistro-form input:not([type="checkbox"]),
+    .preregistro-form select {
+        height: 47px;
+    }
+}
+
+
+/* =========================================================
+   MÓVILES PEQUEÑOS
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .preregistro-container {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        border: none;
+    }
+
+    .hero-section {
+        min-height: 300px;
+        border-radius: 0;
+    }
+
+    .preregistro-form {
+        padding: 25px 18px;
+    }
+
+    .hero-content h1 {
+        font-size: 24px;
+    }
+
+    .form-row-3 {
+        gap: 5px;
+    }
+}
+.benefits {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.benefit-icon {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.20);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.10);
+}
+
+.benefit-icon i {
+    font-size: 21px;
+}
+
+.benefit-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.benefit-text strong {
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.benefit-text span {
+    color: rgba(255, 255, 255, 0.90);
+    font-size: 12px;
+}
+.form-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.form-header-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+
+    border: 1px solid #e7dce5;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #d72883;
+    background: #fff;
+}
+
+.form-header-icon i {
+    font-size: 22px;
+}
+
+.form-header-text h2 {
+    margin: 0;
+    color: #202b3c;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.form-header-text p {
+    margin: 3px 0 0;
+    color: #7c8491;
+    font-size: 14px;
+}
+.intereses-section {
+    width: 100%;
+}
+
+.intereses-section h4 {
+    margin: 0 0 8px 0;
+    font-size: 13px !important;
+    font-weight: 700;
+    color: #202b3c;
+}
+
+.intereses-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.interes-option {
+    flex: 1;
+    height: 42px;
+
+    border: 1px solid #e1e3e8;
+    border-radius: 6px;
+
+    background: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    cursor: pointer;
+
+    color: #303846;
+    font-size: 12px;
+    font-weight: 600;
+
+    margin: 0;
+    padding: 0;
+
+    transition: all 0.2s ease;
+}
+
+.interes-option input[type="checkbox"] {
+    display: none;
+}
+
+.interes-option i {
+    color: #d72883;
+    font-size: 15px;
+}
+
+.interes-option:hover {
+    border-color: #d72883;
+    background: #fff9fc;
+}
+
+.interes-option:has(input:checked) {
+    border-color: #d72883;
+    background: #fff7fb;
+}
+.input-icon {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon > i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    color: #8b949f;
+    font-size: 16px;
+
+    z-index: 2;
+    pointer-events: none;
+}
+
+.input-icon input,
+.input-icon select {
+    padding-left: 45px !important;
+}
+
+
+/* Select */
+
+.select-icon select {
+    appearance: auto;
+}
+
+.select-icon > i {
+    color: #8b949f;
+}
+/* ========================================
+   TÉRMINOS Y CONDICIONES
+   ======================================== */
+
+.terminos-container {
+    width: 100%;
+    margin-top: 2px;
+}
+
+.terminos-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin: 0;
+
+    font-size: 13px;
+    color: #4f5866;
+
+    cursor: pointer;
+}
+
+
+/* Checkbox */
+
+.terminos-label input[type="checkbox"] {
+    width: 19px;
+    height: 19px;
+
+    margin: 0;
+
+    flex-shrink: 0;
+
+    border: 1px solid #d8dce2;
+
+    accent-color: #d72883;
+
+    cursor: pointer;
+}
+
+
+/* Texto */
+
+.terminos-label span {
+    line-height: 1.4;
+}
+
+
+/* Links */
+
+.terminos-label a {
+    color: #d72883;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.terminos-label a:hover {
+    text-decoration: underline;
+}
+
+
+/* ========================================
+   INICIAR SESIÓN
+   ======================================== */
+
+.login-link {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    margin-top: -5px;
+
+    font-size: 13px;
+    color: #737b87;
+}
+
+.login-link a {
+    color: #d72883;
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}

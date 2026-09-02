@@ -64,5 +64,37 @@ export interface ImagenSubasta {
     ancho: number;
     profundidad:number;
     urlGuia: string;
+    entregaSucursal: boolean;
+    horaRecolecta: string;
+    fechaRecoleccion: string;
   }
+   export interface detalleSubasta {
+    id: number;
+    caption: string;
+    descripcion: string;
+    ofertaActual: number;
+    valorOferta: number;
+    largo: number;
+    ancho: number;
+    profundidad: number;
+    peso: number;
+    marca: string;
+    modelo: string;
+    nuevo: boolean;
+    idVendedor: number;
+    usuarioVendedor: string;
+    fotoVendedor: string;
+    estado: string;
+    municipio: string;
+    codigoPostal: string;
+    tiempoVence: string;
+    vistas: number;
+    ofertas: number;
+    imagenes: Imagen[];
+  }
+
+  export interface Imagen {
+  idImagen: number;
+  url: string;
+ }
   

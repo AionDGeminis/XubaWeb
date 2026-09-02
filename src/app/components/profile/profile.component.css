@@ -2068,3 +2068,6 @@ body {
 .hasToReviewImg{
   border: 2px solid #e74c3c !important;
 }
+.w-20{
+    width: 25%;
+}
