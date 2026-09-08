@@ -96,6 +96,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   modoOscuro = false;
   ofertar: number = 0;
   classNavigateImg: string = '';
+  idSubasta: number = -1;
   @ViewChild('titulo', { static: false }) tituloElement!: ElementRef;
   @ViewChild('descripcion', { static: false }) descripcionElement!: ElementRef;
   @ViewChild('botonApuesta') botonApuesta!: ElementRef;
@@ -118,6 +119,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     this.checkTheme();
     this.usuario = this.authService.currentUser;
     const id = +this.route.snapshot.paramMap.get('id')!;
+    this.idSubasta = id;
     console.log(id)
     this.getInitialData(id);
     this.isLoggedIn = computed(() => !!this.usuario());
@@ -606,10 +608,11 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         this.tiempoVence = this.restarUnSegundo(this.tiempoVence);
         if (this.tiempoVence === '00:00:00') {
           console.log('subasta terminada')
+          console.log(this.subasta!)
           this.vencida = true;
           this.temporizadorSub$?.unsubscribe();
           this.consultarGanador();
-          let dataParams = JSON.stringify({ idSubasta: this.subasta!.id, tipoUsuario: 'comprador' });
+          let dataParams = JSON.stringify({ idSubasta: this.idSubasta, tipoUsuario: 'comprador' });
           let encoded = this.ss.encodeToBase64(dataParams);
           this.router.navigate(['/subasta-terminada', encoded]);
         }
