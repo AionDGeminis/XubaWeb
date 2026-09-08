@@ -351,14 +351,14 @@ export class ProfileComponent implements OnInit {
   }
 
   loadInitData() {
-    
+
     this.getWalletPagos();
     this.usuario = this.authService.currentUser;
     this.isLoggedIn = computed(() => !!this.usuario());
     if (this.isLoggedIn()) {
       this.getInformacionUsuario(this.usuario()!.id);
       console.log('consulta perfil')
-      this.getInformacionPerfil(this.usuario()!.id);
+      //this.getInformacionPerfil(this.usuario()!.id);
     }
 
   }
@@ -374,17 +374,17 @@ export class ProfileComponent implements OnInit {
     // Actualiza el input si el usuario pegó algo no numérico
   }
 
-  getInformacionPerfil(idUsuario: number) {
-    this.loading = true;
-    this.profileService.ConsultarDatosUsuario(idUsuario).subscribe({
-      next: (res: any) => {
-        console.log(res)
-      },
-      error: (err: any) => {
-        this.loading = false;
-      }
-    });
-  }
+  // getInformacionPerfil(idUsuario: number) {
+  //   this.loading = true;
+  //   this.profileService.ConsultarDatosUsuario(idUsuario).subscribe({
+  //     next: (res: any) => {
+  //       console.log(res)
+  //     },
+  //     error: (err: any) => {
+  //       this.loading = false;
+  //     }
+  //   });
+  // }
 
   getInformacionUsuario(idUsuario: number) {
     this.loading = true;
@@ -397,6 +397,7 @@ export class ProfileComponent implements OnInit {
         this.idOrganizacion = response.idOrganizacion;
         console.log(this.infoUsuario);
         this.checkListSubastar = response.checkList;
+        this.datosFiscales = response.datosFiscales;
         this.checkCurrentMainIndexPage();
       },
       error: (err: any) => {
@@ -410,7 +411,7 @@ export class ProfileComponent implements OnInit {
   checkCurrentMainIndexPage() {
     this.checkSavedPageIndex();
     switch (this.tabIndex) {
-      case 0: this.getDataPageGeneral();
+      case 0: //this.getDataPageGeneral();
         break;
       case 1:
         break;
@@ -447,7 +448,7 @@ export class ProfileComponent implements OnInit {
   setCurrentTabPage(index: number) {
     this.tabIndex = index;
     switch (index) {
-      case 0: this.getDataPageGeneral();
+      case 0: //this.getDataPageGeneral();
         break;
       case 1:
         this.tabSubastasIndex = this.getCurrenTabSubastaIndex();
@@ -489,10 +490,10 @@ export class ProfileComponent implements OnInit {
   // =========================================================
 
 
-  getDataPageGeneral() {
-    this.getListaReclamosAbiertos();
-    this.getDirecciones(this.infoUsuario.id);
-  }
+  // getDataPageGeneral() {
+  //   this.getListaReclamosAbiertos();
+  //   this.getDirecciones(this.infoUsuario.id);
+  // }
 
   getListaReclamosAbiertos() {
     let id = this.infoUsuario.id;
