@@ -143,7 +143,7 @@
             <th class="text-center">Default</th>
             <th>Acciones</th>
           </tr>
-          <tr *ngFor="let d of direcciones">
+          <tr *ngFor="let d of infoUsuario.direcciones">
             <td class="w-70 bbtd tddir">{{d.calle}} #{{d.numeroExt}}, {{d.municipio}}</td>
             <td class="w-10 bbtd tw:text-center">
               <span style="font-size: 0.7em;border: none;" class="tw:badge tw:badge-sm smaller-txt"
@@ -965,12 +965,10 @@
                   <p>Tipo de facturacion</p>
                   <div class="tipo-subasta pt-2 pb-2">
                     <label>
-                      <input type="radio" name="tipoValidacion" value="Sellos"
-                         /> Sellos Fiscales
+                      <input type="radio" name="tipoValidacion" value="Sellos" /> Sellos Fiscales
                     </label>
                     <label class="ms-5">
-                      <input type="radio" name="tipoValidacion" value="CuentaTerceros"
-                         /> A cuenta de terceros
+                      <input type="radio" name="tipoValidacion" value="CuentaTerceros" /> A cuenta de terceros
                     </label>
                   </div>
                 </div>
@@ -978,8 +976,7 @@
 
               <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
 
-                <ng-container
-                  *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && tipoValidacion === 'Sellos'">
+                <ng-container *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && tipoValidacion === 'Sellos'">
                   <div class="form-row">
                     <div class="form-group">
                       <label>Archivo CERT</label>
@@ -1011,8 +1008,7 @@
                     <button class="btn-xuba btn-pill" (click)="sendEfirma()">Subir archivos</button>
                   </div>
                 </ng-container>
-                <ng-container
-                  *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && tipoValidacion === 'CuentaTerceros'">
+                <ng-container *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && tipoValidacion === 'CuentaTerceros'">
 
                   <div class="contrato-container">
                     <header class="contrato-header">
