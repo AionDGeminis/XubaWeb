@@ -29,6 +29,7 @@ export class WinnerViewComponent implements OnInit {
   @Input() ganadorInfo: any | null = null;
   @Input() usuario!: Usuario | null;
   @Input() isLoggedIn!: Signal<boolean>;
+  @Input() idSubasta!: number;
 
   ordenEstatusValidaciones: any = {
     SST: 1, ACT: 2, FIN: 3, MNA: 4, PGA: 5,
@@ -137,6 +138,9 @@ export class WinnerViewComponent implements OnInit {
     'address', 'allows_charges', 'allows_payouts', 'bank_code', 'bank_name', '', '', '', '',
     '', '', '', '', '', '', ''
   ];
+  // USERIDREF
+  // en cookies eliminar cualquiere referencia a un id de usuario
+  currentIdUsuario: number = -1;
 
 
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
@@ -154,17 +158,13 @@ export class WinnerViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentIdUsuario = this.usuario!.id;
     // OpenPay.setId('mz5jjyzabcb3zzpevo0l');
     // OpenPay.setApiKey('pk_f2da5530e74d4c7fbf292d886aba5e50');
     // OpenPay.setSandboxMode(true);
     OpenPay.setId(environment.openPayId);
     OpenPay.setApiKey(environment.openPayApiKey);
     OpenPay.setSandboxMode(environment.openPaySandBox);
-    // window.addEventListener('message', (event) => {
-    //   if (event.data?.status) {
-    //     this.handle3DSResult(event.data);
-    //   }
-    // });
 
 
     // if(this.ganadorInfo && this.ganadorInfo.numGuia && this.ganadorInfo.numGuia.trim() !== ''){
@@ -198,11 +198,12 @@ export class WinnerViewComponent implements OnInit {
   }
 
   getInformacionUsuario(idUsuario: number) {
+    console.log(idUsuario)
     this.authService.consultarDatosUsuario(idUsuario).subscribe({
       next: (response: any) => {
         this.infoUsuario = response;
 
-        this.getDireccionesEntrega(this.infoUsuario.id); // <-- Agregar
+        this.getDireccionesEntrega(this.currentIdUsuario); // <-- Agregar
 
         this.getInitialData(true);
 
@@ -215,15 +216,24 @@ export class WinnerViewComponent implements OnInit {
 
 
   getInitialData(reloadSubastaInfo?: boolean) {
-    if (this.subasta) {
+    // if (this.subasta) {
 
+    //   console.log(this.subasta)
+    //   this.precioActualSubasta = this.subasta.apuesta;
 
-      this.precioActualSubasta = this.subasta.apuesta;
+    //   this.getHistorialEstatus(this.subasta.id, () => {
+    //     this.getInformacionGanador(this.subasta!.id);
+    //   });
+    // }
+    this.getDatosSubasta(this.idSubasta);
+    this.getSecureCards();
+  }
 
-      this.getHistorialEstatus(this.subasta.id, () => {
-        this.getInformacionGanador(this.subasta!.id);
-      });
+  getSubastaDireccionLabel(): string {
+    if (this.subasta && this.subasta.direccion) {
+      return `${this.subasta.direccion.municipio}, ${this.subasta.direccion.estado}`;
     }
+    return '';
   }
 
   getDatosSubasta(id: number) {
@@ -231,8 +241,11 @@ export class WinnerViewComponent implements OnInit {
     this.subastasService.getAuctionById(id).subscribe({
       next: (subasta) => {
         this.subasta = subasta;
+        this.precioActualSubasta = this.subasta.apuesta;
+        this.precioTotal = 10;
         this.loading = false;
-        this.getDireccionesEntrega(this.infoUsuario.id);
+        //this.getDireccionesEntrega(this.infoUsuario.id);
+        this.getInformacionGanador(this.idSubasta);
       },
       error: (err) => {
         console.error('Error fetching auction details:', err);
@@ -242,6 +255,7 @@ export class WinnerViewComponent implements OnInit {
   }
 
   getInformacionGanador(IdSubasta: number) {
+    console.log(IdSubasta)
     this.loading = true;
     this.subastasService.GetInformacionSubastaTerminada(IdSubasta).subscribe({
       next: (response) => {
@@ -294,7 +308,8 @@ export class WinnerViewComponent implements OnInit {
   }
 
   async getSecureCards() {
-    this.openPayService.getTarjetasUsuario(this.infoUsuario.id).subscribe({
+    // this.openPayService.getTarjetasUsuario(this.infoUsuario.id).subscribe({
+    this.openPayService.getTarjetasUsuario(this.currentIdUsuario).subscribe({
       next: (response: any) => {
         this.tarjetas = response;
         let newCard = this.getNewCardModel();
@@ -310,9 +325,10 @@ export class WinnerViewComponent implements OnInit {
   }
 
   getDireccionesEntrega(idUsuario: number) {
+    console.log(idUsuario)
     this.subastasService.GetDireccionesUsuario(idUsuario, '').subscribe({
       next: (response: any) => {
-
+        console.log(response)
         this.listaDireccionesEntrega = response;
         this.miDireccionEntrega = this.listaDireccionesEntrega.length > 0 ? this.listaDireccionesEntrega.find((direccion: any) => direccion.predeterminada) : null;
 
@@ -621,7 +637,7 @@ export class WinnerViewComponent implements OnInit {
         this.tipoEnvioSeleccionado = this.listaTiposEnvio[0];
         this.precioEnvio = this.tipoEnvioSeleccionado.precio
         // this.precioTotal = 1;
-        this.precioTotal = +(this.precioActualSubasta + this.precioEnvio).toFixed(2);
+        // this.precioTotal = +(this.precioActualSubasta + this.precioEnvio).toFixed(2);
       },
       error: (err) => {
         this.loading = false;
@@ -694,6 +710,7 @@ export class WinnerViewComponent implements OnInit {
   toCurrency(valor: number): string {
     return this.ss.toCurrency(valor);
   }
+
   setComprobanteModel() {
     let clienteNombre = `${this.ganadorInfo?.nombre} ${this.ganadorInfo?.apellido}`
 
@@ -921,7 +938,7 @@ export class WinnerViewComponent implements OnInit {
       mail: this.tarjeta.mail,
       phone: this.tarjeta.phone
     }
-
+    console.log(_card)
     if (!this.ss.isValidModel(_card, omitir)) {
       this.ss.showNotification('error', 'Datos faltantes');
       return;
@@ -935,10 +952,12 @@ export class WinnerViewComponent implements OnInit {
         if (_card.id) {
           this.setComprobanteModel();
           let d_id = this.ss.getDeviceSessionID();
+          console.log(d_id)
           let metodoPagoDescripcion = `Tarjeta • ${this.selectedCard.brand} • **** ${this.selectedCard.card_number}`;
           this.modeloComprobante.metodoPago = metodoPagoDescripcion;
           this.textoLoading = 'Procesando pago...'
           this.GenerarCargo('', d_id, _card.id)
+
         } else {
           this.tokenizarTarjeta(_card);
         }
@@ -951,6 +970,7 @@ export class WinnerViewComponent implements OnInit {
     this.textoLoading = 'Procesando pago...'
     this.setComprobanteModel();
     let r = await this.ss.tokenizarTarjeta(card);
+    console.log(r)
     // let r = await this.ss.tokenizarTarjeta(this.tarjeta);
     if (r.ok) {
       this.modeloComprobante.metodoPago = r.metodo_desc;
@@ -963,9 +983,11 @@ export class WinnerViewComponent implements OnInit {
 
   generarModeloCargo(deviceSessionId: any, encodedAuth: string) {
     let userData = this.authService.getUserData();
+    console.log(userData)
     const dataCharge: any = {
       // 'token': tokenId,
-      'amount': this.subasta!.apuesta,
+      // 'amount': this.subasta!.apuesta,
+      'amount': this.precioTotal,
       'description': 'Pago subasta GANADA-' + userData.id + '-' + this.subasta!.caption,
       'name': this.tarjeta.holder_name,
       'lastName': this.tarjeta.holder_lastname,
@@ -1024,8 +1046,8 @@ export class WinnerViewComponent implements OnInit {
     this.ss.setLocalStorageEncodedKey('tmp_direccion_eg', this.miDireccionEntrega.id);
     this.ss.setLocalStorageEncodedKey('tmp_ticket_model', JSON.stringify(this.modeloComprobante));
     this.ss.setLocalStorageEncodedKey('tmp_paqueteria_model', JSON.stringify(this.paqueteriaRequestModel));
-    this.ss.setLocalStorageEncodedKey('tmp_recoleccion_model',JSON.stringify(this.recoleccionRequestModel)
-);
+    this.ss.setLocalStorageEncodedKey('tmp_recoleccion_model', JSON.stringify(this.recoleccionRequestModel)
+    );
   }
 
   async GenerarCargo(tokenId: string, deviceSessionId: any, card_id?: any) {
@@ -1038,6 +1060,8 @@ export class WinnerViewComponent implements OnInit {
     let encodedAuth = this.ss.encodeToBase64(dataParamsEndAuth);
 
     const dataCharge: any = this.generarModeloCargo(deviceSessionId, encodedAuth!);
+    console.log(dataCharge)
+    console.log(JSON.stringify(dataCharge))
     if (card_id) {
       dataCharge.idTarjeta = card_id;
       dataCharge.customerId = this.infoUsuario.customer_Id
@@ -1048,7 +1072,7 @@ export class WinnerViewComponent implements OnInit {
     }
     this.loading = true;
     let responseCharge = await this.getChargePaymentResponse(dataCharge, card_id);
-
+    console.log(responseCharge)
     if (responseCharge.success) {
       let res: any = card_id ? responseCharge.result : JSON.parse(responseCharge.result.message);
       if (res.error_code || res.error_message) {
@@ -1119,7 +1143,7 @@ export class WinnerViewComponent implements OnInit {
     this.createPaqueteriaModel();
     this.createRecoleccionModel();
     //this.probarGuia();
-     
+
 
     setTimeout(() => {
       this.subastasService.generarGuiaPaqueteria(this.paqueteriaRequestModel).subscribe({
