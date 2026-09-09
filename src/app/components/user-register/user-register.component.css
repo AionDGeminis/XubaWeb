@@ -30,13 +30,11 @@
     justify-content: center;
     text-align: center;
 
-    background: linear-gradient(
-        145deg,
-        #df1980 0%,
-        #c32a91 35%,
-        #7650c7 65%,
-        #008fe8 100%
-    );
+    background: linear-gradient(145deg,
+            #df1980 0%,
+            #c32a91 35%,
+            #7650c7 65%,
+            #008fe8 100%);
 
     color: white;
     position: relative;
@@ -53,7 +51,7 @@
     height: 300px;
     top: -100px;
     left: -100px;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 50%;
 }
 
@@ -85,13 +83,13 @@
 
     box-shadow:
         0 8px 20px rgba(0, 0, 0, 0.15),
-        inset 0 0 0 1px rgba(255,255,255,0.18);
+        inset 0 0 0 1px rgba(255, 255, 255, 0.18);
 
     margin-bottom: 35px;
 
     position: relative;
     z-index: 2;
-     transform: translateY(-60px);
+    transform: translateY(-60px);
 }
 
 
@@ -102,7 +100,7 @@
 .hero-content {
     position: relative;
     z-index: 2;
-     transform: translateY(-60px);
+    transform: translateY(-60px);
 }
 
 .hero-content h1 {
@@ -118,7 +116,7 @@
     line-height: 1.6;
     margin: 0 auto 25px;
     max-width: 330px;
-    color: rgba(255,255,255,0.92);
+    color: rgba(255, 255, 255, 0.92);
 }
 
 
@@ -137,11 +135,11 @@
     width: 100%;
     margin-top: 35px;
     padding-top: 25px;
-    border-top: 1px solid rgba(255,255,255,0.18);
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
 
     position: relative;
     z-index: 2;
-     transform: translateY(-90px);
+    transform: translateY(-90px);
 }
 
 .benefits h3 {
@@ -175,7 +173,7 @@
     height: 18px;
 
     border-radius: 50%;
-    background: rgba(255,255,255,0.20);
+    background: rgba(255, 255, 255, 0.20);
 
     display: flex;
     align-items: center;
@@ -318,12 +316,10 @@
     border: none;
     border-radius: 7px;
 
-    background: linear-gradient(
-        90deg,
-        #d72883 0%,
-        #9b48bd 48%,
-        #168fdc 100%
-    );
+    background: linear-gradient(90deg,
+            #d72883 0%,
+            #9b48bd 48%,
+            #168fdc 100%);
 
     color: white;
 
@@ -392,7 +388,7 @@
 
     text-align: center;
 
-    box-shadow: 0 10px 35px rgba(0,0,0,0.10);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.10);
 
     border: 1px solid #e8e8e8;
 }
@@ -562,6 +558,7 @@
         gap: 5px;
     }
 }
+
 .benefits {
     width: 100%;
     margin-top: 30px;
@@ -613,6 +610,7 @@
     color: rgba(255, 255, 255, 0.90);
     font-size: 12px;
 }
+
 .form-header {
     display: flex;
     align-items: center;
@@ -652,6 +650,7 @@
     color: #7c8491;
     font-size: 14px;
 }
+
 .intereses-section {
     width: 100%;
 }
@@ -714,12 +713,13 @@
     border-color: #d72883;
     background: #fff7fb;
 }
+
 .input-icon {
     position: relative;
     width: 100%;
 }
 
-.input-icon > i {
+.input-icon>i {
     position: absolute;
     left: 15px;
     top: 50%;
@@ -744,9 +744,10 @@
     appearance: auto;
 }
 
-.select-icon > i {
+.select-icon>i {
     color: #8b949f;
 }
+
 /* ========================================
    TÉRMINOS Y CONDICIONES
    ======================================== */
@@ -837,4 +838,58 @@
 
 .login-link a:hover {
     text-decoration: underline;
+}
+
+
+.input-icon {
+    position: relative;
+}
+
+.validacion-icono {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes girar {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate__girar {
+    animation-name: girar;
+}
+
+.validate-text {
+    font-size: 0.7rem;
+    font-weight: 100;
+    color: #636e72;
+    /* margin-top: 5px; */
+    /* display: block; */
+    /* margin-left: 20px; */
+}
+
+.fs7e {
+    font-size: 0.7rem;
 }

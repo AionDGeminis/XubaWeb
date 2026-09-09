@@ -166,7 +166,20 @@ export class SharedService {
     });
   }
 
-  showMessage(tipo: tipoNotificacion, texto: string, tiempo?: number) {
+  showAlert() {
+    Swal.fire({
+      title: "Good job!",
+      text: "You clicked the button!",
+      icon: "success",
+      customClass: {
+        container: 'index-on-top',
+        popup: 'swal2-custom-warning'
+      },
+      timer: 0,
+    });
+  }
+
+  showMessage(tipo: tipoNotificacion, texto: string, tiempo?: number, titulo?: string) {
     let color: string;
     let timeActive = tiempo ?? 2000;
     let clase = '';
@@ -189,7 +202,7 @@ export class SharedService {
         break;
     }
     Swal.fire({
-      // title: 'Error!',
+      title: titulo ?? '',
       // customClass: clase,
       //text: texto,
       icon: tipo,
@@ -1100,9 +1113,9 @@ export class SharedService {
         },
         (error: any) => {
           console.log(error);
-console.log(error.data);
-console.log(error.data.description);
-console.log(error.data.error_code);
+          console.log(error.data);
+          console.log(error.data.description);
+          console.log(error.data.error_code);
 
           let res_error = error.data;
           let errorMessage = this.getTextoErrorTokenOpenPay(res_error.description);

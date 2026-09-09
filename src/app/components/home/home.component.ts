@@ -346,10 +346,9 @@ export class HomeComponent implements OnInit {
     let subasta = this.ss.getLocalStorageEncodedKey('first_xubasta');
     if (first) {
       setTimeout(() => {
-        // this.openModalCreateAuction();
         this.ss.removeLocalStorageEncodedKey('first_home');
-        this.ss.showMessage('info', 'Registro exitoso<br >Favor de revisar tu correo para validar tu cuenta');
-        // this.ss.showNotification('info', 'Registro exitoso, enviamos un correo para validar tu cuenta', 4000);
+        //this.ss.showAlert();
+        this.ss.showMessage('info', 'Favor de revisar tu correo para validar tu cuenta<br >(Si no lo ves en la bandeja de entrada, revisa la carpeta de spam)', 0, 'Registro exitoso');
       }, 550);
     }
 
@@ -559,7 +558,7 @@ export class HomeComponent implements OnInit {
     }
   }
   abrirRegistro() {
-    this.router.navigate(['/preregistro']);
+    this.router.navigate(['/registro']);
   }
   abrirpoliticasdeuso() {
     this.router.navigate(['/politica-de-uso']);
