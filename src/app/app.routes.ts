@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import {  RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { AuctionDetailComponent } from './components/auction-detail/auction-detail.component';
 import { CreateAuctionsComponent } from './components/create-auctions/create-auctions.component';
@@ -20,16 +20,16 @@ export const routes: Routes = [
     { path: 'subasta-detalle/:id/:origen', component: AuctionDetailComponent },
     { path: 'my-subasta-detalle/:id', component: MyAuctionDetailComponent },
     { path: 'subasta-terminada/:permissionData', component: AuctionFinishedComponent },
-    { path: 'profile', component:ProfileComponent },
-    { path: 'crearSubasta', component:CreateAuctionsComponent },
-    { path: 'preregistro', component:UserRegisterComponent },
-    { path: 'userpage/:id', component:UserpageComponent },
-    { path: 'payment-callback/:responseData', component:AuthCallbackComponent },
-    { path: 'search-result', component:SearchResultComponent },
-    { path: 'validate/:userValidateData', component:ValidateComponent },
-    { path: 'change-password/:userValidateData', component:ChangePasswordComponent },
+    { path: 'profile', component: ProfileComponent },
+    { path: 'crearSubasta', component: CreateAuctionsComponent },
+    { path: 'registro', component: UserRegisterComponent },
+    { path: 'userpage/:id', component: UserpageComponent },
+    { path: 'payment-callback/:responseData', component: AuthCallbackComponent },
+    { path: 'search-result', component: SearchResultComponent },
+    { path: 'validate/:userValidateData', component: ValidateComponent },
+    { path: 'change-password/:userValidateData', component: ChangePasswordComponent },
     { path: 'politica-de-uso', component: PoliticaDeUsoComponent },
-    { path: 'aviso-de-privacidad', component: AvisoPrivacidadComponent},
+    { path: 'aviso-de-privacidad', component: AvisoPrivacidadComponent },
     // { path: 'search-result/:paramSearch', component:SearchResultComponent },
     { path: '**', redirectTo: 'home' }
     // { path: '**', redirectTo: 'home' }
@@ -38,6 +38,6 @@ export const routes: Routes = [
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]    
-  })
-  export class AppRoutingModule { }
+    exports: [RouterModule]
+})
+export class AppRoutingModule { }
