@@ -573,7 +573,8 @@ export class ProfileComponent implements OnInit {
         console.log(response);
         this.loading = false;
         this.ss.showNotification('success', 'Direccion  agregada correctamente');
-        this.getDirecciones(this.usuario()!.id);
+        // this.getDirecciones(this.usuario()!.id);
+        this.getInformacionUsuario(this.usuario()!.id);
         this.initDireccion();
         this.closeModal('direccion');
       },

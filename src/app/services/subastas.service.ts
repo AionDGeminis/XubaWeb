@@ -8,6 +8,7 @@ import { PerfilVendedor } from '../models/UserPage.model';
 import { UrlCodec } from '@angular/common/upgrade';
 // const API_BASE_URL = (window as any).apiBaseUrl;
 import { environment as env, headers, auth_headers, test_headers } from '../environment/environment';
+import { Apuesta } from '../models/apuesta-model';
 
 @Injectable({ providedIn: 'root' })
 
@@ -88,13 +89,13 @@ export class SubastasService {
       }
     );
   }
-  
-  
+
+
   DescargarGuiaDhl(url: string) {
     const link = `${env.base_url}/DHL/DescargarGuia?url=${encodeURIComponent(url)}`
     window.location.href = link;
   }
-  
+
   ConsultarUltimasVistas(data: any): Observable<any> {
     return this.http.post(
       `${env.base_url}/subastas/ConsultarUltimasVistas`,
@@ -144,7 +145,7 @@ export class SubastasService {
     return this.http.post(`${this.apiPaqueteria}/DHL/Envio`, data, { headers: test_headers }).pipe(map(res => res));
   }
   generarRecoleccion(model: any) {
-    return this.http.post( `${this.apiPaqueteria}/DHL/SolicitarRecoleccion`,model);
+    return this.http.post(`${this.apiPaqueteria}/DHL/SolicitarRecoleccion`, model);
   }
 
   saveDireccionEntregaComprador(modelData: any) {
@@ -279,11 +280,12 @@ export class SubastasService {
     return this.http.post(`${env.base_url}/Subastas/EditarSubastaRechazada`, data, { headers: test_headers }).pipe(map(res => res));
   }
   ConsultarSubastaOfertarId(idSubasta: number) {
-  return this.http.get<any>(`${env.base_url}/subastas/ConsultarSubastaOfertarId?idSubasta=${idSubasta}`);}
+    return this.http.get<any>(`${env.base_url}/subastas/ConsultarSubastaOfertarId?idSubasta=${idSubasta}`);
+  }
 
- ConsultarPerfilVendedorId(idVendedor: number, idUsuario: number) {
-  return this.http.get<PerfilVendedor>( `${env.base_url}/Vendedores/ConsultarPerfilVendedorId`,{ params: { idVendedor, idUsuario } } );
-}
+  ConsultarPerfilVendedorId(idVendedor: number, idUsuario: number) {
+    return this.http.get<PerfilVendedor>(`${env.base_url}/Vendedores/ConsultarPerfilVendedorId`, { params: { idVendedor, idUsuario } });
+  }
   registrarVista(data: any) {
     return this.http.post(`${env.base_url}/subastas/RegistrarVista`, data, { headers: test_headers }).pipe(map(res => res));
   }
@@ -323,40 +325,43 @@ export class SubastasService {
   //     print('Error en la solicitud DELETE[noseguirVendedor]: $e');
   //   }
   // }
-
-  enviarApuesta(data: {
-    idSubasta: number;
-    idComprador: number;
-    apuesta: number;
-    compraDirecta: boolean;
-  }): Observable<any> {
-    const apiUrl = `${env.base_url}/apuestas`;
-
-    const body = {
-      id: 0,
-      idSubasta: data.idSubasta,
-      idComprador: data.idComprador,
-      apuesta: data.apuesta,
-      creado: new Date().toISOString(),
-      compraDirecta: data.compraDirecta,
-      cantidadApuestas: 0,
-      musuarios: {
-        id: 0,
-        nombre: '',
-        apellido: '',
-        telefono: '',
-        correo: '',
-        contra: '',
-        auth: false,
-        stars: 0,
-        registrado: false,
-        subastasActivas: 0,
-        usuario: '',
-        creado: new Date().toISOString(),
-        imgPerfil: ''
-      }
-    };
-    console.log(body)
-    return this.http.post(apiUrl, body);
+  enviarApuesta(apuesta: Apuesta) {
+    return this.http.post(`${env.base_url}/apuestas`, apuesta, { headers: test_headers }).pipe(map(res => res));
   }
+
+  // enviarApuesta(apuesta: Apuesta): Observable<any> {
+  // // enviarApuesta(data: {idSubasta: number;
+  // //   idComprador: number;
+  // //   apuesta: number;
+  // //   compraDirecta: boolean;
+  // // }): Observable<any> {
+  //   const apiUrl = `${env.base_url}/apuestas`;
+
+  //   const body = {
+  //     id: 0,
+  //     idSubasta: apuesta.idSubasta,
+  //     idComprador: apuesta.idComprador,
+  //     apuesta: apuesta.apuesta,
+  //     creado: new Date().toISOString(),
+  //     compraDirecta: apuesta.compraDirecta,
+  //     cantidadApuestas: 0,
+  //     musuarios: {
+  //       id: 0,
+  //       nombre: '',
+  //       apellido: '',
+  //       telefono: '',
+  //       correo: '',
+  //       contra: '',
+  //       auth: false,
+  //       stars: 0,
+  //       registrado: false,
+  //       subastasActivas: 0,
+  //       usuario: '',
+  //       creado: new Date().toISOString(),
+  //       imgPerfil: ''
+  //     }
+  //   };
+  //   console.log(body)
+  //   return this.http.post(apiUrl, body);
+  // }
 }
