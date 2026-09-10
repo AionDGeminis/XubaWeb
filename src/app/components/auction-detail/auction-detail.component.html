@@ -1,4 +1,40 @@
-<div class="main-detail-wrapper" [class.dark-mode]="modoOscuro">
+<div *ngIf="!isValidExistingSubasta && !gettingData">
+  <div class="error-page">
+    <div class="error-illustration">
+      <span class="error-number">4</span>
+
+      <div class="error-zero">
+        <div class="error-document">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="error-alert">!</div>
+      </div>
+
+      <span class="error-number">4</span>
+    </div>
+
+    <h1>Xubasta no encontrada</h1>
+
+    <p>
+      Lo sentimos, la página que solicitaste no se encontró.
+      <br>
+      Por favor, regresa a la página principal.
+    </p>
+
+    <button type="button" class="home-button" (click)="backToHome()">
+      Volver a Home
+    </button>
+  </div>
+</div>
+
+<div *ngIf="gettingData">
+  <app-loader></app-loader>
+</div>
+
+<div *ngIf="isValidExistingSubasta && !gettingData" class="main-detail-wrapper" [class.dark-mode]="modoOscuro">
   <app-loader *ngIf="loading"></app-loader>
 
   <!-- Mobile Bottom Sheet Container (en Desktop se comporta como display: contents) -->
@@ -59,24 +95,26 @@
 
           <!-- Vendedor -->
           <div class="glass" style="flex-shrink: 0; border-radius: 16px; padding: 12px;">
-            <p style="font-size: 9px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
+            <p
+              style="font-size: 9px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
               Vendido por</p>
             <div class="Vendido">
               <div class="marco">
                 <div class="usuario-contenedor">
-                 <img [src]="detallesubasta.fotoVendedor" class="imagen-usuario">
-                <p class="usuario" (click)="openUserPage(detallesubasta.idVendedor)">{{ detallesubasta.usuarioVendedor}}
-                  <span>
-                    <a class="icon-link icon-link-hover">
-                      Perfil
-                      <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
-                        <path
-                          d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
-                      </svg>
-                    </a>
-                  </span>
+                  <img [src]="detallesubasta.fotoVendedor" class="imagen-usuario">
+                  <p class="usuario" (click)="openUserPage(detallesubasta.idVendedor)">{{
+                    detallesubasta.usuarioVendedor}}
+                    <span>
+                      <a class="icon-link icon-link-hover">
+                        Perfil
+                        <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+                          <path
+                            d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                        </svg>
+                      </a>
+                    </span>
 
-                </p>
+                  </p>
                 </div>
                 <div style="display: flex; align-items: center; gap: 3px;">
                   <i class="fas fa-star" style="color: #f59e0b; font-size: 10px;"></i>
@@ -117,7 +155,7 @@
               <p style="font-size: 11px; color: var(--text2); line-height: 1.7;">
                 {{detallesubasta.descripcion?.slice(0, 200) }}
                 <span>
-                  <a class="icon-link icon-link-hover" style="cursor: pointer"  (click)="abrirmodaldescripcion()">
+                  <a class="icon-link icon-link-hover" style="cursor: pointer" (click)="abrirmodaldescripcion()">
                     Ver mas
                     <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
                       <path
@@ -199,10 +237,11 @@
   <!-- ══════════════ CENTRO ══════════════ -->
   <div class="column-center">
 
-    <!-- Header de la subasta (SÓLO MÓVIL) -->
+    <!-- Header de la subasta (SOLO MOVIL) -->
     <div class="d-lg-none px-3 pt-3 d-flex flex-row align-items-center justify-content-between"
       style="flex-shrink: 0; gap: 10px;">
-      <button (click)="irAAnterior()" class="glass"
+      <button (click)="irAAnterior()" class="glass" [disabled]="indiceActual <= 0"
+        [ngClass]="{'btn-disabled': !lista || lista.length  === 0}"
         style="width: 36px; height: 36px; border: none; border-radius: 50%; color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
         <i class="fas fa-chevron-left"></i>
       </button>
@@ -214,7 +253,8 @@
         </h2>
       </div>
 
-      <button (click)="irASiguiente()" class="glass"
+      <button (click)="irASiguiente()" [disabled]="!lista || lista.length  === 0" class="glass"
+        [ngClass]="{'btn-disabled': !lista || lista.length  === 0}"
         style="width: 36px; height: 36px; border: none; border-radius: 50%; color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
         <i class="fas fa-chevron-right"></i>
       </button>
@@ -223,24 +263,31 @@
     <!-- Banner ganando -->
     <div class="contenedor-botones">
       <div class="botones-navegacion">
-        <button (click)="irAAnterior()" class="glass-btn">
+        <button (click)="irAAnterior()" [disabled]="indiceActual <= 0" [ngClass]="{'btn-disabled': indiceActual <= 0}"
+          class="glass-btn">
           <i class="fas fa-chevron-left"></i> Ant
         </button>
 
         <!-- Si hay usuarioMayor lo muestra, si no muestra "Conectando..." -->
-        <div *ngIf="usuarioMayor; else conectando"
+        <div *ngIf="!connectingSignalR && usuarioMayor"
           [class]="'glass glass-label fast-animation animate__animated ' + animatedClass">
           <span class="usuario-mayor">{{usuarioMayor}}</span>
           <span class="va-ganando">Va Ganando! 🏆</span>
         </div>
 
-        <ng-template #conectando>
-          <div class="glass glass-label">
-            <span class="usuario-mayor">Conectando...</span>
-          </div>
-        </ng-template>
+        <!-- <ng-template *ngIf="connectingSignalR && !usuarioMayor"> -->
+        <!-- <ng-template> -->
+        <div class="glass glass-label f-arial" *ngIf="connectingSignalR">
+          <span class="usuario-mayor f-arial">Conectando... </span>
+        </div>
 
-        <button (click)="irASiguiente()" class="glass-btn">
+        <div class="glass glass-label f-arial" *ngIf="!connectingSignalR && !usuarioMayor">
+          <span class="usuario-mayor f-arial">Sin apuestas</span>
+        </div>
+        <!-- </ng-template> -->
+
+        <button (click)="irASiguiente()" [disabled]="!lista || lista.length  === 0"
+          [ngClass]="{'btn-disabled': !lista || lista.length  === 0}" class="glass-btn ">
           Sig <i class="fas fa-chevron-right"></i>
         </button>
       </div>
@@ -249,7 +296,7 @@
 
 
     <!-- Imagen producto -->
-    <div class="detail-img-container">
+    <div class="detail-img-container" *ngIf="detallesubasta.imagenes">
       <div class="detail-img-wrapper">
         <img [src]="detallesubasta.imagenes[currentIndexImage].url" (click)="openModalViewer()"
           [class]="'fast-animation cursor-pointer animate__animated ' + classAnimate.imageContainer"
@@ -450,35 +497,37 @@
     </div>
   </div>
 
-  <div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()">
-    <!-- Contador de imágenes -->
-    <div class="viewer-counter"
-      style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: white; font-size: 18px; font-weight: 700; z-index: 101;">
-      {{ currentIndexImageViewer + 1 }} / {{ imagesListViewer.length }}
-    </div>
 
-    <button class="close-viewer" (click)="closeModalViewer()">
-      <i class="fas fa-times"></i>
-    </button>
 
-    <button class="nav-btn prev" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('prev', $event)"
-      [class.disabled]="currentIndexImageViewer === 0">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-
-    <div class="viewer-content" (click)="$event.stopPropagation()">
-      <img [class]="'fast-animation  animate__animated ' + classNavigateImg"
-        [src]="imagesListViewer[currentIndexImageViewer].url" style="background: #bdc3c7;">
-    </div>
-
-    <button class="nav-btn next" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('next', $event)"
-      [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
-      <i class="fas fa-chevron-right"></i>
-    </button>
-
-  </div>
 </div> <!-- main-detail-wrapper -->
 
+<!-- <div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()"> -->
+<div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()">
+  <div class="viewer-counter"
+    style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: white; font-size: 18px; font-weight: 700; z-index: 101;">
+    {{ currentIndexImageViewer + 1 }} / {{ imagesListViewer.length }}
+  </div>
+
+  <button class="close-viewer" (click)="closeModalViewer()">
+    <i class="fas fa-times"></i>
+  </button>
+
+  <button class="nav-btn prev" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('prev', $event)"
+    [class.disabled]="currentIndexImageViewer === 0">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+
+  <div class="viewer-content" (click)="$event.stopPropagation()">
+    <img [class]="'fast-animation  animate__animated ' + classNavigateImg"
+      [src]="imagesListViewer[currentIndexImageViewer].url" style="background: #bdc3c7;">
+  </div>
+
+  <button class="nav-btn next" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('next', $event)"
+    [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+
+</div>
 
 <!-- MODAL OFERTA DIRECTA -->
 <div class="modal-ofertadirecta" [class.dark-mode]="modoOscuro" *ngIf="mostrarmodalofertadirecta">
@@ -535,12 +584,12 @@
       </div>
 
       <div class="row">
-         <div class="col-6">
+        <div class="col-6">
           <h4 class="detalle-modall"> <i class="bi bi-box-seam icono-detalle"></i> Caracteristicas</h4>
           <p>
             <i class="bi bi-patch-check-fill"></i>
             Marca: {{ detallesubasta.marca }} <br>
-           <i class="bi bi-card-text"></i>
+            <i class="bi bi-card-text"></i>
             Modelo: {{ detallesubasta.modelo }} <br>
             <i class="bi" [ngClass]="detallesubasta.nuevo ? 'bi-stars ' : 'bi-box-seam '"></i>
             Estado: {{ detallesubasta.nuevo ? 'Nuevo' : 'Usado' }}
@@ -550,25 +599,25 @@
         <div class="col-6">
           <h4 class="detalle-modall"><i class="bi bi-bounding-box"></i>Medidas</h4>
           <p>
-              <i class="bi bi-arrows"></i>
+            <i class="bi bi-arrows"></i>
             Largo: {{ detallesubasta.largo }} cm<br>
-             <i class="bi bi-arrows-vertical icono-detalle"></i>
+            <i class="bi bi-arrows-vertical icono-detalle"></i>
             Ancho: {{ detallesubasta.ancho }} cm<br>
             <i class="bi bi-arrows-angle-expand icono-detalle"></i>
             Profundidad: {{ detallesubasta.profundidad }} cm
           </p>
         </div>
       </div>
-        <div class="informacion-importante">
-  <div class="informacion-icono">
-    <i class="bi bi-info-circle"></i>
-  </div>
+      <div class="informacion-importante">
+        <div class="informacion-icono">
+          <i class="bi bi-info-circle"></i>
+        </div>
 
-  <div class="informacion-texto">
-    <strong>Información importante</strong>
-    <span>Revisa bien las características y medidas del producto antes de ofertar.</span>
-  </div>
-</div>
+        <div class="informacion-texto">
+          <strong>Información importante</strong>
+          <span>Revisa bien las características y medidas del producto antes de ofertar.</span>
+        </div>
+      </div>
 
     </div>
 

@@ -136,7 +136,7 @@ export class AuthService {
   }
 
   consultarDatosUsuario(idUsuario: number) {
-    return this.http.get<any>(`${env.base_url}/usuarios/ConsultaDatosUsuario/${idUsuario}`, { headers: test_headers }).pipe(map(res => res));
+    return this.http.get<any>(`${env.base_url}/usuarios/ConsultaDatosUsuario`, { headers: test_headers, params: new HttpParams().set('idUsuario', idUsuario) }).pipe(map(res => res));
   }
 
   editarDatosUsuario(data: any) {
