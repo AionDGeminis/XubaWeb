@@ -258,7 +258,7 @@ export class HomeComponent implements OnInit {
     OpenPay.setSandboxMode(environment.openPaySandBox);
     if (this.isLoggedIn()) {
       console.log(this.usuario());
-      this.conectarSignalR(this.usuario()!.id);
+      // this.conectarSignalR(this.usuario()!.id);
       this.getInformacionUsuario(this.usuario()!.id);
     }
 
@@ -1997,6 +1997,7 @@ export class HomeComponent implements OnInit {
     console.log('Cerrando sesión...');
     this.signalRNotiService.closeConnection();
     this.authService.logout();
+    localStorage.removeItem('XUBA_TKN')
   }
 
   onLogin() {
@@ -2012,22 +2013,28 @@ export class HomeComponent implements OnInit {
     this.authService.login(this.loginForm.usuario.trim(), this.loginForm.pass.trim(), correo).subscribe({
       next: (usuario: any) => {
         this.loading = false;
-        if (usuario.correoValidado) {
-          this.authService.setUser(usuario);
-          this.ss.showNotification('success', 'Inicio de sesión exitoso');
-          this.conectarSignalR(this.usuario()!.id);
+
+        // 
+        if (usuario.success) {
+          if (usuario.token) {
+            localStorage.setItem('XUBA_TKN', usuario.token)
+            this.authService.setUser(usuario);
+            this.ss.showNotification('success', 'Inicio de sesión exitoso');
+            this.conectarSignalR(this.usuario()!.id);
+          }
         } else {
-          this.ss.showNotification('error', 'Para continuar primero valida tu correo', 3500);
+          this.ss.showNotification('error', usuario.mensaje, 4500);
         }
-        // console.log('Login exitoso:', usuario);
-
-
+        console.log('Login exitoso:', usuario);
       },
+
       error: (err) => {
         this.loading = false;
         console.error('Error en login:', err);
         this.ss.showNotification('error', 'Error en el inicio de sesión');
       }
+
+
     });
   }
 
