@@ -24,7 +24,7 @@ export class SubastasService {
   ): Observable<Subasta[]> {
 
     const apiUrl =
-      `${env.base_url}/subastas/ConsultarSubastas?tipo=${tipo}&idUsuario=${idUsuario}&pagina=${pagina}`;
+      `${env.base_url}/subastas/ConsultarSubastas?tipo=${tipo}&pagina=${pagina}`;
 
     return this.http.get<Subasta[]>(apiUrl, {
       headers: test_headers
@@ -32,7 +32,7 @@ export class SubastasService {
   }
 
   GetXubastasUsuarioPerfil(tipo: string, userId: number) {
-    return this.http.get<any>(`${env.base_url}/subastas/consultarMisSubastasParticipadasGanadas`, { params: { tipo, idUsuario: userId }, headers: test_headers });
+    return this.http.get<any>(`${env.base_url}/subastas/consultarMisSubastasParticipadasGanadas`, { params: { tipo }, headers: test_headers });
   }
 
   getSubastasActivasVendedor(idVendedor: number) {
@@ -45,21 +45,21 @@ export class SubastasService {
   }
 
   getSubastasUsuarioByEstatus(idUsuario: number, tipo: string) {
-    return this.http.get<Subasta[]>(`${env.base_url}/subastas/misSubastas/${idUsuario}/${tipo}`, { headers: test_headers });
+    return this.http.get<Subasta[]>(`${env.base_url}/subastas/misSubastas`, { headers: headers, params: { estatus: tipo } });
   }
 
   getSubastasGanadas(idUsuario: number, pagina: number = 1) {
     const apiUrl =
-      `${env.base_url}/subastas/ConsultaMisSubastasGanadas?idUsuario=${idUsuario}&pagina=${pagina}`;
+      `${env.base_url}/subastas/ConsultaMisSubastasGanadas`;
 
-    return this.http.get<Subasta[]>(apiUrl, { headers: test_headers })
+    return this.http.get<Subasta[]>(apiUrl, { headers: headers, params: { pagina } })
       .pipe(map(res => res));
   }
 
   getNotifications(idUsuario: number, pagina: number = 1) {
-    const apiUrl = `${env.base_url}/notificaciones/ConsultarMisNotificaciones?idUsuario=${idUsuario}&pagina=${pagina}`;
+    const apiUrl = `${env.base_url}/notificaciones/ConsultarMisNotificaciones`;
 
-    return this.http.get(apiUrl, { headers: test_headers })
+    return this.http.get(apiUrl, { headers: headers, params: { pagina } })
       .pipe(map(res => res));
   }
 
@@ -70,9 +70,9 @@ export class SubastasService {
 
   getSeguidores(idUsuario: number, pagina: number = 1) {
     const apiUrl =
-      `${env.base_url}/usuarios/ConsultarMisSeguidores?idUsuario=${idUsuario}&pagina=${pagina}`;
+      `${env.base_url}/usuarios/ConsultarMisSeguidores`;
 
-    return this.http.get(apiUrl, { headers: test_headers })
+    return this.http.get(apiUrl, { headers: headers, params: { pagina } })
       .pipe(map(res => res));
   }
 
@@ -116,9 +116,8 @@ export class SubastasService {
     return this.http.get<any>(`${env.base_url}/subastas/ConsultaGanador/${idSubasta}`, { headers: test_headers }).pipe(map(res => res));
   }
 
-
   ConsultarSiSiguiendo(idUsuario: number, idSubasta: number) {
-    return this.http.get<any>(`${env.base_url}/seguirSubasta/siguiendo/${idUsuario}/${idSubasta}`, { headers: test_headers });
+    return this.http.get<any>(`${env.base_url}/seguirSubasta/siguiendo`, { headers: headers, params: { idSubasta } });
   }
 
   crearSubasta(subastaData: any) {
@@ -159,7 +158,7 @@ export class SubastasService {
   }
 
   getComisionesCrearSubasta(idUsuario: number, aplica: string) {
-    return this.http.get<any>(`${env.base_url}/Facturacion/ConsultarComisionesImpuestos/${idUsuario}/${aplica}`, { headers: test_headers });
+    return this.http.get<any>(`${env.base_url}/Facturacion/ConsultarComisionesImpuestos`, { headers: headers, params: { aplica } });
   }
 
   GetPaqueteriaSeguimiento(noguia: string) {
@@ -168,17 +167,18 @@ export class SubastasService {
   }
 
   seguirSubasta(idUsuario: number, idSubasta: string) {
-    const payload = { idUsuario, idSubasta };
-    return this.http.post(`${env.base_url}/seguirSubasta`, payload, { headers: test_headers }).pipe(map(res => res));
+    const payload = { idSubasta };
+    return this.http.post(`${env.base_url}/seguirSubasta/SeguirSubasta`, payload, { headers: headers }).pipe(map(res => res));
   }
 
   dejarDeSeguirSubasta(idUsuario: number, idSubasta: string) {
-    const payload = { idUsuario, idSubasta };
+    const payload = { idSubasta };
     return this.http.request(
       'delete',
-      `${env.base_url}/seguirSubasta`,
+      `${env.base_url}/seguirSubasta/DejarDeSeguirSubasta`,
       {
         body: payload,
+        headers: headers,
         responseType: 'text',
         observe: 'response'
       }
@@ -194,9 +194,8 @@ export class SubastasService {
     return this.http.get(`${env.base_url}/subastas/historialSubasta/${IdSubasta}`, { headers: test_headers }).pipe(map(res => res));
   }
 
-
   GetDireccionesUsuario(idUsuario: number, tipo: string) {
-    return this.http.get(`${env.base_url}/direcciones/Consulta/${idUsuario}`, { headers: test_headers }).pipe(map(res => res));
+    return this.http.get(`${env.base_url}/direcciones/Consulta`, { headers: headers }).pipe(map(res => res));
   }
 
   guardarDireccion(data: any) {
@@ -224,10 +223,8 @@ export class SubastasService {
   }
 
   GetVendedoresSeguidos(idUsuario: number, pagina: number = 1) {
-    const apiUrl = `${env.base_url}/seguirVendedor/ConsultarVendedoresSeguidos?idUsuario=${idUsuario}&pagina=${pagina}`;
-
-    return this.http.get<any[]>(apiUrl, { headers: test_headers })
-      .pipe(map((res: any) => res));
+    const apiUrl = `${env.base_url}/seguirVendedor/ConsultarVendedoresSeguidos`;
+    return this.http.get<any[]>(apiUrl, { headers: headers, params: { pagina } }).pipe(map((res: any) => res));
   }
 
   seguirVendedor(data: any) {
@@ -262,11 +259,11 @@ export class SubastasService {
     return this.http.put(`${env.base_url}/Reclamos/ActualizarEstatus`, data, { headers: test_headers }).pipe(map(res => res));
   }
 
-  aceptarReclamo(idReclamo: number) {
-    let reclamo = { idReclamo, idEstatus: 2, idUsuarioXuba: 1 }
-    return this.http.put(`${env.base_url}/Reclamos/AceptarReclamo`, reclamo, { headers: test_headers }).pipe(map(res => res));
+  // aceptarReclamo(idReclamo: number) {
+  //   let reclamo = { idReclamo, idEstatus: 2, idUsuarioXuba: 1 }
+  //   return this.http.put(`${env.base_url}/Reclamos/AceptarReclamo`, reclamo, { headers: test_headers }).pipe(map(res => res));
 
-  }
+  // }
 
   getListaSubastasForReclamos(idUser: number) {
     return this.http.get<any>(`${env.base_url}/Subastas/ConsultarMisSubastasEntregadas/${idUser}`, { headers: test_headers }).pipe(map(res => res));
@@ -279,13 +276,15 @@ export class SubastasService {
   updateSubastaRechazada(data: any) {
     return this.http.post(`${env.base_url}/Subastas/EditarSubastaRechazada`, data, { headers: test_headers }).pipe(map(res => res));
   }
+
   ConsultarSubastaOfertarId(idSubasta: number) {
     return this.http.get<any>(`${env.base_url}/subastas/ConsultarSubastaOfertarId?idSubasta=${idSubasta}`);
   }
 
   ConsultarPerfilVendedorId(idVendedor: number, idUsuario: number) {
-    return this.http.get<PerfilVendedor>(`${env.base_url}/Vendedores/ConsultarPerfilVendedorId`, { params: { idVendedor, idUsuario } });
+    return this.http.get<PerfilVendedor>(`${env.base_url}/Vendedores/ConsultarPerfilVendedorId`, { headers: headers, params: { idVendedor } });
   }
+
   registrarVista(data: any) {
     return this.http.post(`${env.base_url}/subastas/RegistrarVista`, data, { headers: test_headers }).pipe(map(res => res));
   }
@@ -325,6 +324,7 @@ export class SubastasService {
   //     print('Error en la solicitud DELETE[noseguirVendedor]: $e');
   //   }
   // }
+
   enviarApuesta(apuesta: Apuesta) {
     return this.http.post(`${env.base_url}/apuestas`, apuesta, { headers: test_headers }).pipe(map(res => res));
   }

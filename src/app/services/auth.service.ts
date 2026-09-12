@@ -13,6 +13,7 @@ import pa from '@angular/common/locales/pa';
 })
 export class AuthService {
   private apiUrl = `${env.base_url}/usuarios/login`;
+  private apiUrlv2 = `https://api.xuba.mx:8443/Auth/Login`;
 
 
   private _usuario = signal<Usuario | null>(null);
@@ -82,7 +83,8 @@ export class AuthService {
   login(telefono: string, contra: string, correo: string): Observable<Usuario> {
     const body = { telefono, contra, correo };
 
-    return this.http.post<Usuario>(this.apiUrl, body);
+    return this.http.post<Usuario>(this.apiUrlv2, body);
+    // return this.http.post<Usuario>(this.apiUrlv2, body).pipe(map(res => res));
   }
 
   setUser(user: Usuario) {
@@ -135,8 +137,14 @@ export class AuthService {
     return this.http.get<any>(`${env.base_url}/usuarios/ConsultarUsuarioDisponible`, { headers: test_headers, params: new HttpParams().set('usuario', userName) }).pipe(map(res => res));
   }
 
+  token(): string {
+    let tkn = localStorage.getItem('XUBA_TKN');
+    return tkn ?? '';
+  }
+
   consultarDatosUsuario(idUsuario: number) {
-    return this.http.get<any>(`${env.base_url}/usuarios/ConsultaDatosUsuario`, { headers: test_headers, params: new HttpParams().set('idUsuario', idUsuario) }).pipe(map(res => res));
+    return this.http.get<any>(`${env.base_url}/usuarios/ConsultaDatosUsuario`, { headers: headers }).pipe(map(res => res));
+    // return this.http.get<any>(`${env.base_url}/usuarios/ConsultaDatosUsuario`, { headers: test_headers, params: new HttpParams().set('idUsuario', idUsuario) }).pipe(map(res => res));
   }
 
   editarDatosUsuario(data: any) {

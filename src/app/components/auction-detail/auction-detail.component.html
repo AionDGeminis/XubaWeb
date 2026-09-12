@@ -319,6 +319,10 @@
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-heart " [ngClass]="{'followed-i': isFollowed}"></i>
         </button>
+        <button *ngIf="detallesubasta.compraDirecta" class="glass" (click)="abrirmodalofertadirecta()"
+          style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
         <button class="glass" (click)="abrirmodalofertadirecta()"
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-gavel"></i>

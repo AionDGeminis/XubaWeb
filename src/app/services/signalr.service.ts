@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
   private connection!: signalR.HubConnection | null;
+  // private auth: AuthService;
+
+  constructor(private authService: AuthService) {
+
+  }
 
   public async connectToSubasta(idSubasta: string, idUsuario: string, onNuevaApuesta: (data: any) => void) {
     if (this.connection && this.connection.state !== signalR.HubConnectionState.Disconnected) {
@@ -12,7 +18,9 @@ export class SignalRService {
 
     this.connection = new signalR.HubConnectionBuilder()
       // .withUrl("http://173.208.155.152:8088/apuesta")
-      .withUrl("https://api.xuba.mx:8443/apuesta")
+      .withUrl("https://api.xuba.mx:8443/apuesta", {
+        accessTokenFactory: () => this.authService.token() ?? 'Anonimo'
+      })
       .withAutomaticReconnect()
       .build();
 
@@ -40,7 +48,7 @@ export class SignalRService {
       await this.connection.start();
       console.log('Conectado a SignalR');
       console.log('joingroup con id subasta: ' + idSubasta);
-      await this.connection.invoke('joinGroup', idSubasta, idUsuario);
+      await this.connection.invoke('joinGroup', idSubasta);
       await this.connection.invoke('sendApuesta', idSubasta);
     } catch (err) {
       console.error('Error al conectar a SignalR:', err);

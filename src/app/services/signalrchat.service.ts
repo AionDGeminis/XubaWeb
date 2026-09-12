@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class SignalRChatService {
   private connection!: signalR.HubConnection;
+  constructor(private authService: AuthService) {
 
+  }
   public async connectToChat(idReclamo: string, idUsuario: string, onNuevoMensaje: (data: any) => void) {
     if (this.connection && this.connection.state !== signalR.HubConnectionState.Disconnected) {
       await this.connection.stop(); // Cierra anterior
@@ -12,15 +15,17 @@ export class SignalRChatService {
 
     this.connection = new signalR.HubConnectionBuilder()
       // .withUrl("http://173.208.155.152:8088/apuesta")
-      .withUrl("https://api.xuba.mx:8443/chatReclamo")
+      .withUrl("https://api.xuba.mx:8443/chatReclamo", {
+        accessTokenFactory: () => this.authService.token() ?? 'Anonimo'
+      })
       .withAutomaticReconnect()
       .build();
 
-      this.connection.off('mostrarMensaje'); // Limpia si ya había handler
-      this.connection.on('mostrarMensaje', (datos) => {
-        console.log('Nueva apuesta recibida', datos);
-        onNuevoMensaje(datos);
-      });
+    this.connection.off('mostrarMensaje'); // Limpia si ya había handler
+    this.connection.on('mostrarMensaje', (datos) => {
+      console.log('Nueva apuesta recibida', datos);
+      onNuevoMensaje(datos);
+    });
 
     this.connection.onclose(error => {
       console.warn('Conexión SignalR cerrada', error);
@@ -29,26 +34,26 @@ export class SignalRChatService {
     this.connection.onreconnecting(() => {
       console.warn('Reconectando a SignalR...');
     });
-    
+
     this.connection.onreconnected(() => {
       console.info('Reconectado a SignalR');
     });
-    
-   
+
+
 
     try {
       await this.connection.start();
       console.log('Conectado a SignalR');
-      console.log('try to joingroup con id reclamo: '+idReclamo);
-      await this.connection.invoke('joinGroup',idReclamo, idUsuario);
-        // await this.connection.invoke('enviarMensaje', +idReclamo);
+      console.log('try to joingroup con id reclamo: ' + idReclamo);
+      await this.connection.invoke('joinGroup', idReclamo, idUsuario);
+      // await this.connection.invoke('enviarMensaje', +idReclamo);
     } catch (err) {
       console.error('Error al conectar a SignalR:', err);
       setTimeout(() => this.connectToChat(idReclamo, idUsuario, onNuevoMensaje), 2000);
     }
   }
 
-  public async sendGetMessageAsync(idReclamo: number){
+  public async sendGetMessageAsync(idReclamo: number) {
     await this.connection.invoke('enviarMensaje', idReclamo);
   }
 
@@ -64,5 +69,5 @@ export class SignalRChatService {
     }
   }
 
-  
+
 }
