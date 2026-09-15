@@ -326,7 +326,7 @@ export class SubastasService {
   // }
 
   enviarApuesta(apuesta: Apuesta) {
-    return this.http.post(`${env.base_url}/apuestas`, apuesta, { headers: test_headers }).pipe(map(res => res));
+    return this.http.post(`${env.base_url}/apuestas/Ofertar`, apuesta, { headers: headers }).pipe(map(res => res));
   }
 
   // enviarApuesta(apuesta: Apuesta): Observable<any> {

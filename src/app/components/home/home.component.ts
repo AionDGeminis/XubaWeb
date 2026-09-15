@@ -322,7 +322,6 @@ export class HomeComponent implements OnInit {
           this.getSubastasSeguidas();
           this.lss.ejecutarFuncionByID(idSubasta);
           this.lss.toogleFollowedIDG(idSubasta);
-
         },
         error: (error) => {
           console.error('Error al agregar subasta seguida:', error);
@@ -2020,7 +2019,8 @@ export class HomeComponent implements OnInit {
             localStorage.setItem('XUBA_TKN', usuario.token)
             this.authService.setUser(usuario);
             this.ss.showNotification('success', 'Inicio de sesión exitoso');
-            this.conectarSignalR(this.usuario()!.id);
+            this.conectarSignalR(0);
+            // this.conectarSignalR(this.usuario()!.id);
           }
         } else {
           this.ss.showNotification('error', usuario.mensaje, 4500);

@@ -185,7 +185,8 @@ export class WinnerViewComponent implements OnInit {
   }
 
   private conectarSignalR(idReclamo: number): void {
-    this.signalRChatService.connectToChat(idReclamo.toString(), this.authService.idUsuario, (datos: any[]) => {
+    this.signalRChatService.connectToChat(idReclamo.toString(), '0', (datos: any[]) => {
+      // this.signalRChatService.connectToChat(idReclamo.toString(), this.authService.idUsuario, (datos: any[]) => {
       this.addMessageToList(datos);
     });
   }
