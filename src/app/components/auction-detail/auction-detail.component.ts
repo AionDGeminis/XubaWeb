@@ -910,7 +910,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       await this.signalRService.leaveSubasta(this.idSubastaConectada);
     }
 
-    this.signalRService.connectToSubasta(nuevoId, this.authService.idUsuario, (datos: any[]) => {
+    this.signalRService.connectToSubasta(nuevoId, '0', (datos: any[]) => {
+      // this.signalRService.connectToSubasta(nuevoId, this.authService.idUsuario, (datos: any[]) => {
       const actual = datos[0];
       console.log('apuesta recibida')
       console.log(nuevoId)
