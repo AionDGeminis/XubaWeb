@@ -300,7 +300,8 @@ export class SellerViewComponent implements OnInit, OnChanges {
   }
 
   private conectarSignalR(idReclamo: number): void {
-    this.signalRChatService.connectToChat(idReclamo.toString(), this.usuario()!.id.toString(), (datos: any[]) => {
+    this.signalRChatService.connectToChat(idReclamo.toString(), '0', (datos: any[]) => {
+      // this.signalRChatService.connectToChat(idReclamo.toString(), this.usuario()!.id.toString(), (datos: any[]) => {
       console.log('recibir mensajes en tiempo real')
       this.addMessageToList(datos);
     });

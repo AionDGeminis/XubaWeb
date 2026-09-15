@@ -655,14 +655,14 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       //   })
       //   // this.auctionsId.push(idSubasta);
       // }
-      const idUsuario = Number(this.authService.idUsuario);
+      // const idUsuario = Number(this.authService.idUsuario);
       //const idSubasta = idSubasta.toString();
       if (this.isFollowed) {
-        this.subastasService.dejarDeSeguirSubasta(idUsuario, idSubasta.toString())
+        this.subastasService.dejarDeSeguirSubasta(0, idSubasta.toString())
           //.subscribe(() => this.isSingleSeguida(idSubasta));
           .subscribe(() => this.isFollowed = false);
       } else {
-        this.subastasService.seguirSubasta(idUsuario, idSubasta.toString())
+        this.subastasService.seguirSubasta(0, idSubasta.toString())
           .subscribe(() => this.isFollowed = true);
       }
     }
@@ -728,7 +728,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   verificarSiSiguiendo(): void {
-    const idUsuario = Number(this.authService.idUsuario);
+    const idUsuario = 0;
+    // const idUsuario = Number(this.authService.idUsuario);
 
     this.subastasService.ConsultarSiSiguiendo(
       idUsuario,
@@ -740,7 +741,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   toggleSeguir(): void {
-    const idUsuario = Number(this.authService.idUsuario);
+    const idUsuario = 0;
     const idSubasta = this.subasta!.id.toString();
     if (this.isFollowed) {
       this.subastasService.dejarDeSeguirSubasta(idUsuario, idSubasta)
@@ -834,7 +835,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         const { apuesta, idComprador } = resp;
         if (apuesta >= this.subasta!.precio) {
           this.mensajeFinal =
-            Number(idComprador) === Number(this.authService.idUsuario)
+            Number(idComprador) === 0
+              // Number(idComprador) === Number(this.authService.idUsuario)
               ? '¡¡GANASTE!!'
               : 'Comprado';
         } else {
@@ -1014,7 +1016,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   // Envía la apuesta
   realizarApuesta(monto: number, compraDirecta = false): void {
     //console.log('apostar')
-    const idComprador = +(this.authService.idUsuario);
+    const idComprador = 0;
+    // const idComprador = +(this.authService.idUsuario);
     if (idComprador === +(this.detallesubasta!.idVendedor)) {
       this.ss.showNotification('warning', 'No puedes ofertar en tu propia subasta.')
       // this.toastr.error('No puedes ofertar en tu propia subasta.', 'Error');
@@ -1036,6 +1039,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       apuesta: compraDirecta ? monto : diff,
       compraDirecta
     }
+
     console.log(dataApuesta)
     this.subastasService.enviarApuesta(dataApuesta).subscribe({
       next: () => {
@@ -1065,7 +1069,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   async compraDirecta() {
-    const idComprador = +(this.authService.idUsuario);
+    const idComprador = 0;
+    // const idComprador = +(this.authService.idUsuario);/
     if (idComprador === +(this.subasta!.musuarios?.id)) {
       this.toastr.error('No puedes ofertar en tu propia subasta.', 'Error');
       return;
