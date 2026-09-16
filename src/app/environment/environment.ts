@@ -2,7 +2,7 @@
 import { HttpHeaders } from "@angular/common/http";
 //const AuthorizateToken = localStorage.getItem("AuthTokenSoloConsulta");
 // const AuthorizateToken = localStorage.getItem("1ZvMlZhUnGFMWhVU");
-const AuthorizateToken = localStorage.getItem("XUBA_TKN");
+// const AuthorizateToken = localStorage.getItem("XUBA_TKN");
 // const TmpAuthorizateToken = localStorage.getItem("Tmp_AuthToken");
 
 //QXV0aFRva2Vu === 'AuthToken'
@@ -31,7 +31,7 @@ export const environment = {
 };
 
 export const headers = new HttpHeaders({
-  Authorization: `Bearer ${AuthorizateToken}`,
+  // Authorization: `Bearer ${AuthorizateToken}`,
   "Content-Type": "application/json"
 });
 

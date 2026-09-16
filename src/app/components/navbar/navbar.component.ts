@@ -543,7 +543,7 @@ export class NavbarComponent implements OnInit {
   openModalCreateAuction() {
     if (this.isLoggedIn()) {
       this.getDirecciones(this.usuario()!.id, 'envio');
-      this.getTarjetasUsuario(this.usuario()!.id);
+      // this.getTarjetasUsuario(this.usuario()!.id);
     }
     this.fnToggleMenu();
     this.openModal = true;
@@ -591,14 +591,14 @@ export class NavbarComponent implements OnInit {
     );
   }
 
-  async getTarjetasUsuario(idUsuario: number) {
-    this.tarjetas = await this.ss.loadLocalData('Cq@3K$K$RD') ?? [];
-    if (this.tarjetas.length > 0) {
-      this.tarjetas = this.tarjetas.filter(x => x.id_user === idUsuario);
-    }
-    console.log('L487: obtener tarjetas ')
-    console.log(this.tarjetas)
-  }
+  // async getTarjetasUsuario(idUsuario: number) {
+  //   this.tarjetas = await this.ss.loadLocalData('Cq@3K$K$RD') ?? [];
+  //   if (this.tarjetas.length > 0) {
+  //     this.tarjetas = this.tarjetas.filter(x => x.id_user === idUsuario);
+  //   }
+  //   console.log('L487: obtener tarjetas ')
+  //   console.log(this.tarjetas)
+  // }
 
   onFileChange(event: any) {
     const files = event.target.files;

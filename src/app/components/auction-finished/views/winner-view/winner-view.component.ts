@@ -1365,13 +1365,13 @@ export class WinnerViewComponent implements OnInit {
     // Actualiza el input si el usuario pegó algo no numérico
   }
 
-  async getTarjetasUsuario(idUsuario: number) {
-    this.tarjetas = await this.ss.loadLocalData('Cq@3K$K$RD') ?? [];
-    if (this.tarjetas.length > 0) {
-      this.tarjetas = this.tarjetas.filter(x => x.id_user === idUsuario);
-    }
+  // async getTarjetasUsuario(idUsuario: number) {
+  //   this.tarjetas = await this.ss.loadLocalData('Cq@3K$K$RD') ?? [];
+  //   if (this.tarjetas.length > 0) {
+  //     this.tarjetas = this.tarjetas.filter(x => x.id_user === idUsuario);
+  //   }
 
-  }
+  // }
 
   changeTarjetaSeleccionada() {
     Object.assign(this.tarjeta, this.selectedCard);
