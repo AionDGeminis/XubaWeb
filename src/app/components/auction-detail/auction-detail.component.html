@@ -171,11 +171,13 @@
           <div class="glass d-none d-lg-block"
             style="flex-shrink: 0; border-radius: 16px; padding: 12px; text-align: center;">
             <p
-              style="font-size: 11px; font-weight: 600; color: #38bdf8; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+              style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 400; color: #636e72; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 5px;">
               <i class="fas fa-gavel"></i> Oferta actual
             </p>
-            <p style="font-size: 28px; font-weight: 900; color: #38bdf8; line-height: 1.1; margin-bottom: 8px;">
-              {{toCurrency(valorApuesta) }}</p>
+            <p #pillAmount
+              style="font-size: 28px; font-weight: 900; color: #38bdf8; line-height: 1.1; margin-bottom: 8px;">
+
+            </p>
             <div
               style="display: inline-flex; align-items: center; gap: 7px; background: var(--timer-bg); border-radius: 50px; padding: 6px 16px;">
               <i class="fas fa-clock" style="color: var(--text2); font-size: 13px;"></i>
@@ -261,37 +263,95 @@
     </div>
 
     <!-- Banner ganando -->
+
     <div class="contenedor-botones">
       <div class="botones-navegacion">
-        <button (click)="irAAnterior()" [disabled]="indiceActual <= 0" [ngClass]="{'btn-disabled': indiceActual <= 0}"
-          class="glass-btn">
-          <i class="fas fa-chevron-left"></i> Ant
+        <button type="button" (click)="irAAnterior()" class="btn boton-navegacion" aria-label="Oferta anterior"
+          title="Oferta anterior">
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </button>
 
-        <!-- Si hay usuarioMayor lo muestra, si no muestra "Conectando..." -->
-        <div *ngIf="!connectingSignalR && usuarioMayor"
-          [class]="'glass glass-label fast-animation animate__animated ' + animatedClass">
-          <span class="usuario-mayor">{{usuarioMayor}}</span>
-          <span class="va-ganando">Va Ganando! 🏆</span>
+        <!-- <div class="current-offer-badge" tabindex="0" aria-live="polite">
+
+          <i class="fas fa-trophy current-offer-badge__icon" aria-hidden="true">
+          </i>
+
+          <span class="current-offer-badge__content">
+            <span class="current-offer-badge__bidder">
+              {{usuarioMayor}}
+            </span>
+
+            <span class="current-offer-badge__status">
+              Va ganando
+            </span>
+
+            <span class="current-offer-badge__amount">
+              {{toCurrency(valorApuesta)}}
+            </span>
+          </span>
+
+          <i class="fas fa-trophy current-offer-badge__icon" aria-hidden="true">
+          </i>
+        </div> -->
+        <div class="current-offer-badge" [class.current-offer-badge--empty]="!hayGanador" #currentOfferBadge>
+
+          <!-- Capa donde el TS inyecta las partículas de confeti -->
+          <div class="confetti-layer" #confettiLayer></div>
+
+          <!-- Anillos de impacto -->
+          <span class="offer-ring" #offerRingOne></span>
+          <span class="offer-ring" #offerRingTwo></span>
+
+          <!-- Insignia que cae sobre la pastilla -->
+          <span class="offer-badge" #offerBadge>NUEVA OFERTA</span>
+
+          <i class="fas fa-trophy current-offer-badge__icon" #trophyLeft aria-hidden="true"></i>
+
+          <span class="current-offer-badge__content" #pillText>
+            <span class="current-offer-badge__bidder" #pillBidder>{{ usuarioMayor }}</span>
+            <span class="current-offer-badge__status" #pillWinning>Va ganando</span>
+            <span class="current-offer-badge__amount" #pillAmountBadge></span>
+          </span>
+
+          <i class="fas fa-trophy current-offer-badge__icon" #trophyRight aria-hidden="true"></i>
         </div>
 
-        <!-- <ng-template *ngIf="connectingSignalR && !usuarioMayor"> -->
-        <!-- <ng-template> -->
-        <div class="glass glass-label f-arial" *ngIf="connectingSignalR">
-          <span class="usuario-mayor f-arial">Conectando... </span>
-        </div>
-
-        <div class="glass glass-label f-arial" *ngIf="!connectingSignalR && !usuarioMayor">
-          <span class="usuario-mayor f-arial">Sin apuestas</span>
-        </div>
-        <!-- </ng-template> -->
-
-        <button (click)="irASiguiente()" [disabled]="!lista || lista.length  === 0"
-          [ngClass]="{'btn-disabled': !lista || lista.length  === 0}" class="glass-btn ">
-          Sig <i class="fas fa-chevron-right"></i>
+        <button type="button" (click)="irASiguiente()" class="btn boton-navegacion" aria-label="Siguiente oferta"
+          title="Siguiente oferta">
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
         </button>
       </div>
     </div>
+
+
+    <!-- TEST-FullscreenNotification -->
+
+    <!-- ==========================================================
+     NOTIFICACIÓN DE NUEVA OFERTA — versión minimal
+     Sin contenedor visible: solo texto sobre el blur.
+     Reemplaza los textos fijos por tus bindings de Angular:
+     {{ oferta.kicker }}, {{ oferta.usuario }},
+     {{ oferta.mensaje }}, {{ oferta.monto }}
+     ========================================================== -->
+    <!-- <div class="bid-backdrop" *ngIf="showNewBidIncomeAnimation">
+      <article class="offer-notification" role="status" aria-live="polite">
+        <p class="offer-kicker">Nueva oferta</p>
+        <h1 class="offer-bidder" [class]="'fast-animation animate__animated ' + animatedClass">
+          {{usuarioMayor}}</h1>
+        <p class="offer-message">ha superado la oferta</p>
+        <hr class="offer-rule">
+        <p class="offer-label">Oferta actual</p>
+        <p class="offer-amount" [class]="'fast-animation animate__animated ' + animatedClass">${{valorApuesta}}</p>
+        <div class="offer-meta">
+          <span class="offer-winning ">Va ganando</span>
+        </div>
+        <div class="offer-time">
+          <div class="offer-time-fill" #timeFill [style.animation-duration.ms]="bidNotificationMs"></div>
+        </div>
+      </article>
+    </div> -->
+    <!--  -->
+
 
 
 
@@ -319,7 +379,7 @@
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-heart " [ngClass]="{'followed-i': isFollowed}"></i>
         </button>
-        <button *ngIf="detallesubasta.compraDirecta" class="glass" (click)="abrirmodalofertadirecta()"
+        <button *ngIf="detallesubasta.compraDirectaleyen" class="glass" (click)="abrirmodalofertadirecta()"
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-shopping-cart"></i>
         </button>
@@ -361,7 +421,7 @@
     <div style="flex-shrink: 0; padding: 12px 16px;">
 
       <button *ngIf="isLoggedIn()" class="btn-offer glass-btn" (click)="realizarApuesta(siguienteApuesta, false)"
-        style="width: 100%; border: none; border-radius: 50px; padding: 16px; color: black; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px;">
+        style="width: 100%; border: none; border-radius: 50px; padding: 16px; color: black; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; position: relative; z-index: 12;">
         <i class="fas fa-gavel" style="margin-right: 8px;"></i>
         Ofertar {{ toCurrency(siguienteApuesta) }}
       </button>

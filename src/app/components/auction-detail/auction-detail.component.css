@@ -2497,7 +2497,7 @@ body { background: var(--bg); color: var(--text); } */
 
 .glass-label {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -2583,6 +2583,240 @@ body { background: var(--bg); color: var(--text); } */
   color: #24344d;
 }
 
+.bidBadgeColor {
+  background-color: #fff !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.bidBadgeColor-begin {
+  background: #0056b3 !important;
+  color: #fff;
+}
+
+.bidBadgeColor-medium {
+  background: #fd79a8 !important;
+  color: #212529;
+}
+
+.bidBadgeColor-end {
+  background: #e84393 !important;
+  color: #fff;
+}
+
+/* =========================================================
+   NOTIFICACIÓN MINIMAL — CSS del componente
+   Requisitos:
+   - El contenedor de la pantalla de subasta debe tener
+     position: relative y overflow: hidden.
+   - El botón "Ofertar" NO va dentro de .bid-backdrop.
+   - Ajusta el tercer valor de `inset` (78px) a la altura de
+     la zona del botón para que no quede bloqueado.
+   ========================================================= */
+.bid-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 11;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(22, 17, 41, .44);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-align: center;
+  color: #fff;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+/* Opcional: para ocultar sin *ngIf */
+.bid-backdrop.hidden {
+  display: none
+}
+
+.offer-notification {
+  animation: offer-enter .55s cubic-bezier(.22, .8, .3, 1) both;
+}
+
+.offer-kicker {
+  margin: 0 0 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .72);
+}
+
+.offer-bidder {
+  margin: 0;
+  font-size: clamp(34px, 6vw, 58px);
+  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -.02em;
+}
+
+.offer-message {
+  margin: 6px 0 0;
+  font-size: clamp(17px, 2.6vw, 25px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, .88);
+}
+
+.offer-rule {
+  width: 56px;
+  height: 1px;
+  margin: 26px auto;
+  background: rgba(255, 255, 255, .35);
+  border: 0;
+}
+
+.offer-label {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .66);
+}
+
+.offer-amount {
+  margin: 8px 0 0;
+  font-size: clamp(46px, 8vw, 84px);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.offer-meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, .85);
+}
+
+.offer-winning {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.offer-winning::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: offer-pulse 1.6s ease-in-out infinite;
+}
+
+/* Barra de duración (5 s) */
+/* .offer-time {
+  position: relative;
+  width: min(320px, 60%);
+  height: 2px;
+  margin: 30px auto 0;
+  background: rgba(255, 255, 255, .25);
+  overflow: hidden;
+}
+
+.offer-time::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  transform-origin: left;
+  animation: offer-countdown 2s linear both;
+} */
+
+.offer-time {
+  position: relative;
+  width: min(320px, 60%);
+  height: 2px;
+  margin: 30px auto 0;
+  background: rgba(255, 255, 255, .25);
+  overflow: hidden;
+}
+
+.offer-time-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  transform-origin: left;
+  animation: offer-countdown 2s linear both;
+}
+
+/* Animaciones */
+@keyframes offer-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(.98)
+  }
+
+  to {
+    opacity: 1;
+    transform: none
+  }
+}
+
+@keyframes offer-countdown {
+  to {
+    transform: scaleX(0)
+  }
+}
+
+@keyframes offer-pulse {
+
+  0%,
+  100% {
+    opacity: 1
+  }
+
+  50% {
+    opacity: .35
+  }
+}
+
+@keyframes offer-fade {
+  from {
+    opacity: 0
+  }
+
+  to {
+    opacity: 1
+  }
+}
+
+/* Móvil */
+@media(max-width:700px) {
+  .bid-backdrop {
+    inset: 0;
+    padding: 8px
+  }
+
+  .offer-notification {
+    animation-name: offer-fade
+  }
+
+  .offer-time {
+    width: 52%
+  }
+}
+
+/* Accesibilidad */
+@media(prefers-reduced-motion:reduce) {
+
+  .offer-notification,
+  .offer-time::after,
+  .offer-winning::before {
+    animation: none
+  }
+}
 
 
 
@@ -2990,7 +3224,7 @@ body { background: var(--bg); color: var(--text); } */
   }
 }
 
-.contenedor-botones {
+/* .contenedor-botones {
   flex-shrink: 0;
   padding: 8px 16px;
 }
@@ -2998,12 +3232,169 @@ body { background: var(--bg); color: var(--text); } */
 .botones-navegacion {
   display: flex;
   align-items: center;
-  /* centra verticalmente */
   justify-content: center;
-  /* centra horizontalmente */
+  gap: 15px;
+  width: 100%;
+} */
+
+/* ============================================================
+   COMPONENTE OFERTA ACTUAL — CSS base v2 (grid, botones fijos en extremos)
+   ============================================================ */
+
+/* ---------- Contenedores base ---------- */
+.contenedor-botones {
+  flex-shrink: 0;
+  padding: 8px 16px;
+}
+
+.botones-navegacion {
+  display: grid;
+  /* Botones naturales en los extremos, label centrado en la columna media */
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
   gap: 15px;
   /* espacio entre elementos */
   width: 100%;
+}
+
+/* ---------- Botones laterales ---------- */
+.boton-navegacion {
+  flex: 0 0 auto;
+  min-width: 48px;
+  min-height: 42px;
+  border: 1px solid #dfe5ef;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1e2a4a;
+  transition:
+    background-color .2s ease,
+    border-color .2s ease,
+    color .2s ease;
+}
+
+.boton-navegacion:hover {
+  border-color: #0984e3;
+  background: #eef7ff;
+  color: #0984e3;
+}
+
+.boton-navegacion:focus-visible,
+.current-offer-badge:focus-visible {
+  outline: 3px solid rgba(9, 132, 227, .32);
+  outline-offset: 3px;
+}
+
+/* ---------- Label central (futuro objetivo de GSAP) ---------- */
+.current-offer-badge {
+  position: relative;
+  /* obligatorio para anillos y confeti después */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 42px;
+  min-width: 220px;
+  max-width: min(520px, 100%);
+  padding: 8px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #1e2a4a;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-align: center;
+  white-space: nowrap;
+  overflow: visible;
+  /* NUNCA hidden: aquí vivirán anillos y confeti */
+  transition: none;
+  /* GSAP administrará las transiciones */
+  /* Centra la pastilla en su columna conservando su ancho natural */
+  justify-self: center;
+}
+
+/* ---------- Iconos de trofeo ---------- */
+.current-offer-badge__icon {
+  flex: 0 0 auto;
+  color: #f59e0b;
+  font-size: 14px;
+}
+
+/* ---------- Contenido interno ---------- */
+.current-offer-badge__content {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.current-offer-badge__bidder,
+.current-offer-badge__status,
+.current-offer-badge__amount {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.current-offer-badge__bidder {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.current-offer-badge__status {
+  color: #db2777;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.current-offer-badge__amount {
+  color: #566179;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  /* evita el "baile" de dígitos al animar el monto */
+}
+
+/* ---------- Estado sin ganador ---------- */
+.current-offer-badge--empty {
+  color: #566179;
+}
+
+.current-offer-badge--empty .current-offer-badge__icon {
+  display: none;
+}
+
+.current-offer-badge--empty .current-offer-badge__status {
+  color: #566179;
+  font-weight: 600;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .botones-navegacion {
+    gap: 8px;
+  }
+
+  .boton-navegacion {
+    min-width: 42px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .current-offer-badge {
+    min-width: 0;
+    max-width: 100%;
+    padding-right: 12px;
+    padding-left: 12px;
+    gap: 6px;
+  }
+
+  .current-offer-badge__content {
+    gap: 5px;
+  }
+
+  .current-offer-badge__bidder {
+    max-width: 84px;
+  }
 }
 
 .glass-btn {
@@ -3994,4 +4385,121 @@ body { background: var(--bg); color: var(--text); } */
 
 .home-button:active {
   transform: translateY(0);
+}
+
+
+/* =========== ANIMACIONES GSAP ===============*/
+/* ============================================ */
+/* ============================================================
+   NOTIFICACIÓN "VA GANANDO" — CSS completo hasta ahora
+   Estado: pastilla + anillos + etiqueta "Tu oferta" + capa confeti
+   ============================================================ */
+
+/* ---------- Pastilla principal ---------- */
+.va-ganando-pill {
+  position: relative;
+  /* obligatorio: anillos y badge se posicionan contra ella */
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 26px;
+  border: 1px solid #e5e8ef;
+  border-radius: 999px;
+  background: #fff;
+  /* NO agregar overflow:hidden — los anillos y el confeti viven fuera de estos límites */
+}
+
+/* ---------- Textos internos ---------- */
+.pill-text {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.pill-bidder {
+  color: #1e2a4a;
+  font-weight: 700;
+}
+
+.pill-winning {
+  color: #db2777;
+  font-weight: 700;
+}
+
+.pill-amount {
+  color: #566179;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  /* evita el "baile" de dígitos al contar el monto */
+}
+
+.pill-trophy {
+  color: #f59e0b;
+}
+
+/* ---------- Anillos expansivos (solo estado "mi oferta") ---------- */
+/* ---------- Elementos de la animación (objetivos de GSAP) ---------- */
+.confetti-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: visible;
+  /* las partículas vuelan fuera de la pastilla */
+  pointer-events: none;
+  /* nunca debe bloquear clics */
+}
+
+.offer-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #db2777;
+  border-radius: 999px;
+  opacity: 0;
+  /* GSAP lo enciende y lo expande */
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.offer-badge {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translate(-50%, -10px);
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: #0984e3;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+  opacity: 0;
+  /* GSAP lo deja caer desde arriba */
+  pointer-events: none;
+  z-index: 100;
+}
+
+.offer-confetti-piece {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ---------- Accesibilidad: motion reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+
+  .offer-ring,
+  .offer-badge {
+    display: none;
+  }
 }

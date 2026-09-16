@@ -258,8 +258,11 @@ export class HomeComponent implements OnInit {
     OpenPay.setSandboxMode(environment.openPaySandBox);
     if (this.isLoggedIn()) {
       console.log(this.usuario());
-      // this.conectarSignalR(this.usuario()!.id);
-      this.getInformacionUsuario(this.usuario()!.id);
+      // this.conectarSignalR(0);
+      //this.conectarSignalR(this.usuario()!.id);
+      this.conectarSignalR(0);
+      this.getInformacionUsuario(0);
+      // this.getInformacionUsuario(this.usuario()!.id);
     }
 
     effect(() => console.log('¿Está logueado?', this.isLoggedIn()));
