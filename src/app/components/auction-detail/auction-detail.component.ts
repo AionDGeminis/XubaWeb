@@ -17,7 +17,7 @@ import { LoaderComponent } from '../loader/loader.component';
 import { SoloDecimalDirective } from '../../directives/solo-decimal.directive';
 import id from '@angular/common/locales/id';
 import { Apuesta } from '../../models/apuesta-model';
-
+import { gsap } from 'gsap';
 
 
 @Component({
@@ -98,6 +98,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   currentIndexImageViewer: number = 0;
   mostrarmodalofertadirecta: boolean = false;
   mostrarmodaldescripcion: boolean = false;
+  hayGanador: boolean = true;
   modoOscuro = false;
   ofertar: number = 0;
   classNavigateImg: string = '';
@@ -110,7 +111,57 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   isValidExistingSubasta: boolean = false;
   gettingData: boolean = true;
   connectingSignalR: boolean = false;
+  showNewBidIncomeAnimation: boolean = false;
+  omitFirstBidIncoming: boolean = false;
+  private bidTimer: ReturnType<typeof setTimeout> | null = null;
+  readonly bidNotificationMs = 2000;
+  incomeBidAnimateColor: string = '';
+  private montoVisible = 0;
 
+  private tweenMonto: gsap.core.Tween | null = null;
+  private tweenPop: gsap.core.Timeline | null = null;
+
+  private readonly formatoMoneda = new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  @ViewChild('timeFill') timeFill?: ElementRef<HTMLElement>;
+  @ViewChild('currentOfferBadge') currentOfferBadge?: ElementRef<HTMLElement>;
+  //   @ViewChild('miOfertaPill')
+  // miOfertaPill?: ElementRef<HTMLElement>;
+
+  @ViewChild('pillText')
+  pillText?: ElementRef<HTMLElement>;
+
+  @ViewChild('pillBidder')
+  pillBidder?: ElementRef<HTMLElement>;
+
+  @ViewChild('pillWinning')
+  pillWinning?: ElementRef<HTMLElement>;
+
+  @ViewChild('pillAmount') pillAmount!: ElementRef<HTMLParagraphElement>;
+  @ViewChild('pillAmountBadge') pillAmountBadge!: ElementRef<HTMLParagraphElement>;
+
+  @ViewChild('offerBadge')
+  offerBadge?: ElementRef<HTMLElement>;
+
+  @ViewChild('offerRingOne')
+  offerRingOne?: ElementRef<HTMLElement>;
+
+  @ViewChild('offerRingTwo')
+  offerRingTwo?: ElementRef<HTMLElement>;
+
+  @ViewChild('trophyLeft')
+  trophyLeft?: ElementRef<HTMLElement>;
+
+  @ViewChild('trophyRight')
+  trophyRight?: ElementRef<HTMLElement>;
+
+  @ViewChild('confettiLayer')
+  confettiLayer?: ElementRef<HTMLElement>;
 
   constructor(
     private route: ActivatedRoute,
@@ -133,6 +184,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     // console.log(id)
     // this.getInitialData(id);
     this.isLoggedIn = computed(() => !!this.usuario());
+    this.omitFirstBidIncoming = true;
     this.checkUserLoggedData();
     // this.vistas.idUsuario = this.usuario()?.id ?? 0;
     // this.vistas.idSubasta = id;
@@ -142,6 +194,55 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     // }
   }
 
+  setMontoInicial(): void {
+    this.montoVisible = this.valorApuesta;
+    console.log(this.pillAmount)
+    console.log(this.pillAmountBadge)
+    if (this.pillAmount) {
+      this.pillAmount.nativeElement.textContent = this.toCurrency(this.montoVisible);
+    }
+    if (this.pillAmountBadge) {
+      this.pillAmountBadge.nativeElement.textContent = this.toCurrency(this.montoVisible);
+    }
+  }
+
+  animateCurrentAmount(nuevoMonto: number): void {
+    const amountEl = this.pillAmount?.nativeElement;
+    const amountBadgeEl = this.pillAmountBadge?.nativeElement;
+
+    if (!amountEl || nuevoMonto === this.montoVisible) {
+      return;
+    }
+
+    // Llega otra oferta: corta el conteo anterior y sigue desde el valor en pantalla
+    this.tweenMonto?.kill();
+    this.tweenPop?.kill();
+
+    const proxy = { val: this.montoVisible };
+
+    this.tweenMonto = gsap.to(proxy, {
+      val: nuevoMonto,
+      duration: 0.9,
+      ease: 'power2.out',
+      onUpdate: () => {
+        this.montoVisible = proxy.val;
+        amountEl.textContent = this.formatoMoneda.format(proxy.val);
+        amountBadgeEl.textContent = this.formatoMoneda.format(proxy.val);
+      },
+      onComplete: () => {
+        this.tweenMonto = null;
+      }
+    });
+
+    // Pop: se agranda, destella en rosa y regresa a su tamaño y color base
+    this.tweenPop = gsap.timeline({ onComplete: () => { this.tweenPop = null; } })
+      .to(amountEl, { scale: 1.22, color: '#db2777', duration: 0.18, ease: 'power2.out' })
+      .to(amountEl, { scale: 1, color: '#0984e3', duration: 0.4, ease: 'power2.inOut' });
+
+    this.tweenPop = gsap.timeline({ onComplete: () => { this.tweenPop = null; } })
+      .to(amountBadgeEl, { scale: 1.22, color: '#db2777', duration: 0.18, ease: 'power2.out' })
+      .to(amountBadgeEl, { scale: 1, color: '#2d3436', duration: 0.4, ease: 'power2.inOut' });
+  }
 
   ngOnInit(): void {
 
@@ -151,6 +252,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     console.log('Origen:', this.origen);
     // this.usuario()!.id
     this.getPremium();
+    this.setMontoInicial();
+
     this.route.paramMap.subscribe(params => {
       const id = Number(params.get('id'));
       if (id) {
@@ -186,6 +289,312 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     console.log("valor de tema oscuro " + this.modoOscuro)
 
   }
+
+  showNewBidAnimation(): void {
+    if (this.omitFirstBidIncoming) {
+      this.omitFirstBidIncoming = false;
+      return;
+    }
+    const pill = this.currentOfferBadge?.nativeElement;
+
+    if (!pill) {
+      console.warn('No se encontró la pastilla de oferta');
+      return;
+    }
+
+    // this.burstConfetti();
+    const pink = '#db2777';
+
+    const whiteTargets = [
+      this.pillBidder?.nativeElement,
+      this.pillWinning?.nativeElement,
+      this.pillAmountBadge?.nativeElement,
+      this.trophyLeft?.nativeElement,
+      this.trophyRight?.nativeElement
+    ].filter((element): element is HTMLElement => !!element);
+
+    const rings = [
+      this.offerRingOne?.nativeElement,
+      this.offerRingTwo?.nativeElement
+    ].filter((element): element is HTMLElement => !!element);
+
+    const badge = this.offerBadge?.nativeElement;
+
+    gsap.killTweensOf([pill, ...whiteTargets, ...rings, ...(badge ? [badge] : [])]);
+    this.burstConfetti();
+    const timeline = gsap.timeline();
+
+    // 1) La pastilla entra en modo "mi oferta"
+    timeline.to(pill, {
+      backgroundColor: pink,
+      borderColor: pink,
+      scale: 1.05,
+      duration: 0.25,
+      ease: 'power2.out'
+    });
+
+    // 2) Los textos pasan a blanco al mismo tiempo
+    if (whiteTargets.length) {
+      timeline.to(whiteTargets, { color: '#ffffff', duration: 0.2 }, '<');
+    }
+
+    // 3) Los anillos se expanden desde el borde, uno tras otro
+    if (rings.length) {
+      timeline.fromTo(rings,
+        { scale: 1, opacity: 0.9 },
+        { scale: 1.55, opacity: 0, duration: 0.75, stagger: 0.16, ease: 'power2.out' },
+        '<'
+      );
+    }
+
+    // 4) La etiqueta "Tu oferta" cae desde arriba
+    if (badge) {
+      timeline.fromTo(badge,
+        { xPercent: -50, y: -14, opacity: 0 },
+        { xPercent: -50, y: 0, opacity: 1, duration: 0.35, ease: 'back.out(2)' },
+        '<+=.1'
+      );
+    }
+
+    // 5) Se mantiene azul un momento
+    timeline.to({}, { duration: 1 });
+
+    // 6) Regreso al estado normal
+    timeline.to(pill, {
+      backgroundColor: '#ffffff',
+      borderColor: '#e5e8ef',
+      scale: 1,
+      duration: 0.45,
+      ease: 'power2.out'
+    });
+
+    const originalColors: Array<[HTMLElement | undefined, string]> = [
+      [this.pillBidder?.nativeElement, '#1e2a4a'],
+      [this.pillWinning?.nativeElement, '#db2777'],
+      [this.pillAmountBadge?.nativeElement, '#566179'],
+      [this.trophyLeft?.nativeElement, '#f59e0b'],
+      [this.trophyRight?.nativeElement, '#f59e0b']
+    ];
+
+    originalColors.forEach(([element, color]) => {
+      if (element) {
+        timeline.to(element, { color, duration: 0.35 }, '<');
+      }
+    });
+
+    if (badge) {
+      timeline.to(badge, { y: -10, opacity: 0, duration: 0.3 }, '<');
+    }
+  }
+
+  private readonly CONFETTI_COLORS = ['#db2777', '#f472b6', '#fbcfe8', '#ffffff'];
+  private readonly CONFETTI_COUNT = 26;
+
+  burstConfetti(): void {
+    const layer = this.confettiLayer?.nativeElement;
+
+    if (!layer) {
+      console.warn('[confeti] No se encontró #confettiLayer en el template');
+      return;
+    }
+
+    const originX = layer.offsetWidth / 2;
+    const originY = layer.offsetHeight / 2;
+
+    for (let i = 0; i < this.CONFETTI_COUNT; i++) {
+      const particle = document.createElement('div');
+      const size = 6 + Math.random() * 6;
+
+      particle.style.cssText = [
+        'position: absolute',
+        'top: 0',
+        'left: 0',
+        `width: ${size}px`,
+        `height: ${size}px`,
+        `border-radius: ${Math.random() > 0.5 ? '50%' : '2px'}`,
+        `background: ${this.CONFETTI_COLORS[i % this.CONFETTI_COLORS.length]}`,
+        'pointer-events: none',
+        'will-change: transform, opacity'
+      ].join(';');
+
+      layer.appendChild(particle);
+
+      const angle = (Math.PI * 2 * i) / this.CONFETTI_COUNT + (Math.random() - 0.5);
+      const distance = 80 + Math.random() * 90;
+      const endX = originX + Math.cos(angle) * distance;
+      const endY = originY + Math.sin(angle) * distance - 30;
+
+      gsap.set(particle, { x: originX, y: originY, opacity: 1 });
+
+      gsap.timeline({ onComplete: () => particle.remove() })
+        .to(particle, {
+          x: endX,
+          y: endY,
+          rotation: gsap.utils.random(-180, 180),
+          duration: 0.65,
+          ease: 'power2.out'
+        })
+        .to(particle, {
+          y: `+=${120 + Math.random() * 80}`,
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power1.in'
+        }, '-=0.05');
+    }
+  }
+
+  // private burstConfetti(): void {
+  //   const layer = this.confettiLayer?.nativeElement;
+
+  //   if (!layer) {
+  //     console.warn('No se encontró la capa de confeti');
+  //     return;
+  //   }
+
+  //   const colors = [
+  //     '#0984e3',
+  //     '#ffffff',
+  //     '#74b9ff',
+  //     '#1e2a4a'
+  //   ];
+
+  //   const totalPieces = 26;
+
+  //   for (let index = 0; index < totalPieces; index++) {
+  //     const piece = document.createElement('span');
+
+  //     const isCircle = Math.random() > 0.5;
+  //     const width = 5 + Math.random() * 5;
+  //     const height = 5 + Math.random() * 7;
+
+  //     piece.classList.add('offer-confetti-piece');
+
+  //     piece.style.width = `${width}px`;
+  //     piece.style.height = `${height}px`;
+  //     piece.style.backgroundColor = colors[index % colors.length];
+  //     piece.style.borderRadius = isCircle ? '50%' : '2px';
+
+  //     layer.appendChild(piece);
+
+  //     const angle = Math.random() * Math.PI * 2;
+  //     const distance = 75 + Math.random() * 95;
+
+  //     const x = Math.cos(angle) * distance;
+  //     const y = Math.sin(angle) * distance * 0.55 - 25;
+
+  //     const rotation = -360 + Math.random() * 720;
+
+  //     gsap.timeline({
+  //       onComplete: () => {
+  //         piece.remove();
+  //       }
+  //     })
+  //       // Estallido inicial
+  //       .to(piece, {
+  //         x,
+  //         y,
+  //         rotation,
+  //         duration: 0.45,
+  //         ease: 'power2.out'
+  //       })
+
+  //       // Caída posterior
+  //       .to(piece, {
+  //         y: '+=115',
+  //         duration: 0.7,
+  //         ease: 'power1.in'
+  //       }, 0.45)
+
+  //       // Desaparición durante la caída
+  //       .to(piece, {
+  //         opacity: 0,
+  //         duration: 0.35,
+  //         ease: 'power1.out'
+  //       }, 0.75);
+  //   }
+  // }
+  // probarReferenciaGsap(): void {
+  //   const pill = this.currentOfferBadge?.nativeElement;
+
+  //   const bidder = this.pillBidder?.nativeElement;
+  //   const winning = this.pillWinning?.nativeElement;
+  //   const amount = this.pillAmount?.nativeElement;
+
+  //   const trophies = [
+  //     this.trophyLeft?.nativeElement,
+  //     this.trophyRight?.nativeElement
+  //   ].filter((element): element is HTMLElement => !!element);
+
+  //   if (!pill) {
+  //     console.warn('No se encontró la pastilla de oferta');
+  //     return;
+  //   }
+
+  //   const blue = '#0984e3';
+
+  //   // Detiene cualquier animación anterior sobre estos elementos
+  //   gsap.killTweensOf([
+  //     pill,
+  //     bidder,
+  //     winning,
+  //     amount,
+  //     ...trophies
+  //   ]);
+
+  //   const elementsToWhite = [
+  //     bidder,
+  //     winning,
+  //     amount,
+  //     ...trophies
+  //   ].filter((element): element is HTMLElement => !!element);
+
+  //   const timeline = gsap.timeline();
+
+  //   // Entrada del estado "mi oferta"
+  //   timeline
+  //     .to(pill, {
+  //       backgroundColor: blue,
+  //       borderColor: blue,
+  //       scale: 1.05,
+  //       duration: 0.25,
+  //       ease: 'power2.out'
+  //     })
+  //     .to(elementsToWhite, {
+  //       color: '#ffffff',
+  //       duration: 0.2
+  //     }, '<');
+
+  //   // Se mantiene azul durante un momento
+  //   timeline.to({}, {
+  //     duration: 1
+  //   });
+
+  //   // Regreso al estado normal
+  //   timeline
+  //     .to(pill, {
+  //       backgroundColor: '#ffffff',
+  //       borderColor: '#e5e8ef',
+  //       scale: 1,
+  //       duration: 0.45,
+  //       ease: 'power2.out'
+  //     })
+  //     .to(bidder, {
+  //       color: '#1e2a4a',
+  //       duration: 0.35
+  //     }, '<')
+  //     .to(winning, {
+  //       color: '#db2777',
+  //       duration: 0.35
+  //     }, '<')
+  //     .to(amount, {
+  //       color: '#566179',
+  //       duration: 0.35
+  //     }, '<')
+  //     .to(trophies, {
+  //       color: '#f59e0b',
+  //       duration: 0.35
+  //     }, '<');
+  // }
 
   checkUserLoggedData() {
     if (this.isLoggedIn()) {
@@ -531,6 +940,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         break;
     }
   }
+
+
 
   openModalViewer() {
     console.log('abrir modal de imagenes')
@@ -924,6 +1335,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       this.usuarioMayor = actual.usuario;
       this.estatus = actual.estatus;
       this.valorApuesta = actual.apuesta;
+      this.animateCurrentAmount(this.valorApuesta)
       this.siguienteApuesta = actual.siguienteApuesta;
       //this.
       const listaStr = (actual.ganadores ?? '').toString();
@@ -932,7 +1344,9 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       console.log(this.valorApuesta)
 
       // console.log(this.ganadoresLista);
-      this.animateResponse();
+      // this.animateResponse();
+      // this.showBidIncoming();
+      this.showNewBidAnimation();
       this.ganadoresDetalles = listaItems.map((item: string) => {
         const partes = item.replace('$', '').split('-');
         return { monto: `$${partes[0]}`, usuario: partes[1], fecha: partes.slice(2).join('-') };
@@ -950,6 +1364,67 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.idSubastaConectada = nuevoId;
   }
+
+  // showBidIncoming() {
+  //   if (this.omitFirstBidIncoming) {
+  //     this.omitFirstBidIncoming = false;
+  //     return;
+  //   }
+
+  //   // 1. Cancela el temporizador de la oferta anterior, si existe
+  //   if (this.bidTimer) {
+  //     clearTimeout(this.bidTimer);
+  //     this.bidTimer = null;
+  //   }
+
+  //   // 2. Los datos se reemplazan (esto está bien, es lo que quieres)
+  //   //    y la notificación se mantiene/reabre en true
+  //   this.showNewBidIncomeAnimation = true;
+
+  //   // 3. La notificación ahora espera SUS propios 2 segundos completos
+  //   this.bidTimer = setTimeout(() => {
+  //     this.showNewBidIncomeAnimation = false;
+  //     this.bidTimer = null;
+  //   }, this.bidNotificationMs);
+  // }
+  showBidIncoming() {
+    if (this.omitFirstBidIncoming) {
+      this.omitFirstBidIncoming = false;
+      return;
+    }
+
+    if (this.bidTimer) {
+      clearTimeout(this.bidTimer);
+      this.bidTimer = null;
+    }
+
+    this.showNewBidIncomeAnimation = true;
+    this.restartTimeBar(); // la barra vuelve a 0% en cada oferta nueva
+
+    this.bidTimer = setTimeout(() => {
+      this.showNewBidIncomeAnimation = false;
+      this.bidTimer = null;
+    }, this.bidNotificationMs);
+  }
+
+  private restartTimeBar(): void {
+    const fill = this.timeFill?.nativeElement;
+    if (!fill) return;
+
+    fill.style.animation = 'none';
+    void fill.offsetWidth; // fuerza un reflow: el navegador "olvida" la animación anterior
+    fill.style.animation = ''; // se re-aplica la del CSS y arranca desde 0
+  }
+  // showBidIncoming() {
+  //   if (this.omitFirstBidIncoming) {
+  //     this.omitFirstBidIncoming = false;
+  //     return;
+  //   }
+  //   this.showNewBidIncomeAnimation = true;
+  //   setTimeout(() => {
+  //     this.showNewBidIncomeAnimation = false;
+  //   }, 2000);
+  // }
 
   openShippingPricesModal() {
     this.direccionEntrega = this.direcciones.length > 0 ? this.direcciones.find((direccion: any) => direccion.predeterminada) : null;
@@ -1106,7 +1581,9 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       this.indiceActual--;
 
       this.classAnimate.imageContainer = 'animate__fadeOutRight'
+      this.omitFirstBidIncoming = true;
       setTimeout(() => {
+
         this.resetDatos();
         this.detallesubasta = this.lista[this.indiceActual];
         //this.detallesubasta = this.lista[this.indiceActual];
@@ -1151,6 +1628,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.currentIndexImage = 0;
     this.classAnimate.imageContainer = 'animate__fadeOutLeft';
+    this.omitFirstBidIncoming = true;
 
     // this.subasta = this.lista[this.indiceActual];
 
@@ -1240,8 +1718,10 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   animateResponse() {
     this.animatedClass = 'animate__bounceIn'
+    // this.incomeBidAnimateColor = 'bidBadgeColor-begin';
     setTimeout(() => {
       this.animatedClass = '';
+      // this.incomeBidAnimateColor = 'bidBadgeColor-medium';
     }, 300);
   }
 
