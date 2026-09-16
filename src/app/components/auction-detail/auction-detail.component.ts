@@ -18,6 +18,7 @@ import { SoloDecimalDirective } from '../../directives/solo-decimal.directive';
 import id from '@angular/common/locales/id';
 import { Apuesta } from '../../models/apuesta-model';
 import { gsap } from 'gsap';
+import { SlidebuttonComponent } from '../slidebutton/slidebutton.component';
 
 
 @Component({
@@ -29,7 +30,8 @@ import { gsap } from 'gsap';
     VerticalPremiumAuctionsComponent,
     FormsModule,
     LoaderComponent,
-    SoloDecimalDirective
+    SoloDecimalDirective,
+    SlidebuttonComponent
   ],
   templateUrl: './auction-detail.component.html',
   styleUrls: ['./auction-detail.component.css']
@@ -144,6 +146,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @ViewChild('pillAmount') pillAmount!: ElementRef<HTMLParagraphElement>;
   @ViewChild('pillAmountBadge') pillAmountBadge!: ElementRef<HTMLParagraphElement>;
+  @ViewChild('pillAmountResponsive') pillAmountResponsive!: ElementRef<HTMLParagraphElement>;
 
   @ViewChild('offerBadge')
   offerBadge?: ElementRef<HTMLElement>;
@@ -162,6 +165,12 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @ViewChild('confettiLayer')
   confettiLayer?: ElementRef<HTMLElement>;
+  badgeCaption: any = { label1: 'NUEVA OFERTA', label2: 'Va ganando' }
+
+
+  // 
+
+  // 
 
   constructor(
     private route: ActivatedRoute,
@@ -196,8 +205,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   setMontoInicial(): void {
     this.montoVisible = this.valorApuesta;
-    console.log(this.pillAmount)
-    console.log(this.pillAmountBadge)
+    // console.log(this.pillAmount)
+    // console.log(this.pillAmountBadge)
     if (this.pillAmount) {
       this.pillAmount.nativeElement.textContent = this.toCurrency(this.montoVisible);
     }
@@ -206,9 +215,15 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
+  testButton() {
+    console.log('testButton');
+
+  }
+
   animateCurrentAmount(nuevoMonto: number): void {
     const amountEl = this.pillAmount?.nativeElement;
     const amountBadgeEl = this.pillAmountBadge?.nativeElement;
+    const amountResponsiveEl = this.pillAmountResponsive?.nativeElement;
 
     if (!amountEl || nuevoMonto === this.montoVisible) {
       return;
@@ -227,7 +242,10 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       onUpdate: () => {
         this.montoVisible = proxy.val;
         amountEl.textContent = this.formatoMoneda.format(proxy.val);
-        amountBadgeEl.textContent = this.formatoMoneda.format(proxy.val);
+        if (amountResponsiveEl) {
+          amountResponsiveEl.textContent = this.formatoMoneda.format(proxy.val);
+        }
+        amountBadgeEl.textContent = this.usuarioMayor ? this.formatoMoneda.format(proxy.val) : '';
       },
       onComplete: () => {
         this.tweenMonto = null;
@@ -242,6 +260,12 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     this.tweenPop = gsap.timeline({ onComplete: () => { this.tweenPop = null; } })
       .to(amountBadgeEl, { scale: 1.22, color: '#db2777', duration: 0.18, ease: 'power2.out' })
       .to(amountBadgeEl, { scale: 1, color: '#2d3436', duration: 0.4, ease: 'power2.inOut' });
+
+    if (amountResponsiveEl) {
+      this.tweenPop = gsap.timeline({ onComplete: () => { this.tweenPop = null; } })
+        .to(amountResponsiveEl, { scale: 1.22, color: '#db2777', duration: 0.18, ease: 'power2.out' })
+        .to(amountResponsiveEl, { scale: 1, color: '#0984e3', duration: 0.4, ease: 'power2.inOut' });
+    }
   }
 
   ngOnInit(): void {
@@ -1317,6 +1341,9 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   // }
   private async conectarSignalR(): Promise<void> {
     this.connectingSignalR = true;
+    this.badgeCaption.label1 = '';
+    this.badgeCaption.label2 = 'Conectando... ';
+    this.usuarioMayor = '';
     const nuevoId = this.detallesubasta!.id.toString(); //this.idSubasta.toString();
 
     if (this.idSubastaConectada && this.idSubastaConectada !== nuevoId) {
@@ -1329,12 +1356,16 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       console.log('apuesta recibida')
       console.log(nuevoId)
       this.connectingSignalR = false;
+      this.badgeCaption.label1 = 'NUEVA APUESTA';
+
       console.log(actual)
       if (!actual) return;
 
       this.usuarioMayor = actual.usuario;
+      this.badgeCaption.label2 = this.usuarioMayor ? 'Va Ganando' : 'Sin Apuestas'
       this.estatus = actual.estatus;
       this.valorApuesta = actual.apuesta;
+      // this.setMontoInicial();
       this.animateCurrentAmount(this.valorApuesta)
       this.siguienteApuesta = actual.siguienteApuesta;
       //this.

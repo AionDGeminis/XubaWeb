@@ -1,0 +1,107 @@
+:host {
+    display: block;
+}
+
+.slide-track {
+    position: relative;
+    height: 64px;
+    border-radius: 999px;
+    background: #b2bec3;
+    border: 1px solid #c8d6e5;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+}
+
+.slide-track:active {
+    cursor: grabbing;
+}
+
+.slide-fill {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ec4899, #8b5cf6);
+    clip-path: inset(0 100% 0 0 round 999px);
+    will-change: clip-path;
+}
+
+.slide-label {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #0f172a;
+    pointer-events: none;
+    transition: color 120ms ease;
+}
+
+.slide-label.slide-over {
+    color: #ffffff;
+}
+
+.slide-thumb {
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+    outline: none;
+    transform: translate3d(0, -50%, 0);
+    will-change: transform;
+    cursor: inherit;
+}
+
+.slide-thumb:focus-visible {
+    box-shadow:
+        0 0 0 4px rgba(236, 72, 153, 0.25),
+        0 4px 12px rgba(236, 72, 153, 0.35);
+}
+
+.slide-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.slide-icon-check {
+    display: none;
+}
+
+.slide-track.slide-confirmed .slide-fill {
+    background: #16a34a;
+}
+
+.slide-track.slide-confirmed .slide-thumb {
+    background: #16a34a;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+}
+
+.slide-track.slide-confirmed .slide-icon-gavel {
+    display: none;
+}
+
+.slide-track.slide-confirmed .slide-icon-check {
+    display: block;
+}
+
+.slide-track.slide-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
