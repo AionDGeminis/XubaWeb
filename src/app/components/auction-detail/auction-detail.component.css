@@ -4503,3 +4503,13 @@ body { background: var(--bg); color: var(--text); } */
     display: none;
   }
 }
+
+.current-offer-badge__amount {
+  display: inline-block;
+  /* necesario para que el pop con scale funcione */
+  color: #566179;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  /* ya lo teníamos: evita el baile de dígitos durante el conteo */
+}
