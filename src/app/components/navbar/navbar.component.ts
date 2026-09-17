@@ -162,7 +162,7 @@ export class NavbarComponent implements OnInit {
     // OpenPay.setApiKey('pk_f2da5530e74d4c7fbf292d886aba5e50');
     // OpenPay.setSandboxMode(true);
     if (this.isLoggedIn()) {
-      console.log(this.usuario());
+      // console.log(this.usuario());
       // this.conectarSignalR(this.usuario()!.id);
     }
     // const routePath = this.route.snapshot.routeConfig;
@@ -956,12 +956,30 @@ export class NavbarComponent implements OnInit {
     const correo = '';
     this.loading = true;
     this.authService.login(this.loginForm.usuario.trim(), this.loginForm.pass.trim(), correo).subscribe({
+      // next: (usuario: any) => {
+      //   this.loading = false;
+      //   console.log('Login exitoso:', usuario);
+      //   this.authService.setUser(usuario);
+      //   this.ss.showNotification('success', 'Inicio de sesión exitoso');
+      //   // this.conectarSignalR(this.usuario()!.id);
+      // },
       next: (usuario: any) => {
         this.loading = false;
+
+        // 
+        if (usuario.success) {
+          if (usuario.token) {
+            localStorage.setItem('XUBA_TKN', usuario.token)
+            this.authService.setUser(usuario);
+            this.fnToggleMenu();
+            this.ss.showNotification('success', 'Inicio de sesión exitoso');
+            //this.conectarSignalR(0);
+            // this.conectarSignalR(this.usuario()!.id);
+          }
+        } else {
+          this.ss.showNotification('error', usuario.mensaje, 4500);
+        }
         console.log('Login exitoso:', usuario);
-        this.authService.setUser(usuario);
-        this.ss.showNotification('success', 'Inicio de sesión exitoso');
-        // this.conectarSignalR(this.usuario()!.id);
       },
       error: (err) => {
         this.loading = false;

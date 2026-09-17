@@ -2387,6 +2387,14 @@ body { background: var(--bg); color: var(--text); } */
   border-color: #ec4899 !important;
 }
 
+
+.btn-offer-disabled {
+  background: #b2bec3 !important;
+  /* background-size: 200% auto; */
+  /* transition: background-position 0.4s, transform 0.2s, box-shadow 0.2s; */
+  color: #636e72 !important;
+}
+
 .btn-offer {
   background: linear-gradient(to right, #ec4899, #8b5cf6, #3b82f6);
   background-size: 200% auto;
