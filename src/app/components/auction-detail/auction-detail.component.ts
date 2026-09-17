@@ -41,7 +41,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   //================
   // PROXIMOS CAMBIOS: eliminar el objeto subasta, y sus referencias
 
-  subasta: Subasta | any = {};
+  // subasta: Subasta | any = {};
   detallesubasta: detalleSubasta | any = {};
   lista: Subasta[] = [];
   listaPremium: Subasta[] = [];
@@ -204,15 +204,15 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   setMontoInicial(): void {
-    this.montoVisible = this.valorApuesta;
-    // console.log(this.pillAmount)
-    // console.log(this.pillAmountBadge)
-    if (this.pillAmount) {
-      this.pillAmount.nativeElement.textContent = this.toCurrency(this.montoVisible);
-    }
-    if (this.pillAmountBadge) {
-      this.pillAmountBadge.nativeElement.textContent = this.toCurrency(this.montoVisible);
-    }
+    // this.montoVisible = this.valorApuesta;
+    // // console.log(this.pillAmount)
+    // // console.log(this.pillAmountBadge)
+    // if (this.pillAmount) {
+    //   this.pillAmount.nativeElement.textContent = this.toCurrency(this.montoVisible);
+    // }
+    // if (this.pillAmountBadge) {
+    //   this.pillAmountBadge.nativeElement.textContent = this.toCurrency(this.montoVisible);
+    // }
   }
 
   testButton() {
@@ -287,7 +287,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     });
     // this.subastasService.getAuctionById(id).subscribe(sub => {
-    //   this.subasta = sub;
+    //   this.detallesubasta = sub;
 
     //   // 2. Luego cargar la lista
     //   let tipo: 'porvencer' | 'premium' | 'todas' = 'todas';
@@ -300,9 +300,9 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     //     this.lista = list;
 
     //     // 3. Ya tienes subasta y lista. Ahora sí puedes usar todo
-    //     this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta!.id);
-    //     this.imagenActual  = this.subasta!.url;
-    //     this.tiempoVence   = this.subasta!.tiempoVence ?? '00:00:00';
+    //     this.indiceActual  = this.lista.findIndex(s => s.id === this.detallesubasta!.id);
+    //     this.imagenActual  = this.detallesubasta!.url;
+    //     this.tiempoVence   = this.detallesubasta!.tiempoVence ?? '00:00:00';
 
     //     this.iniciarTemporizador();
     //     this.verificarSiSiguiendo();
@@ -749,10 +749,10 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   //       //console.log(index); 
 
   //       //  this.
-  //       //  this.lista.unshift(this.subasta!);
+  //       //  this.lista.unshift(this.detallesubasta!);
 
   //       // 3. Ya tienes subasta y lista. Ahora sí puedes usar todo
-  //       // this.indiceActual  = this.lista.findIndex(s => s.id === this.subasta!.id);
+  //       // this.indiceActual  = this.lista.findIndex(s => s.id === this.detallesubasta!.id);
   //       // console.log(this.indiceActual)
   //       this.tiempoVence = this.detallesubasta!.tiempoVence ?? '00:00:00';
 
@@ -1105,22 +1105,22 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   setupIndices() {
-    this.indiceActual = this.lista.findIndex(s => s.id === this.subasta!.id);
-    this.imagenActual = this.subasta!.url;
-    this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
+    this.indiceActual = this.lista.findIndex(s => s.id === this.detallesubasta!.id);
+    this.imagenActual = this.detallesubasta!.url;
+    this.tiempoVence = this.detallesubasta!.tiempoVence ?? '00:00:00';
   }
 
   cambiarSubastaDesdePremium(data: { subasta: Subasta; lista: Subasta[]; origen: string }): void {
-    this.subasta = data.subasta;
+    this.detallesubasta = data.subasta;
     this.lista = data.lista;
     this.origen = data.origen;
 
-    this.indiceActual = this.lista.findIndex(s => s.id === this.subasta!.id);
-    this.imagenActual = this.subasta!.url;
-    this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
+    this.indiceActual = this.lista.findIndex(s => s.id === this.detallesubasta!.id);
+    this.imagenActual = this.detallesubasta!.url;
+    this.tiempoVence = this.detallesubasta!.tiempoVence ?? '00:00:00';
 
     this.resetDatos(); // reinicia temporizador, verifica seguimiento, etc.
-    this.actualizarVista();
+    // this.actualizarVista();
   }
 
   ngAfterViewInit(): void {
@@ -1150,7 +1150,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         this.tiempoVence = this.restarUnSegundo(this.tiempoVence);
         if (this.tiempoVence === '00:00:00') {
           console.log('subasta terminada')
-          console.log(this.subasta!)
+          // console.log(this.detallesubasta!)
           this.vencida = true;
           this.temporizadorSub$?.unsubscribe();
           // this.consultarGanador();
@@ -1177,7 +1177,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   toggleSeguir(): void {
     const idUsuario = 0;
-    const idSubasta = this.subasta!.id.toString();
+    const idSubasta = this.detallesubasta!.id.toString();
     if (this.isFollowed) {
       this.subastasService.dejarDeSeguirSubasta(idUsuario, idSubasta)
         .subscribe(() => this.isFollowed = false);
@@ -1231,7 +1231,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         // this.listaTiposEnvio[0].precio += 100;
         // this.tipoEnvioSeleccionado = this.listaTiposEnvio[0];
         // this.tipoEnvioSeleccionado.precio
-        // this.precioTotal = this.subasta!.apuesta + this.precioComision + this.precioEnvio;
+        // this.precioTotal = this.detallesubasta!.apuesta + this.precioComision + this.precioEnvio;
       },
       error: (err) => {
         this.loadingCotizacion = false;
@@ -1242,7 +1242,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   getCotizarModelFormat() {
     console.log('Generating cotización model format');
-    console.log(this.subasta)
+    console.log(this.detallesubasta)
     var cotizacion = {
       "codigoPostalOrigen": this.detallesubasta.codigoPostal,
       "ciudadOrigen": this.detallesubasta.municipio,
@@ -1265,10 +1265,10 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   consultarGanador(): void {
-    this.subastasService.consultarGanador(this.subasta!.id).subscribe({
+    this.subastasService.consultarGanador(this.detallesubasta!.id).subscribe({
       next: resp => {
         const { apuesta, idComprador } = resp;
-        if (apuesta >= this.subasta!.precio) {
+        if (apuesta >= this.detallesubasta!.precio) {
           this.mensajeFinal =
             Number(idComprador) === 0
               // Number(idComprador) === Number(this.authService.idUsuario)
@@ -1291,68 +1291,24 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     });
   }
-  // Conexión SignalR
-  // test http://localhost:4200/subasta-detalle/15425/Generales
 
-  // private conectarSignalR(): void {
-  //   // const nuevoId = this.detallesubasta!.id.toString();
-  //   this.connectingSignalR = true;
-  //   const nuevoId = this.idSubasta.toString();
-  //   if (this.idSubastaConectada && this.idSubastaConectada !== nuevoId) {
-  //     this.signalRService.leaveSubasta(this.idSubastaConectada);
-  //     console.log("saliendo de subasta")
-  //   }
 
-  //   this.signalRService.connectToSubasta(nuevoId, this.authService.idUsuario, (datos: any[]) => {
-  //     const actual = datos[0];
-  //     console.log('apuesta recibida')
-  //     this.connectingSignalR = false;
-  //     console.log(actual)
-  //     if (!actual) return;
-
-  //     this.usuarioMayor = actual.usuario;
-  //     this.estatus = actual.estatus;
-  //     this.valorApuesta = actual.apuesta;
-  //     this.siguienteApuesta = actual.siguienteApuesta;
-  //     //this.
-  //     const listaStr = (actual.ganadores ?? '').toString();
-  //     const listaItems = listaStr.split('|').filter((g: string) => g.trim());
-  //     this.ganadoresLista = listaItems;
-  //     console.log(this.valorApuesta)
-
-  //     // console.log(this.ganadoresLista);
-  //     this.animateResponse();
-  //     this.ganadoresDetalles = listaItems.map((item: string) => {
-  //       const partes = item.replace('$', '').split('-');
-  //       return { monto: `$${partes[0]}`, usuario: partes[1], fecha: partes.slice(2).join('-') };
-  //     });
-
-  //     if (actual.estatus === 'FIN') {
-  //       this.vencida = true;
-  //       this.temporizadorSub$?.unsubscribe();
-  //       this.consultarGanador();
-  //       let dataParams = JSON.stringify({ idSubasta: this.subasta!.id, tipoUsuario: 'comprador' });
-  //       let encoded = this.ss.encodeToBase64(dataParams);
-  //       this.router.navigate(['/subasta-terminada', encoded]);
-  //     }
-
-  //   });
-  //   this.idSubastaConectada = nuevoId;
-  // }
   private async conectarSignalR(): Promise<void> {
     this.connectingSignalR = true;
-    this.badgeCaption.label1 = '';
-    this.badgeCaption.label2 = 'Conectando... ';
-    this.usuarioMayor = '';
+    // this.badgeCaption.label1 = '';
+    // this.badgeCaption.label2 = 'Conectando... ';
+    // this.usuarioMayor = '';
     const nuevoId = this.detallesubasta!.id.toString(); //this.idSubasta.toString();
 
     if (this.idSubastaConectada && this.idSubastaConectada !== nuevoId) {
       await this.signalRService.leaveSubasta(this.idSubastaConectada);
     }
 
-    this.signalRService.connectToSubasta(nuevoId, '0', (datos: any[]) => {
+    this.signalRService.connectToSubasta(nuevoId, '0', (datos: any) => {
+      console.log(datos)
       // this.signalRService.connectToSubasta(nuevoId, this.authService.idUsuario, (datos: any[]) => {
-      const actual = datos[0];
+      const actual = datos;
+      // const actual = datos[0];
       console.log('apuesta recibida')
       console.log(nuevoId)
       this.connectingSignalR = false;
@@ -1387,7 +1343,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         this.vencida = true;
         this.temporizadorSub$?.unsubscribe();
         this.consultarGanador();
-        let dataParams = JSON.stringify({ idSubasta: this.subasta!.id, tipoUsuario: 'comprador' });
+        let dataParams = JSON.stringify({ idSubasta: this.detallesubasta!.id, tipoUsuario: 'comprador' });
         let encoded = this.ss.encodeToBase64(dataParams);
         this.router.navigate(['/subasta-terminada', encoded]);
       }
@@ -1486,7 +1442,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   //       this.auctionService.getAuctions(idUsuario).subscribe({
   //         next: (data) => {
   //           this.auctionsId = data.map(subasta => subasta.id);
-  //           this.isFollowed = this.auctionsId.includes(this.subasta!.id);
+  //           this.isFollowed = this.auctionsId.includes(this.detallesubasta!.id);
   //         },
   //         error: (error) => {
   //           console.error('Error cargando subastas:', error);
@@ -1549,6 +1505,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     console.log(dataApuesta)
     this.subastasService.enviarApuesta(dataApuesta).subscribe({
       next: () => {
+        console.log('Respuesta de la apuesta: ')
+        console.log(dataApuesta)
         if (!this.isFollowed) {
           this.verificarSiSiguiendo();
         }
@@ -1577,18 +1535,18 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   async compraDirecta() {
     const idComprador = 0;
     // const idComprador = +(this.authService.idUsuario);/
-    if (idComprador === +(this.subasta!.musuarios?.id)) {
+    if (idComprador === +(this.detallesubasta!.musuarios?.id)) {
       this.toastr.error('No puedes ofertar en tu propia subasta.', 'Error');
       return;
     }
 
     let dataApuesta = {
-      idSubasta: this.subasta!.id,
+      idSubasta: this.detallesubasta!.id,
       idComprador,
-      apuesta: this.subasta.precio,
+      apuesta: this.detallesubasta.precio,
       compraDirecta: true
     }
-    let r = await this.ss.showConfirmMessage(`¿Desea realizar la copra directa de este producto por un precio de: ${this.toCurrency(this.subasta.precio)}?`)
+    let r = await this.ss.showConfirmMessage(`¿Desea realizar la compra directa de este producto por un precio de: ${this.toCurrency(this.detallesubasta.precio)}?`)
     if (r) {
       this.subastasService.enviarApuesta(dataApuesta).subscribe({
         next: (data) => {
@@ -1661,11 +1619,11 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     this.classAnimate.imageContainer = 'animate__fadeOutLeft';
     this.omitFirstBidIncoming = true;
 
-    // this.subasta = this.lista[this.indiceActual];
+    // this.detallesubasta = this.lista[this.indiceActual];
 
     // this.router.navigate([
     //   '/subasta-detalle',
-    //   this.subasta!.id,
+    //   this.detallesubasta!.id,
     //   this.origen
     // ]);
 
@@ -1685,22 +1643,22 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     }, 300);
   }
 
-  actualizarVista() {
-    this.imagenActual = this.subasta!.url;
-    this.tiempoVence = this.subasta!.tiempoVence ?? '00:00:00';
-    //this.iniciarTemporizador();
-    this.verificarSiSiguiendo();
-    //this.getSubastasSeguidas();
-    this.conectarSignalR();
+  // actualizarVista() {
+  //   this.imagenActual = this.detallesubasta!.url;
+  //   this.tiempoVence = this.detallesubasta!.tiempoVence ?? '00:00:00';
+  //   //this.iniciarTemporizador();
+  //   this.verificarSiSiguiendo();
+  //   //this.getSubastasSeguidas();
+  //   this.conectarSignalR();
 
-    const segundos = this.tiempoStringASegundos(this.tiempoVence);
+  //   const segundos = this.tiempoStringASegundos(this.tiempoVence);
 
-    this.fechaFin = new Date(
-      new Date().getTime() + segundos * 1000
-    );
+  //   this.fechaFin = new Date(
+  //     new Date().getTime() + segundos * 1000
+  //   );
 
-    // this.iniciarTimerReal();
-  }
+  //   // this.iniciarTimerReal();
+  // }
 
   cerrarDetalle(): void {
     this.router.navigate(['/']);

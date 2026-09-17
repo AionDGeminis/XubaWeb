@@ -278,7 +278,7 @@ export class SubastasService {
   }
 
   ConsultarSubastaOfertarId(idSubasta: number) {
-    return this.http.get<any>(`${env.base_url}/subastas/ConsultarSubastaOfertarId?idSubasta=${idSubasta}`);
+    return this.http.get<any>(`${env.base_url}/subastas/ConsultarSubastaOfertarId`, { headers: headers, params: { idSubasta } });
   }
 
   ConsultarPerfilVendedorId(idVendedor: number, idUsuario: number) {

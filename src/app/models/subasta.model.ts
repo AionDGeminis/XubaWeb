@@ -69,6 +69,7 @@ export interface Subasta {
   horaRecolecta: string;
   fechaRecoleccion: string;
 }
+
 export interface detalleSubasta {
   id: number;
   caption: string;
@@ -93,6 +94,7 @@ export interface detalleSubasta {
   ofertas: number;
   imagenes: Imagen[];
   compraDirecta: boolean;
+  precio: number;
 }
 
 export interface Imagen {

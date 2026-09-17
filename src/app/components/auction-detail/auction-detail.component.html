@@ -128,7 +128,7 @@
                 </div>
               </div>
             </div>
-            <button class="w-100" *ngIf="isLoggedIn() && this.usuario()!.id !== this.subasta.idVendedor"
+            <button class="w-100" *ngIf="isLoggedIn() && this.usuario()!.id !== this.detallesubasta.idVendedor"
               [disabled]="lockButton"
               [ngClass]="{'btn-fv': getSiguiendo(detallesubasta.idVendedor), 'btn-uv':!getSiguiendo(detallesubasta.idVendedor)}"
               (click)="toggleSeguirVendedor(detallesubasta.idVendedor)"
@@ -392,7 +392,8 @@
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-heart " [ngClass]="{'followed-i': isFollowed}"></i>
         </button>
-        <button *ngIf="detallesubasta.compraDirectaleyen" class="glass" (click)="abrirmodalofertadirecta()"
+        <button *ngIf="detallesubasta.compraDirecta && valorApuesta < detallesubasta.precio" class="glass"
+          (click)="compraDirecta()"
           style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
           <i class="fas fa-shopping-cart"></i>
         </button>
@@ -450,7 +451,9 @@
         Ofertar {{ toCurrency(siguienteApuesta) }}
       </button> -->
       <ng-container *ngIf="isLoggedIn()">
-        <button class="btn-offer glass-btn d-none d-sm-block" (click)="realizarApuesta(siguienteApuesta, false)"
+        <button [disabled]="connectingSignalR" [ngClass]="{'btn-offer-disabled ': connectingSignalR}"
+          class="btn-offer btn-offer-disabled glass-btn d-none d-sm-block"
+          (click)="realizarApuesta(siguienteApuesta, false)"
           style="width: 100%; border: none; border-radius: 50px; padding: 16px; color: black; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; position: relative; z-index: 12;">
           <i class="fas fa-gavel" style="margin-right: 8px;"></i>
           Ofertar {{ toCurrency(siguienteApuesta) }}

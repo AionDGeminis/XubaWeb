@@ -15,9 +15,10 @@ export class SignalRService {
     if (this.connection && this.connection.state !== signalR.HubConnectionState.Disconnected) {
       await this.connection.stop(); // Cierra anterior
     }
-
+    console.log(this.authService.token())
     this.connection = new signalR.HubConnectionBuilder()
       // .withUrl("http://173.208.155.152:8088/apuesta")
+
       .withUrl("https://api.xuba.mx:8443/apuesta", {
         accessTokenFactory: () => this.authService.token() ?? 'Anonimo'
       })
