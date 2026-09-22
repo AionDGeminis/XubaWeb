@@ -14,7 +14,8 @@
       <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
           <div class="d-flex flex-column flex-sm-row gap-3">
-            <img [src]="subasta!.url" alt="subasta" class="rounded object-fit-cover" style="width:160px;height:160px">
+            <img [src]="subasta!.imagenes[0].url" alt="subasta" class="rounded object-fit-cover"
+              style="width:160px;height:160px">
             <div class="flex-grow-1">
               <h5 class="mb-1">{{subasta!.caption}}</h5>
               <div class="text-muted small mb-2">
@@ -22,11 +23,11 @@
               </div>
 
               <div class="d-flex align-items-center gap-2 mb-2">
-                <img [src]="subasta!.musuarios.imgPerfil" class="rounded-circle" style="width:28px;height:28px"
+                <img [src]="subasta!.fotoVendedor" class="rounded-circle" style="width:28px;height:28px"
                   alt="Profile Picture">
-                <a class="link-secondary text-decoration-none" href="#">{{subasta!.musuarios.usuario}}</a>
+                <a class="link-secondary text-decoration-none" href="#">{{subasta!.usuarioVendedor}}</a>
                 <span class="badge bg-light text-dark">
-                  <i class="fas fa-star  text-warning"></i> {{subasta!.musuarios.stars}}
+                  <i class="fas fa-star  text-warning"></i> 4
                 </span>
               </div>
 
@@ -39,13 +40,15 @@
           <hr class="my-4">
 
 
-          <div *ngIf="isInList(ganadorInfo.claveEstatus,['ACT','FIN','MNA', 'PGA','PPV'])"
-            class="row gy-3 align-items-stretch">
+          <div *ngIf="esEstatusValido(['ACT','FIN','MNA', 'PGA','PPV'])" class="row gy-3 align-items-stretch">
+            <!-- <div
+            *ngIf="ganadorInfo && ganadorInfo.claveEstatus && isInList(ganadorInfo!.claveEstatus,['ACT','FIN','MNA', 'PGA','PPV'])"
+            class="row gy-3 align-items-stretch"> -->
             <div class="col-12 col-md-6">
               <ul class="list-unstyled mb-0">
                 <li class="d-flex justify-content-between py-1">
                   <span class="text-muted">Precio final del articulo</span>
-                  <strong>${{subasta!.apuesta}} MXN</strong>
+                  <strong>${{subasta!.ofertaActual}} MXN</strong>
                 </li>
                 <li class="d-flex justify-content-between py-1">
                   <span class="text-muted">Envío estimado</span>
@@ -62,7 +65,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12" *ngIf="ganadorInfo.claveEstatus === 'ACT' || ganadorInfo.claveEstatus === 'FIN'">
+            <div class="col-12" *ngIf="esEstatusValido(['ACT','FIN'])">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
                 <div class="d-flex justify-content-center align-items-center">
                   <span class="alert bg-label-xuba2 text-white">Subasta terminada, esperando seguimiento del
@@ -70,7 +73,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12" *ngIf="ganadorInfo.claveEstatus === 'MNA'">
+            <div class="col-12" *ngIf="esEstatusValido(['MNA'])">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
                 <div class="d-flex justify-content-center align-items-center">
                   <span class="alert bg-label-xuba2 text-white">La subasta finalizo pero no se alcanzo el precio minimo,
@@ -78,9 +81,8 @@
                 </div>
               </div>
             </div>
-            <div class="col-12" *ngIf="ganadorInfo.claveEstatus === 'PGA'">
+            <div class="col-12" *ngIf="esEstatusValido(['PGA'])">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                <!-- <div class="d-flex justify-content-center align-items-center"> -->
                 <div class="alert bg-label-xuba5 text-white mt-2" style="position: relative;overflow: hidden;">
                   El vendedor te mando una nueva oferta de compra Por: &nbsp;
                   <span class="fs-5 fw-bold" style="color:#1B1464"> {{toCurrency(getLastOferta())}} MXN</span>
@@ -90,43 +92,33 @@
                 <div class="w-100 text-center">
                   <h5>¿Como desea continuar?</h5>
                   <br>
-                  <!-- <button class="btn bg-xuba me-1" (click)="aceptarOfertaActual()"><i class="fas fa-handshake"></i> Aceptar precio</button> -->
                   <button class="btn bg-xuba3 ms-1 me-1" (click)="AceptarOfertaGanador()"><i
                       class="fas fa-hand-holding-usd"></i> Aceptar Oferta</button>
-                  <button *ngIf="ganadorInfo.ofertas && ganadorInfo.ofertas.length < 3" class="btn bg-xuba2 ms-1 me-1"
+                  <button *ngIf="ganadorInfo!.ofertas && ganadorInfo!.ofertas.length < 3" class="btn bg-xuba2 ms-1 me-1"
                     (click)="contraOfertar()"><i class="fas fa-hand-holding-usd"></i> ContraOfertar</button>
                   <button class="btn btn-danger ms-1 me-1" (click)="rechazarOfertaGanador()"> <i
                       class="fas fa-stop-circle"></i> Rechazar Oferta</button>
                 </div>
-                <!-- </div>   -->
               </div>
             </div>
-            <div class="col-12" *ngIf="ganadorInfo.claveEstatus === 'PPV'">
+            <div class="col-12" *ngIf="esEstatusValido(['PPV'])">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                <!-- <div class="d-flex justify-content-center align-items-center"> -->
                 <div class="alert bg-label-xuba4 text-white mt-2 py-4" style="position: relative;">
                   Has enviado una contraoferta al vendedor, en espera de la respuesta... &nbsp;
                   <i class="fas fa-hourglass-half fa-4x"
                     style="position: absolute;right:-5px;bottom:-5px;opacity: 0.5;"></i>
                 </div>
-                <!-- <div class="w-100 text-center">
-                            <h5>¿Como desea continuar?</h5>
-                            <br>
-                            <button class="btn bg-xuba3 ms-1 me-1" (click)="AceptarOfertaGanador()"><i class="fas fa-hand-holding-usd"></i> Aceptar Oferta</button>
-                            <button class="btn bg-xuba2 ms-1 me-1" (click)="contraOfertar()"><i class="fas fa-hand-holding-usd"></i> ContraOfertar</button>
-                            <button class="btn btn-danger ms-1 me-1" (click)="rechazarOfertaGanador()"> <i class="fas fa-stop-circle"></i> Rechazar Oferta</button>
-                        </div> -->
-                <!-- </div>   -->
+
               </div>
             </div>
           </div>
 
-          <div *ngIf="isInList(ganadorInfo.claveEstatus,['RGA'])" class="row gy-3 align-items-stretch">
+          <div *ngIf="esEstatusValido(['RGA'])" class="row gy-3 align-items-stretch">
             <div class="col-12 col-md-6">
               <ul class="list-unstyled mb-0">
                 <li class="d-flex justify-content-between py-1">
                   <span class="text-muted">Precio final del articulo</span>
-                  <strong>${{subasta!.apuesta}} MXN</strong>
+                  <strong>${{subasta!.ofertaActual}} MXN</strong>
                 </li>
                 <li class="d-flex justify-content-between py-1">
                   <span class="text-muted">Envío estimado</span>
@@ -142,7 +134,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-12" *ngIf="ganadorInfo.claveEstatus === 'RGA'">
+            <div class="col-12" *ngIf="ganadorInfo!.claveEstatus === 'RGA'">
               <div class="bg-light  rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
                 <div class="d-flex justify-content-center align-items-center">
                   <div class="alert bg-label-xuba2 text-white w-100">La subasta ha concluido.</div>
@@ -151,41 +143,6 @@
             </div>
           </div>
 
-          <!-- <div  *ngIf="subasta && ganadorInfo && ganadorInfo.claveEstatus === 'PGA'" class="row gy-3 align-items-stretch">
-                <div class="col-12 col-md-6">
-                  <ul class="list-unstyled mb-0">
-                    <li class="d-flex justify-content-between py-1">
-                      <span class="text-muted">Precio del articulo</span>
-                      <strong>${{subasta!.apuesta}} MXN</strong>
-                    </li>
-                    <li class="d-flex justify-content-between py-1">
-                      <span class="text-muted">Envío estimado</span>
-                      <strong>${{tipoEnvioSeleccionado? tipoEnvioSeleccionado.precio:0}} MXN</strong>
-                    </li>
-                   
-                    <li class="d-flex justify-content-between py-1">
-                     <select class="form-select" [(ngModel)]="tipoEnvioSeleccionado" name="tipoEnvio" (change)="changeTipoEnvio()">
-                        <option [ngValue]="te" *ngFor="let te of listaTiposEnvio">{{te.nombreProducto}}&nbsp;&nbsp;-&nbsp;&nbsp;{{te.precio}} MXN</option>
-                     </select>
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-12 col-md-6">
-                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="fw-semibold">Total por pagar</span>
-                      <span class="fs-4 fw-bold text-primary">${{precioTotal}} MXN</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="bg-xuba rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                    <div class="d-flex justify-content-center align-items-center">
-                      <span class="">En espera del vendedor, para confirmar el precio final de la subasta</span>
-                    </div>  
-                  </div>
-                </div>
-              </div> -->
 
           <div class="mt-4 p-3 bg-body-tertiary rounded-3 mb-4"
             *ngIf="subasta && ganadorInfo && ganadorInfo.claveEstatus === 'PTP'">
@@ -220,7 +177,6 @@
                 <li class="d-flex justify-content-between py-1">
                   <span class="text-muted">Precio del articulo</span>
                   <strong>${{precioActualSubasta}} MXN</strong>
-                  <!-- <strong>${{subasta!.apuesta}} MXN</strong> -->
                 </li>
 
                 <li class="d-flex justify-content-between py-1">
@@ -242,7 +198,6 @@
                 <div class="d-flex justify-content-between align-items-center">
                   <span class="fw-semibold">Total a pagar</span>
                   <span class="fs-4 fw-bold text-primary">
-                    <!-- ${{precioTotal}} MXN -->
                     {{ toCurrency(precioTotal) !== '$0.00' ? toCurrency(precioTotal):' -- ND --'}} {{
                     toCurrency(precioTotal) !== '$0.00' ? 'MXN':''}}
                   </span>
@@ -255,34 +210,32 @@
 
 
           <div class="d-flex flex-wrap gap-2 mt-4"
-            *ngIf="ganadorInfo.claveEstatus === 'PTP' && listaDireccionesEntrega && listaDireccionesEntrega.length > 0">
+            *ngIf="ganadorInfo!.claveEstatus === 'PTP' && listaDireccionesEntrega && listaDireccionesEntrega.length > 0">
             <button class="btn btn-primary btn-lg flex-grow-1 bg-xuba" (click)="openModalPago()">
-              <!-- <button class="btn btn-primary btn-lg flex-grow-1 bg-xuba" (click)="openModalPago()"> -->
               <i class="fas fa-money-check me-2"></i>Pagar ahora
             </button>
           </div>
           <div class="d-flex flex-wrap gap-2 mt-4"
-            *ngIf="listaDireccionesEntrega && listaDireccionesEntrega.length === 0 && isInList(ganadorInfo.claveEstatus,['PTP']) ">
+            *ngIf="listaDireccionesEntrega && listaDireccionesEntrega.length === 0 && isInList(ganadorInfo!.claveEstatus,['PTP']) ">
             <button class="btn btn-primary btn-lg flex-grow-1 bg-xuba">
               <i class="fas fa-map-marker-alt"></i> Agregar Direccion
             </button>
           </div>
-          <!-- PEdir a alex que guarde el precio de compra y precio ttoal para mostrar -->
           <div class="row gy-3 align-items-stretch"
-            *ngIf="isInList(ganadorInfo.claveEstatus,['PDO', 'PEV', 'REC', 'RCC','RCM'])">
+            *ngIf="isInList(ganadorInfo!.claveEstatus,['PDO', 'PEV', 'REC', 'RCC','RCM'])">
             <div class="col-12 col-md-6">
               <ul class="list-unstyled mb-0">
                 <li class="d-flex justify-content-between py-1">
                   <span class="text-muted">Precio final </span>
-                  <strong>${{subasta!.apuesta}} MXN</strong>
+                  <strong>${{subasta!.ofertaActual}} MXN</strong>
                 </li>
                 <li class="d-flex justify-content-between py-1">
                   <span class="text-muted">Precio de envio</span>
-                  <strong>${{subasta!.puja}} MXN</strong>
+                  <strong>${{precioEnvio}} MXN</strong>
                 </li>
                 <li class="d-flex justify-content-between py-1">
                   <span class="text-muted">Total pagado</span>
-                  <strong>{{ganadorInfo.cantidadApuestas}}</strong>
+                  <strong>{{ganadorInfo!.cantidadApuestas}}</strong>
                 </li>
 
               </ul>
@@ -295,9 +248,8 @@
                 </p>
               </div>
             </div>
-            <div class="col-12" *ngIf="ganadorInfo.claveEstatus === 'PDO'">
+            <div class="col-12" *ngIf="ganadorInfo!.claveEstatus === 'PDO'">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                <!-- <div class="d-flex justify-content-center align-items-center"> -->
                 <div class="alert bg-label-xuba4 text-white mt-2 py-4" style="position: relative;">
                   El pago de la subasta se ha realizado correctamente, en espera del vendedor a que proceda con el envio
                   del producto.
@@ -306,92 +258,60 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="col-12 col-md-12" *ngIf="ganadorInfo.claveEstatus === 'PDO'">
-                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="fw-semibold text-primary">Subasta Pagada</span>
-                    </div>
-                    <div class="small2 text-muted mt-1" >
-                     El pago de la subasta se ha realizado correctamente, en espera del vendedor a que proceda con el envio del producto.
-                    </div>
-                   
-                  </div>
-                </div>  -->
-            <div class="col-12 col-md-12" *ngIf="ganadorInfo.claveEstatus === 'PEV'">
+
+            <div class="col-12 col-md-12" *ngIf="ganadorInfo!.claveEstatus === 'PEV'">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
                 <div class="d-flex justify-content-between align-items-center">
                   <span class="fw-semibold text-primary">Producto en camino</span>
-                  <!-- <span class="badge bg-info text-dark">{{ganadorInfo.estatus}}</span> -->
                 </div>
                 <div class="small2 text-muted mt-1">
                   El vendedor ha enviado tu producto, puedes revisar el historial de seguimiento, para localizar tu
                   Producto
                   <h5 class="mt-4 guia-title">Numero de guia</h5>
-                  <span class="guia">{{ganadorInfo.numGuia}}</span> <br>
+                  <span class="guia">{{ganadorInfo!.numGuia}}</span> <br>
 
                 </div>
 
               </div>
             </div>
-            <!-- <div class="col-12 col-md-12" *ngIf="ganadorInfo.claveEstatus === 'REC'">
-                  <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <span class="fw-semibold text-success">Producto recibido</span>
-                    </div>
-                    <div class="small2 text-muted mt-1" >
-                     El producto ha sido entregado en tu ubicacion correctamente
-                    </div>
-                   
-                  </div>
-                </div> -->
-            <div class="col-12" *ngIf="productoEntregadoDHL && ganadorInfo.claveEstatus !== 'RCC'">
+
+            <div class="col-12" *ngIf="productoEntregadoDHL && ganadorInfo!.claveEstatus !== 'RCC'">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                <!-- <div class="d-flex justify-content-center align-items-center"> -->
                 <div class="alert bg-label-xuba4 text-white mt-2">
                   El producto ha sido entregado &nbsp;
                   <i class="fas fa-box fa-3x" style="position: absolute;right:3px;bottom:3px;opacity: 0.5;"></i>
 
-                  <!-- <span class="fs-5 fw-bold text-primary"> {{toCurrency(subasta!.precio)}} MXN</span>  -->
                 </div>
                 <div class="w-100 text-center">
                   <span class="fs-2 text-primary">Puedes marcar como correcta la recepcion, o abrir una reclamo si tiene
                     algun detalle </span>
                   <br><br>
-                  <!-- <button class="btn bg-xuba me-1" (click)="aceptarOfertaActual()"><i class="fas fa-handshake"></i> Aceptar precio</button> -->
                   <button class="btn bg-xuba3 btn-pill ms-1 me-1 mb-2" (click)="ConfirmarCorrectaRecepcion()"><i
                       class="fas fa-thumbs-up"></i> Correcta recepcion</button>
                   <button class="btn bg-label-xuba2 btn-pill text-white ms-1 me-1" (click)="setOpenModal('disputa')"> <i
                       class="fas fa-ticket-alt"></i> Abrir reclamo</button>
                 </div>
-                <!-- </div>   -->
               </div>
             </div>
-            <div class="col-12" *ngIf="ganadorInfo.claveEstatus === 'RCC'">
+            <div class="col-12" *ngIf="ganadorInfo!.claveEstatus === 'RCC'">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                <!-- <div class="d-flex justify-content-center align-items-center"> -->
                 <div class="alert bg-label-xuba3 text-white mt-2">
                   Producto recibido correctamente <br>
                   <span class="small">Proceso finalizado</span>
                   <i class="fas fa-check fa-3x" style="position: absolute;right:10px;top:10px;opacity: 0.5;"></i>
 
-                  <!-- <span class="fs-5 fw-bold text-primary"> {{toCurrency(subasta!.precio)}} MXN</span>  -->
                 </div>
 
-                <!-- </div>   -->
               </div>
             </div>
-            <div class="col-12" *ngIf="ganadorInfo.claveEstatus === 'RCM' && informacionReclamo.cvStatus !== 'ENT'">
+            <div class="col-12" *ngIf="ganadorInfo!.claveEstatus === 'RCM' && informacionReclamo.cvStatus !== 'ENT'">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                <!-- <div class="d-flex justify-content-center align-items-center"> -->
                 <div class="alert bg-label-xuba1 text-white mt-2">
                   Producto en Reclamo - {{informacionReclamo!.desStatus}} <br>
-                  <!-- <span class="small">Proceso finalizado</span> -->
                   <i class="fas fa-ticket-alt fa-4x" style="position: absolute;right:10px;top:0px;opacity: 0.5;"></i>
 
-                  <!-- <span class="fs-5 fw-bold text-primary"> {{toCurrency(subasta!.precio)}} MXN</span>  -->
                 </div>
                 <div>
-                  <!-- <span>Puedes revisar el estatus de tu reclamo al dar click al boton</span> -->
                   <br>
                   <div class="w-100 text-center">
                     <button class="btn btn-sm bg-label-xuba4 text-white px-4 py-2 btn-pill mb-2"
@@ -407,27 +327,21 @@
                     </button>
                   </div>
                 </div>
-                <!-- </div>   -->
               </div>
             </div>
 
-            <div class="col-12" *ngIf="ganadorInfo.claveEstatus === 'RCM'  && informacionReclamo.cvStatus === 'ENT'">
+            <div class="col-12" *ngIf="ganadorInfo!.claveEstatus === 'RCM'  && informacionReclamo.cvStatus === 'ENT'">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
-                <!-- <div class="d-flex justify-content-center align-items-center"> -->
                 <div class="alert bg-label-xuba2 text-white mt-2">
                   Producto en Reclamo - CERRADO <br>
-                  <!-- <span class="small">Proceso finalizado</span> -->
                   <i class="fas fa-ticket-alt fa-4x" style="position: absolute;right:10px;top:0px;opacity: 0.5;"></i>
 
-                  <!-- <span class="fs-5 fw-bold text-primary"> {{toCurrency(subasta!.precio)}} MXN</span>  -->
                 </div>
                 <div>
-                  <!-- <span>Puedes revisar el estatus de tu reclamo al dar click al boton</span> -->
                   <div class="text-center   radius1 py-2 text-dark w-100">
                     El reclamo se ha terminado, pronto se emitira el reembolso a tu cuenta.
                   </div>
                 </div>
-                <!-- </div>   -->
               </div>
             </div>
           </div>
@@ -436,18 +350,12 @@
       </div>
     </div>
 
-    <!-- <div class="col-12 col-lg-4 bg-dark" style="height: 70vh">
-            sd
-        </div> -->
 
     <div class="col-12 col-lg-4" style="height: 80%;">
       <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-0">
           <h6 class="mb-0">Historial de estatus</h6>
         </div>
-        <!-- <div class="card-body bg-info" style="height: 50% !important;">
-                df
-            </div> -->
 
         <div class="col-md-12 h-50">
           <div class="card p-4 shadow-sm auction-status-track">
@@ -462,11 +370,9 @@
                     <div class="status-content">
                       <div class="status-main">
                         <span class="status-label">{{item.desStatus}}</span>
-                        <!-- <span class="status-date">{{toDateFormat( item.fecha)}}</span> -->
                       </div>
 
                       <div class="status-main">
-                        <!-- {{item.cveStatus }} {{ganadorInfo.numGuia}} -->
                         <small *ngIf="item.cveStatus !== 'ENV'" class="desc">{{item.labelC}}</small>
 
                         <div class="historial-envios" *ngIf="item.cveStatus === 'ENV'">
@@ -932,7 +838,7 @@
                   {{subasta!.caption}}#{{subasta!.id}}</span>
                 <div>
 
-                  <img style="width: 50px;" [src]="subasta!.url" alt="Imagen del producto">
+                  <img style="width: 50px;" [src]="subasta!.imagenes[0].url" alt="Imagen del producto">
                   <span class="item-ref bold">{{subasta!.descripcion}}</span>
                 </div>
               </div>

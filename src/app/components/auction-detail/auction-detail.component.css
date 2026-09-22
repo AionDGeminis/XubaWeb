@@ -2932,7 +2932,7 @@ body { background: var(--bg); color: var(--text); } */
 
 /* Custom Layout Grid */
 .main-detail-wrapper {
-  height: 94vh;
+  height: calc(100vh - 80px);
   display: flex;
   overflow: hidden;
   background: var(--bg);

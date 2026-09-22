@@ -1,19 +1,19 @@
+<app-loader *ngIf="loading" [texto]="textoLoading"></app-loader>
+
 <div *ngIf="!hasPermiso">
   no tienes permiso para acceder a esta sección.
 </div>
-<app-loader *ngIf="loading" [texto]="textoLoading"></app-loader>
 
-<app-winner-view
-  *ngIf="isLoggedIn() && subasta && usuario()!.id !== subasta.musuarios.id && ganadorInfo && ganadorInfo.idComprador === usuario()!.id"
-  [isLoggedIn]="isLoggedIn" [usuario]="usuario()" [ganadorInfo]="ganadorInfo" [idSubasta]="idSubasta"
-  [subasta]="subasta">
-</app-winner-view>
+<ng-container *ngIf="hasPermiso">
 
-<app-anyuser-view
-  *ngIf="!isLoggedIn() || isLoggedIn() && subasta && usuario()!.id !== subasta.musuarios.id && ganadorInfo && ganadorInfo.idComprador !== usuario()!.id"
-  [ganadorInfo]="ganadorInfo" [subasta]="subasta">
-</app-anyuser-view>
+  <app-winner-view *ngIf="currentUser.winner" [isLoggedIn]="isLoggedIn" [usuario]="usuario()" [idSubasta]="idSubasta">
+  </app-winner-view>
 
-<app-seller-view *ngIf="isLoggedIn() && subasta && usuario()!.id === subasta.musuarios.id" [isLoggedIn]="isLoggedIn"
-  [usuario]="usuario" [ganadorInfo]="ganadorInfo" [idSubasta]="idSubasta" [subasta]="subasta">
-</app-seller-view>
+  <app-anyuser-view *ngIf="currentUser.any">
+  </app-anyuser-view>
+
+  <!-- <app-seller-view *ngIf="isLoggedIn() && subasta && usuario()!.id === subasta.musuarios.id" [isLoggedIn]="isLoggedIn"
+    [usuario]="usuario" [ganadorInfo]="ganadorInfo" [idSubasta]="idSubasta" [subasta]="subasta">
+  </app-seller-view> -->
+
+</ng-container>

@@ -1,16 +1,16 @@
 <div class="row m-auto  h-100">
-  <div class="col-sm-2 pt-2 ps-1 pe-0">
+  <!-- <div class="col-sm-2 pt-2 ps-1 pe-0">
     <aside class="sidebar d-none d-sm-block ms-1 bg-light"
-      [ngClass]="{'ps-0 pe-0': showingInAside === 'notifications'}">
-      <div *ngIf="showingInAside === 'menu'" [class]="'fast-animation animate__animated ' + clasesAside.one">
+      [ngClass]="{'ps-0 pe-0': showingInAside === 'notifications'}"> -->
+  <!-- <div *ngIf="showingInAside === 'menu'" [class]="'fast-animation animate__animated ' + clasesAside.one">
         <div class="profile" *ngIf="isLoggedIn()">
           <img [src]="usuario()?.imgPerfil || 'assets/default-avatar.png'" alt="Usuario">
           <div class="name">{{usuario()?.nombre}}</div>
-        </div>
+        </div> -->
 
-        <!-- =============  MENU ASIDE  =============  -->
-        <!-- ========================================  -->
-        <div class="menu" *ngIf="isLoggedIn()">
+  <!-- =============  MENU ASIDE  =============  -->
+  <!-- ========================================  -->
+  <!-- <div class="menu" *ngIf="isLoggedIn()">
           <div class="menu-item" title="Inicio" (click)="changeHomeIndex(0)"
             [ngClass]="{'active': currentHomeIndex === 0}"><i class="fas fa-home"></i>Inicio</div>
           <div class="menu-item" title="Perfil" (click)="openProfilePage()"><i class="fas fa-user"></i>Perfil</div>
@@ -27,23 +27,19 @@
               class="fas fa-users"></i>Seguidores</div>
           <div class="menu-item" title="Vendedores que siguen" (click)="changeAside('following-seller')"><i
               class="fas fa-clipboard-list"></i>V. Seguidos</div>
-          <!-- <div class="menu-item"><i class="fas fa-chart-bar"></i>Estadísticas</div> -->
           <div class="menu-item" title="Subastas Premium" (click)="changeHomeIndex(1)"
             [ngClass]="{'active': currentHomeIndex === 1}"><i class="fas fa-gem"></i>Premium</div>
           <div class="menu-item" title="Subastas Express" (click)="changeHomeIndex(2)"
             [ngClass]="{'active': currentHomeIndex === 2}"><i class="fas fa-bolt"></i>Express</div>
-          <!-- <div class="menu-item" ><i class="fas fa-wallet"></i>Wallet</div> -->
-          <!-- <div class="menu-item" title="Ver politicas de uso" (click)="openModalPoliticasFn()"><i class="fas fa-book" ></i>Politica de uso</div> -->
-
           <hr>
           <div class="menu-item" title="Cerrar sesion" (click)="logout()"><i class="fas fa-power-off"></i>Cerrar sesion
           </div>
-        </div>
-      </div>
+        </div> -->
+  <!-- </div> -->
 
-      <!-- =============  FORMULARIO DE LOGIN  =============  -->
-      <!-- ========================================  -->
-      <form class="login-box p-3 rounded shadow mx-auto my-4" *ngIf="!isLoggedIn()">
+  <!-- =============  FORMULARIO DE LOGIN  =============  -->
+  <!-- ========================================  -->
+  <!-- <form class="login-box p-3 rounded shadow mx-auto my-4" *ngIf="!isLoggedIn()">
         <app-loader *ngIf="loading"></app-loader>
         <img src="iconos/logo-xuba.png" alt="XUBA Subastas" style="width: 80%;display: block;margin: auto;" />
         <h4 class="mb-4 mt-2 text-center  fw-bold" style="color: #ec4899;font-size: 1rem;">Iniciar sesion</h4>
@@ -63,11 +59,11 @@
             tu contraseña?</a><br>
           <a class="small text-decoration-none text-success cpointer " (click)="abrirRegistro()">Regístrate</a>
         </div>
-      </form>
+      </form> -->
 
-      <!-- =============  SECCION DE NOTIFICACIONES  =============  -->
-      <!-- ========================================  -->
-      <div *ngIf="showingInAside === 'notifications'"
+  <!-- =============  SECCION DE NOTIFICACIONES  =============  -->
+  <!-- ========================================  -->
+  <!-- <div *ngIf="showingInAside === 'notifications'"
         [class]="'w-100  fast-animation animate__animated ' + clasesAside.two">
         <ng-container *ngIf="loadingNotificaciones">
           <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
@@ -79,9 +75,6 @@
         </ng-container>
         <ng-container *ngIf="!loadingNotificaciones">
 
-          <!-- <div class="w-100 bg-info" >
-s   
-          </div> -->
           <h5 class="text-center" style="color: #ffffff; font-family: Gobold;font-size: 0.9em;">NOTIFICACIONES</h5>
           <div class="w-100 text-center mb-2">
             <button class="btn btn-xuba w-75" (click)="backToMenuAside()">
@@ -90,7 +83,6 @@ s
           </div>
           <div class="notification-list" (scroll)="onScrollNotifications($event)"
             style="height:700px; overflow-y:auto;">
-            <!-- Ítem 1 -->
             <div class="notification-item noleida" [ngClass]="{'noleida': noti.activa}"
               *ngFor="let noti of notificaciones; let i = index;"
               (click)="marcarNotificacionAbrir(noti, noti.msubastas)">
@@ -98,94 +90,20 @@ s
                 <i [class]="noti.icono"></i>
               </div>
               <div class="notification-content f-arial">
-                <!-- <span class="account-name">Account Name</span> -->
                 <p class="action-title f-arial">{{noti.titulo}}</p>
                 <p class="action-desc f-arial">{{noti.descripcion}}</p>
                 <span class="time-frame f-arial">{{getTiempoRelativo(noti.fecha, noti.horaServidor)}}</span>
-                <!-- {{noti.fecha}}  -->
               </div>
             </div>
-            <!-- <div class="notification-item">
-              <div class="notification-icon">
-                <i class="fas fa-bell"></i>
-              </div>
-              <div class="notification-content f-arial">
-                <p class="action-title f-arial">Custom Action:</p>
-                <p class="action-desc f-arial">Action Description</p>
-                <span class="time-frame f-arial">Time frame</span>
-              </div>
-            </div> -->
-          </div>
-          <!-- <div class="notification n-superada">
-            <div class="content">
-              <div class="name" style="font-size:0.8em">
-                <i class="fas fa-gavel"></i>&nbsp; Oferta Superada
-              </div>
-              <div class="message" style="font-size:0.9em">tu oferta en la subasta prueba ha sido superada</div>
-              <small style="font-size:0.7em">12/07/2025</small>
-            </div>
-          </div>
-          <div class="notification n-terminada">
-            <div class="content">
-              <div class="name" style="font-size:0.8em">
-                <i class="fas fa-hourglass-end"></i>&nbsp; Subasta terminada
-              </div>
-              <div class="message" style="font-size:0.9em">El tiempo de la subasta prueba nombre subasta ha finalizado</div>
-              <small style="font-size:0.7em">12/07/2025</small>
-            </div>
-          </div>
-          <div class="notification n-ganador">
-            <div class="content">
-              <div class="name" style="font-size:0.8em">
-                <i class="fas fa-trophy"></i>&nbsp; Ganador
-              </div>
-              <div class="message" style="font-size:0.9em">Felicidades, has ganado la subasta nombre prueba ejemplo</div>
-              <small style="font-size:0.7em">12/07/2025</small>
-            </div>
-          </div>
-          <div class="notification n-aprobada">
-            <div class="content">
-              <div class="name" style="font-size:0.8em">
-                <i class="fas fa-badge-check"></i>&nbsp; Subasta Aprobada
-              </div>
-              <div class="message" style="font-size:0.9em">Tu subasta nombre ejemplo ha sido aprobada</div>
-              <small style="font-size:0.7em">12/07/2025</small>
-            </div>
-          </div>
-          <div class="notification n-cancelada">
-            <div class="content">
-              <div class="name" style="font-size:0.8em">
-                <i class="fas fa-calendar-times"></i>&nbsp; Subasta Cancelada
-              </div>
-              <div class="message" style="font-size:0.9em">La subasta ha sido cancelada</div>
-              <small style="font-size:0.7em;color:#fff">12/07/2025</small>
-            </div>
-          </div> -->
-          <!-- <div class="notification today" *ngFor="let noti of notificaciones" (click)="getDatosSubasta(noti.msubastas.id)">
-            <div class="content">
-              <div class="name" style="font-size:0.8em">
-                <i class="fas fa-bell"></i> Titulo notificacion test
-              </div>
-              <div class="message" style="font-size:0.7em">{{noti.descripcion}}</div>
-            </div>
-          </div> -->
-          <!-- <div  class="notificacion-item" *ngFor="let noti of notificaciones" (click)="getDatosSubasta(noti.msubastas.id)">
-            <strong class="text-dark"><i class="fas fa-bell"></i> Titulo notificacion test</strong> <br>
-              {{noti.descripcion}} <br> <br>
-            <small>12/07/2025</small>
-            <div class="content">
-              <div class="name" style="font-size:0.85em">
-                <i class="fas fa-bell"></i> Titulo notificacion test 
-              </div>
-              <div class="message" style="font-size:0.8em">{{noti.descripcion}}</div>
-            </div>
-          </div> -->
-        </ng-container>
-      </div>
 
-      <!-- =============  SECCION DE SUBASTAS SEGUIDAS  =============  -->
-      <!-- ========================================  -->
-      <div *ngIf="showingInAside === 'following'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+          </div>
+
+        </ng-container>
+      </div> -->
+
+  <!-- =============  SECCION DE SUBASTAS SEGUIDAS  =============  -->
+  <!-- ========================================  -->
+  <!-- <div *ngIf="showingInAside === 'following'" [class]="'fast-animation animate__animated ' + clasesAside.two">
         <ng-container *ngIf="loadingNotificaciones">
           <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
             style="height: 80px;">
@@ -221,12 +139,12 @@ s
             </div>
           </div>
         </ng-container>
-      </div>
+      </div> -->
 
 
-      <!-- =============  SECCION DE SUBASTAS GANADAS  =============  -->
-      <!-- ========================================  -->
-      <div *ngIf="showingInAside === 'winner'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+  <!-- =============  SECCION DE SUBASTAS GANADAS  =============  -->
+  <!-- ========================================  -->
+  <!-- <div *ngIf="showingInAside === 'winner'" [class]="'fast-animation animate__animated ' + clasesAside.two">
         <ng-container *ngIf="loadingNotificaciones">
           <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
             style="height: 80px;">
@@ -247,16 +165,7 @@ s
               <div class="title">{{ subasta.caption }}</div>
               <div class="desc">{{ toShort(subasta.descripcion) }}</div>
               <div class="price mb-3">{{ toCurrency(subasta.apuesta) }}</div>
-              <!-- <br> -->
-              <!-- <div class="timer">{{subasta.tiempoVence}}</div> -->
-              <!-- <div class="actions" style=""> 
-              <div class="w-75 bg-dark text-white">
-                {{subasta.estatus}}
-              </div> -->
-              <!-- <button title="Seguir"><i class="fas fa-heart"></i></button>
-              <button title="Ofertar"><i class="fas fa-gavel"></i></button>
-              <button title="Compartir"><i class="fas fa-share"></i></button> -->
-              <!-- </div> -->
+
               <div class="ribbon-status">
                 Estatus: <span class="badge badge-status" style="font-size: 0.8em;">{{ subasta.estatus }}</span>
               </div>
@@ -267,12 +176,12 @@ s
             </div>
           </div>
         </ng-container>
-      </div>
+      </div> -->
 
 
-      <!-- =============  SECCION DE SEGUIDORES  =============  -->
-      <!-- ========================================  -->
-      <div *ngIf="showingInAside === 'followers'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+  <!-- =============  SECCION DE SEGUIDORES  =============  -->
+  <!-- ========================================  -->
+  <!-- <div *ngIf="showingInAside === 'followers'" [class]="'fast-animation animate__animated ' + clasesAside.two">
         <ng-container *ngIf="loadingNotificaciones">
           <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
             style="height: 80px;">
@@ -294,26 +203,16 @@ s
               <div class="follower-info">
                 <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
                 <div class="follower-nickname">{{f.usuario ?? 'ND'}}</div>
-                <!-- <div class="follower-email">{{f.correo}}</div> -->
               </div>
             </div>
-            <!-- <div class="follower-card" (click)="openUserPage(null)">
-              <img class="follower-avatar" src="https://placehold.co/48x48" alt="Foto de usuario">
-              <div class="follower-info">
-                <div class="follower-name">Ana López</div>
-                <div class="follower-nickname">anita</div>
-                <div class="follower-email">ana.lopezemail.com</div>
-              </div>
-            </div> -->
-            <!-- Más usuarios aquí -->
           </div>
         </ng-container>
-      </div>
+      </div> -->
 
 
-      <!-- =============  SECCION DE Vendedores seguidos  =============  -->
-      <!-- ========================================  -->
-      <div *ngIf="showingInAside === 'following-seller'"
+  <!-- =============  SECCION DE Vendedores seguidos  =============  -->
+  <!-- ========================================  -->
+  <!-- <div *ngIf="showingInAside === 'following-seller'"
         [class]="'fast-animation animate__animated ' + clasesAside.two">
         <ng-container *ngIf="loadingNotificaciones">
           <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
@@ -337,25 +236,16 @@ s
               <div class="follower-info">
                 <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
                 <div class="follower-nickname">{{f.usuario ?? 'ND'}}</div>
-                <!-- <div class="follower-email">{{f.correo}}</div> -->
               </div>
             </div>
-            <!-- <div class="follower-card" (click)="openUserPage(null)">
-              <img class="follower-avatar" src="https://placehold.co/48x48" alt="Foto de usuario">
-              <div class="follower-info">
-                <div class="follower-name">Ana López</div>
-                <div class="follower-nickname">anita</div>
-                <div class="follower-email">ana.lopezemail.com</div>
-              </div>
-            </div> -->
-            <!-- Más usuarios aquí -->
+          
           </div>
         </ng-container>
-      </div>
+      </div> -->
 
-      <!-- =============  SECCION DE Contacto =============  -->
-      <!-- ========================================  -->
-      <div *ngIf="showingInAside === 'contact'" [class]="'fast-animation animate__animated ' + clasesAside.two">
+  <!-- =============  SECCION DE Contacto =============  -->
+  <!-- ========================================  -->
+  <!-- <div *ngIf="showingInAside === 'contact'" [class]="'fast-animation animate__animated ' + clasesAside.two">
 
         <ng-container>
           <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">INFORMACION DE CONTACTO
@@ -364,7 +254,6 @@ s
             <i class="fas fa-arrow-left"></i>&nbsp; volver
           </button>
           <div class="auction-card p-3">
-            <!-- <br> -->
             <p class="text-muted text-left small">
               <span class="text-primary"><i class="fas fa-map-marker-alt"></i> Direccion</span><br>
               Cd. Juarez, Chihuahua, Mexico candelilla #9314, Infonavit ampliación aeropuerto 32665
@@ -377,16 +266,13 @@ s
               <span class="text-primary"><i class="fas fa-envelope"></i> Correo</span><br>
               {{emailContacto}}
             </p>
-            <!-- <p class="text-muted text-center small">Telefono: 6565151515</p> -->
-            <!-- <p class="text-muted text-center small">Correo: xubamail.com</p> -->
-            <!-- <p class="text-muted text-center">Telefono: 6565151515</p> -->
           </div>
         </ng-container>
-      </div>
+      </div> -->
 
-    </aside>
-  </div>
-  <div class="col-sm-10" style="background: var(--bg);" *ngIf="currentHomeIndex === 0">
+  <!-- </aside>
+  </div> -->
+  <div class="col-sm-12" style="background: var(--bg);" *ngIf="currentHomeIndex === 0">
     <app-loader *ngIf="loading"></app-loader>
     <div class="col-sm-12">
       <!-- <app-xpress-auctions (abrirDetalle)="abrirDetalle($event)"></app-xpress-auctions> -->

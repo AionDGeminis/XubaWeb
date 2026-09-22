@@ -7,7 +7,7 @@ import { SubastasService } from '../../services/subastas.service';
 import { ToastrService } from 'ngx-toastr';
 import { OfertaPersonalizadaModalComponent } from '../modals/oferta-personalizada-modal/oferta-personalizada-modal.component';
 import { VerticalPremiumAuctionsComponent } from '../vertical-premium-auctions/vertical-premium-auctions.component';
-import { Subasta, Usuario, detalleSubasta } from '../../models/subasta.model';
+import { Subasta, Usuario, DetalleSubasta } from '../../models/subasta.model';
 import { interval, Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2'
@@ -42,7 +42,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   // PROXIMOS CAMBIOS: eliminar el objeto subasta, y sus referencias
 
   // subasta: Subasta | any = {};
-  detallesubasta: detalleSubasta | any = {};
+  detallesubasta: DetalleSubasta | any = {};
   lista: Subasta[] = [];
   listaPremium: Subasta[] = [];
   origen = '';
@@ -115,6 +115,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   connectingSignalR: boolean = false;
   showNewBidIncomeAnimation: boolean = false;
   omitFirstBidIncoming: boolean = false;
+  listaComisionesEnvio: any[] = [];
   private bidTimer: ReturnType<typeof setTimeout> | null = null;
   readonly bidNotificationMs = 2000;
   incomeBidAnimateColor: string = '';
@@ -639,6 +640,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         this.checkCurrentAuctionTime();
         this.verificarSiSiguiendo();
         this.checkAuctionBidsAndNextBid();
+        this.getComisionesEnvio();
         if (this.lista.length <= 0) {
           this.getListaSubastas();
         }
@@ -654,6 +656,42 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       }
 
     })
+  }
+
+  getComisionesEnvio() {
+    this.subastasService.getComisionesCrearSubasta(0, 'CotizacionEnvio').subscribe({
+      next: (val) => {
+        console.log('RESPUESTA:', val);
+
+        this.listaComisionesEnvio = val;
+
+        // const premium = this.listaComisiones.find(
+        //   (c: any) => c.concepto?.trim().toLowerCase() === 'pago subasta premium'
+        // );
+
+        // const comisionApp = this.listaComisiones.find(
+        //   (c: any) => c.concepto?.trim().toLowerCase() === 'pasarela de pago'
+        // );
+
+        // console.log('PREMIUM:', val);
+        // console.log('COMISION APP:', comisionApp);
+
+        // if (premium && comisionApp) {
+
+        //   const Premium = Number(premium.porcentaje);
+        //   const porcentajeComision = Number(comisionApp.porcentaje);
+
+        //   this.Premium = Number(((Premium * 1.16) + (Premium * (porcentajeComision * 1.16) / 100)).toFixed(2));
+
+        //   console.log('Costo Premium:', Premium);
+        //   console.log('Comisión:', porcentajeComision);
+        //   console.log('PRECIO FINAL:', this.Premium);
+        // }
+      },
+      error: (err) => {
+        console.error('Error:', err);
+      }
+    });
   }
 
 
@@ -1205,7 +1243,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         console.log(this.direccionEntrega)
         if (this.direccionEntrega && this.direccionEntrega !== null && this.direccionEntrega !== undefined) {
           // this.calcularPrecios();
-          this.cotizarPreciosDeEnntrega()
+          this.cotizarPreciosDeEntrega()
         }
       },
       error: (error: any) => {
@@ -1216,10 +1254,10 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   changeDireccionEntrega() {
-    this.cotizarPreciosDeEnntrega();
+    this.cotizarPreciosDeEntrega();
   }
 
-  cotizarPreciosDeEnntrega() {
+  cotizarPreciosDeEntrega() {
     let modeloCotizar = this.getCotizarModelFormat();
     console.log('datos cotizar: ', modeloCotizar);
     this.loadingCotizacion = true;
@@ -1320,6 +1358,9 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       this.usuarioMayor = actual.usuario;
       this.badgeCaption.label2 = this.usuarioMayor ? 'Va Ganando' : 'Sin Apuestas'
       this.estatus = actual.estatus;
+      // if(this.estatus !== 'ACT') {
+
+      // }
       this.valorApuesta = actual.apuesta;
       // this.setMontoInicial();
       this.animateCurrentAmount(this.valorApuesta)
@@ -1334,18 +1375,25 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       // this.animateResponse();
       // this.showBidIncoming();
       this.showNewBidAnimation();
-      this.ganadoresDetalles = listaItems.map((item: string) => {
-        const partes = item.replace('$', '').split('-');
-        return { monto: `$${partes[0]}`, usuario: partes[1], fecha: partes.slice(2).join('-') };
-      });
+      // this.ganadoresDetalles = listaItems.map((item: string) => {
+      //   const partes = item.replace('$', '').split('-');
+      //   return { monto: `$${partes[0]}`, usuario: partes[1], fecha: partes.slice(2).join('-') };
+      // });
 
-      if (actual.estatus === 'FIN') {
+      if (actual.estatus !== 'ACT') {
         this.vencida = true;
         this.temporizadorSub$?.unsubscribe();
-        this.consultarGanador();
-        let dataParams = JSON.stringify({ idSubasta: this.detallesubasta!.id, tipoUsuario: 'comprador' });
-        let encoded = this.ss.encodeToBase64(dataParams);
-        this.router.navigate(['/subasta-terminada', encoded]);
+        // this.consultarGanador();
+        if (this.detallesubasta.esMiSubasta) {
+          //this.router.navigate(['/subasta-terminada', {id: this.detallesubasta!.id}]);
+          this.router.navigate(['/my-subasta-detalle', this.detallesubasta!.id]);
+        } else {
+          let dataParams = JSON.stringify({ idSubasta: this.detallesubasta!.id, tipoUsuario: 'comprador' });
+          let encoded = this.ss.encodeToBase64(dataParams);
+          // this.router.navigate(['/my-subasta-detalle',this.detallesubasta!.id ]);
+          this.router.navigate(['/subasta-terminada', encoded]);
+        }
+
       }
     });
 
@@ -1420,13 +1468,13 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     console.log(this.direcciones)
     console.log(this.direccionEntrega)
     if (this.direccionEntrega) {
-      this.cotizarPreciosDeEnntrega();
+      this.cotizarPreciosDeEntrega();
       this.showModalShippingPrices = true;
     }
     console.log(this.direccionEntrega)
     if (this.direccionEntrega && this.direccionEntrega !== null && this.direccionEntrega !== undefined) {
       // this.calcularPrecios();
-      this.cotizarPreciosDeEnntrega()
+      this.cotizarPreciosDeEntrega()
     }
     this.showModalShippingPrices = true;
   }
@@ -1504,9 +1552,12 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
     console.log(dataApuesta)
     this.subastasService.enviarApuesta(dataApuesta).subscribe({
-      next: () => {
+      next: (data: any) => {
+        if (!data.success) {
+          this.ss.showNotification('error', data.mensaje, 4500)
+        }
         console.log('Respuesta de la apuesta: ')
-        console.log(dataApuesta)
+        console.log(data)
         if (!this.isFollowed) {
           this.verificarSiSiguiendo();
         }
@@ -1800,6 +1851,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   abrirmodalofertadirecta() {
     console.log('ABRIENDO MODAL');
+    this.ofertar = 0;
     this.mostrarmodalofertadirecta = true
   }
 
