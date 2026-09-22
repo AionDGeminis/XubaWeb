@@ -9,6 +9,7 @@ import { UrlCodec } from '@angular/common/upgrade';
 // const API_BASE_URL = (window as any).apiBaseUrl;
 import { environment as env, headers, auth_headers, test_headers } from '../environment/environment';
 import { Apuesta } from '../models/apuesta-model';
+import { GanadorInfo } from '../models/ganador-info-model';
 
 @Injectable({ providedIn: 'root' })
 
@@ -187,7 +188,7 @@ export class SubastasService {
 
 
   GetInformacionSubastaTerminada(IdSubasta: number) {
-    return this.http.get(`${env.base_url}/subastas/ConsultaGanador/${IdSubasta}`, { headers: test_headers }).pipe(map(res => res));
+    return this.http.get<GanadorInfo>(`${env.base_url}/subastas/ConsultaGanador/${IdSubasta}`, { headers: test_headers }).pipe(map(res => res));
   }
 
   GetHistorialEstatusSubasta(IdSubasta: number) {
@@ -293,6 +294,10 @@ export class SubastasService {
   }
   cancelarSubastaVendedor(data: any) {
     return this.http.post(`${env.base_url}/subastas/CancelarSubastaVendedor`, data, { headers: test_headers }).pipe(map(res => res));
+  }
+
+  verificarGanadorSubasta(idSubasta: number) {
+    return this.http.get<any>(`${env.base_url}/subastas/ConsultarGanadorSubasta`, { headers: headers, params: { idSubasta } });
   }
   // @override
   // Future<List<UsuarioModel>> getListaVendedoresSeguidos(int id) async {

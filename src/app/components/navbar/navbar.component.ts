@@ -1,6 +1,6 @@
 import { Component, computed, ElementRef, EventEmitter, OnInit, Output, Signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { BusquedaService } from '../../services/busqueda.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -111,6 +111,8 @@ export class NavbarComponent implements OnInit {
   favoritos: any[] = [];
   loginForm: any = { usuario: null, pass: null };
   aceptarTerminosCrearSubasta: boolean = false;
+  hiddenMenuClass = { container: '', menu: '' };
+  showHiddenMenu: boolean = false;
 
   constructor(private busquedaService: BusquedaService,
     private router: Router, private route: ActivatedRoute,
@@ -119,6 +121,7 @@ export class NavbarComponent implements OnInit {
     private subastaService: SubastasService,
     private auctionService: AuctionService,
     private openPayService: OpenPayService,
+    private location: Location,
     private authService: AuthService) {
     // this.subasta = {
     //   id: 0,
@@ -320,19 +323,47 @@ export class NavbarComponent implements OnInit {
   }
 
   fnToggleMenu() {
-    if (this.isOpenHiddenMenu) {
-      this.classMenu = 'menu-closed';
-      setTimeout(() => {
-        this.isOpenHiddenMenu = false;
-      }, 50);
-    } else {
-      this.isOpenHiddenMenu = true;
-      setTimeout(() => {
-        this.classMenu = 'menu-open';
-      }, 50);
-    }
+    // $event.stopPropagation();
+    // if (this.isOpenHiddenMenu) {
+    //   this.classMenu = 'menu-closed';
+    //   setTimeout(() => {
+    //     this.isOpenHiddenMenu = false;
+    //   }, 50);
+    // } else {
+    //   this.isOpenHiddenMenu = true;
+    //   setTimeout(() => {
+    //     this.classMenu = 'menu-open';
+    //   }, 50);
+    // }
 
-    // this.toggleMenu.emit();
+    // // this.toggleMenu.emit();
+    if (this.showHiddenMenu) {
+      this.hiddenMenuClass = { container: 'animate__fadeOut', menu: 'animate__fadeOutLeft' };
+
+      setTimeout(() => {
+        this.showHiddenMenu = false;
+        this.hiddenMenuClass = { container: '', menu: '' };
+      }, 250);
+    } else {
+      this.hiddenMenuClass = { container: 'animate__fadeIn', menu: 'animate__fadeInLeft' };
+      this.showHiddenMenu = true;
+    }
+  }
+
+  closeTemp() {
+    // this.hiddenMenuClass.menu = 'animate__fadeOutLeft';
+    // this.hiddenMenuClass.container = 'animate__fadeOut';
+    this.hiddenMenuClass = { container: 'animate__fadeOut', menu: 'animate__fadeOutLeft' };
+
+    setTimeout(() => {
+      this.showHiddenMenu = false;
+      this.hiddenMenuClass = { container: '', menu: '' };
+    }, 250);
+  }
+
+  openHiddenMenu() {
+    this.hiddenMenuClass = { container: 'animate__fadeIn', menu: 'animate__fadeInLeft' };
+    this.showHiddenMenu = true;
   }
 
   buscar() {
@@ -344,6 +375,10 @@ export class NavbarComponent implements OnInit {
       this.textoBusqueda = ''; // Opcional: limpia el texto
       this.isOpened = false;
     }
+  }
+
+  goBack() {
+    this.location.back();
   }
 
   backToPage() {
@@ -971,7 +1006,7 @@ export class NavbarComponent implements OnInit {
           if (usuario.token) {
             localStorage.setItem('XUBA_TKN', usuario.token)
             this.authService.setUser(usuario);
-            this.fnToggleMenu();
+            // this.fnToggleMenu();
             this.ss.showNotification('success', 'Inicio de sesión exitoso');
             //this.conectarSignalR(0);
             // this.conectarSignalR(this.usuario()!.id);

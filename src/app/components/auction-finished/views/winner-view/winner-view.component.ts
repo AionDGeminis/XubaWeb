@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, OnInit, Signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Subasta, Usuario } from '../../../../models/subasta.model';
+import { DetalleSubasta, Subasta, Usuario } from '../../../../models/subasta.model';
 import { CotizacionPaqueteriaModel, RecoleccionModel } from '../../../../models/cotizacion-model';
 import { SharedService } from '../../../../services/shared.service';
 import { SubastasService } from '../../../../services/subastas.service';
@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../../environment/environment';
 import { FullscreenModalComponent } from "../../../modals/fullscreen-modal/fullscreen-modal.component";
 import { OpenPayService } from '../../../../services/openpay.service';
+import { GanadorInfo } from '../../../../models/ganador-info-model';
 declare var OpenPay: any;
 
 @Component({
@@ -25,8 +26,9 @@ declare var OpenPay: any;
   styleUrl: './winner-view.component.css'
 })
 export class WinnerViewComponent implements OnInit {
-  @Input() subasta: Subasta | null = null;
-  @Input() ganadorInfo: any | null = null;
+  subasta: DetalleSubasta | null = this.getInitialDataSubastaModel();
+  // @Input() subasta: Subasta | null = null;
+  ganadorInfo: GanadorInfo | null = this.getInitialGanadorInfoData();
   @Input() usuario!: Usuario | null;
   @Input() isLoggedIn!: Signal<boolean>;
   @Input() idSubasta!: number;
@@ -152,9 +154,61 @@ export class WinnerViewComponent implements OnInit {
     private route: ActivatedRoute,
     private openPayService: OpenPayService,
     private signalRChatService: SignalRChatService) {
+
     this.dataParams = this.route.snapshot.params['permissionData'];
     this.getInitialGuiaModel();
+  }
 
+  getInitialDataSubastaModel() {
+    return {
+      id: -1,
+      caption: '',
+      descripcion: '',
+      ofertaActual: 0,
+      valorOferta: 0,
+      largo: 0,
+      ancho: 0,
+      profundidad: 0,
+      peso: 0,
+      marca: '',
+      modelo: '',
+      nuevo: true,
+      idVendedor: 0,
+      usuarioVendedor: '',
+      fotoVendedor: '',
+      estado: '',
+      municipio: '',
+      codigoPostal: '',
+      tiempoVence: '',
+      vistas: 0,
+      ofertas: 0,
+      imagenes: [],
+      compraDirecta: false,
+      precio: 0,
+      esMiSubasta: false,
+      urlGuia: '',
+      cveStatus: ''
+    }
+
+  }
+
+  getInitialGanadorInfoData() {
+    return {
+      id: -1,
+      apuesta: 0,
+      apellido: '',
+      cantidadApuestas: 0,
+      claveEstatus: '',
+      correo: '',
+      creado: new Date(),
+      estatus: '',
+      idComprador: 0,
+      idSubasta: 0,
+      nombre: '',
+      numGuia: '',
+      ofertas: [],
+      telefono: ''
+    }
   }
 
   ngOnInit(): void {
@@ -184,12 +238,6 @@ export class WinnerViewComponent implements OnInit {
 
   }
 
-  private conectarSignalR(idReclamo: number): void {
-    this.signalRChatService.connectToChat(idReclamo.toString(), '0', (datos: any[]) => {
-      // this.signalRChatService.connectToChat(idReclamo.toString(), this.authService.idUsuario, (datos: any[]) => {
-      this.addMessageToList(datos);
-    });
-  }
 
   private scrollToBottom(options?: ScrollToOptions) {
     const el = this.messagesContainer.nativeElement;
@@ -200,14 +248,12 @@ export class WinnerViewComponent implements OnInit {
 
   getInformacionUsuario(idUsuario: number) {
     console.log(idUsuario)
-    this.authService.consultarDatosUsuario(idUsuario).subscribe({
+    this.authService.consultarDatosUsuario(0).subscribe({
       next: (response: any) => {
+        console.log(response)
         this.infoUsuario = response;
-
-        this.getDireccionesEntrega(this.currentIdUsuario); // <-- Agregar
-
-        this.getInitialData(true);
-
+        // this.getInitialData(true);
+        this.getDatosSubasta(this.idSubasta);
       },
       error: (err: any) => {
         console.error('Error fetching user information:', err);
@@ -226,26 +272,47 @@ export class WinnerViewComponent implements OnInit {
     //     this.getInformacionGanador(this.subasta!.id);
     //   });
     // }
+    this.getHistorialEstatus(this.idSubasta)
     this.getDatosSubasta(this.idSubasta);
-    this.getSecureCards();
+
+
+    // this.getSecureCards();
+  }
+
+  esEstatusValido(lista: string[]) {
+    if (!this.ganadorInfo || !this.ganadorInfo.claveEstatus) {
+      return;
+    }
+
+    return this.isInList(this.ganadorInfo.claveEstatus, lista);
   }
 
   getSubastaDireccionLabel(): string {
-    if (this.subasta && this.subasta.direccion) {
-      return `${this.subasta.direccion.municipio}, ${this.subasta.direccion.estado}`;
+    if (this.subasta && this.subasta.municipio) {
+      return `${this.subasta.municipio}, ${this.subasta.estado}`;
     }
     return '';
   }
 
+
+  private conectarSignalR(idReclamo: number): void {
+    this.signalRChatService.connectToChat(idReclamo.toString(), '0', (datos: any[]) => {
+      // this.signalRChatService.connectToChat(idReclamo.toString(), this.authService.idUsuario, (datos: any[]) => {
+      this.addMessageToList(datos);
+    });
+  }
+
   getDatosSubasta(id: number) {
     this.loading = true;
-    this.subastasService.getAuctionById(id).subscribe({
+    // this.subastasService.getAuctionById(id).subscribe({
+    this.subastasService.ConsultarSubastaOfertarId(id).subscribe({
       next: (subasta) => {
+        console.log(subasta)
         this.subasta = subasta;
-        this.precioActualSubasta = this.subasta.apuesta;
+        // this.precioActualSubasta = this.subasta.apuesta;
         this.precioTotal = 10;
         this.loading = false;
-        //this.getDireccionesEntrega(this.infoUsuario.id);
+        this.getDireccionesEntrega();
         this.getInformacionGanador(this.idSubasta);
       },
       error: (err) => {
@@ -259,16 +326,16 @@ export class WinnerViewComponent implements OnInit {
     console.log(IdSubasta)
     this.loading = true;
     this.subastasService.GetInformacionSubastaTerminada(IdSubasta).subscribe({
-      next: (response) => {
+      next: (response: GanadorInfo) => {
         this.ganadorInfo = response;
-
+        console.log(this.ganadorInfo)
 
 
 
 
         this.precioActualSubasta = this.ganadorInfo.apuesta;
         this.loading = false;
-        this.subasta!.mestatus.cveStatus = this.ganadorInfo.claveEstatus;
+        this.subasta!.cveStatus = this.ganadorInfo.claveEstatus;
 
 
 
@@ -288,24 +355,24 @@ export class WinnerViewComponent implements OnInit {
     //     // this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
     //     this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
     // }
-    switch (this.subasta?.mestatus.cveStatus) {
-      case 'ACT':
-        break;
-      case 'PDO':
-      case 'PEV':
-      case 'RCC':
-      case 'RCM':
+    // switch (this.subasta?.mestatus.cveStatus) {
+    //   case 'ACT':
+    //     break;
+    //   case 'PDO':
+    //   case 'PEV':
+    //   case 'RCC':
+    //   case 'RCM':
 
-        if (this.ganadorInfo.numGuia) {
-          this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
-        }
+    //     if (this.ganadorInfo.numGuia) {
+    //       this.GetSegumientoPaqueteria(this.ganadorInfo.numGuia);
+    //     }
 
-        if (this.subasta?.mestatus.cveStatus === 'RCM') {
-          this.getReclamoInfo();
-        }
+    //     if (this.subasta?.mestatus.cveStatus === 'RCM') {
+    //       this.getReclamoInfo();
+    //     }
 
-        break;
-    }
+    //     break;
+    // }
   }
 
   async getSecureCards() {
@@ -325,9 +392,11 @@ export class WinnerViewComponent implements OnInit {
     })
   }
 
-  getDireccionesEntrega(idUsuario: number) {
-    console.log(idUsuario)
-    this.subastasService.GetDireccionesUsuario(idUsuario, '').subscribe({
+
+
+  getDireccionesEntrega() {
+    // console.log(idUsuario)
+    this.subastasService.GetDireccionesUsuario(0, '').subscribe({
       next: (response: any) => {
         console.log(response)
         this.listaDireccionesEntrega = response;
@@ -411,24 +480,24 @@ export class WinnerViewComponent implements OnInit {
 
 
   saveReclamo() {
-    this.reclamoModel.fechaApertura = new Date();
-    this.reclamoModel.idSubasta = this.subasta!.id;
-    this.reclamoModel.idVendedor = this.subasta!.musuarios.id;
-    this.reclamoModel.idGanador = this.ganadorInfo.idComprador;
-    let r = this.getClearBase64(this.imagesList);
-    for (let image of r) {
-      this.reclamoModel.imagenesReclamos.push({ url: image });
-    }
+    // this.reclamoModel.fechaApertura = new Date();
+    // this.reclamoModel.idSubasta = this.subasta!.id;
+    // this.reclamoModel.idVendedor = this.subasta!.musuarios.id;
+    // this.reclamoModel.idGanador = this.ganadorInfo.idComprador;
+    // let r = this.getClearBase64(this.imagesList);
+    // for (let image of r) {
+    //   this.reclamoModel.imagenesReclamos.push({ url: image });
+    // }
 
-    this.subastasService.addReclamo(this.reclamoModel).subscribe({
-      next: (response) => {
-        this.setCloseModal('disputa');
-        this.getInitialData(true);
-      },
-      error: (err) => {
-        console.error('Error saving reclamo', err);
-      }
-    });
+    // this.subastasService.addReclamo(this.reclamoModel).subscribe({
+    //   next: (response) => {
+    //     this.setCloseModal('disputa');
+    //     this.getInitialData(true);
+    //   },
+    //   error: (err) => {
+    //     console.error('Error saving reclamo', err);
+    //   }
+    // });
   }
 
   acceptTerms() {
@@ -493,24 +562,24 @@ export class WinnerViewComponent implements OnInit {
   }
 
   async downloadPdf() {
-    try {
-      const timestamp = Date.now();
-      const filename = `guide_label-return-${this.subasta!.id}-${timestamp}.pdf`;
-      const resp = await fetch(this.subasta!.urlGuia, { credentials: 'same-origin' }); // o mode:'cors' según sea necesario
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      const blob = await resp.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(blobUrl);
-    } catch (err) {
-      console.error('Error descargando PDF:', err);
-      alert('No se pudo descargar el PDF (CORS o URL inaccesible).');
-    }
+    // try {
+    //   const timestamp = Date.now();
+    //   const filename = `guide_label-return-${this.subasta!.id}-${timestamp}.pdf`;
+    //   const resp = await fetch(this.subasta!.urlGuia, { credentials: 'same-origin' }); // o mode:'cors' según sea necesario
+    //   if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    //   const blob = await resp.blob();
+    //   const blobUrl = URL.createObjectURL(blob);
+    //   const a = document.createElement('a');
+    //   a.href = blobUrl;
+    //   a.download = filename;
+    //   document.body.appendChild(a);
+    //   a.click();
+    //   a.remove();
+    //   URL.revokeObjectURL(blobUrl);
+    // } catch (err) {
+    //   console.error('Error descargando PDF:', err);
+    //   alert('No se pudo descargar el PDF (CORS o URL inaccesible).');
+    // }
   }
 
 
@@ -582,8 +651,8 @@ export class WinnerViewComponent implements OnInit {
 
   getCotizarModelFormat() {
     const cotizacion: CotizacionPaqueteriaModel = {
-      "codigoPostalOrigen": this.subasta!.direccion.codigoPostal,
-      "ciudadOrigen": this.subasta!.direccion.municipio,
+      "codigoPostalOrigen": this.subasta!.codigoPostal,
+      "ciudadOrigen": this.subasta!.municipio,
       "codigoPostalDestino": this.miDireccionEntrega.codigoPostal,
       "ciudadDestino": this.miDireccionEntrega.municipio,
       "peso": this.subasta!.peso,
@@ -630,6 +699,7 @@ export class WinnerViewComponent implements OnInit {
     // this.precioTotal = this.subasta.apuesta + this.precioComision + this.precioEnvio;
     let modeloCotizar = this.getCotizarModelFormat();
     this.loading = true;
+    console.log(modeloCotizar)
     this.subastasService.cotizarEnvio(modeloCotizar).subscribe({
       next: (data: any) => {
         this.loading = false;
@@ -722,9 +792,9 @@ export class WinnerViewComponent implements OnInit {
       metodoPago: '',
       cliente: clienteNombre,
       correo: '',
-      ordenXuba: `AX-${this.subasta!.id}-${this.ganadorInfo.idComprador}`,
+      ordenXuba: `AX-${this.subasta!.id}-${this.ganadorInfo!.idComprador}`,
       total: this.precioTotal,
-      subtotal: this.ganadorInfo.apuesta,
+      subtotal: this.ganadorInfo!.apuesta,
       envio: this.precioEnvio,
       nombreArticulo: `Item#${this.subasta!.id}-${this.subasta!.caption}`,
       idArticulo: this.subasta!.id,
@@ -735,11 +805,12 @@ export class WinnerViewComponent implements OnInit {
   }
 
   isInList(current: string, lista: string[]) {
+    // console.log(current)
     return lista.includes(current);
   }
 
   getLastOferta() {
-    return this.ganadorInfo.ofertas && this.ganadorInfo.ofertas.length > 0 ? this.ganadorInfo.ofertas[this.ganadorInfo.ofertas.length - 1].oferta : 0;
+    return this.ganadorInfo!.ofertas && this.ganadorInfo!.ofertas.length > 0 ? this.ganadorInfo!.ofertas[this.ganadorInfo!.ofertas.length - 1].oferta : 0;
   }
 
   GetSegumientoPaqueteria(noGuia: string) {
@@ -781,20 +852,20 @@ export class WinnerViewComponent implements OnInit {
         (x: any) => x.cveStatus === 'RCC' || x.cveStatus === 'PEV'
       );
 
-      if (this.subasta?.mestatus.cveStatus === 'RCC') {
+      // if (this.subasta?.mestatus.cveStatus === 'RCC') {
 
-        this.listaHistorialEstatusProducto.splice(
-          indexPEV + 1,
-          0,
-          ...eventosDHL
-        );
+      //   this.listaHistorialEstatusProducto.splice(
+      //     indexPEV + 1,
+      //     0,
+      //     ...eventosDHL
+      //   );
 
-      }
-      if (this.subasta?.mestatus.cveStatus === 'PEV') {
+      // }
+      // if (this.subasta?.mestatus.cveStatus === 'PEV') {
 
-        this.listaHistorialEstatusProducto.unshift(...eventosDHL);
+      //   this.listaHistorialEstatusProducto.unshift(...eventosDHL);
 
-      }
+      // }
 
       this.productoEntregadoDHL = seguimiento.events.some(
         (e: any) => e.description === 'Delivered'
@@ -803,14 +874,13 @@ export class WinnerViewComponent implements OnInit {
     });
   }
 
-  getHistorialEstatus(IdSubasta: number, callback?: () => void) {
+  getHistorialEstatus(IdSubasta: number) {
     this.subastasService.GetHistorialEstatusSubasta(IdSubasta).subscribe({
       next: (historial: any) => {
         this.listaHistorialEstatusProducto = historial;
-
-        if (callback) {
-          callback();
-        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching history information:', error);
       }
     });
   }
@@ -833,7 +903,8 @@ export class WinnerViewComponent implements OnInit {
   createPaqueteriaModel() {
     //Cambiar la api de guardar direccion, para que se registre un telefono y correo en cada direccion
 
-    this.paqueteriaRequestModel = this.ss.getPaqueteriaGuiaModel(this.subasta!, this.subasta!.direccion, this.subasta!.direccion, this.miDireccionEntrega, this.infoUsuario);
+    // this.paqueteriaRequestModel = this.ss.getPaqueteriaGuiaModel(this.subasta!, this.subasta!.direccion, this.subasta!.direccion, this.miDireccionEntrega, this.infoUsuario);
+
     // this.paqueteriaRequestModel.idsubasta = this.subasta!.id;
     // this.paqueteriaRequestModel.plannedShippingDateAndTime = this.getCorrectDateFormat()//"2025-08-23T19:19:40 GMT+00:00"
     // this.paqueteriaRequestModel.content = {
@@ -906,23 +977,24 @@ export class WinnerViewComponent implements OnInit {
     //   "typeCode": "business"
     // }
   }
+
   createRecoleccionModel() {
-    this.recoleccionRequestModel = {
-      idSubasta: this.subasta!.id,
-      nombre: `${this.subasta!.musuarios.nombre} ${this.subasta!.musuarios.apellido}`,
-      telefono: this.subasta!.musuarios.telefono,
-      correo: this.subasta!.direccion.correo,
-      codigoPostal: this.subasta!.direccion.codigoPostal,
-      ciudad: this.subasta!.direccion.municipio,
-      direccion1: `${this.subasta!.direccion.calle} ${this.subasta!.direccion.numeroExt}`,
-      direccion2: `${this.subasta!.direccion.colonia} ${this.subasta!.direccion.numeroInt ?? ''}`,
-      numeroGuia: '', // Se llena después de generar la guía
-      peso: this.subasta!.peso,
-      largo: this.subasta!.largo,
-      ancho: this.subasta!.profundidad,
-      alto: this.subasta!.ancho,
-      horarecolecta: this.subasta?.horaRecolecta
-    };
+    // this.recoleccionRequestModel = {
+    //   idSubasta: this.subasta!.id,
+    //   nombre: `${this.subasta!.musuarios.nombre} ${this.subasta!.musuarios.apellido}`,
+    //   telefono: this.subasta!.musuarios.telefono,
+    //   correo: this.subasta!.direccion.correo,
+    //   codigoPostal: this.subasta!.direccion.codigoPostal,
+    //   ciudad: this.subasta!.direccion.municipio,
+    //   direccion1: `${this.subasta!.direccion.calle} ${this.subasta!.direccion.numeroExt}`,
+    //   direccion2: `${this.subasta!.direccion.colonia} ${this.subasta!.direccion.numeroInt ?? ''}`,
+    //   numeroGuia: '', // Se llena después de generar la guía
+    //   peso: this.subasta!.peso,
+    //   largo: this.subasta!.largo,
+    //   ancho: this.subasta!.profundidad,
+    //   alto: this.subasta!.ancho,
+    //   horarecolecta: this.subasta?.horaRecolecta
+    // };
   }
 
 
@@ -1154,38 +1226,38 @@ export class WinnerViewComponent implements OnInit {
           console.log(response)
           console.log(this.recoleccionRequestModel)
 
-          if (!this.subasta?.entregaSucursal) {
-            console.log('Antes de generar recolección');
+          // if (!this.subasta?.entregaSucursal) {
+          //   console.log('Antes de generar recolección');
 
 
-            this.subastasService.generarRecoleccion(this.recoleccionRequestModel)
+          //   this.subastasService.generarRecoleccion(this.recoleccionRequestModel)
 
-              .subscribe({
-                next: (resp: any) => {
-                  console.log(resp)
-                },
-                error: (err: any) => {
-                  console.error('Error al crear la recolección', err);
-                }
-              });
+          //     .subscribe({
+          //       next: (resp: any) => {
+          //         console.log(resp)
+          //       },
+          //       error: (err: any) => {
+          //         console.error('Error al crear la recolección', err);
+          //       }
+          //     });
 
-          }
+          // }
 
           this.loading = false;
           this.closeModal();
           this.getInitialData(true);
 
-          if (!this.subasta?.entregaSucursal) {
-            this.ss.showNotification(
-              'success',
-              'Pago procesado correctamente. DHL recogerá el paquete en el domicilio del vendedor.'
-            );
-          } else {
-            this.ss.showNotification(
-              'success',
-              'Pago procesado correctamente. La guía de envío fue generada con éxito.'
-            );
-          }
+          // if (!this.subasta?.entregaSucursal) {
+          //   this.ss.showNotification(
+          //     'success',
+          //     'Pago procesado correctamente. DHL recogerá el paquete en el domicilio del vendedor.'
+          //   );
+          // } else {
+          //   this.ss.showNotification(
+          //     'success',
+          //     'Pago procesado correctamente. La guía de envío fue generada con éxito.'
+          //   );
+          // }
           setTimeout(() => { this.openComprobante(); }, 350);
         },
         error: (error) => {

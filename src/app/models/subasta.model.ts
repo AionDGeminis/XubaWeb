@@ -70,7 +70,7 @@ export interface Subasta {
   fechaRecoleccion: string;
 }
 
-export interface detalleSubasta {
+export interface DetalleSubasta {
   id: number;
   caption: string;
   descripcion: string;
@@ -95,6 +95,9 @@ export interface detalleSubasta {
   imagenes: Imagen[];
   compraDirecta: boolean;
   precio: number;
+  esMiSubasta: boolean;
+  urlGuia: string;
+  cveStatus: string;
 }
 
 export interface Imagen {
