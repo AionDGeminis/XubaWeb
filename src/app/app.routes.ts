@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
-import { AuctionDetailComponent } from './components/auction-detail/auction-detail.component';
-import { CreateAuctionsComponent } from './components/create-auctions/create-auctions.component';
-import { AuctionFinishedComponent } from './components/auction-finished/auction-finished.component';
-import { ProfileComponent } from './components/profile/profile.component';
-import { UserRegisterComponent } from './components/user-register/user-register.component';
-import { UserpageComponent } from './components/userpage/userpage.component';
-import { AuthCallbackComponent } from './components/auth-callback/auth-callback.component';
-import { SearchResultComponent } from './components/search-result/search-result.component';
-import { ValidateComponent } from './components/validate/validate.component';
-import { ChangePasswordComponent } from './components/change-password/change-password.component';
-import { MyAuctionDetailComponent } from './components/my-auction-detail/my-auction-detail.component';
-import { PoliticaDeUsoComponent } from './components/politica-de-uso/politica-de-uso.component';
-import { AvisoPrivacidadComponent } from './components/aviso-privacidad/aviso-privacidad.component';
+import { HomeComponent } from './components/pages/home/home.component';
+import { AuctionDetailComponent } from './components/pages/auction-detail/auction-detail.component';
+import { CreateAuctionsComponent } from './components/shared-components/create-auctions/create-auctions.component';
+import { AuctionFinishedComponent } from './components/pages/auction-finished/auction-finished.component';
+import { ProfileComponent } from './components/pages/profile/profile.component';
+import { UserRegisterComponent } from './components/pages/user-register/user-register.component';
+import { ValidateComponent } from './components/shared-components/validate/validate.component';
+import { PoliticaDeUsoComponent } from './components/shared-components/politica-de-uso/politica-de-uso.component';
+import { AvisoPrivacidadComponent } from './components/shared-components/aviso-privacidad/aviso-privacidad.component';
+import { AuthCallbackComponent } from './components/pages/auth-callback/auth-callback.component';
+import { SearchResultComponent } from './components/pages/search-result/search-result.component';
+import { MyAuctionDetailComponent } from './components/pages/my-auction-detail/my-auction-detail.component';
+import { UserpageComponent } from './components/pages/userpage/userpage.component';
+import { ChangePasswordComponent } from './components/shared-components/change-password/change-password.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },

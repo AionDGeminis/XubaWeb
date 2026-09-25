@@ -1,0 +1,765 @@
+<div *ngIf="!isValidExistingSubasta && !gettingData">
+  <div class="error-page">
+    <div class="error-illustration">
+      <span class="error-number">4</span>
+
+      <div class="error-zero">
+        <div class="error-document">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="error-alert">!</div>
+      </div>
+
+      <span class="error-number">4</span>
+    </div>
+
+    <h1>Xubasta no encontrada</h1>
+
+    <p>
+      Lo sentimos, la página que solicitaste no se encontró.
+      <br>
+      Por favor, regresa a la página principal.
+    </p>
+
+    <button type="button" class="home-button" (click)="backToHome()">
+      Volver a Home
+    </button>
+  </div>
+</div>
+
+<div *ngIf="gettingData">
+  <app-loader></app-loader>
+</div>
+
+<div *ngIf="isValidExistingSubasta && !gettingData" class="main-detail-wrapper" [class.dark-mode]="modoOscuro">
+  <app-loader *ngIf="loading"></app-loader>
+
+  <!-- Mobile Bottom Sheet Container (en Desktop se comporta como display: contents) -->
+  <div class="mobile-sheet-container" [class.sheet-open]="mostrarDetalles">
+    <div class="sheet-backdrop" (click)="mostrarDetalles = false"></div>
+    <div class="sheet-content">
+      <div class="sheet-header">
+        <div class="sheet-drag-handle"></div>
+        <h4 class="sheet-title">Detalles de la subasta</h4>
+        <button class="sheet-close-btn" (click)="mostrarDetalles = false">&times;</button>
+      </div>
+      <div class="sheet-body scroll-thin">
+
+        <!-- ══════════════ IZQUIERDA ══════════════ -->
+        <div class="column-left">
+
+          <!-- Header + toggle -->
+          <div
+            style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 4px 2px;">
+            <div></div>
+          </div>
+          <label class="theme-switch">
+            <input type="checkbox" [checked]="modoOscuro" (change)="cambiarTema()">
+
+            <span class="theme-slider">
+              <i class="fas fa-sun sun-icon"></i>
+              <i class="fas fa-moon moon-icon"></i>
+              <span class="switch-circle"></span>
+            </span>
+          </label>
+
+          <div class="scroll-thin left-auctions-list"
+            style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 2px;">
+
+            <!-- Card 1 -->
+            <div class="card-left glass" *ngFor="let subasta of listaPremium"
+              (click)="moveToSelectedPremium(subasta.id); mostrarDetalles = false"
+              style="flex-shrink: 0; border-radius: 14px; overflow: hidden; position: relative; border-color: rgba(236,72,153,0.35) !important;">
+              <img [src]="subasta.url" alt="">
+              <div class="ribbon" [ngClass]="{'ribbon-nuevo': subasta.nuevo, 'ribbon-usado':  !subasta.nuevo}"><span>
+                  {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
+                </span></div>
+              <div style="padding: 10px;">
+                <p style="font-size: 12px; font-weight: 700; color: #ec4899;">{{ subasta.caption }}#{{subasta.id}}</p>
+                <p style="font-size: 13px; font-weight: 800; color: var(--text); margin: 3px 0;">
+                  {{toCurrency(subasta.apuesta)
+                  }} <span style="font-size: 10px; color: var(--text2);">MXN</span></p>
+                <span style="font-size: 12px; color: #38bdf8; font-weight: 700;"><i class="fas fa-clock"
+                    style="font-size: 10px;"></i> {{segundosATiempoString(subasta.venceSegundos!) }}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══════════════ DERECHA ══════════════ -->
+        <div class="column-right">
+
+          <!-- Vendedor -->
+          <div class="glass" style="flex-shrink: 0; border-radius: 16px; padding: 12px;">
+            <p
+              style="font-size: 9px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
+              Vendido por</p>
+            <div class="Vendido">
+              <div class="marco">
+                <div class="usuario-contenedor">
+                  <img [src]="detallesubasta.fotoVendedor" class="imagen-usuario">
+                  <p class="usuario" (click)="openUserPage(detallesubasta.idVendedor)">{{
+                    detallesubasta.usuarioVendedor}}
+                    <span>
+                      <a class="icon-link icon-link-hover">
+                        Perfil
+                        <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+                          <path
+                            d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                        </svg>
+                      </a>
+                    </span>
+
+                  </p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 3px;">
+                  <i class="fas fa-star" style="color: #f59e0b; font-size: 10px;"></i>
+                  <span style="font-size: 11px; color: var(--text2);">{{ detallesubasta.stars ?? 0 }}</span>
+                  &nbsp;
+                  <i class="fas fa-eye"></i>
+                  <span style="font-size: 11px; color: var(--text2);">{{detallesubasta.vistas}}</span>
+                  &nbsp;
+                  <i class="fas fa-gavel"></i>
+                  <span style="font-size: 11px; color: var(--text2);">{{detallesubasta.ofertas}}</span>
+                </div>
+              </div>
+            </div>
+            <button class="w-100" *ngIf="isLoggedIn() && !this.detallesubasta.esMiSubasta" [disabled]="lockButton"
+              [ngClass]="{'btn-fv': getSiguiendo(detallesubasta.idVendedor), 'btn-uv':!getSiguiendo(detallesubasta.idVendedor)}"
+              (click)="toggleSeguirVendedor(detallesubasta.idVendedor)"
+              style="margin-left: auto; background: linear-gradient(to right, #ec4899, #8b5cf6); color: white; border: none; border-radius: 50px; padding: 6px 14px; font-size: 11px; font-weight: 600; cursor: pointer;">
+              <i class="fas"
+                [ngClass]="{'fa-plus': !getSiguiendo(detallesubasta.idVendedor), 'fa-bookmark':getSiguiendo(detallesubasta.idVendedor)}"></i>
+              {{getSiguiendo(detallesubasta.idVendedor) ? 'Siguiendo':'Seguir'}}
+            </button>
+            <p class="mt-2" style="font-size: 11px; color: var(--text2);">
+              <i class="fas fa-map-marker-alt" style="color: #ec4899; margin-right: 4px;"></i>
+              Desde {{detallesubasta.municipio }}, {{detallesubasta.estado }}
+            </p>
+          </div>
+
+          <!-- Nombre y descripción -->
+          <div class="glass"
+            style="flex: 1; min-height: 0; border-radius: 16px; padding: 12px; display: flex; flex-direction: column;">
+            <h2
+              style="font-size: 14px; font-weight: 800; color: #ec4899; margin-bottom: 3px; line-height: 1.3; flex-shrink: 0;">
+              {{detallesubasta.caption}}</h2>
+            <p style="font-size: 10px; color: var(--text2); margin-bottom: 8px; flex-shrink: 0;">#{{detallesubasta.id}}
+            </p>
+            <div class="scroll-thin" style="flex: 1; min-height: 0; overflow-y: auto;">
+              <p style="font-size: 11px; color: var(--text2); line-height: 1.7;">
+                {{detallesubasta.descripcion?.slice(0, 200) }}
+                <span>
+                  <a class="icon-link icon-link-hover" style="cursor: pointer" (click)="abrirmodaldescripcion()">
+                    Ver mas
+                    <svg xmlns="http://www.w3.org/2000/svg" class="bi" viewBox="0 0 16 16" aria-hidden="true">
+                      <path
+                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                    </svg>
+                  </a>
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Oferta y timer (SÓLO ESCRITORIO) -->
+          <div class="glass d-none d-lg-block"
+            style="flex-shrink: 0; border-radius: 16px; padding: 12px; text-align: center;">
+            <p
+              style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 400; color: #636e72; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+              <i class="fas fa-gavel"></i> Oferta actual
+            </p>
+            <p #pillAmount
+              style="font-size: 28px; font-weight: 900; color: #38bdf8; line-height: 1.1; margin-bottom: 8px;">
+            </p>
+            <div
+              style="display: inline-flex; align-items: center; gap: 7px; background: var(--timer-bg); border-radius: 50px; padding: 6px 16px;">
+              <i class="fas fa-clock" style="color: var(--text2); font-size: 13px;"></i>
+              <span
+                style="font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: 2px;">{{tiempoVence}}</span>
+            </div>
+            <button *ngIf="detallesubasta.precioCompraDirecta > 0" class="glass-btn w-100 mt-2"
+              (click)="realizarApuesta(detallesubasta.precioCompraDirecta, true)">
+              <i class="fas fa-bolt"></i>
+              Compra directa {{ toCurrency(detallesubasta.precioCompraDirecta) }}
+            </button>
+          </div>
+
+
+          <!-- Openpay -->
+          <div
+            style="flex-shrink: 0; background: var(--openpay-bg); border-radius: 16px; padding: 10px 14px; text-align: center;">
+            <p style="font-size: 10px; color: #555; margin-bottom: 5px;">
+              <i class="fas fa-lock" style="color: #6366f1; margin-right: 3px;"></i>
+              Compra segura y protegida a través de
+            </p>
+            <img src="images/openpay-logo.png" alt="Openpay" style="height: 22px; margin: 0 auto; display: block;">
+          </div>
+
+          <!-- Galería (SÓLO ESCRITORIO) -->
+          <div class="glass d-none d-lg-flex"
+            style="flex: 0.35; min-height: 0; border-radius: 16px; padding: 12px; display: flex; flex-direction: column;">
+            <p
+              style="font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 8px; flex-shrink: 0; display: flex; align-items: center; gap: 6px;">
+              <i class="fas fa-images" style="color: #ec4899;"></i> Galería
+            </p>
+            <div style="display: flex; gap: 6px; flex-shrink: 0; overflow-x: scroll;">
+              <div class="thumb" *ngFor="let images of detallesubasta.imagenes; let i = index;"
+                style="width: 52px; height: 52px; background: var(--thumb-bg); border-radius: 8px; flex-shrink: 0;">
+                <img [src]="images.url" (click)="setIndexImage(i)" class="w-100 g-thumb"
+                  style="border-radius: 8px;flex-shrink: 0" [ngClass]="{'active': currentIndexImage === i}" alt="">
+              </div>
+            </div>
+          </div>
+
+          <!-- Costos de envío -->
+          <div class="glass" style="flex-shrink: 0; border-radius: 16px; padding: 12px;">
+            <p
+              style="font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <i class="fas fa-truck" style="color: #ec4899;"></i> Costos de envío
+            </p>
+            <button *ngIf="isLoggedIn()" class="glass-btn" (click)="openShippingPricesModal(); mostrarDetalles = false"
+              style="width: 100%; background: linear-gradient(to right, #38bdf8, #0ea5e9); color: white; border: none; border-radius: 50px; padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer;">
+              Ver precios
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ CENTRO ══════════════ -->
+  <div class="column-center">
+
+    <!-- Header de la subasta (SOLO MOVIL) -->
+    <!-- <div class="d-lg-none px-3 pt-3 d-flex flex-row align-items-center justify-content-between"
+      style="flex-shrink: 0; gap: 10px;">
+      <button (click)="irAAnterior()" class="glass" [disabled]="indiceActual <= 0"
+        [ngClass]="{'btn-disabled': !lista || lista.length  === 0}"
+        style="width: 36px; height: 36px; border: none; border-radius: 50%; color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div style="flex: 1; min-width: 0; text-align: center;">
+        <h2
+          style="font-size: 0.9em; font-weight: 800; color: var(--text); margin: 0; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; word-break: break-word;">
+          #{{detallesubasta.id}} - {{detallesubasta.caption}}
+        </h2>
+      </div>
+
+      <button (click)="irASiguiente()" [disabled]="!lista || lista.length  === 0" class="glass"
+        [ngClass]="{'btn-disabled': !lista || lista.length  === 0}"
+        style="width: 36px; height: 36px; border: none; border-radius: 50%; color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div> -->
+
+    <!-- Banner ganando -->
+
+    <div class="contenedor-botones">
+      <div class="botones-navegacion">
+        <button type="button" (click)="irAAnterior()" class="btn boton-navegacion" aria-label="Oferta anterior"
+          title="Oferta anterior">
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <!-- <div class="current-offer-badge" tabindex="0" aria-live="polite">
+
+          <i class="fas fa-trophy current-offer-badge__icon" aria-hidden="true">
+          </i>
+
+          <span class="current-offer-badge__content">
+            <span class="current-offer-badge__bidder">
+              {{usuarioMayor}}
+            </span>
+
+            <span class="current-offer-badge__status">
+              Va ganando
+            </span>
+
+            <span class="current-offer-badge__amount">
+              {{toCurrency(valorApuesta)}}
+            </span>
+          </span>
+
+          <i class="fas fa-trophy current-offer-badge__icon" aria-hidden="true">
+          </i>
+        </div> -->
+        <div class="current-offer-badge" [class.current-offer-badge--empty]="!hayGanador" #currentOfferBadge>
+
+          <!-- <ng-container *ngIf="connectingSignalR">
+            <span class="usuario-mayor f-arial">Conectando... </span>
+          </ng-container> -->
+
+          <!--<ng-container *ngIf="!connectingSignalR && !usuarioMayor">
+            <span class="usuario-mayor f-arial">Sin apuestas</span>
+          </ng-container> -->
+
+          <!-- <ng-container *ngIf="!connectingSignalR && usuarioMayor"> -->
+          <div class="confetti-layer" #confettiLayer></div>
+
+          <!-- Anillos de impacto -->
+          <span class="offer-ring" #offerRingOne></span>
+          <span class="offer-ring" #offerRingTwo></span>
+
+          <!-- Insignia que cae sobre la pastilla -->
+          <span class="offer-badge" #offerBadge>{{badgeCaption.label1}}</span>
+
+          <i class="fas fa-trophy current-offer-badge__icon" #trophyLeft *ngIf="!connectingSignalR && usuarioMayor"
+            aria-hidden="true"></i>
+
+          <span class="current-offer-badge__content" #pillText>
+            <span class="current-offer-badge__bidder" #pillBidder>{{ usuarioMayor }}</span>
+            <span class="current-offer-badge__status" #pillWinning>{{badgeCaption.label2}}</span>
+            <span class="current-offer-badge__amount" #pillAmountBadge></span>
+          </span>
+
+          <i class="fas fa-trophy current-offer-badge__icon" #trophyRight *ngIf="!connectingSignalR && usuarioMayor"
+            aria-hidden="true"></i>
+
+        </div>
+
+        <button type="button" (click)="irASiguiente()" class="btn boton-navegacion" aria-label="Siguiente oferta"
+          title="Siguiente oferta">
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- TEST-FullscreenNotification -->
+
+    <!-- ==========================================================
+     NOTIFICACIÓN DE NUEVA OFERTA — versión minimal
+     Sin contenedor visible: solo texto sobre el blur.
+     Reemplaza los textos fijos por tus bindings de Angular:
+     {{ oferta.kicker }}, {{ oferta.usuario }},
+     {{ oferta.mensaje }}, {{ oferta.monto }}
+     ========================================================== -->
+    <!-- <div class="bid-backdrop" *ngIf="showNewBidIncomeAnimation">
+      <article class="offer-notification" role="status" aria-live="polite">
+        <p class="offer-kicker">Nueva oferta</p>
+        <h1 class="offer-bidder" [class]="'fast-animation animate__animated ' + animatedClass">
+          {{usuarioMayor}}</h1>
+        <p class="offer-message">ha superado la oferta</p>
+        <hr class="offer-rule">
+        <p class="offer-label">Oferta actual</p>
+        <p class="offer-amount" [class]="'fast-animation animate__animated ' + animatedClass">${{valorApuesta}}</p>
+        <div class="offer-meta">
+          <span class="offer-winning ">Va ganando</span>
+        </div>
+        <div class="offer-time">
+          <div class="offer-time-fill" #timeFill [style.animation-duration.ms]="bidNotificationMs"></div>
+        </div>
+      </article>
+    </div> -->
+    <!--  -->
+
+
+
+
+    <!-- Imagen producto -->
+    <div class="detail-img-container" *ngIf="detallesubasta.imagenes">
+      <div class="detail-img-wrapper">
+        <img [src]="detallesubasta.imagenes[currentIndexImage].url" (click)="openModalViewer()"
+          [class]="'fast-animation cursor-pointer animate__animated ' + classAnimate.imageContainer"
+          alt="Imagen de la subasta" style="height: 100%; display: block; margin: auto; overflow-y: hidden;" />
+      </div>
+
+      <!-- Pantalla completa -->
+      <!-- <button class="glass" (click)="openModalViewer()"
+        style="position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center;">
+        <i class="fas fa-expand"></i>
+      </button> -->
+      <!-- Acciones flotantes -->
+      <div class="actions-floater"
+        style="position: absolute; right: 14px; bottom: 14px; display: flex; flex-direction: column; gap: 8px;">
+        <button class="glass"
+          style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-share-alt"></i>
+        </button>
+        <button class="glass" (click)="toggleSingleSeguida(detallesubasta.id, $event)"
+          style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-heart " [ngClass]="{'followed-i': isFollowed}"></i>
+        </button>
+        <button class="glass" (click)="compraDirecta()"
+          style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+        <!-- <button *ngIf="detallesubasta.compraDirecta && valorApuesta < detallesubasta.precio" class="glass"
+          (click)="compraDirecta()"
+          style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-shopping-cart"></i>
+        </button> -->
+        <button class="glass" (click)="abrirmodalofertadirecta()"
+          style="width: 40px; height: 40px; border: none; border-radius: 50%; color: var(--text); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-gavel"></i>
+        </button>
+      </div>
+
+
+      <!-- Galería Flotante (SÓLO MÓVIL) -->
+      <div class="d-lg-none no-scrollbar" *ngIf="detallesubasta.imagenes && detallesubasta.imagenes.length > 1"
+        style="position: absolute; left: 50%; transform: translateX(-50%); width: 80%; bottom: 14px; display: flex; gap: 6px; overflow-x: auto; padding: 4px; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(8px); border-radius: 12px; z-index: 10; justify-content: flex-start;">
+        <div class="thumb" *ngFor="let images of detallesubasta.imagenes; let i = index;"
+          style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 6px; flex-shrink: 0; cursor: pointer; overflow: hidden; border: 1.5px solid transparent;"
+          [style.borderColor]="currentIndexImage === i ? '#ec4899' : 'transparent'" (click)="setIndexImage(i)">
+          <img [src]="images.url" class="w-100 h-100" style="object-fit: cover; display: block;" alt="">
+        </div>
+      </div>
+    </div>
+
+    <!-- Oferta y timer (SÓLO MÓVIL) -->
+    <div class="glass d-lg-none mx-3 mb-2"
+      style="flex-shrink: 0; border-radius: 16px; padding: 12px; text-align: center;">
+      <!-- <p
+        style="font-size: 11px; font-weight: 600; color: #38bdf8; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+        <i class="fas fa-gavel"></i> Oferta actual
+      </p>
+      <p style="font-size: 28px; font-weight: 900; color: #38bdf8; line-height: 1.1; margin-bottom: 8px;">
+        {{toCurrency(valorApuesta) }}
+      </p> -->
+      <p
+        style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 400; color: #636e72; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+        <i class="fas fa-gavel"></i> Oferta actual
+      </p>
+      <!-- <p #pillAmount style="font-size: 28px; font-weight: 900; color: #38bdf8; line-height: 1.1; margin-bottom: 8px;">
+      </p> -->
+      <p #pillAmountResponsive
+        style="font-size: 28px; font-weight: 900; color: #38bdf8; line-height: 1.1; margin-bottom: 8px;">
+
+      </p>
+      <div
+        style="display: inline-flex; align-items: center; gap: 7px; background: var(--timer-bg); border-radius: 50px; padding: 6px 16px;">
+        <i class="fas fa-clock" style="color: var(--text2); font-size: 13px;"></i>
+        <span style="font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: 2px;">{{tiempoVence}}</span>
+      </div>
+    </div>
+
+    <!-- Botón ofertar -->
+    <div style="flex-shrink: 0; padding: 12px 16px;">
+
+      <!-- <button *ngIf="isLoggedIn()" class="btn-offer glass-btn" (click)="realizarApuesta(siguienteApuesta, false)"
+        style="width: 100%; border: none; border-radius: 50px; padding: 16px; color: black; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; position: relative; z-index: 12;">
+        <i class="fas fa-gavel" style="margin-right: 8px;"></i>
+        Ofertar {{ toCurrency(siguienteApuesta) }}
+      </button> -->
+      <ng-container *ngIf="isLoggedIn()">
+        <button [disabled]="connectingSignalR" [ngClass]="{'btn-offer-disabled ': connectingSignalR}"
+          class="btn-offer btn-offer-disabled glass-btn d-none d-sm-block"
+          (click)="realizarApuesta(siguienteApuesta, false)"
+          style="width: 100%; border: none; border-radius: 50px; padding: 16px; color: black; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; position: relative; z-index: 12;">
+          <i class="fas fa-gavel" style="margin-right: 8px;"></i>
+          Ofertar {{ toCurrency(siguienteApuesta) }}
+        </button>
+        <app-slidebutton class="d-sm-none d-block" label="Desliza para ofertar"
+          (confirmed)="realizarApuesta(siguienteApuesta, false)" />
+      </ng-container>
+
+      <!-- -->
+
+      <div *ngIf="!isLoggedIn()"
+        style="margin-top: 10px; text-align: center; color: #ef2d7a; font-size: 15px; font-weight: 600;">
+        Para Participar en la Subasta Inicia sesión o Regístrate
+        <br>
+      </div>
+
+      <!-- Botón para ver detalles (sólo móvil) -->
+      <button class="glass-btn d-lg-none mt-2 w-100" (click)="mostrarDetalles = true"
+        style="border: 1px solid var(--border); border-radius: 50px; padding: 12px; color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <i class="fas fa-info-circle"></i> Ver detalles de la subasta
+      </button>
+
+    </div>
+  </div>
+
+</div>
+
+
+<div *ngIf="showModalShippingPrices" class="cart-modal-backdrop" [class.dark-mode]="modoOscuro">
+  <div class="cart-modal-container" (click)="onContentClick($event)">
+    <div class="modal-headerr bg-main-header ">
+      <h3 class="modal-title">
+        <span class="textf">Precios de envio estimados</span>
+      </h3>
+      <button type="button" class="btn-close" (click)="closeShippingPricesModal()">
+      </button>
+    </div>
+
+    <div class="modal-body" [class.dark-mode]="modoOscuro">
+
+      <div class="tab-content fast-animation  animate__animated animate__fadeInRight">
+        <form class="form-productos pl-2 pr-2">
+
+          <div class="form-row">
+            <div class="form-group">
+
+              <ng-container *ngIf="direcciones.length > 0">
+                <label for="cantidadPuja">Direccion de entrega</label>
+                <select class="form-select f-arial tw:font-bold datos" name="direcionentrega" id="direcionentrega"
+                  [disabled]="loadingCotizacion" [(ngModel)]="direccionEntrega" (change)="changeDireccionEntrega()">
+                  <option *ngFor="let item of direcciones" [ngValue]="item">
+                    {{item.calle}} {{item.numeroExt}} {{item.numeroInt}}, {{item.municipio}}
+                  </option>
+                </select>
+                <!-- <hr class="mt-3"> -->
+                <ng-container *ngIf="loadingCotizacion">
+                  <div class="w-100 text-center px-2 py-2">
+                    <h4 style="font-size: 1em;">Cargando precios de envío...</h4>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!loadingCotizacion && listaTiposEnvio!.length > 0">
+                  <div class="prices-shipping-container bg-dark text-white px-3 py-1 mb-1 mt-3">
+                    <span>Servicio</span>
+                    <span>Precio</span>
+                  </div>
+                  <div *ngFor="let envio of listaTiposEnvio" class="prices-shipping-container px-3 py-1 mb-1" c>
+                    <span class="shipname">{{envio.nombreProducto}}</span>
+                    <span class="shipprice">${{envio.precio}} MXN</span>
+                  </div>
+                </ng-container>
+                <div class="tw:text-sm mt-3 text-center">
+                  <i class="fas fa-ruler"></i> Dimensiones del producto
+                  <br>
+                  <div class="row justify-content-center g-2">
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Largo: [{{detallesubasta!.largo}}cm]
+                      </div>
+                    </div>
+
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Alto: [{{detallesubasta!.ancho}}cm]
+                      </div>
+                    </div>
+
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Profundidad: [{{detallesubasta!.profundidad}}cm]
+                      </div>
+                    </div>
+
+                    <div class="col-10 col-sm-3">
+                      <div class="dims text-center">
+                        Peso [{{detallesubasta!.peso}}kg]
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <img src="images/dhl.png" class="tw:h-15 w-auto d-block m-auto" alt=""> -->
+                </div>
+                <div class="tw:text-sm mt-3 text-center">
+                  <i class="fas fa-shield-alt"></i> Servicio operado y garantizado por DHL Express.
+                  <img src="images/dhl.png" class="tw:h-15 w-auto d-block m-auto imagen-blanca" alt="">
+                </div>
+                <ng-container *ngIf="!loadingCotizacion && listaTiposEnvio!.length === 0">
+                  <div class="w-100 text-center px-2 py-2">
+                    <h4 style="font-size: 1em;">
+                      No se pudo cargar ningun servicio de envio a la direccion seleccionada
+                    </h4>
+                  </div>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="direcciones.length === 0">
+                <div class="w-100 text-center px-2 py-2">
+                  <h4 style="font-size: 1.4em;">
+                    Ninguna direccion de entrega guardada
+                  </h4>
+                  <h5 style="font-size: 1.1em;color:#57606f">
+                    Por favor, agregue una dirección para cargar la cotizacion de envio.
+                  </h5>
+                </div>
+                <div class="w-100 text-center mt-2">
+                  <button class="btn btn-primary me-2 w-50 text-center" (click)="moveToProfile()">
+                    Ir a agregar dirección <i class="fas fa-arrow-right"></i>
+                  </button>
+                </div>
+
+              </ng-container>
+
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer text-start pb-3 pe-3">
+      <div>
+        <button class="btn btn-secondary" (click)="closeShippingPricesModal()">
+          Cerrar
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+
+
+</div> <!-- main-detail-wrapper -->
+
+<!-- <div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()"> -->
+<div class="fullscreen-viewer" *ngIf="isviewerOpen" (click)="closeModalViewer()">
+  <div class="viewer-counter"
+    style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: white; font-size: 18px; font-weight: 700; z-index: 101;">
+    {{ currentIndexImageViewer + 1 }} / {{ imagesListViewer.length }}
+  </div>
+
+  <button class="close-viewer" (click)="closeModalViewer()">
+    <i class="fas fa-times"></i>
+  </button>
+
+  <button class="nav-btn prev" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('prev', $event)"
+    [class.disabled]="currentIndexImageViewer === 0">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+
+  <div class="viewer-content" (click)="$event.stopPropagation()">
+    <img [class]="'fast-animation  animate__animated ' + classNavigateImg"
+      [src]="imagesListViewer[currentIndexImageViewer].url" style="background: #bdc3c7;">
+  </div>
+
+  <button class="nav-btn next" *ngIf="imagesListViewer.length > 1" (click)="navigateImage('next', $event)"
+    [class.disabled]="currentIndexImageViewer === imagesListViewer.length - 1">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+
+</div>
+
+<!-- MODAL OFERTA DIRECTA -->
+<div class="modal-ofertadirecta" [class.dark-mode]="modoOscuro" *ngIf="mostrarmodalofertadirecta">
+  <div class="margen">
+    <div class="">
+      <div class="d-flex justify-content-between align-items-center ">
+        <h5 class="fw-bold mb-0 coloroferta-h5">
+          Hacer oferta
+        </h5>
+
+        <button type="button" class="btn-close" (click)="cerrarmodalofertadirecta()">
+        </button>
+      </div>
+
+
+      <div class="row w-100">
+        <div class="current-offer-badge" [class.current-offer-badge--empty]="!hayGanador" #currentOfferBadge>
+
+          <span class="offer-badge">{{badgeCaption.label1}}</span>
+
+          <!-- <i class="fas fa-trophy current-offer-badge__icon" *ngIf="!connectingSignalR && usuarioMayor"
+            aria-hidden="true"></i> -->
+
+          <span class="current-offer-badge__content">
+            <span class="current-offer-badge__bidder">{{ usuarioMayor }}</span>
+            <span class="current-offer-badge__status">{{badgeCaption.label2}}</span>
+            <span class="current-offer-badge__amount"></span>
+          </span>
+
+          <!-- <i class="fas fa-trophy current-offer-badge__icon" *ngIf="!connectingSignalR && usuarioMayor"
+            aria-hidden="true"></i> -->
+
+
+
+        </div>
+      </div>
+      <div class="row w-100">
+        <div class="glass d-none d-lg-block"
+          style="flex-shrink: 0; border-radius: 16px; padding: 12px; text-align: center;">
+          <p
+            style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: 400; color: #636e72; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+            <i class="fas fa-gavel"></i> Oferta actual
+          </p>
+          <p style="font-size: 28px; font-weight: 900; color: #38bdf8; line-height: 1.1; margin-bottom: 8px;">
+            {{toCurrency(valorApuesta)}}
+          </p>
+
+        </div>
+      </div>
+      <hr class="mb-2">
+    </div>
+    <div class="botones-oferta-container">
+
+      <button class="botones-oferta" type="button" (click)="botones(20)">$20.00</button>
+      <button class="botones-oferta" type="button" (click)="botones(50)">$50.00</button>
+      <button class="botones-oferta" type="button" (click)="botones(100)">$100.00</button>
+
+    </div>
+
+    <input [(ngModel)]="ofertar" type="number" class="input-oferta" appSoloDecimal
+      placeholder="Ingresa tu catidad personalizada">
+    <label class="letras">
+      Revisa tu oferta antes de enviarla.
+    </label>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button type="button" class="boton-prinsipal" (click)="apuestaPersonalizada(ofertar)">
+        <i class="fas fa-gavel"></i>
+        Ofertar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal-descripcion" [class.dark-mode]="modoOscuro" *ngIf="mostrarmodaldescripcion">
+  <div class="modal-contenido-descripcion">
+
+    <div class="modal-header-descripcion">
+      <h3 class="detalle-modall">{{detallesubasta.caption}}</h3>
+
+      <button type="button" class="btn-close" (click)="cerrarmodaldescripcion()">
+      </button>
+    </div>
+
+    <div class="modal-body-descripcion">
+
+      <div class="detalle-modal">
+        <p>{{ detallesubasta.descripcion }}</p>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <h4 class="detalle-modall"> <i class="bi bi-box-seam icono-detalle"></i> Caracteristicas</h4>
+          <p>
+            <i class="bi bi-patch-check-fill"></i>
+            Marca: {{ detallesubasta.marca }} <br>
+            <i class="bi bi-card-text"></i>
+            Modelo: {{ detallesubasta.modelo }} <br>
+            <i class="bi" [ngClass]="detallesubasta.nuevo ? 'bi-stars ' : 'bi-box-seam '"></i>
+            Estado: {{ detallesubasta.nuevo ? 'Nuevo' : 'Usado' }}
+          </p>
+        </div>
+
+        <div class="col-6">
+          <h4 class="detalle-modall"><i class="bi bi-bounding-box"></i>Medidas</h4>
+          <p>
+            <i class="bi bi-arrows"></i>
+            Largo: {{ detallesubasta.largo }} cm<br>
+            <i class="bi bi-arrows-vertical icono-detalle"></i>
+            Ancho: {{ detallesubasta.ancho }} cm<br>
+            <i class="bi bi-arrows-angle-expand icono-detalle"></i>
+            Profundidad: {{ detallesubasta.profundidad }} cm
+          </p>
+        </div>
+      </div>
+      <div class="informacion-importante">
+        <div class="informacion-icono">
+          <i class="bi bi-info-circle"></i>
+        </div>
+
+        <div class="informacion-texto">
+          <strong>Información importante</strong>
+          <span>Revisa bien las características y medidas del producto antes de ofertar.</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

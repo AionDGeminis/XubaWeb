@@ -1,22 +1,22 @@
-import { Component, ViewEncapsulation, Signal, computed, effect, runInInjectionContext, HostListener  } from '@angular/core';
+import { Component, ViewEncapsulation, Signal, computed, effect, runInInjectionContext, HostListener } from '@angular/core';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from "./components/navbar/navbar.component";
+import { NavbarComponent } from "./components/shared-components/navbar/navbar.component";
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PageblockComponent } from './components/pageblock/pageblock.component';
+import { PageblockComponent } from './components/shared-components/pageblock/pageblock.component';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, 
-  NavbarComponent,  HttpClientModule, PageblockComponent ],
+  imports: [RouterOutlet, CommonModule,
+    NavbarComponent, HttpClientModule, PageblockComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   encapsulation: ViewEncapsulation.None
 })
 
-export class AppComponent { 
+export class AppComponent {
 }
