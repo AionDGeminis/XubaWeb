@@ -1,0 +1,688 @@
+<div class="cart-modal-backdrop fast-animation animate__animated animate__fadeIn">
+    <div class="cart-modal-container" (click)="onContentClick($event)">
+        <app-loader *ngIf="loading"></app-loader>
+        <div class="modal-header bg-main-header text-white">
+            <h3 class="modal-title">
+                <!-- <i class="fas fa-shopping-cart "></i> -->
+                <span class="text-white">Crear Nueva Subasta</span>
+
+            </h3>
+            <button class="close-button" (click)="closeModal()">
+                <span class="text-white">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+
+            <div class="tab-buttons tab-button pt-0 pb-0" *ngIf="currentTabIndex !== -1">
+                <button class="tab-button" [class.active]="currentTabIndex === 0" (click)="currentTabIndex = 0">
+                    Detalles del producto
+                </button>
+                <button class="tab-button" [class.active]="currentTabIndex === 1" (click)="currentTabIndex = 1">
+                    Datos de envio
+                </button>
+                <button class="tab-button" [class.active]="currentTabIndex === 2" (click)="currentTabIndex = 2">
+                    Subir fotos
+                </button>
+                <!-- <button  class="tab-button" [class.active]="currentTabIndex === 3" (click)="currentTabIndex = 3">
+              Pago
+            </button> -->
+                <button *ngIf="tipoSubasta === 'premium'" class="tab-button" [class.active]="currentTabIndex === 3"
+                    (click)="currentTabIndex = 3">
+                    Pago
+                </button>
+            </div>
+            <div class="tab-content fast-animation  animate__animated animate__fadeInRight"
+                *ngIf="currentTabIndex === -1">
+                <div class="policy-content before-sell">
+                    <h5>Prohibiciones y politicas de venta</h5>
+                    1- Se prohíbe cualquier artículo regulado por la Ley Federal de Armas de Fuego y Explosivos:
+                    <br>
+                    Armas de fuego de cualquier tipo
+                    Municiones, cartuchos, cargadores y proyectiles
+                    Explosivos, detonadores, granadas, pólvora
+                    Armas de uso exclusivo del Ejército, Armada o Fuerza Aérea
+                    Armas modificadas, artesanales o con números de serie alterados
+                    <br> <br>
+                    1. Drogas, estupefacientes y sustancias ilícitas
+                    Totalmente prohibidos conforme a la Ley General de Salud y el Código Penal Federal:
+                    Drogas ilegales (cocaína, metanfetamina, fentanilo, etc.)
+                    Sustancias psicotrópicas sin autorización
+                    Precursores químicos
+                    Cannabis fuera del marco legal autorizado
+                    Accesorios para consumo o distribución (pipetas, prensas, kits)
+                    2
+
+                    <hr>
+
+                    1. Medicamentos y productos para la salud sin autorización
+                    Prohibidos por representar un riesgo grave a la salud:
+                    Medicamentos controlados o que requieran receta médica
+                    Medicamentos sin registro sanitario de COFEPRIS
+                    Medicamentos falsificados, alterados o caducos
+                    Dispositivos médicos no certificados
+                    Insumos médicos de procedencia desconocida
+                    3
+
+                    <hr>
+
+                    1. Animales, fauna protegida y productos derivados
+                    Prohibidos por leyes ambientales y tratados internacionales:
+                    Animales en peligro de extinción
+                    Fauna silvestre sin permisos oficiales
+                    Pieles, colmillos, marfil, huesos, caparazones
+                    Productos elaborados con especies protegidas
+                    4
+
+                    <hr>
+
+                    1. Bienes arqueológicos, históricos y culturales
+                    Totalmente prohibidos:
+                    Piezas arqueológicas prehispánicas
+                    Arte sacro antiguo o religioso protegido
+                    Objetos históricos protegidos por el INAH
+                    Bienes culturales extraídos o comercializados ilegalmente
+                    4
+
+                    <hr>
+
+                    1. Productos robados o de procedencia ilícita
+                    No se permiten artículos que:
+                    Sean robados o saqueados
+                    No cuenten con comprobante de propiedad
+                    Tengan origen ilegal o fraudulento
+                    Presenten precios que indiquen procedencia ilícita
+                    (Responsabilidad civil y penal conforme al Código de Comercio y legislación penal)
+                    5
+
+                    <hr>
+
+                    1. Productos falsificados o que violen propiedad intelectual
+                    Prohibidos por leyes de derechos de autor y marcas:
+                    Productos pirata
+                    Réplicas vendidas como originales
+                    Uso no autorizado de marcas registradas
+                    Software, licencias o contenidos ilegales
+                    6
+
+                    <hr>
+
+                    1. Documentos oficiales y artículos gubernamentales
+                    No se permite subastar:
+                    Identificaciones oficiales (INE, pasaporte, licencias)
+                    Documentos gubernamentales
+                    Sellos, placas, hologramas, formatos oficiales
+                    Uniformes o insignias oficiales de uso restringido
+                    5
+
+                    <hr>
+
+                    1. Servicios o artículos destinados a actividades ilegales
+                    Prohibidos sin excepción:
+                    Servicios de hacking, fraude o espionaje
+                    Venta de cuentas robadas, datos personales
+                    Documentos falsos
+                    Servicios para evadir la ley o autoridades
+                    2
+
+                    <hr>
+
+                    1. Otros artículos prohibidos por seguridad y ética
+                    Artículos que fomenten violencia, odio o delitos
+                    Productos peligrosos sin certificación
+                    Material que represente riesgo para usuarios
+                    Cualquier artículo cuya venta sea ilegal en México
+                    7
+
+                    <hr>
+
+                    ⚠️ Cláusula de reserva
+                    Xuba Subastas ( comercio subastero del norte )se reserva el derecho de retirar cualquier
+                    publicación,
+                    suspender cuentas o colaborar con autoridades cuando un artículo:
+                    Sea ilegal
+                    Vulnere derechos de terceros
+                    Represente riesgo legal, sanitario o de seguridad.
+
+
+                </div>
+            </div>
+            <!-- <hr> -->
+            <div class="tab-content fast-animation  animate__animated animate__fadeInRight"
+                *ngIf="currentTabIndex === 0">
+                <!-- form-producto.component.html -->
+                <form class="form-productos pl-2 pr-2">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombre">Nombre del producto</label>
+                            <input type="text" [(ngModel)]="subasta.caption" id="nombre" name="nombre" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="descripcion">Descripción</label>
+                            <textarea id="descripcion" [(ngModel)]="subasta.descripcion" name="descripcion"
+                                rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="marca">Marca</label>
+                            <input type="text" [(ngModel)]="subasta.marca" id="marca" name="marca" />
+                        </div>
+                        <div class="form-group">
+                            <label for="modelo">Modelo</label>
+                            <input type="text" [(ngModel)]="subasta.modelo" id="modelo" name="modelo" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <!-- <div class="form-group">
+                      <label for="precio">Precio</label>
+                      <input type="number" [(ngModel)]="subasta.precio" id="precio" name="precio" />
+                  </div> -->
+                        <div class="form-group ">
+                            <label for="compraDirecta">Compra directa</label>
+                            <input class="form-check-input checkbox-lg" [(ngModel)]="subasta.compraDirecta"
+                                type="checkbox" name="compraDirecta" value="" id="checkboxGrande">
+                        </div>
+                        <div class="form-group">
+                            <label for="compraDirecta">Es nuevo?</label>
+                            <input class="form-check-input checkbox-lg" [(ngModel)]="subasta.nuevo" type="checkbox"
+                                name="nuevo" value="" id="checkboxGrande">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="precio">Precio (con IVA incluido)</label>
+                            <input type="number" [(ngModel)]="subasta.precio" id="precio" name="precio" />
+                        </div>
+
+                        <!-- <div class="form-group ps-5">
+                        <label for="compraDirecta">Compra directa</label>
+                        <input class="form-check-input checkbox-lg" [(ngModel)]="subasta.compraDirecta" type="checkbox" name="compraDirecta" value="" id="checkboxGrande">
+                    </div>
+                    <div class="form-group">
+                      <label for="compraDirecta">Es nuevo?</label>
+                      <input class="form-check-input checkbox-lg" [(ngModel)]="subasta.nuevo" type="checkbox" name="nuevo" value="" id="checkboxGrande">
+                    </div> -->
+                    </div>
+                    <!-- Desglose de impuestos -->
+                    <div *ngIf="subasta.precio && subasta.precio > 0"
+                        class="tw:mt-3 tw:bg-gray-50 tw:border tw:border-gray-200 tw:rounded-xl tw:p-4 tw:space-y-2 tw:text-sm">
+                        <ng-container *ngIf="listaComisiones.length > 0">
+                            <p
+                                class="tw:font-semibold tw:text-gray-600 tw:mb-2 tw:text-xs tw:uppercase tw:tracking-wide">
+                                Desglose de precio
+                            </p>
+
+                            <div class="tw:flex tw:justify-between tw:text-gray-500">
+                                <span>Precio de venta</span>
+                                <span class="tw:font-medium tw:text-gray-700">{{subasta.precio?
+                                    toCurrency(subasta.precio!):'--'}}</span>
+                            </div>
+                            <hr class="tw:border-gray-200">
+                            <div *ngFor="let com of listaComisiones"
+                                class="tw:flex tw:justify-between tw:text-gray-500">
+                                <span>{{com.concepto}}
+                                    <span *ngIf="com.tipoComision === 'Porcentaje'">({{com.porcentaje}}%)</span>
+                                </span>
+                                <span class="tw:font-medium tw:text-red-400">-
+                                    <span *ngIf="com.tipoComision === 'Pago'">
+                                        {{toCurrency(com.porcentaje)}}
+                                    </span>
+                                    <span *ngIf="com.tipoComision === 'Porcentaje'">
+                                        {{toCurrency((subasta.precio * com.porcentaje) / 100)}}
+                                    </span>
+                                </span>
+                            </div>
+
+                            <!-- <div class="tw:flex tw:justify-between tw:text-gray-500">
+                      <span>IVA sobre comisión (16%)</span>
+                      <span class="tw:font-medium tw:text-red-400">- $8.00</span>
+                    </div>
+  
+                    <div class="tw:flex tw:justify-between tw:text-gray-500">
+                      <span>ISR retenido (1%)</span>
+                      <span class="tw:font-medium tw:text-red-400">- $10.00</span>
+                    </div>
+   -->
+                            <hr class="tw:border-gray-200">
+
+                            <div class="tw:flex tw:justify-between tw:font-bold tw:text-base">
+                                <span class="tw:text-gray-700">Tu ganancia</span>
+                                <span class="tw:text-green-500">${{getGanancia()}}</span>
+                            </div>
+
+                        </ng-container>
+                        <ng-container *ngIf="listaComisiones.length <= 0">
+                            <h5>Calculando comisiones...</h5>
+                        </ng-container>
+
+
+                    </div>
+
+                    <!-- <div class="form-row" *ngIf="subasta.precio && subasta.precio > 0">
+                    <div class="form-group">
+                        <label for="cantidadPuja">Incremento de oferta</label>
+                        <select class="form-select" name="incrementoOferta" [(ngModel)]="porcentajeIncremento" id="incremento" (change)="calcularAumentoOferta()">
+                          <option value="5">5%</option>
+                          <option value="7">7%</option>
+                          <option value="10">10%</option>
+                          <option value="15">15%</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                      <label > Valor del cada incremento </label>
+                      <label >  ${{subasta.valorOferta}} </label>
+                  </div>
+                </div> -->
+                </form>
+            </div>
+            <div class="tab-content fast-animation  animate__animated animate__fadeInRight"
+                *ngIf="currentTabIndex === 1">
+                <form class="form-producto">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="peso">Peso (kg, Ej. 1, 5, 10, .5)</label>
+                            <input type="number" [(ngModel)]="subasta.peso" id="peso" name="peso" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="largo">Largo (cm)</label>
+                            <input type="number" [(ngModel)]="subasta.largo" id="largo" name="largo" />
+                        </div>
+                        <img src="images/b-largo.png" style="width: 150px;display: block;margin: auto;" alt="">
+
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ancho">Alto (cm)</label>
+                            <input type="number" [(ngModel)]="subasta.ancho" id="ancho" name="ancho" />
+                        </div>
+                        <img src="images/b-alto.png" style="width: 150px;" alt="">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profundidad">Profundidad (cm)</label>
+                            <input type="number" [(ngModel)]="subasta.profundidad" id="profundidad"
+                                name="profundidad" />
+                        </div>
+                        <img src="images/b-profundidad.png" style="width: 150px;" alt="">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tiempoActivo">Direccion de Envio</label>
+                            <select class="form-select" name="direccionenv" id="envio"
+                                [(ngModel)]="subasta.idDireccion">
+                                <!-- <option value="">Direccion desde la que se enviara </option> -->
+                                <option *ngFor="let item of direccionesUsuario" [value]="item.id">{{item.calle}}
+                                    {{item.numeroExt}}
+                                    {{item.numeroInt}}, {{item.municipio}}</option>
+                            </select>
+                            <label class="mt-2">
+                                Como entregare el producto
+                            </label>
+                            <div class="tw:flex tw:flex-row tw:gap-4 mt-2">
+
+                                <label
+                                    class="tw:flex tw:items-center tw:gap-3 tw:cursor-pointer tw:bg-white tw:border-2 tw:border-gray-200 tw:rounded-xl tw:px-5 tw:py-4 tw:shadow-sm tw:hover:border-blue-500 tw:hover:shadow-md tw:transition-all tw:duration-200 tw:has-[:checked]:border-blue-500 tw:has-[:checked]:bg-blue-50">
+                                    <input type="radio" name="entrega" [(ngModel)]="tipoEntrega" value="sucursal"
+                                        class="tw:accent-blue-500 tw:w-4 tw:h-4">
+                                    <!-- <span class="tw:text-2xl">🏪</span> -->
+                                    <i class="fas fa-building smaller-txt me-1 ms-2"></i>
+                                    <span
+                                        class="tw:text-sm tw:font-semibold f-arial smaller-txt  tw:text-gray-700">Entregar
+                                        en
+                                        sucursal</span>
+                                </label>
+
+                                <label
+                                    class="tw:flex tw:items-center  tw:gap-3 tw:cursor-pointer tw:bg-white tw:border-2 tw:border-gray-200 tw:rounded-xl tw:px-5 tw:py-4 tw:shadow-sm tw:hover:border-blue-500 tw:hover:shadow-md tw:transition-all tw:duration-200 tw:has-[:checked]:border-blue-500 tw:has-[:checked]:bg-blue-50">
+                                    <input type="radio" name="entrega" [(ngModel)]="tipoEntrega" value="domicilio"
+                                        class="tw:accent-blue-500 tw:w-4 tw:h-4">
+                                    <i class="fas fa-home smaller-txt me-1 ms-2"></i>
+                                    <span
+                                        class="tw:text-sm tw:font-semibold f-arial smaller-txt tw:text-gray-700">Recolección
+                                        a
+                                        domicilio</span>
+                                </label>
+
+                            </div>
+                            <div class="tw:flex tw:flex-col tw:gap-4" *ngIf="tipoEntrega === 'domicilio'">
+                                <hr>
+                                <span class="tw:text-gray-700 tw:font-medium">Seleccionar hora de entrega </span>
+
+                                <div class="tw:flex tw:flex-row tw:gap-6">
+
+                                    <div class="tw:w-full tw:flex tw:flex-col tw:gap-1">
+
+                                        <label class="tw:text-sm tw:font-semibold tw:text-gray-700">
+                                            Hora de recolecta
+                                        </label>
+
+                                        <select class="form-select tw:w-full" name="horaDomicilioInicio"
+                                            [(ngModel)]="horaRecolecta">
+
+                                            <option value="">Seleccione una hora</option>
+
+                                            <option *ngFor="let hora of horarios" [value]="hora">
+                                                {{ hora }}
+                                            </option>
+
+                                        </select>
+                                        <div
+                                            class="tw:mt-3 tw:rounded-lg tw:border tw:border-amber-200 tw:bg-amber-50 tw:p-3">
+                                            <div class="tw:flex tw:items-start tw:gap-2">
+                                                <i class="fas fa-info-circle tw:text-amber-600 tw:mt-1"></i>
+                                                <span class="tw:text-sm tw:text-amber-800">
+                                                    Al seleccionar esta opción, la recolección se realizará el siguiente
+                                                    día hábil en la hora
+                                                    seleccionada.
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <label class="mt-2">
+                      Como entregare el producto
+                    </label>
+                    <div>
+                      <input
+                          type="time"
+                          class="tw:border tw:border-gray-300 tw:rounded-lg tw:px-3 tw:py-2 tw:text-gray-700 tw:focus:outline-none tw:focus:ring-2 tw:focus:ring-blue-500"
+                          [(ngModel)]="horaDomicilioInicio"
+                        />
+                      <input
+                          type="time"
+                          class="border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          [(ngModel)]="horaDomicilioFin"
+                        />
+                    </div> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-content fast-animation  animate__animated animate__fadeInRight"
+                *ngIf="currentTabIndex === 2">
+                <!-- form-fotos-subasta.component.html -->
+                <div class="card-fotos">
+                    <div class="label label-xubaimg mb-3">Favor de cargar fotos reales de tu Producto</div>
+                    <label class="cargar-foto-label">
+                        <input type="file" accept="image/*" multiple (change)="onFileChange($event)" hidden />
+                        <span><i class="fas fa-image"></i> Cargar foto</span>
+                    </label>
+                    <div class="preview-list">
+                        <div class="preview-img" *ngFor="let img of imagesPreview; let i = index">
+                            <img [src]="img.url" alt="Preview" />
+                            <button type="button" (click)="eliminarImagen(i)">×</button>
+                        </div>
+                    </div>
+                    <div class="max-fotos" *ngIf="imagesPreview!.length >= 5 && tipoSubasta === 'general'">Máximo 5
+                        fotos</div>
+                    <div class="max-fotos" *ngIf="imagesPreview!.length >= 20 && tipoSubasta === 'premium'">Máximo 20
+                        fotos</div>
+                </div>
+
+                <!-- <div class="tipo-subasta">
+                <label>
+                    <input type="radio" name="tipo" (change)="setValorHoras()"  value="general" [(ngModel)]="tipoSubasta" /> General
+                </label>
+                <label>
+                    <input type="radio" name="tipo"  (change)="setValorHoras()"  value="premium" [(ngModel)]="tipoSubasta" /> Premium
+                </label>
+            </div> -->
+                <label class="tw:text-sm">Tipo subasta</label>
+
+                <div class="tw:flex tw:flex-row tw:gap-4 mt-2">
+
+                    <label
+                        class="tw:flex tw:items-center tw:gap-3 tw:cursor-pointer tw:bg-white tw:border-2 tw:border-gray-200 tw:rounded-xl tw:px-5 tw:py-4 tw:shadow-sm tw:hover:border-blue-500 tw:hover:shadow-md tw:transition-all tw:duration-200 tw:has-[:checked]:border-blue-500 tw:has-[:checked]:bg-blue-50">
+                        <input type="radio" name="tipo" (change)="setValorHoras()" value="general"
+                            [(ngModel)]="tipoSubasta" class="tw:accent-blue-500 tw:w-4 tw:h-4 me-2">
+                        <!-- <span class="tw:text-2xl">🏪</span> -->
+                        <!-- <i class="fas fa-building smaller-txt me-1 ms-2"></i> -->
+                        <span
+                            class="tw:text-sm tw:font-semibold f-arial smaller-txt me-2 tw:text-gray-700">General</span>
+                    </label>
+
+                    <label
+                        class="tw:flex tw:items-center  tw:gap-3 tw:cursor-pointer tw:bg-white tw:border-2 tw:border-gray-200 tw:rounded-xl tw:px-5 tw:py-4 tw:shadow-sm tw:hover:border-blue-500 tw:hover:shadow-md tw:transition-all tw:duration-200 tw:has-[:checked]:border-blue-500 tw:has-[:checked]:bg-blue-50">
+                        <input type="radio" name="tipo" (change)="setValorHoras()" value="premium"
+                            [(ngModel)]="tipoSubasta" class="tw:accent-blue-500 tw:w-4 tw:h-4">
+                        <i class="fas fa-gem smaller-txt me-1 ms-2"></i>
+                        <span class="tw:text-sm tw:font-semibold f-arial smaller-txt tw:text-gray-700">Premium</span>
+                    </label>
+
+                </div>
+
+                <div *ngIf="tipoSubasta === 'general'" class="descripcion-section">
+                    <div class="desc-premium">
+                        <strong>Subasta General:</strong> Tu subasta se publicara con una duración de 100 horas
+                        <br>PRECIO: <strong class="price-subasta-free">GRATIS</strong>
+                    </div>
+                    <!-- <button class="btn-gradiente">Subir subasta</button> -->
+                </div>
+
+                <div *ngIf="tipoSubasta === 'premium'" class="descripcion-section">
+                    <div class="desc-premium">
+                        <strong>Subasta Premium:</strong> Tu producto tendrá mayor visibilidad y beneficios exclusivos.
+                        <br>PRECIO:<strong class="price-subasta-premium">&nbsp;${{Premium}} MXN</strong>
+                    </div>
+                </div>
+                <!-- <div class="form-group mt-3" *ngIf="tipoSubasta === 'premium'">
+              <label for="tiempoActivo">Tiempo activo (Entre 30 y 100 Hrs)</label>
+              <input type="number" [(ngModel)]="subasta.horas" id="tiempoActivo" name="tiempoActivo" />
+            </div> -->
+                <div class="form-row pt-3">
+                    <div class="form-group" *ngIf="tipoSubasta === 'premium'">
+                        <label for="tiempoActivo" class="tw:text-sm">Tiempo activo (Entre 1 y 100 Hrs)</label>
+                        <input type="number" [ngClass]="{'has-error': subasta.horas! < 1 || subasta.horas! > 100}"
+                            [(ngModel)]="subasta.horas" id="tiempoActivo" name="tiempoActivo" />
+                    </div>
+                    <div class="form-group">
+                        <label for="cantidadPuja" class="tw:text-sm">Valor inicial (% del precio)</label>
+                        <select class="form-select" name="incrementoOferta" [(ngModel)]="porcentajeValorInicial"
+                            id="incremento" (change)="calcularValorInicial()">
+                            <option value="5">5%</option>
+                            <option value="7">7%</option>
+                            <option value="10">10%</option>
+                            <option value="15">15%</option>
+                        </select>
+                    </div>
+                    <!-- <div class="form-group ">
+                <label for="tiempoActivo">Incremento de oferta</label>
+                <input type="number" [ngClass]="{'has-error': !subasta.precio || subasta.valorOferta! <= 0 || subasta.valorOferta! > subasta.precio!}"  [(ngModel)]="subasta.valorOferta" id="tiempoActivo" name="tiempoActivo" />
+              </div> -->
+
+                </div>
+                <div class="form-row pt-3" *ngIf="subasta.precio && subasta.precio > 0">
+
+                    <div class="form-group">
+                        <label> Valor inicial cantidad </label>
+                        <label> {{subasta.apuesta? toCurrency( subasta.apuesta):''}} </label>
+                    </div>
+                    <div class="form-group">
+                        <label> Valor incremento de cada oferta </label>
+                        <label> ${{subasta.valorOferta}} </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="tab-content fast-animation  animate__animated animate__fadeInRight"
+                *ngIf="currentTabIndex === 3">
+                <ng-container *ngIf="terminosRevisados">
+                    <div class="w-100 tw:flex tw:text-center tw:justify-center">
+                        <img src="images/visa.png" alt="" class="w-5 me-1">
+                        <img src="images/mastercard.png" alt="" class="w-5 me-1">
+                        <img src="images/amex.png" alt="" class="w-5">
+                    </div>
+
+
+                    <form class="form-productos pl-2 pr-2">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tiempoActivo">Tarjetas guardadas</label>
+                                <select class="form-select" name="direccionenv" id="envio" [(ngModel)]="selectedCard"
+                                    (change)="changeTarjetaSeleccionada()">
+                                    <!-- <option value="null">Seleccionar tarjeta</option> -->
+                                    <!-- <option *ngFor="let item of tarjetas" [ngValue]="item">{{item.card_number}}</option> -->
+                                    <ng-container *ngFor="let item of tarjetas">
+                                        <option *ngIf="item.id" [ngValue]="item">
+                                            {{item.brand}} - {{item.card_number}} - {{item.holder_name}}
+                                            {{item.holder_lastname}}
+                                        </option>
+                                        <hr *ngIf="!item.id">
+                                        <option *ngIf="!item.id" [ngValue]="item">
+                                            --- Usar nueva tarjeta ---
+                                        </option>
+                                    </ng-container>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-2 label-final-price">
+                            Total a Pagar: <strong>${{Premium}}</strong>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nocard">No. Tarjeta</label>
+                                <input type="text" [(ngModel)]="tarjeta.card_number"
+                                    [ngClass]="{'disabled-in': selectedCard.id, 'bg-white':!selectedCard.id}"
+                                    [disabled]="selectedCard.id" (input)="onInput($event, tarjeta.card_number)"
+                                    maxlength="16" id="nocard" name="nocard" />
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiración (MM/YY)</label>
+                                <input type="text" [(ngModel)]="tarjetaExpiracion"
+                                    [ngClass]="{'disabled-in': selectedCard.id, 'bg-white': !selectedCard.id}"
+                                    [disabled]="selectedCard.id" (input)="formatearExpiracion($event)" maxlength="5"
+                                    placeholder="MM/YY" id="expiracion" name="expiracion">
+                            </div>
+
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input [type]="mostrarCVV ? 'text' : 'password'" class="form-control"
+                                    [(ngModel)]="tarjeta.cvv2" autocomplete="off" maxlength="4" id="ccv" name="ccv">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombre">Nombre(s)</label>
+                                <input type="text" class="bg-white" [(ngModel)]="tarjeta.holder_name" id="nombre"
+                                    name="nombre" />
+                            </div>
+                            <div class="form-group">
+                                <label for="apellido">Apellido(s)</label>
+                                <input type="text" class="bg-white" [(ngModel)]="tarjeta.holder_lastname" id="apellido"
+                                    name="apellido" />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="correo">Correo Electronico</label>
+                                <input type="text" class="bg-white" [(ngModel)]="tarjeta.mail" id="correo"
+                                    name="correo" />
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono">Telefono</label>
+                                <input type="text" class="bg-white" [(ngModel)]="tarjeta.phone" id="telefono"
+                                    name="telefono" />
+                            </div>
+                        </div>
+                        <div class="mb-2 text-center">
+                            <span class="fw-bold label-secure"><i class="fas fa-lock"></i> Transacciones realizadas por
+                            </span>
+                        </div>
+                        <div class="w-100 text-center">
+                            <img src="images/openpay-logo.png" class="d-block m-auto w-15" alt="Openpay Logo">
+                        </div>
+                        <hr>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="!terminosRevisados">
+                    <div class="policy-container">
+                        <div class="policy-content">
+                            <h2>Políticas de Uso del Procesador de Pagos</h2>
+                            <p>
+                                Estas políticas establecen los términos bajo los cuales los usuarios pueden realizar
+                                pagos
+                                a través del procesador. Al continuar, aceptas que los datos proporcionados son
+                                verídicos,
+                                y que cumplirás con las condiciones establecidas.
+                            </p>
+
+                            <p>
+                                El uso del servicio implica la aceptación de nuestras normas de seguridad, privacidad,
+                                y prevención de fraude. Queda prohibido el uso para fines ilícitos o no autorizados.
+                            </p>
+
+                            <p>
+                                Si tienes dudas o necesitas asistencia, contacta con soporte al correo
+                                <strong>soporteprocesador.com</strong>.
+                            </p>
+
+                            <div class="policy-accept">
+                                <label>
+                                    <input type="checkbox" id="acceptPolicy" [(ngModel)]="aceptarTerminos">
+                                    He leído y acepto las políticas de uso.
+                                </label>
+                                <button id="btnAccept" [disabled]="!aceptarTerminos" (click)="acceptTerms()">Aceptar y
+                                    continuar</button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="modal-footer text-start">
+            <div class="row w-100">
+                <div class="col-sm-8" *ngIf="currentTabIndex === -1">
+                    <!-- <div class="policy-accept text-left" style="border: none;"> -->
+                    <label>
+                        <input type="checkbox" id="acceptPolicy" [(ngModel)]="aceptarTerminosCrearSubasta">
+                        He leído y acepto las políticas de uso.
+                    </label> <br>
+                    <small class="f-arial f-vsmall">
+                        El uso de la plataforma y la aceptación de este anuncio es aceptar las medidas estrictas que
+                        contamos para
+                        hacer uso de esta.
+                    </small>
+                    <!-- </div> -->
+                </div>
+                <div class="text-end"
+                    [ngClass]="{'col-sm-4': currentTabIndex === -1, 'col-sm-12': currentTabIndex > -1 }">
+                    <div>
+                        <button class="btn btn-dark" (click)="closeModal()">
+                            Cancelar
+                        </button>
+                        <button class="btn btn-success btn-add-cart" [disabled]="!aceptarTerminosCrearSubasta"
+                            (click)="nextStep()">
+                            {{(currentTabIndex >=3 && tipoSubasta === 'premium') || (currentTabIndex >=2 && tipoSubasta
+                            !==
+                            'premium') ?
+                            'Subir subasta ':'Continuar ' }}
+                            &nbsp; <i class="fas fa-arrow-right"
+                                [ngClass]="{'fa-arrow-right':(currentTabIndex <3 && tipoSubasta === 'premium') || (currentTabIndex <2 && tipoSubasta !== 'premium') , 'fa-upload': (currentTabIndex >=3 && tipoSubasta === 'premium') || (currentTabIndex >=2 && tipoSubasta !== 'premium') }"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--  -->
+            <!-- Botones para el paso del carrito -->
+
+        </div>
+        <!-- </div> -->
+    </div>
+    <form id="payment-form">
+        <input type="hidden" name="deviceIdHiddenFieldName" id="device-session-id" />
+    </form>
+</div>

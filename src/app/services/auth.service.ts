@@ -18,6 +18,11 @@ export class AuthService {
 
   private _usuario = signal<Usuario | null>(null);
 
+  isLoggedIn = computed(() => {
+    const __usuario = !!this._usuario();
+    const __token = localStorage.getItem('XUBA_TKN');
+    return __usuario && !!__token;
+  });
 
   currentUser = computed(() => this._usuario());
   validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=' //65
@@ -79,6 +84,18 @@ export class AuthService {
     const user = this.currentUser();
     return user ? user.id.toString() : '';
   }
+
+  // isLoggedInfn(): boolean {
+  //   let __usuario = computed(() => !!this._usuario());
+  //   // let _userkey = this.toXubaEncode('VALID_USER');
+  //   // let __token = localStorage.getItem(_userkey);
+  //   //let _userkey = this.toXubaEncode('VALID_USER');
+  //   let __token = localStorage.getItem('XUBA_TKN');
+  //   if (__usuario() && __token) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   login(telefono: string, contra: string, correo: string): Observable<Usuario> {
     const body = { telefono, contra, correo };
@@ -208,6 +225,8 @@ export class AuthService {
     let _userkey = this.toXubaEncode('VALID_USER');
     localStorage.removeItem('usuario');
     localStorage.removeItem(_userkey);
+    localStorage.removeItem('XUBA_TKN');
+
   }
 
   saveOrganization(data: any) {
