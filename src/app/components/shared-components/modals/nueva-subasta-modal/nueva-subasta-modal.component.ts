@@ -53,6 +53,7 @@ export class NuevaSubastaModalComponent implements OnInit {
     private openPayService: OpenPayService,
     private router: Router,
     private authService: AuthService) {
+    this.usuario = this.authService.currentUser;
     OpenPay.setId(environment.openPayId);
     OpenPay.setApiKey(environment.openPayApiKey);
     OpenPay.setSandboxMode(environment.openPaySandBox);
