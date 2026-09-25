@@ -122,7 +122,7 @@ export class SubastasService {
   }
 
   crearSubasta(subastaData: any) {
-    return this.http.post(`${env.base_url}/subastas/RegistrarSuabsta`, subastaData, { headers: test_headers }).pipe(map(res => res));
+    return this.http.post(`${env.base_url}/subastas/RegistrarSubasta`, subastaData, { headers: test_headers }).pipe(map(res => res));
     // return this.http.post(`${env.base_url}/subastas`,JSON.stringify(subastaData),{headers:test_headers}).pipe(map(res => res));
   }
 
