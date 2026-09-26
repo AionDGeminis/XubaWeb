@@ -130,7 +130,8 @@
 
 <div *ngIf="showHiddenMenu" (click)="fnToggleMenu()"
   [class]="'main-menu-hide fast-animation animate__animated ' + hiddenMenuClass.container">
-  <div *ngIf="isLoggedIn()" (click)="$event.stopPropagation()"
+  <app-menu *ngIf="showHiddenMenu" (close)="closeHiddenMenu()" [showBack]="showBack" />
+  <!-- <div *ngIf="isLoggedIn()" (click)="$event.stopPropagation()"
     [class]="'menu-hide fast-animation animate__animated ' + hiddenMenuClass.menu">
     <div class="menu-header">
       <div>
@@ -166,7 +167,6 @@
         <span class="arrow"><i class="fas fa-chevron-right"></i></span>
       </a>
 
-      <!-- <a class="menu-item active" (click)="openModalCreateAuction()"> -->
       <a class="menu-item active" (click)="openModalNuevaSubasta()">
         <i class="fas fa-plus"></i>
         <span class="text">Crear Subasta</span>
@@ -177,7 +177,6 @@
         <i class="fas fa-bell"></i>
         <span class="text">Notificaciones</span>
         <span class="badge">{{totalNotificaciones}}</span>
-        <!-- <span class="arrow"><i class="fas fa-chevron-right"></i></span> -->
       </a>
 
       <a class="menu-item">
@@ -212,7 +211,73 @@
       </a>
     </div>
 
-  </div>
+  </div> -->
+
+  <!-- <div class="bg-info h-100 submenu-hide">
+    <div class="secondary-panel">
+      <div class="secondary-header">
+        <h3 class="secondary-title">Subastas Seguidas <span class="count-pill">4 activas</span></h3>
+        <button class="close-btn" (click)="fnToggleMenu()">&times;</button>
+      </div>
+
+      <div class="filter-strip">
+        <button class="filter-chip active">Todas</button>
+        <button class="filter-chip">Por Terminar</button>
+        <button class="filter-chip">Pujando</button>
+      </div>
+
+      <div class="secondary-body">
+        <div class="list-card">
+          <div class="item-thumb"><i class="fas fa-laptop"></i></div>
+          <div class="item-info">
+            <div class="item-name">MacBook Pro M2 16" 512GB</div>
+            <div class="item-sub">Termina en 2h 45m</div>
+          </div>
+          <div class="item-status">
+            <div class="badge-price">$21,500 MXN</div>
+            <div class="badge-time">14 pujas</div>
+          </div>
+        </div>
+
+        <div class="list-card">
+          <div class="item-thumb"><i class="fas fa-camera"></i></div>
+          <div class="item-info">
+            <div class="item-name">Cámara Sony Alpha A7 III</div>
+            <div class="item-sub">Termina en 5h 10m</div>
+          </div>
+          <div class="item-status">
+            <div class="badge-price">$18,200 MXN</div>
+            <div class="badge-time">8 pujas</div>
+          </div>
+        </div>
+
+        <div class="list-card">
+          <div class="item-thumb"><i class="fas fa-car"></i></div>
+          <div class="item-info">
+            <div class="item-name">Rines 18" Deportivos BBS</div>
+            <div class="item-sub">Termina mañana</div>
+          </div>
+          <div class="item-status">
+            <div class="badge-price">$9,400 MXN</div>
+            <div class="badge-time">3 pujas</div>
+          </div>
+        </div>
+
+        <div class="list-card">
+          <div class="item-thumb"><i class="fas fa-gamepad"></i></div>
+          <div class="item-info">
+            <div class="item-name">Consola PS5 Slim Disco</div>
+            <div class="item-sub">Termina en 3 días</div>
+          </div>
+          <div class="item-status">
+            <div class="badge-price">$8,100 MXN</div>
+            <div class="badge-time">21 pujas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
   <div *ngIf="!isLoggedIn()" (click)="$event.stopPropagation()"
     [class]="'menu-hide fast-animation animate__animated ' + hiddenMenuClass.menu">
     <div class="menu-header">
@@ -316,293 +381,6 @@
   </div>
 </div>
 
-
-<div *ngIf="isOpenHiddenMenu" class="w-100 h-100 backdrop">
-  <div [class]="'hidden-menu ' + classMenu">
-    <div *ngIf="showingInAside === 'menu'" [class]="'fast-animation animate__animated ' + clasesAside.one">
-      <div class="profile pt-2" *ngIf="isLoggedIn()">
-        <img [src]="usuario()?.imgPerfil || 'assets/default-avatar.png'" alt="Usuario">
-        <div class="name">
-          {{usuario()?.nombre}} &nbsp; &nbsp;
-          <button class="btn btn-sm btn-dark btn-pill" (click)="openProfilePage()">
-            ver perfil &nbsp; <i class="fas fa-user"></i>
-          </button>
-        </div>
-      </div>
-      <div class="menu px-3" *ngIf="!isLoggedIn()">
-
-        <img src="iconos/logo-xuba.png" class="d-none d-sm-block" alt="XUBA Subastas"
-          style="width: 80%;display: block;margin: auto;" />
-        <h4 class="mb-4 mt-4 text-center  fw-bold" style="color: #ec4899;font-size: 1rem;">Iniciar sesion</h4>
-        <div class="mb-3">
-          <label for="telefono" class="form-label">Teléfono</label>
-          <input type="tel" [(ngModel)]="loginForm.usuario" class="form-control form-control-lg"
-            style="font-size: 0.8rem;" name="telefono" placeholder="Tu número" required>
-        </div>
-        <div class="mb-2">
-          <label for="password" class="form-label">Contraseña</label>
-          <input type="password" [(ngModel)]="loginForm.pass" class="form-control form-control-lg"
-            style="font-size: 0.8rem;" name="password" placeholder="Contraseña" required>
-        </div>
-        <button type="submit" class="btn btn-xuba w-100 mb-3 fw-bold" (click)="onLogin()">Login</button>
-        <div class="text-center">
-          <a class="small text-decoration-none text-primary">¿Olvidaste tu contraseña?</a><br>
-          <a href="javascript:void(0)" class="small text-decoration-none text-success" (click)="abrirRegistro()">
-            Regístrate
-          </a>
-        </div>
-      </div>
-      <div class="menu px-3" *ngIf="isLoggedIn()">
-        <!-- <div class="menu-item" title="Inicio"  [ngClass]="{'active': currentHomeIndex === 0}"><i class="fas fa-home"></i>Inicio</div> -->
-        <!-- <div class="menu-item" title="Perfil" ><i class="fas fa-user"></i>Perfil</div> -->
-        <div class="menu-item" title="Subastas seguidas" (click)="changeAside('following')"><i
-            class="fas fa-heart"></i>S. Seguidas</div>
-        <div class="menu-item" title="Subastas ganadas" (click)="changeAside('winner')"><i class="fas fa-trophy"></i>S.
-          Ganadas</div>
-        <div class="menu-item highlight" title="Crear Subasta" (click)="openModalCreateAuction()"><i
-            class="fas fa-plus-circle text-white"></i>Crear Subasta</div>
-        <div class="menu-item" title="Lista de notificaciones" (click)="changeAside('notifications')"><i
-            class="fas fa-bell"></i> Notificaciones <span class="notificaciones-count">{{totalNotificaciones}}</span>
-        </div>
-        <div class="menu-item" title="Personas que te siguen" (click)="changeAside('followers')"><i
-            class="fas fa-users"></i>Seguidores</div>
-        <div class="menu-item" title="Vendedores que sigues" (click)="changeAside('following-seller')"><i
-            class="fas fa-clipboard-list"></i>V. Seguidos</div>
-        <!-- <div class="menu-item"><i class="fas fa-chart-bar"></i>Estadísticas</div> -->
-        <!-- <div class="menu-item" title="Subastas Premium" [ngClass]="{'active': currentHomeIndex === 1}"><i class="fas fa-gem"></i>Premium</div> -->
-        <!-- <div class="menu-item" title="Subastas Express"  [ngClass]="{'active': currentHomeIndex === 2}"><i class="fas fa-bolt"></i>Express</div> -->
-        <!-- <div class="menu-item" ><i class="fas fa-wallet"></i>Wallet</div> -->
-        <div class="menu-item" title="Ver politicas de uso" (click)="openModalPoliticasFn()"><i
-            class="fas fa-book"></i>Politica de uso</div>
-        <div class="menu-item" title="Informacion de contacto" (click)="changeAside('contact')"><i
-            class="fas fa-phone"></i>Contacto</div>
-        <hr style="margin: 0;padding: 0;">
-        <div class="menu-item" title="Cerrar sesion" (click)="logout()"><i class="fas fa-power-off"></i>Cerrar sesion
-        </div>
-      </div>
-    </div>
-
-    <!-- =============  SECCION DE SUBASTAS SEGUIDAS  =============  -->
-    <!-- ========================================  -->
-    <div *ngIf="showingInAside === 'following'" [class]="'fast-animation animate__animated ' + clasesAside.two">
-      <ng-container *ngIf="loadingNotificaciones">
-        <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
-          style="height: 80px;">
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
-      </ng-container>
-      <ng-container *ngIf="!loadingNotificaciones">
-        <div class="py-2 px-3">
-          <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">SUBASTAS SEGUIDAS</h5>
-          <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
-            <i class="fas fa-arrow-left"></i>&nbsp; volver
-          </button>
-          <div class="auction-card" *ngFor="let subasta of auctions">
-            <img [src]="subasta.url" alt="">
-            <div class="title">{{ subasta.caption }}</div>
-            <div class="desc">{{ toShort(subasta.descripcion) }}</div>
-            <div class="price">{{ toCurrency(subasta.apuesta) }}</div>
-            <div class="timer">{{segundosATiempoString(subasta.venceSegundos!)}}</div>
-            <div class="actions">
-              <button title="Seguir"><i class="fas fa-heart"></i></button>
-              <button title="Ofertar"><i class="fas fa-gavel"></i></button>
-              <button title="Compartir"><i class="fas fa-share"></i></button>
-            </div>
-            <div class="ribbon-label"
-              [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
-              {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
-            </div>
-          </div>
-        </div>
-
-      </ng-container>
-    </div>
-
-    <!-- =============  SECCION DE SUBASTAS GANADAS  =============  -->
-    <!-- ========================================  -->
-    <div *ngIf="showingInAside === 'winner'" [class]="'fast-animation animate__animated ' + clasesAside.two">
-      <ng-container *ngIf="loadingNotificaciones">
-        <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
-          style="height: 80px;">
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
-      </ng-container>
-      <ng-container *ngIf="!loadingNotificaciones">
-        <div class="py-2 px-3">
-          <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">SUBASTAS GANADAS</h5>
-          <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()">
-            <i class="fas fa-arrow-left"></i>&nbsp; volver
-          </button>
-          <div class="auction-card" *ngFor="let subasta of auctionsWin"
-            (click)="abrirDetalleSubasta(subasta, 'perfil')">
-            <br>
-            <img [src]="subasta.url" alt="">
-            <div class="title">{{ subasta.caption }}</div>
-            <div class="desc">{{ toShort(subasta.descripcion) }}</div>
-            <div class="price mb-3">{{ toCurrency(subasta.apuesta) }}</div>
-            <!-- <br> -->
-            <!-- <div class="timer">{{subasta.tiempoVence}}</div> -->
-            <!-- <div class="actions" style=""> 
-                  <div class="w-75 bg-dark text-white">
-                    {{subasta.estatus}}
-                  </div> -->
-            <!-- <button title="Seguir"><i class="fas fa-heart"></i></button>
-                  <button title="Ofertar"><i class="fas fa-gavel"></i></button>
-                  <button title="Compartir"><i class="fas fa-share"></i></button> -->
-            <!-- </div> -->
-            <div class="ribbon-status">
-              Estatus: <span class="badge badge-status" style="font-size: 0.8em;">{{ subasta.estatus }}</span>
-            </div>
-            <div class="ribbon-label"
-              [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
-              {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
-            </div>
-          </div>
-        </div>
-
-      </ng-container>
-    </div>
-
-    <div *ngIf="showingInAside === 'notifications'"
-      [class]="'w-100  fast-animation animate__animated ' + clasesAside.two">
-      <ng-container *ngIf="loadingNotificaciones">
-        <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
-          style="height: 80px;">
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
-      </ng-container>
-      <ng-container *ngIf="!loadingNotificaciones">
-        <div class="py-2 px-3">
-          <h5 class="text-center" style="color: #ffffff; font-family: Gobold;font-size: 0.9em;">NOTIFICACIONES</h5>
-          <div class="w-100 text-center mb-2">
-            <button class="btn btn-xuba w-75" (click)="backToMenuAside()">
-              <i class="fas fa-arrow-left"></i>&nbsp; volver
-            </button>
-          </div>
-          <div class="notification-list">
-            <!-- Ítem 1 -->
-            <div class="notification-item noleida" [ngClass]="{'noleida': noti.activa}"
-              *ngFor="let noti of notificaciones; let i = index;"
-              (click)="abrirDetalleSubasta(noti.msubastas, 'notificaciones')">
-              <div class="notification-icon">
-                <i [class]="noti.icono"></i>
-              </div>
-              <div class="notification-content f-arial">
-                <!-- <span class="account-name">Account Name</span> -->
-                <p class="action-title f-arial">{{noti.titulo}}</p>
-                <p class="action-desc f-arial">{{noti.descripcion}}</p>
-                <span class="time-frame f-arial">{{getTiempoRelativo(noti.fecha, noti.horaServidor)}}</span>
-                <!-- {{noti.fecha}}  -->
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </ng-container>
-    </div>
-
-    <!-- =============  SECCION DE SEGUIDORES  =============  -->
-    <!-- ========================================  -->
-    <div *ngIf="showingInAside === 'followers'" [class]="'fast-animation animate__animated ' + clasesAside.two">
-      <ng-container *ngIf="loadingNotificaciones">
-        <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
-          style="height: 80px;">
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
-      </ng-container>
-
-      <ng-container *ngIf="!loadingNotificaciones">
-        <div class="py-2 px-3">
-          <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">SEGUIDORES</h5>
-
-          <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
-            <i class="fas fa-arrow-left"></i>&nbsp; volver
-          </button>
-          <div class="followers-list">
-            <div class="follower-card" *ngFor="let f of followers" (click)="openUserPage(f.id)">
-              <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
-              <div class="follower-info">
-                <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
-                <div class="follower-nickname">{{f.usuario ?? 'ND'}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-
-    <!-- =============  SECCION DE Vendedores seguidos  =============  -->
-    <!-- ========================================  -->
-    <div *ngIf="showingInAside === 'following-seller'" [class]="'fast-animation animate__animated ' + clasesAside.two">
-      <ng-container *ngIf="loadingNotificaciones">
-        <div class="notificacion-item w-100 parpadea " *ngFor="let item of itemsLoaderNotificaciones"
-          style="height: 80px;">
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
-      </ng-container>
-
-      <ng-container *ngIf="!loadingNotificaciones">
-        <div class="py-2 px-3">
-          <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">VENDEDORES SEGUIDOS</h5>
-          <button class="btn btn-xuba w-100 mb-3" (click)="backToMenuAside()">
-            <i class="fas fa-arrow-left"></i>&nbsp; volver
-          </button>
-          <div class="followers-list">
-            <div class="follower-card" *ngFor="let f of favoritos" (click)="openUserPage(f.id)">
-              <img class="follower-avatar" [src]="f.imgPerfil" alt="Foto de usuario">
-              <div class="follower-info">
-                <div class="follower-name">{{f.nombre}} {{f.apellido}}</div>
-                <div class="follower-nickname">{{f.usuario ?? 'ND'}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <!-- =============  SECCION DE Contacto =============  -->
-    <!-- ========================================  -->
-    <div *ngIf="showingInAside === 'contact'" [class]="'fast-animation animate__animated ' + clasesAside.two">
-
-      <ng-container>
-        <div class="py-2 px-3">
-          <h5 class="text-center" style="color: #616160; font-family: Gobold;font-size: 0.9em;">INFORMACION DE CONTACTO
-          </h5>
-          <button class="btn btn-xuba w-100 mb-2" (click)="backToMenuAside()">
-            <i class="fas fa-arrow-left"></i>&nbsp; volver
-          </button>
-          <div class="auction-card p-3">
-            <!-- <br> -->
-            <p class="text-muted text-left small">
-              <span class="text-primary"><i class="fas fa-map-marker-alt"></i> Direccion</span><br>
-              Cd. Juarez, Chihuahua, Mexico candelilla #9314, Infonavit ampliación aeropuerto 32665
-            </p>
-            <p class="text-muted text-left small">
-              <span class="text-primary"><i class="fas fa-phone"></i> Telefono</span><br>
-              6564185727
-            </p>
-            <p class="text-muted text-left small">
-              <span class="text-primary"><i class="fas fa-envelope"></i> Correo</span><br>
-              {{emailContacto}}
-            </p>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-  </div>
-</div>
 
 
 

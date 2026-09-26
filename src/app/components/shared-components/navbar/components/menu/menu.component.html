@@ -1,0 +1,85 @@
+<!-- <div *ngIf="isLoggedIn()" (click)="$event.stopPropagation()" -->
+<div *ngIf="isLoggedIn()" (click)="$event.stopPropagation()"
+    [class]="'menu-hide fast-animation animate__animated ' + hiddenMenuClass.menu">
+    <div class="menu-header">
+        <div>
+            <span class="label">CUENTA</span>
+            <h1 class="username">{{usuario()?.nombre}}</h1>
+            <p class="cp">C.P. {{usuario()?.codigoPostal}}</p>
+        </div>
+        <button class="close-btn" aria-label="Cerrar" (click)="closeHiddenMenu()">&times;</button>
+    </div>
+
+    <nav class="menu-list">
+        <a class="menu-item" *ngIf="showBack" (click)="backToHome()">
+            <i class="fas fa-home"></i>
+            <span class="text">Inicio</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item" (click)="openProfilePage()">
+            <i class="fas fa-user"></i>
+            <span class="text">Perfil</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item" (click)="openSubmenu('SSEG','Subastas Seguidas')">
+            <i class="fas fa-heart"></i>
+            <span class="text">Subastas Seguidas</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item" (click)="openSubmenu('SGAN','Subastas Ganadas')">
+            <i class="fas fa-trophy"></i>
+            <span class="text">Subastas Ganadas</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item active" (click)="openModalNuevaSubasta()">
+            <i class="fas fa-plus"></i>
+            <span class="text">Crear Subasta</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item" (click)="openSubmenu('NOTI','Notificaciones')">
+            <i class="fas fa-bell"></i>
+            <span class="text">Notificaciones</span>
+            <span class="badge">{{totalNotificaciones}}</span>
+        </a>
+
+        <a class="menu-item" (click)="openSubmenu('SGUI','Mis seguidores')">
+            <i class="fas fa-users"></i>
+            <span class="text">Seguidores</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item" (click)="openSubmenu('VSEG','Vendedores Seguidos')">
+            <i class="fas fa-clipboard-list"></i>
+            <span class="text">Vendedores Seguidos</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item">
+            <i class="fas fa-gem"></i>
+            <span class="text">Premium</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item">
+            <i class="fas fa-bolt"></i>
+            <span class="text">Express</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+    </nav>
+
+    <div class="menu-footer">
+        <a class="logout pointer" (click)="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="text">Cerrar sesión</span>
+        </a>
+    </div>
+
+</div>
+
+
+<app-submenu *ngIf="showHiddenSubmenu" (close)="closeSubmenu()" [tipoCarga]="tipoSubmenu" [titulo]="tituloSubmenu" />

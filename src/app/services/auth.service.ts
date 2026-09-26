@@ -226,7 +226,12 @@ export class AuthService {
     localStorage.removeItem('usuario');
     localStorage.removeItem(_userkey);
     localStorage.removeItem('XUBA_TKN');
-
+    let _key = this.ss.toXubaEncode('UserGuest');
+    let user = localStorage.getItem(_key);
+    if (!user) {
+      const guid = crypto.randomUUID();
+      localStorage.setItem(_key, guid);
+    }
   }
 
   saveOrganization(data: any) {

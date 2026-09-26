@@ -114,11 +114,11 @@
 
 
             <!-- BOTÓN SEGUIR -->
-            <button class="btn-follow mt-3" (click)="toggleSeguir()">
+            <button *ngIf="infoUsuario" class="btn-follow mt-3" (click)="toggleSeguir()">
 
-                <i class="fas fa-user-plus"></i>
+                <i class="fas" [class.fa-user-plus]="!isFollowed()" [class.fa-user-check]="isFollowed()"></i>
 
-                {{ infoUsuario.siguiendo ? 'Siguiendo' : 'Segir' }}
+                {{ isFollowed() ? 'Siguiendo' : 'Segir' }}
 
             </button>
 
@@ -196,90 +196,73 @@
         <!-- Datos personales -->
         <div class="express-section">
 
-    <h3 class="fs1 mb-3">
-        Subastas express
-    </h3>
+            <h3 class="fs1 mb-3">
+                Subastas express
+            </h3>
 
-    <div class="express-wrapper">
+            <div class="express-wrapper">
 
-        <button
-            *ngIf="mostrarFlechaIzquierda"
-            class="express-arrow express-arrow-left"
-            (click)="scrollIzquierda(contenedor)">
+                <button *ngIf="mostrarFlechaIzquierda" class="express-arrow express-arrow-left"
+                    (click)="scrollIzquierda(contenedor)">
 
-            <i class="fas fa-chevron-left"></i>
+                    <i class="fas fa-chevron-left"></i>
 
-        </button>
+                </button>
 
-        <div
-            class="contenedor-items pt-2"
-            #contenedor
-            (scroll)="verificarScroll(contenedor)">
+                <div class="contenedor-items pt-2" #contenedor (scroll)="verificarScroll(contenedor)">
 
-            <div
-                class="express-item"
-                *ngFor="let subasta of infoUsuario.subastasExpress">
+                    <div class="express-item" *ngFor="let subasta of infoUsuario.subastasExpress">
 
-                <div
-                    class="express-premium"
-                    *ngIf="subasta.premium">
+                        <div class="express-premium" *ngIf="subasta.premium">
 
-                    <i class="fas fa-gem"></i>
+                            <i class="fas fa-gem"></i>
 
-                </div>
+                        </div>
 
-                <img
-                    [src]="subasta.url"
-                    alt="Subasta"
-                    [class.express-premium-img]="subasta.premium" (click)="openSubastaDetalle(subasta.id); $event.stopPropagation()">
+                        <img [src]="subasta.url" alt="Subasta" [class.express-premium-img]="subasta.premium"
+                            (click)="openSubastaDetalle(subasta.id); $event.stopPropagation()">
 
-                <div
-                    class="express-time"
-                    [class.express-time-premium]="subasta.premium">
+                        <div class="express-time" [class.express-time-premium]="subasta.premium">
 
-                    <i class="far fa-clock"></i>
+                            <i class="far fa-clock"></i>
 
-                    {{ segundosATiempoString(subasta.venceSegundos!) }}
+                            {{ segundosATiempoString(subasta.venceSegundos!) }}
 
-                </div>
+                        </div>
 
-                <div class="express-name">
-                    {{ subasta.caption }}
-                </div>
+                        <div class="express-name">
+                            {{ subasta.caption }}
+                        </div>
 
-                <div class="express-id">
-                    #{{ subasta.id }}
-                </div>
+                        <div class="express-id">
+                            #{{ subasta.id }}
+                        </div>
 
-            </div>
+                    </div>
 
-            <div
-                class="no-express"
-                *ngIf="!infoUsuario.subastasExpress ||
+                    <div class="no-express" *ngIf="!infoUsuario.subastasExpress ||
                        infoUsuario.subastasExpress.length === 0">
 
-                <i class="fas fa-gavel"></i>
+                        <i class="fas fa-gavel"></i>
 
-                <span>
-                    No hay subastas express disponibles
-                </span>
+                        <span>
+                            No hay subastas express disponibles
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <button *ngIf="mostrarFlechaDerecha" class="express-arrow express-arrow-right"
+                    (click)="scrollDerecha(contenedor)">
+
+                    <i class="fas fa-chevron-right"></i>
+
+                </button>
 
             </div>
 
         </div>
-
-        <button
-            *ngIf="mostrarFlechaDerecha"
-            class="express-arrow express-arrow-right"
-            (click)="scrollDerecha(contenedor)">
-
-            <i class="fas fa-chevron-right"></i>
-
-        </button>
-
-    </div>
-
-</div>
 
 
         <!-- Direcciones -->
@@ -322,7 +305,7 @@
                             </td>
 
                             <td class="price">
-                                {{subasta.apuesta | currency:'MXN'}} 
+                                {{subasta.apuesta | currency:'MXN'}}
                                 <div class=" oferta-actual">
                                     Oferta actual
                                 </div>
@@ -342,11 +325,12 @@
                                     <i class="fas fa-gavel"></i>
 
                                 </button>
-                                
+
 
                             </td>
 
-                              <td class="price" [class.estado-nuevo]="subasta.nuevo" [class.estado-usado]="!subasta.nuevo">
+                            <td class="price" [class.estado-nuevo]="subasta.nuevo"
+                                [class.estado-usado]="!subasta.nuevo">
                                 {{subasta.nuevo ? 'Nuevo' : 'Usado'}}
                             </td>
 
@@ -373,30 +357,28 @@
 
                     <div class="d-flex justify-content-between mt-2">
 
-    <div>
-        <strong>
-            {{subasta.apuesta | currency:'MXN'}}
-        </strong>
+                        <div>
+                            <strong>
+                                {{subasta.apuesta | currency:'MXN'}}
+                            </strong>
 
-        <div class="oferta-actual">
-            Oferta actual
-        </div>
-        <div
-            class="estado-producto"
-            [class.estado-nuevo]="subasta.nuevo"
-            [class.estado-usado]="!subasta.nuevo">
+                            <div class="oferta-actual">
+                                Oferta actual
+                            </div>
+                            <div class="estado-producto" [class.estado-nuevo]="subasta.nuevo"
+                                [class.estado-usado]="!subasta.nuevo">
 
-            {{subasta.nuevo ? 'Nuevo' : 'Usado'}}
+                                {{subasta.nuevo ? 'Nuevo' : 'Usado'}}
 
-        </div>
-    </div>
+                            </div>
+                        </div>
 
-   <span class="tiempo-responsive">
-    {{segundosATiempoString(subasta.venceSegundos!)}}
-</span>
+                        <span class="tiempo-responsive">
+                            {{segundosATiempoString(subasta.venceSegundos!)}}
+                        </span>
 
-</div>
-                    
+                    </div>
+
 
                     <button class="btn-offer w-100 mt-3" (click)="openSubastaDetalle(subasta.id)">
 

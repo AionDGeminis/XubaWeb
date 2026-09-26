@@ -133,7 +133,7 @@
               (click)="toggleSeguirVendedor(detallesubasta.idVendedor)"
               style="margin-left: auto; background: linear-gradient(to right, #ec4899, #8b5cf6); color: white; border: none; border-radius: 50px; padding: 6px 14px; font-size: 11px; font-weight: 600; cursor: pointer;">
               <i class="fas"
-                [ngClass]="{'fa-plus': !getSiguiendo(detallesubasta.idVendedor), 'fa-bookmark':getSiguiendo(detallesubasta.idVendedor)}"></i>
+                [ngClass]="{'fa-plus': !getSiguiendo(detallesubasta.idVendedor), 'fa-check':getSiguiendo(detallesubasta.idVendedor)}"></i>
               {{getSiguiendo(detallesubasta.idVendedor) ? 'Siguiendo':'Seguir'}}
             </button>
             <p class="mt-2" style="font-size: 11px; color: var(--text2);">
@@ -451,15 +451,25 @@
         Ofertar {{ toCurrency(siguienteApuesta) }}
       </button> -->
       <ng-container *ngIf="isLoggedIn()">
-        <button [disabled]="connectingSignalR" [ngClass]="{'btn-offer-disabled ': connectingSignalR}"
+        <button *ngIf="!detallesubasta.esMiSubasta" [disabled]="connectingSignalR"
+          [ngClass]="{'btn-offer-disabled ': connectingSignalR}"
           class="btn-offer btn-offer-disabled glass-btn d-none d-sm-block"
           (click)="realizarApuesta(siguienteApuesta, false)"
           style="width: 100%; border: none; border-radius: 50px; padding: 16px; color: black; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; position: relative; z-index: 12;">
           <i class="fas fa-gavel" style="margin-right: 8px;"></i>
           Ofertar {{ toCurrency(siguienteApuesta) }}
         </button>
-        <app-slidebutton class="d-sm-none d-block" label="Desliza para ofertar"
+        <app-slidebutton *ngIf="!detallesubasta.esMiSubasta" class="d-sm-none d-block" label="Desliza para ofertar"
           (confirmed)="realizarApuesta(siguienteApuesta, false)" />
+
+        <button *ngIf="detallesubasta.esMiSubasta" [disabled]="connectingSignalR"
+          [ngClass]="{'btn-offer-disabled ': connectingSignalR}" class="btn-offer btn-offer-disabled glass-btn"
+          (click)="verDetalleMiSubasta()"
+          style="width: 100%; border: none; border-radius: 50px; padding: 16px; color: black; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; position: relative; z-index: 12;">
+          <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+          Ver detalles de mi subasta
+        </button>
+
       </ng-container>
 
       <!-- -->

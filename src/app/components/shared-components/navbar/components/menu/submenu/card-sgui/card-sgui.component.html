@@ -1,0 +1,17 @@
+<div class="seller-card" *ngFor="let item of listaData">
+    <div class="seller-avatar" style="overflow:hidden;">
+        <img [src]="item.imgPerfil" class="x2" alt="">
+        <!-- <i class="fas fa-store"></i> -->
+    </div>
+    <div class="seller-info">
+        <div class="seller-name">{{item.nombre}} {{item.apellido}}</div>
+        <div class="seller-meta">
+            <span class="seller-rating"><i class="fas fa-star"></i> {{item.stars}}</span>
+            <span class="seller-sep">·</span>
+            <span class="seller-active">{{item.subastasActivas}} subastas activas</span>
+        </div>
+    </div>
+    <button class="btn-following">
+        <i class="fas fa-check"></i> Siguiendo
+    </button>
+</div>

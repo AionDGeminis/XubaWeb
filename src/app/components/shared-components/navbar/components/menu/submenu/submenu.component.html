@@ -1,0 +1,68 @@
+<div [class]="'bg-info h-100 submenu-hide fast-animation animate__animated ' +hiddenMenuClass "
+    (click)="$event.stopPropagation()">
+    <div class="secondary-panel">
+        <div class="secondary-header">
+            <h3 class="secondary-title">{{titulo}} <span class="count-pill">4 activas</span></h3>
+            <button class="close-btn" (click)="closeHiddenMenu()">&times;</button>
+        </div>
+
+        <div class="filter-strip">
+            <button class="filter-chip active">Todas</button>
+            <button class="filter-chip">Por Terminar</button>
+            <button class="filter-chip">Pujando</button>
+        </div>
+
+        <div class="secondary-body">
+            <!-- <div *ngFor="let item of currentListResult" class="list-card">
+                <div class="item-thumb"><i class="fas fa-laptop"></i></div>
+                <div class="item-info">
+                    <div class="item-name">{{item.nombre}}</div>
+                    <div class="item-sub">{{item.categoria}}</div>
+                </div>
+                <div class="item-status">
+                    <div class="badge-price">$21,500 MXN</div>
+                    <div class="badge-time">14 pujas</div>
+                </div>
+            </div> -->
+            <app-card-vseg *ngIf="tipoCarga === 'VSEG'" [listaData]="currentListResult" />
+            <app-card-sseg *ngIf="tipoCarga === 'SSEG'" [listaData]="currentListResult" />
+            <app-card-sgui *ngIf="tipoCarga === 'SGUI'" [listaData]="currentListResult" />
+
+            <!-- <div class="list-card">
+                <div class="item-thumb"><i class="fas fa-camera"></i></div>
+                <div class="item-info">
+                    <div class="item-name">Cámara Sony Alpha A7 III</div>
+                    <div class="item-sub">Termina en 5h 10m</div>
+                </div>
+                <div class="item-status">
+                    <div class="badge-price">$18,200 MXN</div>
+                    <div class="badge-time">8 pujas</div>
+                </div>
+            </div> -->
+
+            <!-- <div class="list-card">
+                <div class="item-thumb"><i class="fas fa-car"></i></div>
+                <div class="item-info">
+                    <div class="item-name">Rines 18" Deportivos BBS</div>
+                    <div class="item-sub">Termina mañana</div>
+                </div>
+                <div class="item-status">
+                    <div class="badge-price">$9,400 MXN</div>
+                    <div class="badge-time">3 pujas</div>
+                </div>
+            </div> -->
+
+            <!-- <div class="list-card">
+                <div class="item-thumb"><i class="fas fa-gamepad"></i></div>
+                <div class="item-info">
+                    <div class="item-name">Consola PS5 Slim Disco</div>
+                    <div class="item-sub">Termina en 3 días</div>
+                </div>
+                <div class="item-status">
+                    <div class="badge-price">$8,100 MXN</div>
+                    <div class="badge-time">21 pujas</div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
