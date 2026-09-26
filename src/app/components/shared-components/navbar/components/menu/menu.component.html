@@ -81,5 +81,5 @@
 
 </div>
 
-
+<app-nueva-subasta-modal (close)="closeModalNuevaSubasta()" *ngIf="showModalNuevaSubasta" />
 <app-submenu *ngIf="showHiddenSubmenu" (close)="closeSubmenu()" [tipoCarga]="tipoSubmenu" [titulo]="tituloSubmenu" />
