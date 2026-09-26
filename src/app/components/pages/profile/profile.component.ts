@@ -368,9 +368,9 @@ export class ProfileComponent implements OnInit {
 
     this.getWalletPagos();
     this.usuario = this.authService.currentUser;
-    this.isLoggedIn = computed(() => !!this.usuario());
+    this.isLoggedIn = this.authService.isLoggedIn //computed(() => !!this.usuario());
     if (this.isLoggedIn()) {
-      this.getInformacionUsuario(this.usuario()!.id);
+      this.getInformacionUsuario(0);
       console.log('consulta perfil')
       //this.getInformacionPerfil(this.usuario()!.id);
     }
@@ -576,7 +576,7 @@ export class ProfileComponent implements OnInit {
   saveDireccion() {
     console.log('ENTRO A SAVE DIRECCION');
     console.log(this.direccion)
-    this.direccion.idUsuario = this.usuario()!.id;
+    // this.direccion.idUsuario = this.usuario()!.id;
     if (!this.ss.isValidModel(this.direccion, ['numeroInt', 'tipo', 'callesCruzan', 'descripcionDomicilio', 'tipoDomicilio', 'quienRecibe', 'correo', 'telefono'])) {
       this.ss.showNotification('warning', 'Por favor, complete todos los campos requeridos');
       return;
@@ -588,7 +588,7 @@ export class ProfileComponent implements OnInit {
         this.loading = false;
         this.ss.showNotification('success', 'Direccion  agregada correctamente');
         // this.getDirecciones(this.usuario()!.id);
-        this.getInformacionUsuario(this.usuario()!.id);
+        this.getInformacionUsuario(0);
         this.initDireccion();
         this.closeModal('direccion');
       },

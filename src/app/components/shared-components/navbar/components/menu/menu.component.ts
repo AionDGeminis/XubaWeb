@@ -143,7 +143,7 @@ export class MenuComponent {
 
   backToHome() {
     this.closeHiddenMenu();
-    // this.router.navigate(['/home']);
+    this.router.navigate(['/home']);
   }
 
 

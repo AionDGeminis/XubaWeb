@@ -467,99 +467,99 @@ export class SharedService {
   }
 
   // Deriva una clave AES-256 con PBKDF2 (salt + iteraciones)
-  private async deriveKeyFromAppSecret(salt: Uint8Array, iterations = 200_000): Promise<CryptoKey> {
-    const secret = this.getAppSecret();
+  // private async deriveKeyFromAppSecret(salt: Uint8Array, iterations = 200_000): Promise<CryptoKey> {
+  //   const secret = this.getAppSecret();
 
-    // Mezcla con metadata de runtime para dificultar reutilización
-    const mix = enc.encode(location.origin + navigator.userAgent);
-    const material = new Uint8Array(secret.length + mix.length);
-    material.set(secret, 0);
-    material.set(mix, secret.length);
+  //   // Mezcla con metadata de runtime para dificultar reutilización
+  //   const mix = enc.encode(location.origin + navigator.userAgent);
+  //   const material = new Uint8Array(secret.length + mix.length);
+  //   material.set(secret, 0);
+  //   material.set(mix, secret.length);
 
-    const keyMaterial = await crypto.subtle.importKey('raw', material, { name: 'PBKDF2' }, false, ['deriveKey']);
-    return crypto.subtle.deriveKey(
-      { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
-      keyMaterial,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['encrypt', 'decrypt']
-    );
-  }
+  //   const keyMaterial = await crypto.subtle.importKey('raw', material, { name: 'PBKDF2' }, false, ['deriveKey']);
+  //   return crypto.subtle.deriveKey(
+  //     { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
+  //     keyMaterial,
+  //     { name: 'AES-GCM', length: 256 },
+  //     false,
+  //     ['encrypt', 'decrypt']
+  //   );
+  // }
 
   // Cifra y guarda en localStorage
-  private async secureStore(keyName: string, value: unknown): Promise<void> {
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const aesKey = await this.deriveKeyFromAppSecret(salt);
-    const aad = enc.encode('myapp:v1:' + location.origin);
+  // private async secureStore(keyName: string, value: unknown): Promise<void> {
+  //   const salt = crypto.getRandomValues(new Uint8Array(16));
+  //   const iv = crypto.getRandomValues(new Uint8Array(12));
+  //   const aesKey = await this.deriveKeyFromAppSecret(salt);
+  //   const aad = enc.encode('myapp:v1:' + location.origin);
 
-    const plaintext = enc.encode(JSON.stringify(value));
-    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: aad }, aesKey, plaintext);
+  //   const plaintext = enc.encode(JSON.stringify(value));
+  //   const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: aad }, aesKey, plaintext);
 
-    const payload = {
-      v: 1,
-      kdf: 'PBKDF2-SHA256',
-      iter: 200_000,
-      salt: this.toB64(salt.buffer),
-      iv: this.toB64(iv.buffer),
-      aad: 'myapp:v1',
-      ct: this.toB64(ct)
-    };
-    localStorage.setItem(keyName, JSON.stringify(payload));
-  }
+  //   const payload = {
+  //     v: 1,
+  //     kdf: 'PBKDF2-SHA256',
+  //     iter: 200_000,
+  //     salt: this.toB64(salt.buffer),
+  //     iv: this.toB64(iv.buffer),
+  //     aad: 'myapp:v1',
+  //     ct: this.toB64(ct)
+  //   };
+  //   localStorage.setItem(keyName, JSON.stringify(payload));
+  // }
 
   // Lee y descifra; devuelve null si falta o falla el descifrado
-  private async secureLoad<T = unknown>(keyName: string): Promise<T | null> {
-    const raw = localStorage.getItem(keyName);
-    if (!raw) return null;
-    try {
-      const payload = JSON.parse(raw) as {
-        v: number;
-        iter: number;
-        salt: string;
-        iv: string;
-        ct: string;
-        aad?: string;
-      };
+  // private async secureLoad<T = unknown>(keyName: string): Promise<T | null> {
+  //   const raw = localStorage.getItem(keyName);
+  //   if (!raw) return null;
+  //   try {
+  //     const payload = JSON.parse(raw) as {
+  //       v: number;
+  //       iter: number;
+  //       salt: string;
+  //       iv: string;
+  //       ct: string;
+  //       aad?: string;
+  //     };
 
-      const salt = new Uint8Array(this.fromB64(payload.salt));
-      const iv = new Uint8Array(this.fromB64(payload.iv));
-      const aesKey = await this.deriveKeyFromAppSecret(salt, payload.iter || 200_000);
-      const aad = enc.encode((payload.aad || 'myapp:v1') + ':' + location.origin);
+  //     const salt = new Uint8Array(this.fromB64(payload.salt));
+  //     const iv = new Uint8Array(this.fromB64(payload.iv));
+  //     const aesKey = await this.deriveKeyFromAppSecret(salt, payload.iter || 200_000);
+  //     const aad = enc.encode((payload.aad || 'myapp:v1') + ':' + location.origin);
 
-      const pt = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv, additionalData: aad },
-        aesKey,
-        this.fromB64(payload.ct)
-      );
-      return JSON.parse(dec.decode(pt)) as T;
-    } catch {
-      return null;
-    }
-  }
+  //     const pt = await crypto.subtle.decrypt(
+  //       { name: 'AES-GCM', iv, additionalData: aad },
+  //       aesKey,
+  //       this.fromB64(payload.ct)
+  //     );
+  //     return JSON.parse(dec.decode(pt)) as T;
+  //   } catch {
+  //     return null;
+  //   }
+  // }
 
   // API pública del servicio
 
-  async saveLocalSecureData<T = unknown>(keyName: string, data: T): Promise<void> {
-    return this.secureStore(keyName, data);
-  }
+  // async saveLocalSecureData<T = unknown>(keyName: string, data: T): Promise<void> {
+  //   return this.secureStore(keyName, data);
+  // }
 
-  async loadLocalData<T = unknown>(keyName: string): Promise<T | null> {
-    return this.secureLoad<T>(keyName);
-  }
+  // async loadLocalData<T = unknown>(keyName: string): Promise<T | null> {
+  //   return this.secureLoad<T>(keyName);
+  // }
 
   removeLocalData(keyName: string): void {
     localStorage.removeItem(keyName);
   }
 
   // Atajos con clave por defecto (opcional)
-  async saveDefault(json: unknown): Promise<void> {
-    await this.saveLocalSecureData('myapp.secure', json);
-  }
+  // async saveDefault(json: unknown): Promise<void> {
+  //   await this.saveLocalSecureData('myapp.secure', json);
+  // }
 
-  async loadDefault<T = unknown>(): Promise<T | null> {
-    return this.loadLocalData<T>('myapp.secure');
-  }
+  // async loadDefault<T = unknown>(): Promise<T | null> {
+  //   return this.loadLocalData<T>('myapp.secure');
+  // }
 
   toXubaEncode(data: string) {
     let b64 = this.encodeToBase64(data);
