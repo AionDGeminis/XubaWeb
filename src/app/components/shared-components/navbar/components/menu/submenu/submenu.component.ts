@@ -39,6 +39,7 @@ export class SubmenuComponent implements OnInit {
     }, 250);
   }
 
+
   loadInitData() {
     switch (this.tipoCarga) {
       case 'VSEG':

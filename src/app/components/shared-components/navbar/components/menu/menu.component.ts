@@ -6,15 +6,18 @@ import { SignalRNotificationService } from '../../../../../services/signalrnotif
 import { Usuario } from '../../../../../models/subasta.model';
 import { CommonModule } from '@angular/common';
 import { SubmenuComponent } from './submenu/submenu.component';
+import { Router } from '@angular/router';
+import { NuevaSubastaModalComponent } from '../../../modals/nueva-subasta-modal/nueva-subasta-modal.component';
 
 @Component({
   selector: 'app-menu',
-  imports: [CommonModule, SubmenuComponent],
+  imports: [CommonModule, SubmenuComponent, NuevaSubastaModalComponent],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css'
 })
 export class MenuComponent {
   @Output() close = new EventEmitter<void>();
+  @Output() showModalCrearSubasta = new EventEmitter<void>();
   @Input() showBack: boolean = false;
   public isLoggedIn!: Signal<boolean>;
   public usuario!: Signal<Usuario | null>;
@@ -39,6 +42,8 @@ export class MenuComponent {
     private signalRNotiService: SignalRNotificationService,
     private ss: SharedService,
     private subastaService: SubastasService,
+    private router: Router,
+
     // private auctionService: AuctionService,
     // private openPayService: OpenPayService,
     // private location: Location,
@@ -49,8 +54,9 @@ export class MenuComponent {
 
 
   openProfilePage() {
-    this.fnToggleMenu();
-    // this.router.navigate(['/profile']);
+    // this.fnToggleMenu();
+    this.closeHiddenMenu();
+    this.router.navigate(['/profile']);
   }
 
   fnToggleMenu() {
@@ -144,7 +150,8 @@ export class MenuComponent {
   openModalNuevaSubasta(): void {
     this.closeHiddenMenu();
     setTimeout(() => {
-      this.showModalNuevaSubasta = true;
+      this.showModalCrearSubasta.emit();
+      // this.showModalNuevaSubasta = true;
 
     }, 200);
   }

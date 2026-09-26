@@ -367,11 +367,11 @@ export class NavbarComponent implements OnInit {
   }
 
   closeLoginForm() {
-    // this.loginClass = 'animate__fadeOut';
-    // setTimeout(() => {
-    //   this.showLoginForm = false;
-    //   this.loginClass = '';
-    // }, 250);
+    this.loginClass = 'animate__fadeOut';
+    setTimeout(() => {
+      this.showLoginForm = false;
+      this.loginClass = '';
+    }, 250);
   }
 
 
@@ -1090,11 +1090,12 @@ export class NavbarComponent implements OnInit {
 
 
   openModalNuevaSubasta(): void {
-    this.closeHiddenMenu();
-    setTimeout(() => {
-      this.showModalNuevaSubasta = true;
+    // this.closeHiddenMenu();
+    // setTimeout(() => {
+    // this.showModalNuevaSubasta = true;
 
-    }, 200);
+    // }, 200);
+    this.showModalNuevaSubasta = true;
   }
 
   closeModalNuevaSubasta(): void {

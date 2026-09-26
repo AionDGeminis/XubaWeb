@@ -130,7 +130,8 @@
 
 <div *ngIf="showHiddenMenu" (click)="fnToggleMenu()"
   [class]="'main-menu-hide fast-animation animate__animated ' + hiddenMenuClass.container">
-  <app-menu *ngIf="showHiddenMenu" (close)="closeHiddenMenu()" [showBack]="showBack" />
+  <app-menu *ngIf="showHiddenMenu" (close)="closeHiddenMenu()" (showModalCrearSubasta)="openModalNuevaSubasta()"
+    [showBack]="showBack" />
   <!-- <div *ngIf="isLoggedIn()" (click)="$event.stopPropagation()"
     [class]="'menu-hide fast-animation animate__animated ' + hiddenMenuClass.menu">
     <div class="menu-header">
