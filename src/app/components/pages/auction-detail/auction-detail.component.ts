@@ -194,7 +194,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     // this.idSubasta = id;
     // console.log(id)
     // this.getInitialData(id);
-    this.isLoggedIn = computed(() => !!this.usuario());
+    // this.isLoggedIn = computed(() => !!this.usuario());
+    this.isLoggedIn = this.authService.isLoggedIn
     this.omitFirstBidIncoming = true;
     this.checkUserLoggedData();
     // this.vistas.idUsuario = this.usuario()?.id ?? 0;
@@ -465,18 +466,21 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     if (this.isLoggedIn()) {
       // this.getSubastasSeguidas();
       this.getDireccionesEntrega(this.usuario()!.id, 'entrega');
+      this.getVendedoresSeguidos();
+
     }
   }
 
   verifyIfAuctionExist(IdSubasta: number) {
     this.gettingData = true;
     this.subastasService.ConsultarSubastaOfertarId(IdSubasta).subscribe({
-      next: (response: any) => {
+      next: (response: DetalleSubasta) => {
         console.log(response);
         this.detallesubasta = response;
         this.isValidExistingSubasta = response && response.id ? true : false;
         this.idSubasta = IdSubasta;
         this.getVistasOfertas();
+
         if (this.detallesubasta.tiempoVence && this.detallesubasta.tiempoVence === '00:00:00') {
           // if (this.detallesubasta.esMiSubasta) {
           //   //this.router.navigate(['/subasta-terminada', {id: this.detallesubasta!.id}]);
@@ -533,6 +537,10 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
         console.error('Error:', err);
       }
     });
+  }
+
+  verDetalleMiSubasta() {
+    this.router.navigate(['/my-subasta-detalle', this.detallesubasta.id]);
   }
 
 
@@ -676,8 +684,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   //   });
   // }
 
-  getVendedoresSeguidos(idUsuario: number) {
-    this.subastasService.GetVendedoresSeguidos(idUsuario).subscribe({
+  getVendedoresSeguidos() {
+    this.subastasService.GetVendedoresSeguidos(0).subscribe({
       next: (vendedores: any) => {
         this.listaVendedoresSeguidos = vendedores;
         console.log('Vendedores seguidos:', vendedores);
@@ -689,7 +697,15 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   getVistasOfertas() {
-    this.subastasService.registrarVista({ idSubasta: this.detallesubasta!.id }).subscribe({
+    let data: any = { idSubasta: this.detallesubasta!.id }
+    if (!this.isLoggedIn()) {
+      let _key = this.ss.toXubaEncode('UserGuest');
+      let user = localStorage.getItem(_key);
+      if (user) {
+        data.idVisitante = user;
+      }
+    }
+    this.subastasService.registrarVista(data).subscribe({
       next: (vistas: any) => {
         console.log(vistas)
         this.detallesubasta.vistas = vistas.vistas
@@ -728,7 +744,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       };
       this.subastasService.seguirVendedor(modelo).subscribe({
         next: (vendedores: any) => {
-          this.getVendedoresSeguidos(idUsuario);
+          this.getVendedoresSeguidos();
           this.lockButton = false;
 
         },
@@ -742,6 +758,31 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       });
     }
   }
+
+
+
+  dejarSeguirVendedor(idVendedor: number) {
+    this.lockButton = true;
+    const idUsuario = this.usuario()!.id;
+    if (this.isLoggedIn()) {
+      let modelo = {
+        idUsuario,
+        idVendedor
+      };
+      this.subastasService.noseguirVendedor(modelo).subscribe({
+        next: (vendedores: any) => {
+          this.getVendedoresSeguidos();
+          this.lockButton = false;
+        },
+        error: (err) => {
+          this.lockButton = false;
+          this.ss.showNotification('error', 'Hubo un problema al dejar de seguir vendedor');
+          console.error('Error fetching vendedores seguidos:', err);
+        }
+      });
+    }
+  }
+
 
   navigateImage(to: string, event: any) {
     event.stopPropagation();
@@ -781,29 +822,6 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   closeModalViewer() {
     this.isviewerOpen = false;
 
-  }
-
-
-  dejarSeguirVendedor(idVendedor: number) {
-    this.lockButton = true;
-    const idUsuario = this.usuario()!.id;
-    if (this.isLoggedIn()) {
-      let modelo = {
-        idUsuario,
-        idVendedor
-      };
-      this.subastasService.noseguirVendedor(modelo).subscribe({
-        next: (vendedores: any) => {
-          this.getVendedoresSeguidos(idUsuario);
-          this.lockButton = false;
-        },
-        error: (err) => {
-          this.lockButton = false;
-          this.ss.showNotification('error', 'Hubo un problema al dejar de seguir vendedor');
-          console.error('Error fetching vendedores seguidos:', err);
-        }
-      });
-    }
   }
 
 
@@ -852,7 +870,11 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   openUserPage(idVendedor: number) {
-    this.router.navigate(['/userpage', idVendedor]);
+    if (this.detallesubasta.esMiSubasta) {
+      this.router.navigate(['/profile']);
+    } else {
+      this.router.navigate(['/userpage', idVendedor]);
+    }
   }
 
   getSubastasSeguidas() {
@@ -1139,6 +1161,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       // if(this.estatus !== 'ACT') {
 
       // }
+      this.detallesubasta.vistas = actual.cantidadVistas;
+      this.detallesubasta.ofertas = actual.cantidadApuestas;
       this.valorApuesta = actual.apuesta;
       // this.setMontoInicial();
       this.animateCurrentAmount(this.valorApuesta)

@@ -229,11 +229,11 @@ export class SubastasService {
   }
 
   seguirVendedor(data: any) {
-    return this.http.post(`${env.base_url}/seguirVendedor/Seguir`, data, { headers: test_headers }).pipe(map(res => res));
+    return this.http.post(`${env.base_url}/seguirVendedor/Seguir`, data, { headers: headers }).pipe(map(res => res));
   }
 
   noseguirVendedor(data: any) {
-    return this.http.post(`${env.base_url}/seguirVendedor/DejarSeguir`, data, { headers: test_headers }).pipe(map(res => res));
+    return this.http.post(`${env.base_url}/seguirVendedor/DejarSeguir`, data, { headers: headers }).pipe(map(res => res));
   }
 
   getCategoriasReclamo() {

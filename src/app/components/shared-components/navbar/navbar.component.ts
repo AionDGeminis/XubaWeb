@@ -15,6 +15,8 @@ import { environment } from '../../../environment/environment';
 import { OpenPayService } from '../../../services/openpay.service';
 import { initDataRegistrarSubasta, RegistrarSubasta } from '../../../models/registrar-subasta-model';
 import { NuevaSubastaModalComponent } from '../modals/nueva-subasta-modal/nueva-subasta-modal.component';
+import { SubmenuComponent } from './components/menu/submenu/submenu.component';
+import { MenuComponent } from './components/menu/menu.component';
 declare var OpenPay: any;
 
 // interface ISubasta {
@@ -50,7 +52,7 @@ declare var OpenPay: any;
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [FormsModule, CommonModule, LoaderComponent, NuevaSubastaModalComponent],
+  imports: [FormsModule, CommonModule, LoaderComponent, MenuComponent, NuevaSubastaModalComponent, SubmenuComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -183,39 +185,7 @@ export class NavbarComponent implements OnInit {
 
   }
 
-  // initSubasta() {
-  //   let _newSubasta: RegistrarSubasta = {
-  //     id: 0,
-  //     caption: '',
-  //     descripcion: '',
-  //     precio: null,
-  //     compraDirecta: false,
-  //     marca: '',
-  //     modelo: '',
-  //     nuevo: false,
-  //     peso: null,
-  //     largo: null,
-  //     ancho: null,
-  //     profundidad: null,
-  //     idDireccion: null,
-  //     // puja: 0,
-  //     mimagenesSubasta: [],
-  //     horas: null,
-  //     apuesta: null,
-  //     // imagenesPreview: [],
-  //     premium: false,
 
-  //     valorOferta: null,
-  //     comisionBanco: 0,
-  //     comisionXuba: 0,
-  //     flete: 0,
-  //     comisionFlete: 0,
-  //     ganacia: 0,
-  //     url: '',
-
-
-  //   };
-  // }
 
   ngOnInit(): void {
 
@@ -225,7 +195,7 @@ export class NavbarComponent implements OnInit {
         // .subscribe((event: NavigationEnd) => {
         // Guarda la URL actual
         this.currentRoute = event.urlAfterRedirects;
-        this.inPreregistro = this.currentRoute === '/preregistro' ? true : false;
+        // this.inPreregistro = this.currentRoute === '/preregistro' ? true : false;
         // console.log('Ruta actual:', this.currentRoute);
         this.showSearch = this.currentRoute.includes('home');
         this.showBack = !this.currentRoute.includes('home');
@@ -260,6 +230,24 @@ export class NavbarComponent implements OnInit {
     // console.log('USUAROO LOGUEADO ACTUAL')
     // console.log(this.usuario())
   }
+
+  checkUserGuest() {
+    let _key = this.ss.toXubaEncode('UserGuest');
+    let user = localStorage.getItem(_key);
+    if (this.isLoggedIn()) {
+      if (user) {
+        localStorage.removeItem(_key);
+      }
+    } else {
+      if (!user) {
+        const guid = crypto.randomUUID();
+        localStorage.setItem(_key, guid);
+      }
+    }
+
+  }
+
+
 
   // private conectarSignalR(idUsuario: number): void {
   //   this.signalRNotiService.connectToNotifications(idUsuario.toString(), (datos: any) => {
@@ -357,32 +345,35 @@ export class NavbarComponent implements OnInit {
     }
   }
 
+  openHiddenMenu() {
+    this.hiddenMenuClass = { container: 'animate__fadeIn', menu: '' };
+    this.showHiddenMenu = true;
+  }
+
+  closeHiddenMenu() {
+    this.hiddenMenuClass = { container: 'animate__fadeOut', menu: '' };
+    // setTimeout(() => {
+    this.showHiddenMenu = false;
+    // this.hiddenMenuClass = { container: '', menu: '' };
+    // }, 250);
+  }
+
+
   openLoginForm() {
     this.loginForm.usuario = null;
     this.loginForm.pass = null;
     this.loginClass = 'animate__fadeIn';
     this.showLoginForm = true;
   }
+
   closeLoginForm() {
-    this.loginClass = 'animate__fadeOut';
-    setTimeout(() => {
-      this.showLoginForm = false;
-      this.loginClass = '';
-    }, 250);
+    // this.loginClass = 'animate__fadeOut';
+    // setTimeout(() => {
+    //   this.showLoginForm = false;
+    //   this.loginClass = '';
+    // }, 250);
   }
 
-  closeHiddenMenu() {
-    this.hiddenMenuClass = { container: 'animate__fadeOut', menu: 'animate__fadeOutLeft' };
-    setTimeout(() => {
-      this.showHiddenMenu = false;
-      this.hiddenMenuClass = { container: '', menu: '' };
-    }, 250);
-  }
-
-  openHiddenMenu() {
-    this.hiddenMenuClass = { container: 'animate__fadeIn', menu: 'animate__fadeInLeft' };
-    this.showHiddenMenu = true;
-  }
 
   buscar() {
     const termino = this.textoBusqueda.trim();
@@ -411,16 +402,16 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  openUserPage(user: any) {
-    this.fnToggleMenu();
-    setTimeout(() => {
-      this.router.navigate(['/userpage', user]);
-    }, 100);
-  }
-  abrirRegistro() {
-    console.log('CLICK EN REGÍSTRATE');
-    this.router.navigate(['/preregistro']);
-  }
+  // openUserPage(user: any) {
+  //   this.fnToggleMenu();
+  //   setTimeout(() => {
+  //     this.router.navigate(['/userpage', user]);
+  //   }, 100);
+  // }
+  // abrirRegistro() {
+  //   console.log('CLICK EN REGÍSTRATE');
+  //   this.router.navigate(['/preregistro']);
+  // }
 
 
   changeAside(option: any) {
@@ -523,10 +514,10 @@ export class NavbarComponent implements OnInit {
     this.getDatosSubasta(subasta.id)
   }
 
-  openModalPoliticasFn() {
-    this.fnToggleMenu();
-    this.openModalPoliticas = true;
-  }
+  // openModalPoliticasFn() {
+  //   this.fnToggleMenu();
+  //   this.openModalPoliticas = true;
+  // }
 
   getNotificaciones() {
     this.loadingNotificaciones = true;
@@ -601,16 +592,16 @@ export class NavbarComponent implements OnInit {
   }
 
 
-  openModalCreateAuction() {
-    if (this.isLoggedIn()) {
-      // if (this.isLoggedIn()) {
-      this.getDirecciones(this.usuario()!.id, 'envio');
-      // this.getTarjetasUsuario(this.usuario()!.id);
-    }
-    this.fnToggleMenu();
-    this.openModal = true;
+  // openModalCreateAuction() {
+  //   if (this.isLoggedIn()) {
+  //     // if (this.isLoggedIn()) {
+  //     this.getDirecciones(this.usuario()!.id, 'envio');
+  //     // this.getTarjetasUsuario(this.usuario()!.id);
+  //   }
+  //   this.fnToggleMenu();
+  //   this.openModal = true;
 
-  }
+  // }
 
 
   tiempoStringASegundos(tiempo: string) {
@@ -1035,6 +1026,11 @@ export class NavbarComponent implements OnInit {
         // 
         if (usuario.success) {
           if (usuario.token) {
+            let _key = this.ss.toXubaEncode('UserGuest');
+            let user = localStorage.getItem(_key);
+            if (user) {
+              localStorage.removeItem(_key);
+            }
             localStorage.setItem('XUBA_TKN', usuario.token)
             this.authService.setUser(usuario);
             // this.fnToggleMenu();

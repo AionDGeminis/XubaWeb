@@ -52,7 +52,7 @@
     border-radius: 20px;
 
     box-shadow:
-        0 4px 25px rgba(0,0,0,.06);
+        0 4px 25px rgba(0, 0, 0, .06);
 }
 
 
@@ -60,7 +60,7 @@
    BLOQUE DE PERFIL
    ========================================================= */
 
-.profile-sidebar > .w-100.bg-xuba2 {
+.profile-sidebar>.w-100.bg-xuba2 {
     width: auto !important;
     height: auto !important;
 
@@ -103,8 +103,8 @@
 
     box-shadow:
         0 0 0 3px #d4367a,
-        0 0 0 6px rgba(212,54,122,.12),
-        0 7px 20px rgba(0,0,0,.12);
+        0 0 0 6px rgba(212, 54, 122, .12),
+        0 7px 20px rgba(0, 0, 0, .12);
 
     position: relative;
 
@@ -143,7 +143,7 @@
 
     border-radius: 50%;
 
-    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
 }
 
 
@@ -198,24 +198,20 @@
    ========================================================= */
 
 .btn-follow {
-    grid-column: 2;
+    /* grid-column: 2; */
 
-    width: 155px;
+    /* width: 155px; */
 
     margin: 8px 0 0 !important;
 
-    padding: 11px 25px !important;
+    padding: 11px 5px !important;
 
     border: none !important;
 
-    border-radius: 10px !important;
+    border-radius: 30px !important;
 
-    background:
-        linear-gradient(
-            135deg,
-            #d4367a 0%,
-            #8c5ad6 100%
-        ) !important;
+    /* background: linear-gradient(135deg, #d4367a 0%,  #8c5ad6 100%) !important; */
+    background: linear-gradient(to right, #D4367A, #0984e3) !important;
 
     color: #fff !important;
 
@@ -224,19 +220,20 @@
     font-weight: 700 !important;
 
     box-shadow:
-        0 5px 14px rgba(140,90,214,.25);
+        0 5px 14px rgba(140, 90, 214, .25);
 
     transition: all .25s ease;
 }
 
 
 .btn-follow:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2px) !important;
 
     color: #fff !important;
+    /* background: linear-gradient(to right, #0984e3, #D4367A) !important; */
 
     box-shadow:
-        0 9px 20px rgba(140,90,214,.32);
+        0 9px 20px rgba(140, 90, 214, .32);
 }
 
 
@@ -249,7 +246,7 @@
    TARJETA DE INFORMACIÓN DEL PERFIL
    ========================================================= */
 
-.profile-sidebar > .profile-card {
+.profile-sidebar>.profile-card {
     grid-column: 3;
     grid-row: 1;
 
@@ -268,7 +265,7 @@
     border-radius: 18px;
 
     box-shadow:
-        0 4px 20px rgba(0,0,0,.05);
+        0 4px 20px rgba(0, 0, 0, .05);
 
     border: 1px solid #f0f1f4;
 }
@@ -278,7 +275,7 @@
    ANTIGÜEDAD
    ========================================================= */
 
-.profile-sidebar > .profile-card > .pc-stat:first-child {
+.profile-sidebar>.profile-card>.pc-stat:first-child {
     padding: 4px 0 12px !important;
 }
 
@@ -398,6 +395,7 @@
 
     text-align: center !important;
 }
+
 .pc-stat {
     width: 100px !important;
     flex: 0 0 100px !important;
@@ -440,6 +438,7 @@
 
     background: #e5e5e5;
 }
+
 /* =========================================================
    PANEL PRINCIPAL
    ========================================================= */
@@ -487,7 +486,7 @@
     border-radius: 18px !important;
 
     box-shadow:
-        0 5px 22px rgba(0,0,0,.06) !important;
+        0 5px 22px rgba(0, 0, 0, .06) !important;
 }
 
 
@@ -505,11 +504,9 @@
     border-radius: 15px;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             #d4367a,
-            #8c5ad6
-        ) !important;
+            #8c5ad6) !important;
 
     color: #fff !important;
 
@@ -547,7 +544,7 @@
    CARD PRINCIPAL DE SUBASTAS
    ========================================================= */
 
-.profile-main > .profile-card {
+.profile-main>.profile-card {
     width: 100%;
 
     padding: 0 !important;
@@ -562,7 +559,7 @@
 }
 
 
-.profile-main > .profile-card h3 {
+.profile-main>.profile-card h3 {
     margin: 0 0 18px !important;
 
     color: #27313d !important;
@@ -636,10 +633,7 @@
     grid-template-columns: 1fr auto;
 
     grid-template-rows:
-        175px
-        auto
-        auto
-        auto;
+        175px auto auto auto;
 
     position: relative;
 
@@ -656,7 +650,7 @@
     border-radius: 15px !important;
 
     box-shadow:
-        0 3px 14px rgba(0,0,0,.06) !important;
+        0 3px 14px rgba(0, 0, 0, .06) !important;
 
     transition:
         transform .25s ease,
@@ -668,7 +662,7 @@
     transform: translateY(-4px);
 
     box-shadow:
-        0 10px 25px rgba(0,0,0,.11) !important;
+        0 10px 25px rgba(0, 0, 0, .11) !important;
 }
 
 
@@ -800,11 +794,9 @@
     border-radius: 8px;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             #d4367a,
-            #8c5ad6
-        ) !important;
+            #8c5ad6) !important;
 
     color: #fff !important;
 
@@ -850,16 +842,14 @@
     border-radius: 50% !important;
 
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             #d4367a,
-            #8c5ad6
-        ) !important;
+            #8c5ad6) !important;
 
     color: #fff !important;
 
     box-shadow:
-        0 4px 12px rgba(140,90,214,.25);
+        0 4px 12px rgba(140, 90, 214, .25);
 
     transition: all .25s ease;
 }
@@ -869,7 +859,7 @@
     transform: scale(1.08);
 
     box-shadow:
-        0 7px 18px rgba(140,90,214,.35);
+        0 7px 18px rgba(140, 90, 214, .35);
 }
 
 
@@ -881,7 +871,7 @@
     border: 2px solid #d4af37 !important;
 
     box-shadow:
-        0 0 10px rgba(212,175,55,.28) !important;
+        0 0 10px rgba(212, 175, 55, .28) !important;
 }
 
 
@@ -918,7 +908,7 @@ pagination-controls {
     border-radius: 15px !important;
 
     box-shadow:
-        0 4px 18px rgba(0,0,0,.06) !important;
+        0 4px 18px rgba(0, 0, 0, .06) !important;
 
     overflow: hidden;
 }
@@ -999,7 +989,7 @@ pagination-controls {
     }
 
 
-    .profile-sidebar > .w-100.bg-xuba2 {
+    .profile-sidebar>.w-100.bg-xuba2 {
         grid-template-columns: 160px 1fr;
     }
 
@@ -1038,12 +1028,12 @@ pagination-controls {
     }
 
 
-    .profile-sidebar > .w-100.bg-xuba2 {
+    .profile-sidebar>.w-100.bg-xuba2 {
         grid-template-columns: 140px 1fr;
     }
 
 
-    .profile-sidebar > .profile-card {
+    .profile-sidebar>.profile-card {
         display: none;
     }
 
@@ -1082,7 +1072,7 @@ pagination-controls {
     }
 
 
-    .profile-sidebar > .w-100.bg-xuba2 {
+    .profile-sidebar>.w-100.bg-xuba2 {
         display: flex !important;
 
         flex-direction: column;
@@ -1121,7 +1111,7 @@ pagination-controls {
     }
 
 
-    .profile-sidebar > .profile-card {
+    .profile-sidebar>.profile-card {
         display: block;
 
         width: 100%;
@@ -1136,7 +1126,7 @@ pagination-controls {
     }
 
 
-    .profile-sidebar > .profile-card .pc-metrics {
+    .profile-sidebar>.profile-card .pc-metrics {
         display: grid !important;
 
         grid-template-columns:
@@ -1180,7 +1170,7 @@ pagination-controls {
     }
 
 
-    .profile-main > .profile-card h3 {
+    .profile-main>.profile-card h3 {
         font-size: 19px !important;
     }
 
@@ -1223,6 +1213,7 @@ pagination-controls {
     }
 
 }
+
 /* =========================================================
    SUBASTAS ACTIVAS - DISEÑO EXPRESS
    ========================================================= */
@@ -1579,6 +1570,7 @@ pagination-controls {
     }
 
 }
+
 /* =========================================================
    PREMIUM - SOLO BORDE EXTERIOR
    NO CAMBIA LAS CELDAS
@@ -1604,6 +1596,7 @@ pagination-controls {
     /* No cambiar fondo */
     background: inherit !important;
 }
+
 /* PREMIUM */
 .auction-table .auction-row.premium-auction {
     position: relative !important;
@@ -1628,11 +1621,12 @@ pagination-controls {
 
     box-sizing: border-box;
 }
+
 /* =========================================================
    MÉTRICAS Y BOTÓN - CORRECCIÓN
    ========================================================= */
 
-.profile-sidebar > .w-100.bg-xuba2 .pc-metrics {
+.profile-sidebar>.w-100.bg-xuba2 .pc-metrics {
     grid-column: 1 / -1 !important;
 
     width: 100% !important;
@@ -1652,7 +1646,7 @@ pagination-controls {
 
 /* Cada métrica */
 
-.profile-sidebar > .w-100.bg-xuba2 .pc-metrics .pc-stat {
+.profile-sidebar>.w-100.bg-xuba2 .pc-metrics .pc-stat {
     width: 100px !important;
 
     flex: 0 0 100px !important;
@@ -1667,7 +1661,7 @@ pagination-controls {
 
 /* BOTÓN: obligarlo a bajar debajo de las métricas */
 
-.profile-sidebar > .w-100.bg-xuba2 .btn-follow {
+.profile-sidebar>.w-100.bg-xuba2 .btn-follow {
     grid-column: 1 / -1 !important;
 
     grid-row: auto !important;
@@ -1678,13 +1672,15 @@ pagination-controls {
 
     margin: 15px auto 0 !important;
 }
-.profile-sidebar > .w-100.bg-xuba2 .pc-metrics {
+
+.profile-sidebar>.w-100.bg-xuba2 .pc-metrics {
     transform: translateX(-200px) !important;
 }
 
-.profile-sidebar > .w-100.bg-xuba2 .btn-follow {
+.profile-sidebar>.w-100.bg-xuba2 .btn-follow {
     transform: translateX(-200px) !important;
 }
+
 /* =========================================
    UBICACIÓN
    ========================================= */
@@ -1829,6 +1825,7 @@ pagination-controls {
 
     line-height: 1.2 !important;
 }
+
 /* =========================================
    TIEMPO EXPRESS NORMAL
    ========================================= */
@@ -1875,6 +1872,7 @@ pagination-controls {
     box-shadow:
         0 2px 6px rgba(229, 181, 47, .25) !important;
 }
+
 .estado-nuevo {
     color: #28a745 !important;
 }
@@ -1883,6 +1881,7 @@ pagination-controls {
 .estado-usado {
     color: #ff9500 !important;
 }
+
 /* =========================================
    WRAPPER EXPRESS
    ========================================= */
@@ -2020,6 +2019,7 @@ pagination-controls {
 
     font-weight: 600;
 }
+
 .oferta-actual {
     font-size: 9px !important;
     color: #9a9a9a !important;
@@ -2027,6 +2027,7 @@ pagination-controls {
     margin-top: 2px !important;
     line-height: 1.1 !important;
 }
+
 @media (max-width: 575.98px) {
 
     .w-100.bg-xuba2.text-center.pt-5.pb-4 {
@@ -2034,6 +2035,7 @@ pagination-controls {
     }
 
 }
+
 /* =========================================
    RESPONSIVE PERFIL
    ========================================= */
@@ -2063,7 +2065,7 @@ pagination-controls {
 
     /* Antigüedad */
 
-    .pc-info > .pc-stat {
+    .pc-info>.pc-stat {
         width: 100% !important;
 
         margin: 0 0 12px !important;
@@ -2072,11 +2074,11 @@ pagination-controls {
         text-align: center !important;
     }
 
-    .pc-info > .pc-stat .pc-value {
+    .pc-info>.pc-stat .pc-value {
         display: none !important;
     }
 
-    .pc-info > .pc-stat .pc-label {
+    .pc-info>.pc-stat .pc-label {
         font-size: 13px !important;
 
         font-weight: 600 !important;
@@ -2093,7 +2095,7 @@ pagination-controls {
        UBICACIÓN
        ===================================== */
 
-    .pc-info > .pc-row {
+    .pc-info>.pc-row {
         width: 100% !important;
 
         display: flex !important;
@@ -2112,7 +2114,7 @@ pagination-controls {
     }
 
 
-    .pc-info > .pc-row > i {
+    .pc-info>.pc-row>i {
         font-size: 16px !important;
 
         margin: 0 !important;
@@ -2256,6 +2258,7 @@ pagination-controls {
     }
 
 }
+
 .oferta-actual {
     font-size: 10px !important;
     color: #8b929c !important;
@@ -2277,6 +2280,7 @@ pagination-controls {
 .estado-usado {
     color: #f39c12 !important;
 }
+
 .tiempo-responsive {
     display: inline-flex !important;
     align-items: center !important;
@@ -2296,6 +2300,7 @@ pagination-controls {
     line-height: 1 !important;
     white-space: nowrap !important;
 }
+
 @media (max-width: 575.98px) {
 
     .mobile-card.premium-auction {
