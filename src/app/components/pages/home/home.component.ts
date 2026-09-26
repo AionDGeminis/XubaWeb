@@ -856,7 +856,7 @@ export class HomeComponent implements OnInit {
       this.subasta.valorOferta = null;
       this.calcularValorInicial();
     }
-    this.getComisionesUsuario(this.usuario()!.id, 'Premium');
+    // this.getComisionesUsuario(this.usuario()!.id, 'Premium');
 
   }
 
@@ -1318,12 +1318,12 @@ export class HomeComponent implements OnInit {
   }
 
   openModalCreateAuction() {
-    if (this.isLoggedIn()) {
-      this.getComisionesUsuario(this.usuario()!.id, 'crearSubasta');
-      this.getDireccionesEnvio(this.usuario()!.id, 'envio');
-      this.getTarjetasUsuario(this.usuario()!.id);
-    }
-    this.openModal = true;
+    // if (this.isLoggedIn()) {
+    //   this.getComisionesUsuario(this.usuario()!.id, 'crearSubasta');
+    //   this.getDireccionesEnvio(this.usuario()!.id, 'envio');
+    //   this.getTarjetasUsuario(this.usuario()!.id);
+    // }
+    // this.openModal = true;
   }
 
   openModalPoliticasFn() {
