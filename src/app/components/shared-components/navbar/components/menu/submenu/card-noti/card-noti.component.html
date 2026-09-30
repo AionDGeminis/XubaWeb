@@ -1,1 +1,48 @@
-<p>card-noti works!</p>
+<!-- <div class="notif-card mb-1 unread" *ngFor="let item of listaData">
+    <div class="notif-icon bid">
+        <i [ngClass]="item.icono"></i>
+    </div>
+    <div class="notif-info">
+        <div class="notif-title">{{item.titulo}}</div>
+        <div class="notif-desc">{{item.descripcion}}</div>
+        <div class="notif-time">{{item.fecha}}</div>
+    </div>
+    <span class="notif-dot"></span>
+</div> -->
+
+<div class="notif-list">
+    <div class="notif-row unread" *ngFor="let item of listaData" (click)="goToSubasta(item.idSubasta)">
+        <div class="notif-icon">
+            <i [ngClass]="item.icono"></i>
+        </div>
+        <div class="notif-info">
+            <div class="notif-title">{{item.titulo}}</div>
+            <div class="notif-desc">{{item.descripcion}}</div>
+        </div>
+        <div class="notif-time">
+            {{ tiempoRelativo(item.fecha, item.horaServidor) }}
+        </div>
+    </div>
+
+    <!-- <div class="notif-row">
+        <div class="notif-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div class="notif-info">
+            <div class="notif-title">¡Felicidades! Ganaste una subasta</div>
+            <div class="notif-desc">iPhone 15 Pro 256GB</div>
+        </div>
+        <div class="notif-time">Ayer</div>
+    </div>
+
+    <div class="notif-row">
+        <div class="notif-icon">
+            <i class="fas fa-tag"></i>
+        </div>
+        <div class="notif-info">
+            <div class="notif-title">Nuevo lote publicado por TechJuárez</div>
+            <div class="notif-desc">5 nuevos artículos de electrónica</div>
+        </div>
+        <div class="notif-time">Hace 2d</div>
+    </div> -->
+</div>

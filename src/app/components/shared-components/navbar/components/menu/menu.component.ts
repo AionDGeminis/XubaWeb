@@ -35,6 +35,7 @@ export class MenuComponent {
   tipoSubmenu: string = '';
   tituloSubmenu: string = '';
   submenu = viewChild(SubmenuComponent);
+  // opened = '';
 
   constructor(
     // private busquedaService: BusquedaService,
@@ -139,6 +140,7 @@ export class MenuComponent {
 
   closeSubmenu() {
     this.showHiddenSubmenu = false;
+    this.tipoSubmenu = '';
   }
 
   backToHome() {
@@ -168,4 +170,8 @@ export class MenuComponent {
     // this.isLoggedIn() = this.authService.isLoggedIn();
   }
 
+  closeAll() {
+    this.closeSubmenu();
+    this.closeHiddenMenu();
+  }
 }

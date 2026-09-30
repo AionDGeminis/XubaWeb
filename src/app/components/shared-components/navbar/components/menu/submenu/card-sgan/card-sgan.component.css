@@ -1,0 +1,86 @@
+.won-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.won-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border: 1px solid #eef0f2;
+    border-radius: 14px;
+    background: #fff;
+    transition: margin-top 0.2s ease, transform 0.2s ease;
+}
+
+.won-row:hover {
+    cursor: pointer;
+    /* background: #dcdde1; */
+
+    /* background-color: #ff7979; */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    /* border-radius: 14px; */
+    margin-top: -2px;
+    z-index: 1007;
+    transform: scale(1.01);
+}
+
+.won-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #eef1f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #4a5568;
+    flex-shrink: 0;
+}
+
+.won-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.won-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #1e1e2f;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.won-desc {
+    font-size: 13px;
+    color: #8a8f98;
+    margin-top: 3px;
+}
+
+.won-status {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.won-status.pending {
+    background: #fdecea;
+    color: #e0392b;
+}
+
+.won-status.paid {
+    background: #e9f7ef;
+    color: #1a9850;
+}
+
+.won-status.delivered {
+    background: #eef1f5;
+    color: #4a5568;
+}

@@ -2,15 +2,15 @@
     (click)="$event.stopPropagation()">
     <div class="secondary-panel">
         <div class="secondary-header">
-            <h3 class="secondary-title">{{titulo}} <span class="count-pill">4 activas</span></h3>
+            <h3 class="secondary-title">{{titulo}} <span class="count-pill">{{currentListResult.length}}</span></h3>
             <button class="close-btn" (click)="closeHiddenMenu()">&times;</button>
         </div>
 
-        <div class="filter-strip">
+        <!-- <div class="filter-strip">
             <button class="filter-chip active">Todas</button>
             <button class="filter-chip">Por Terminar</button>
             <button class="filter-chip">Pujando</button>
-        </div>
+        </div> -->
 
         <div class="secondary-body">
             <!-- <div *ngFor="let item of currentListResult" class="list-card">
@@ -24,9 +24,16 @@
                     <div class="badge-time">14 pujas</div>
                 </div>
             </div> -->
-            <app-card-vseg *ngIf="tipoCarga === 'VSEG'" [listaData]="currentListResult" />
-            <app-card-sseg *ngIf="tipoCarga === 'SSEG'" [listaData]="currentListResult" />
-            <app-card-sgui *ngIf="tipoCarga === 'SGUI'" [listaData]="currentListResult" />
+            <app-card-vseg *ngIf="tipoCarga === 'VSEG'" (closeAllMenu)="closeFullMenu()"
+                [listaData]="currentListResult" />
+            <app-card-sseg *ngIf="tipoCarga === 'SSEG'" (closeAllMenu)="closeFullMenu()"
+                [listaData]="currentListResult" />
+            <app-card-sgui *ngIf="tipoCarga === 'SGUI'" (closeAllMenu)="closeFullMenu()"
+                [listaData]="currentListResult" />
+            <app-card-noti *ngIf="tipoCarga === 'NOTI'" (closeAllMenu)="closeFullMenu()"
+                [listaData]="currentListResult" />
+            <app-card-sgan *ngIf="tipoCarga === 'SGAN'" (closeAllMenu)="closeFullMenu()"
+                [listaData]="currentListResult" />
 
             <!-- <div class="list-card">
                 <div class="item-thumb"><i class="fas fa-camera"></i></div>

@@ -5,6 +5,19 @@
     padding: 12px;
     border: 1px solid #eee;
     border-radius: 12px;
+    transition: margin-top 0.2s ease, transform 0.2s ease;
+}
+
+.seller-card:hover {
+    cursor: pointer;
+    /* background: #dcdde1; */
+
+    /* background-color: #ff7979; */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    /* border-radius: 14px; */
+    margin-top: -2px;
+    z-index: 1007;
+    transform: scale(1.01);
 }
 
 .seller-avatar {

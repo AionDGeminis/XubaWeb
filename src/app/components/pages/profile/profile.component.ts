@@ -854,7 +854,7 @@ export class ProfileComponent implements OnInit {
     let r = await this.ss.showConfirmMessage('¿Desea eliminar esta tarjeta?');
     if (r) {
       this.loading = true;
-      this.openPayService.deleteTarjetaUsuario(this.infoUsuario.id, tarjeta.id).subscribe({
+      this.openPayService.DeleteTarjetaUsuario(this.infoUsuario.id, tarjeta.id).subscribe({
         next: (response: any) => {
           console.log(response);
           this.loading = false;
@@ -889,7 +889,7 @@ export class ProfileComponent implements OnInit {
     console.log('obtener tarjetas usuario')
     console.log(this.infoUsuario)
     this.loading = true;
-    this.openPayService.getTarjetasUsuario(this.infoUsuario.id).subscribe({
+    this.openPayService.GetTarjetasUsuario(this.infoUsuario.id).subscribe({
       next: (response: any) => {
         console.log(response);
         this.tarjetas = response;

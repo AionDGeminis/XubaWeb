@@ -34,7 +34,7 @@ export class NuevaSubastaModalComponent implements OnInit {
   selectedCard: any = {};
   tarjetaExpiracion = '';
   textoLoading = '';
-  Premium: number = 0;
+  Premium: number = 17.5;
   listaComisiones: any[] = [];
   modeloComprobante: any = {};
   tipoEntrega: 'sucursal' | 'domicilio' = 'sucursal';
@@ -63,6 +63,7 @@ export class NuevaSubastaModalComponent implements OnInit {
     this.getComisionesUsuario(0, 'crearSubasta');
     this.getDireccionesUsusario();
     this.getHorarios();
+    this.getSecureCards();
     //throw new Error('Method not implemented.');
   }
 
@@ -387,6 +388,8 @@ export class NuevaSubastaModalComponent implements OnInit {
     } else {
       dataCharge.token = tokenId;
     }
+    console.log(dataCharge)
+    console.log(card_id)
     this.loading = true;
     let responseCharge = await this.getChargePaymentResponse(dataCharge, card_id);
 
@@ -406,6 +409,18 @@ export class NuevaSubastaModalComponent implements OnInit {
     }
   }
 
+  getSecureCards() {
+    this.openPayService.GetTarjetasUsuario(0).subscribe({
+      next: (response: any) => {
+        console.log('Secure cards fetched successfully:', response);
+        this.tarjetas = response;
+        // this.secureCards = response;
+      },
+      error: (error: any) => {
+        console.error('Error fetching secure cards:', error);
+      }
+    })
+  }
 
   afterProcessCharge(response: any) {
     this.setResponseComprobanteData(response);
@@ -430,9 +445,18 @@ export class NuevaSubastaModalComponent implements OnInit {
     setTimeout(() => {
       let dataParams = JSON.stringify({ 'id': -1, 'tid': response.id, 'tu': 'comprador', 'rt': response.payment_method.url, 'mtap': true });
       let encoded = this.ss.encodeToBase64(dataParams);
+      this.closeModal();
       this.router.navigate(['/payment-callback', encoded]);
+
     }, 100);
   }
+
+  // testRedirect() {
+  //   this.closeModal();
+  //   let dataParams = JSON.stringify({ 'id': -1, 'tid': '', 'tu': 'comprador', 'rt': 'dfdfsdfsdf', 'mtap': true });
+  //   let encoded = this.ss.encodeToBase64(dataParams);
+  //   this.router.navigate(['/payment-callback', encoded]);
+  // }
 
   setToXubaComprobante(response: any) {
     this.ss.setLocalStorageEncodedKey('transaction_id', response.id);
@@ -545,8 +569,9 @@ export class NuevaSubastaModalComponent implements OnInit {
     let isValid = true;
     this.subasta.entregaSucursal = this.tipoEntrega === 'sucursal' ? true : false;
     if (this.tipoEntrega === 'domicilio') {
-      this.subasta.horaRecolecta = this.horaRecolecta + ':00';
-
+      // this.subasta.horaRecolecta = this.horaRecolecta + ':00';
+      console.log('hora de recoleccion')
+      console.log(this.horaRecolecta)
       if (
         this.horaRecolecta! < '09:00' ||
         this.horaRecolecta! > '18:00'
@@ -559,6 +584,7 @@ export class NuevaSubastaModalComponent implements OnInit {
       }
 
     }
+
     this.subasta.horas = this.tipoSubasta === 'premium' ? this.subasta.horas : 100;
     if (this.tipoSubasta !== 'premium') {
       this.subasta.valorOferta = this.subasta.apuesta && this.subasta.apuesta < 100 ? 50 : 100;
@@ -572,6 +598,8 @@ export class NuevaSubastaModalComponent implements OnInit {
     }
     return isValid;
   }
+
+
 
   setComprobanteModel() {
     let clienteNombre = `${this.usuario()?.nombre} ${this.usuario()?.apellido}`

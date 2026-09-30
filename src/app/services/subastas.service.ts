@@ -50,17 +50,13 @@ export class SubastasService {
   }
 
   getSubastasGanadas(idUsuario: number, pagina: number = 1) {
-    const apiUrl =
-      `${env.base_url}/subastas/ConsultaMisSubastasGanadas`;
-
-    return this.http.get<Subasta[]>(apiUrl, { headers: headers, params: { pagina } })
+    return this.http.get<Subasta[]>(`${env.base_url}/subastas/ConsultaMisSubastasGanadas`, { headers: headers, params: { pagina } })
       .pipe(map(res => res));
   }
 
   getNotifications(idUsuario: number, pagina: number = 1) {
-    const apiUrl = `${env.base_url}/notificaciones/ConsultarMisNotificaciones`;
 
-    return this.http.get(apiUrl, { headers: headers, params: { pagina } })
+    return this.http.get(`${env.base_url}/notificaciones/ConsultarMisNotificaciones`, { headers: headers, params: { pagina } })
       .pipe(map(res => res));
   }
 
@@ -297,7 +293,11 @@ export class SubastasService {
   }
 
   verificarGanadorSubasta(idSubasta: number) {
-    return this.http.get<any>(`${env.base_url}/subastas/ConsultarGanadorSubasta`, { headers: headers, params: { idSubasta } });
+    return this.http.get<any>(`${env.base_url}/subastas/ConsultarGanadorSubasta`, { headers: headers, params: { idSubasta } }).pipe(map(res => res));
+  }
+
+  getSubastasSeguidas(userId: number, pagina: number = 1): Observable<Subasta[]> {
+    return this.http.get<Subasta[]>(`${env.base_url}/seguirSubasta/ConsultarSubastasSeguidas`, { headers: headers, params: { pagina } }).pipe(map(res => res));
   }
   // @override
   // Future<List<UsuarioModel>> getListaVendedoresSeguidos(int id) async {
