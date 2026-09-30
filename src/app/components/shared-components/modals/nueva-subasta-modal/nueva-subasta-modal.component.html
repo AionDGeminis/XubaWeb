@@ -664,7 +664,16 @@
                         <button class="btn btn-dark" (click)="closeModal()">
                             Cancelar
                         </button>
-                        <button class="btn btn-success btn-add-cart" [disabled]="!aceptarTerminosCrearSubasta"
+                        <!-- <button class="btn btn-xuba ms-1" [disabled]="!aceptarTerminosCrearSubasta"
+                            (click)="testRedirect()">
+                            {{(currentTabIndex >=3 && tipoSubasta === 'premium') || (currentTabIndex >=2 && tipoSubasta
+                            !==
+                            'premium') ?
+                            'Subir subasta ':'Continuar ' }}
+                            &nbsp; <i class="fas fa-arrow-right"
+                                [ngClass]="{'fa-arrow-right':(currentTabIndex <3 && tipoSubasta === 'premium') || (currentTabIndex <2 && tipoSubasta !== 'premium') , 'fa-upload': (currentTabIndex >=3 && tipoSubasta === 'premium') || (currentTabIndex >=2 && tipoSubasta !== 'premium') }"></i>
+                        </button> -->
+                        <button class="btn btn-xuba ms-1" [disabled]="!aceptarTerminosCrearSubasta"
                             (click)="nextStep()">
                             {{(currentTabIndex >=3 && tipoSubasta === 'premium') || (currentTabIndex >=2 && tipoSubasta
                             !==

@@ -1,11 +1,34 @@
-<div class="list-card">
-    <div class="item-thumb"><i class="fas fa-camera"></i></div>
-    <div class="item-info">
-        <div class="item-name">Cámara Sony Alpha A7 III</div>
-        <div class="item-sub">Termina en 5h 10m</div>
+<div class="won-list">
+    <div class="won-row" *ngFor="let item of listaData" (click)="goToSubasta(item.idSubasta)">
+        <div class="won-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div class="won-info">
+            <div class="won-title">{{item.caption}}</div>
+            <div class="won-desc">Ganada por {{toCurrency(item.apuesta)}}</div>
+        </div>
+        <div class="won-status pending">{{item.desStatus}}</div>
     </div>
-    <div class="item-status">
-        <div class="badge-price">$18,200 MXN</div>
-        <div class="badge-time">8 pujas</div>
+
+    <!-- <div class="won-row">
+        <div class="won-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div class="won-info">
+            <div class="won-title">Reloj Seiko 5 Automático</div>
+            <div class="won-desc">En tránsito · Guía #4982</div>
+        </div>
+        <div class="won-status paid">Pagado</div>
     </div>
+
+    <div class="won-row">
+        <div class="won-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div class="won-info">
+            <div class="won-title">Cámara Instax Mini 12</div>
+            <div class="won-desc">Entregado el 18 de septiembre</div>
+        </div>
+        <div class="won-status delivered">Entregado</div>
+    </div> -->
 </div>

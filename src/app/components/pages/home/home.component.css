@@ -260,7 +260,8 @@ nav.menu-izquierda svg.icono-menu:hover {
   border-radius: 5px;
 }
 
-/* Contenedor principal del modal */
+/* Contenedor principal del modal MARKER CREARSUBASTA*/
+/* 
 .cart-modal-container {
   background-color: white;
   border-radius: 8px;
@@ -272,28 +273,27 @@ nav.menu-izquierda svg.icono-menu:hover {
   display: flex;
   flex-direction: column;
   position: relative;
-}
+} */
 
-.bg-items {
+/* .bg-items {
   background-color: rgba(236, 240, 241, 1.0) !important;
-}
+} */
 
 /* Cabecera del modal */
-.modal-header {
+/* .modal-header {
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eee;
   background: linear-gradient(90deg, #f43f5e 0%, #ec4899 50%, #2563eb 100%);
-  /* color: #fff; */
-}
+} */
 
-.text-white {
+/* .text-white {
   color: #fff;
-}
+} */
 
-.modal-title {
+/* .modal-title {
   margin: 0;
   font-size: 1.5rem;
   color: #333;
@@ -304,37 +304,22 @@ nav.menu-izquierda svg.icono-menu:hover {
 .modal-title i {
   margin-right: 10px;
   color: #007bff;
-}
+} */
 
-.close-button {
-  /* background: none;
-    border: none;
-    font-size: 30px;
-    cursor: pointer;
-    color: #333;
-    padding: 2px 6px;
-    border-radius: 50%;
-    transition: background-color 0.2s; */
+/* .close-button {
+
   width: 30px;
-  /* Elige el tamaño que quieras */
   height: 30px;
   border-radius: 50%;
-  /* Esto lo hace circular */
   display: flex;
-  /* Centra el contenido */
   align-items: center;
   justify-content: center;
   border: none;
-  /* Opcional: quita el borde */
   background: none;
-  /* Color de fondo */
   color: white;
-  /* Color del texto o ícono */
   font-size: 24px;
-  /* Tamaño del contenido */
   cursor: pointer;
-  /* Cambia el cursor al pasar */
-  /* Sombra opcional */
+
   transition: background 0.2s;
 }
 
@@ -342,15 +327,12 @@ nav.menu-izquierda svg.icono-menu:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Cuerpo del modal */
 .modal-body {
   padding: 20px;
   overflow-y: auto;
   max-height: calc(90vh - 140px);
-  /* Altura mu00e1xima restando header y footer */
 }
 
-/* Mensaje de carrito vacu00edo */
 .empty-cart-message {
   display: flex;
   flex-direction: column;
@@ -363,7 +345,7 @@ nav.menu-izquierda svg.icono-menu:hover {
 
 .empty-cart-message i {
   margin-bottom: 20px;
-}
+} */
 
 /* 
   ===================================
@@ -371,7 +353,7 @@ nav.menu-izquierda svg.icono-menu:hover {
   ===================================
    */
 
-.tabs {
+/* .tabs {
   max-width: 600px;
   margin: 0 auto;
   background: #fff;
@@ -379,21 +361,21 @@ nav.menu-izquierda svg.icono-menu:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   padding: 2rem;
 
-}
+} */
 
-.titulo {
+/* .titulo {
   color: #EC4899;
   border-bottom: 2px solir #EC4899;
   font-weight: 700;
   text-align: center;
-}
+} */
 
-.tab-buttons {
+/* .tab-buttons {
   display: flex;
   border-bottom: 2px solid #e0e0e0;
   margin-bottom: 1.5rem;
-}
-
+} */
+/* 
 .tab-button {
   flex: 1;
   padding: 0.7rem 0;
@@ -403,26 +385,25 @@ nav.menu-izquierda svg.icono-menu:hover {
   font-weight: 500;
   color: #636e72;
   cursor: pointer;
-  /* border-bottom: 2px solid transparent; */
   transition: border 0.2s, color 0.2s;
   background: #ecf0f1;
   transition: background 0.5s;
   border-right: 1px solid #dfe6e9;
-}
+} */
 
-.tab-button.active {
+/* .tab-button.active {
   color: #EC4899;
   border-bottom: 2px solir #EC4899;
   font-weight: 700;
   background: #fff;
-}
+} */
 
-.f-vsmall {
+/* .f-vsmall {
   font-size: 0.7em;
   color: #636e72;
-}
+} */
 
-.before-sell {
+/* .before-sell {
   font-size: 0.8em;
 }
 
@@ -437,10 +418,9 @@ nav.menu-izquierda svg.icono-menu:hover {
 
 .disabled-in {
   background: #dfe6e9 !important;
-}
+} */
 
-/* form-producto.component.css */
-.form-producto {
+/* .form-producto {
   max-width: 600px;
   margin: 0 auto;
   background: #fff;
@@ -448,7 +428,7 @@ nav.menu-izquierda svg.icono-menu:hover {
   box-shadow: 0 2px 8px #0001;
   padding: 24px 20px;
   font-family: 'Segoe UI', Arial, sans-serif;
-}
+} */
 
 .form-row {
   display: flex;
@@ -737,10 +717,10 @@ input[type="checkbox"] {
   justify-content: center;
 }
 
-.btn-success {
+/* .btn-success {
   background: linear-gradient(90deg, #f43f5e 0%, #ec4899 50%, #2563eb 100%);
   color: #fff;
-}
+} */
 
 
 @media (max-width: 600px) {
@@ -1504,10 +1484,9 @@ input[type="checkbox"] {
 
 
 
-
+/* 
 .policy-container {
   width: 100%;
-  /* max-width: 600px; */
   margin: 20px auto;
   background-color: #ffffff;
   border: 1px solid #ccc;
@@ -1571,7 +1550,7 @@ input[type="checkbox"] {
 
 .has-error {
   border: 1px solid red !important;
-}
+} */
 
 
 

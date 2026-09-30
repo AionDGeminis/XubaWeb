@@ -1,4 +1,4 @@
-<div class="seller-card" *ngFor="let item of listaData">
+<div class="seller-card mb-2" *ngFor="let item of listaData" (click)="openUserPage(item.id)">
     <div class="seller-avatar" style="overflow:hidden;">
         <img [src]="item.imgPerfil" class="x2" alt="">
         <!-- <i class="fas fa-store"></i> -->
@@ -11,7 +11,8 @@
             <span class="seller-active">{{item.subastasActivas}} subastas activas</span>
         </div>
     </div>
-    <button class="btn-following">
-        <i class="fas fa-check"></i> Siguiendo
+    <button class="btn-following" (click)="toggleSeguir($event, item.id)">
+        <i class="fas" [ngClass]="isFollowed(item.id)?'fa-check':'fa-plus'"></i>
+        {{isFollowed(item.id)?'Siguiendo':'Seguir'}}
     </button>
 </div>

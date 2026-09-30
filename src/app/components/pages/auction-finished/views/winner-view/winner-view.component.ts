@@ -377,7 +377,7 @@ export class WinnerViewComponent implements OnInit {
 
   async getSecureCards() {
     // this.openPayService.getTarjetasUsuario(this.infoUsuario.id).subscribe({
-    this.openPayService.getTarjetasUsuario(this.currentIdUsuario).subscribe({
+    this.openPayService.GetTarjetasUsuario(this.currentIdUsuario).subscribe({
       next: (response: any) => {
         this.tarjetas = response;
         let newCard = this.getNewCardModel();

@@ -1367,7 +1367,7 @@ export class HomeComponent implements OnInit {
     // }
     // console.log('L487: obtener tarjetas ')
     // console.log(this.tarjetas)
-    this.openPayService.getTarjetasUsuario(idUsuario).subscribe({
+    this.openPayService.GetTarjetasUsuario(idUsuario).subscribe({
       next: (response: any) => {
         console.log(response);
         this.tarjetas = response;

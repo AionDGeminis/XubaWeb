@@ -20,16 +20,18 @@
         <a class="menu-item" (click)="openProfilePage()">
             <i class="fas fa-user"></i>
             <span class="text">Perfil</span>
-            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+            <!-- <span class="arrow"><i class="fas fa-chevron-right"></i></span> -->
         </a>
 
-        <a class="menu-item" (click)="openSubmenu('SSEG','Subastas Seguidas')">
+        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'SSEG'}"
+            (click)="openSubmenu('SSEG','Subastas Seguidas')">
             <i class="fas fa-heart"></i>
             <span class="text">Subastas Seguidas</span>
             <span class="arrow"><i class="fas fa-chevron-right"></i></span>
         </a>
 
-        <a class="menu-item" (click)="openSubmenu('SGAN','Subastas Ganadas')">
+        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'SGAN'}"
+            (click)="openSubmenu('SGAN','Subastas Ganadas')">
             <i class="fas fa-trophy"></i>
             <span class="text">Subastas Ganadas</span>
             <span class="arrow"><i class="fas fa-chevron-right"></i></span>
@@ -38,22 +40,25 @@
         <a class="menu-item active" (click)="openModalNuevaSubasta()">
             <i class="fas fa-plus"></i>
             <span class="text">Crear Subasta</span>
-            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+            <!-- <span class="arrow"><i class="fas fa-chevron-right"></i></span> -->
         </a>
 
-        <a class="menu-item" (click)="openSubmenu('NOTI','Notificaciones')">
+        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'NOTI'}"
+            (click)="openSubmenu('NOTI','Notificaciones')">
             <i class="fas fa-bell"></i>
             <span class="text">Notificaciones</span>
             <span class="badge">{{totalNotificaciones}}</span>
         </a>
 
-        <a class="menu-item" (click)="openSubmenu('SGUI','Mis seguidores')">
+        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'SGUI'}"
+            (click)="openSubmenu('SGUI','Mis seguidores')">
             <i class="fas fa-users"></i>
             <span class="text">Seguidores</span>
             <span class="arrow"><i class="fas fa-chevron-right"></i></span>
         </a>
 
-        <a class="menu-item" (click)="openSubmenu('VSEG','Vendedores Seguidos')">
+        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'VSEG'}"
+            (click)="openSubmenu('VSEG','Vendedores Seguidos')">
             <i class="fas fa-clipboard-list"></i>
             <span class="text">Vendedores Seguidos</span>
             <span class="arrow"><i class="fas fa-chevron-right"></i></span>
@@ -62,13 +67,13 @@
         <a class="menu-item">
             <i class="fas fa-gem"></i>
             <span class="text">Premium</span>
-            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+            <!-- <span class="arrow"><i class="fas fa-chevron-right"></i></span> -->
         </a>
 
         <a class="menu-item">
             <i class="fas fa-bolt"></i>
             <span class="text">Express</span>
-            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+            <!-- <span class="arrow"><i class="fas fa-chevron-right"></i></span> -->
         </a>
     </nav>
 
@@ -82,4 +87,5 @@
 </div>
 
 <!-- <app-nueva-subasta-modal (close)="closeModalNuevaSubasta()" *ngIf="showModalNuevaSubasta" /> -->
-<app-submenu *ngIf="showHiddenSubmenu" (close)="closeSubmenu()" [tipoCarga]="tipoSubmenu" [titulo]="tituloSubmenu" />
+<app-submenu *ngIf="showHiddenSubmenu" (close)="closeSubmenu()" (closeAllMenu)="closeAll()" [tipoCarga]="tipoSubmenu"
+    [titulo]="tituloSubmenu" />

@@ -78,6 +78,7 @@ export class AuthCallbackComponent implements OnInit {
       }, 1000);
     } else {
       if (this.redirectAutoTime === 0) {
+        // this.ss.showNotification('success', 'Redireccionando', 3500)
         window.location.href = this.jsonParams.rt;
       }
     }

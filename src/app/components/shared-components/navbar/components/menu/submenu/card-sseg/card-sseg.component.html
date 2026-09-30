@@ -1,17 +1,14 @@
-<div class="seller-card" *ngFor="let item of listaData">
-    <div class="seller-avatar" style="overflow:hidden;">
-        <img [src]="item.imgPerfil" class="x2" alt="">
-        <!-- <i class="fas fa-store"></i> -->
-    </div>
-    <div class="seller-info">
-        <div class="seller-name">{{item.nombre}} {{item.apellido}}</div>
-        <div class="seller-meta">
-            <span class="seller-rating"><i class="fas fa-star"></i> {{item.stars}}</span>
-            <span class="seller-sep">·</span>
-            <span class="seller-active">{{item.subastasActivas}} subastas activas</span>
+<div class="won-list">
+    <div class="won-row" *ngFor="let item of listaData" (click)="goToSubasta(item.idSubasta)">
+        <div class="won-icon">
+            <img [src]="item.url" style="border-radius:8px;" alt="">
+            <!-- <i class="fas fa-trophy"></i> -->
         </div>
+        <div class="won-info">
+            <div class="won-title">{{item.caption}}</div>
+            <div class="won-desc">Termina en {{item.tiempoVence}}</div>
+            <div class="price-auction ">{{toCurrency(item.apuesta)}}</div>
+        </div>
+        <div class="won-status pending">{{item.desStatus}}</div>
     </div>
-    <button class="btn-following">
-        <i class="fas fa-check"></i> Siguiendo
-    </button>
 </div>
