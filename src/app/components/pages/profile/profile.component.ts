@@ -1187,8 +1187,29 @@ export class ProfileComponent implements OnInit {
 
   sendEfirma() {
     if (!this.cerFile || !this.keyFile || !this.efirma.password) {
+      this.ss.showNotification('warning', 'Informacion incompleta');
       return;
     }
+    const formData = new FormData();
+    formData.append('cer', this.cerFile);
+    formData.append('key', this.keyFile);
+    formData.append('password', this.efirma.password);
+    console.log(formData)
+    console.log(this.idOrganizacion)
+    this.loading = true;
+    this.authService.saveEfima(formData, this.idOrganizacion).subscribe({
+      next: (value: any) => {
+        this.loading = false;
+        console.log(value)
+        this.ss.showNotification('success', 'Sellos subidos con exito')
+        // this.idOrganizacion = value.id_Organizacion;
+      },
+      error: (err: any) => {
+        this.loading = false;
+        this.ss.showNotification('error', 'Error al subir archivos')
+        console.log(err)
+      },
+    });
   }
 
   /*setInformacionFiscal(data: any) {
@@ -1358,24 +1379,7 @@ export class ProfileComponent implements OnInit {
   //     const formData = new FormData();
 
   //     // nombres EXACTOS como los pide tu API:
-  //     formData.append('cer', this.cerFile);
-  //     formData.append('key', this.keyFile);
-  //     formData.append('password', this.efirma.password);
-  //     console.log(formData)
-  //     console.log(this.idOrganizacion)
-  //     this.loading = true;
-  //     this.authService.saveEfima(formData, this.idOrganizacion).subscribe({
-  //       next:(value: any) => {
-  //         this.loading = false;
-  //         console.log(value)
-  //         this.ss.showNotification('success', 'Sellos subidos con exito')
-  //           // this.idOrganizacion = value.id_Organizacion;
-  //       }, 
-  //       error:(err: any) => {
-  //         this.loading = false;
-  //         this.ss.showNotification('error', 'Error al subir archivos')
-  //         console.log(err)
-  //       },
+  //     pero 
   //     });
 
 

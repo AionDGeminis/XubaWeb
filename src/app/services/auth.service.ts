@@ -243,8 +243,11 @@ export class AuthService {
   }
 
   saveEfima(form: FormData, idOrganizacion: number) {
-    return this.http.post(`${env.base_url}/Facturacion/organizaciones/${idOrganizacion}/certificado-sdk`, form).pipe(map(res => res));
+    return this.http.post(`${env.base_url}/Facturacion/certificado-sdk/`, form).pipe(map(res => res));
   }
+  // saveEfima(form: FormData, idOrganizacion: number) {
+  //   return this.http.post(`${env.base_url}/Facturacion/organizaciones/${idOrganizacion}/certificado-sdk`, form).pipe(map(res => res));
+  // }
 
   validarCorreoUsuario(dataModel: any) {
     return this.http.post(`${env.base_url}/usuarios/ValidarCorreo`, dataModel).pipe(map(res => res));
