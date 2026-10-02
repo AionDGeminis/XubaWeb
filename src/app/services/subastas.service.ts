@@ -10,6 +10,7 @@ import { UrlCodec } from '@angular/common/upgrade';
 import { environment as env, headers, auth_headers, test_headers } from '../environment/environment';
 import { Apuesta } from '../models/apuesta-model';
 import { GanadorInfo } from '../models/ganador-info-model';
+import { RegistrarSubasta } from '../models/registrar-subasta-model';
 
 @Injectable({ providedIn: 'root' })
 
@@ -117,7 +118,7 @@ export class SubastasService {
     return this.http.get<any>(`${env.base_url}/seguirSubasta/siguiendo`, { headers: headers, params: { idSubasta } });
   }
 
-  crearSubasta(subastaData: any) {
+  crearSubasta(subastaData: RegistrarSubasta) {
     return this.http.post(`${env.base_url}/subastas/RegistrarSubasta`, subastaData, { headers: test_headers }).pipe(map(res => res));
     // return this.http.post(`${env.base_url}/subastas`,JSON.stringify(subastaData),{headers:test_headers}).pipe(map(res => res));
   }
