@@ -965,15 +965,17 @@
                   <p>Tipo de facturacion</p>
                   <div class="tipo-subasta pt-2 pb-2">
                     <label>
-                      <input type="radio" name="tipoValidacion" value="Sellos" /> Sellos Fiscales
+                      <input type="radio" name="tipoValidacion" [(ngModel)]="tipoValidacion" value="Sellos" /> Sellos
+                      Fiscales
                     </label>
                     <label class="ms-5">
-                      <input type="radio" name="tipoValidacion" value="CuentaTerceros" /> A cuenta de terceros
+                      <input type="radio" name="tipoValidacion" [(ngModel)]="tipoValidacion" value="CuentaTerceros" /> A
+                      cuenta de terceros
                     </label>
                   </div>
                 </div>
               </div>
-
+              {{tipoValidacion}}
               <div *ngIf="datosFiscales.tipoPersona !== 'sin datos fiscales'">
 
                 <ng-container *ngIf="idOrganizacion && idOrganizacion !== 'N/A' && tipoValidacion === 'Sellos'">

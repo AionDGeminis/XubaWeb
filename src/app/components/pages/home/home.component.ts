@@ -1925,10 +1925,10 @@ export class HomeComponent implements OnInit {
   saveNewSubasta() {
     console.log('horaRecolecta:', this.subasta.horaRecolecta);
     console.log('JSON:', JSON.stringify(this.subasta));
-    this.subastaService.crearSubasta(this.subasta).subscribe({
-      next: (response) => this.saveSubastaSuccess(response),
-      error: (err) => this.handleError(err),
-    })
+    // this.subastaService.crearSubasta(this.subasta).subscribe({
+    //   next: (response) => this.saveSubastaSuccess(response),
+    //   error: (err) => this.handleError(err),
+    // })
   }
 
   saveSubastaSuccess(data: any) {

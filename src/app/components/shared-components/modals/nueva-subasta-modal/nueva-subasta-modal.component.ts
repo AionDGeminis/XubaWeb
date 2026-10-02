@@ -109,46 +109,43 @@ export class NuevaSubastaModalComponent implements OnInit {
       this.currentTabIndex++;
     } else {
       if (this.isValidModelSubasta() && this.isValidNoNegativeValues()) {
-        // this.ss.showNotification('success', 'todo correcto')
-        let userData = this.authService.getUserData();
         this.subasta.imagenes = this.getClearBase64(this.subasta.imagenes);
         if (this.tipoSubasta === 'premium') {
-          const partes = this.tarjetaExpiracion.split('/');
-          if (partes.length !== 2) {
-            this.ss.showNotification('warning', 'La fecha de expiración no es válida');
-            return;
-          }
+          this.procederRegistroSubastaPremium();
+          // const partes = this.tarjetaExpiracion.split('/');
+          // if (partes.length !== 2) {
+          //   this.ss.showNotification('warning', 'La fecha de expiración no es válida');
+          //   return;
+          // }
 
-          this.tarjeta.expiration_month = partes[0] ?? '';
-          this.tarjeta.expiration_year = partes[1] ?? '';
-          if (this.checkDataPago()) {
-            // if(!this.subasta.valorOferta || this.subasta.valorOferta === undefined || this.subasta.valorOferta <= 0){
-            //   this.ss.showNotification('warning','El incremento de oferta no es valido');
-            //   return;
-            // }
-            this.subasta.premium = true;
-            this.loading = true;
-            if (this.selectedCard.id) {
-              this.setComprobanteModel();
-              let d_id = this.ss.getDeviceSessionID();
-              let metodoPagoDescripcion = `Tarjeta • ${this.selectedCard.brand} • **** ${this.selectedCard.card_number}`;
-              this.modeloComprobante.metodoPago = metodoPagoDescripcion;
-              this.textoLoading = 'Procesando pago...'
-              this.GenerarCargo('', d_id, this.selectedCard.id)
-              console.log(d_id)
+          // this.tarjeta.expiration_month = partes[0] ?? '';
+          // this.tarjeta.expiration_year = partes[1] ?? '';
 
-            } else {
-              this.tokenizarTarjeta(this.tarjeta);
-            }
-            // this.tokenizarTarjeta();
-          }
+          // if (this.checkDataPago()) {
+          //   // if(!this.subasta.valorOferta || this.subasta.valorOferta === undefined || this.subasta.valorOferta <= 0){
+          //   //   this.ss.showNotification('warning','El incremento de oferta no es valido');
+          //   //   return;
+          //   // }
+          //   this.subasta.premium = true;
+          //   this.loading = true;
+          //   if (this.selectedCard.id) {
+          //     this.setComprobanteModel();
+          //     let d_id = this.ss.getDeviceSessionID();
+          //     let metodoPagoDescripcion = `Tarjeta • ${this.selectedCard.brand} • **** ${this.selectedCard.card_number}`;
+          //     this.modeloComprobante.metodoPago = metodoPagoDescripcion;
+          //     this.textoLoading = 'Procesando pago...'
+          //     this.GenerarCargo('', d_id, this.selectedCard.id)
+          //     console.log(d_id)
+
+          //   } else {
+          //     this.tokenizarTarjeta(this.tarjeta);
+          //   }
+          //   // this.tokenizarTarjeta();
+          // }
         } else {
-
+          this.procederRegistroSubasta()
           // if(this.checkDataSubasta()){
-          this.subasta.premium = false;
-          // this.subasta.valorOferta = this.subasta.apuesta! < 100 ? 50:100;
-          this.loading = true;
-          this.saveNewSubasta();
+
           // }
         }
       }
@@ -163,6 +160,45 @@ export class NuevaSubastaModalComponent implements OnInit {
 
       //console.log(this.subasta.mimagenesSubasta);
 
+    }
+  }
+
+  procederRegistroSubasta() {
+    this.subasta.premium = false;
+    // this.subasta.valorOferta = this.subasta.apuesta! < 100 ? 50:100;
+    this.loading = true;
+    this.saveNewSubasta();
+  }
+
+  procederRegistroSubastaPremium() {
+    const partes = this.tarjetaExpiracion.split('/');
+    if (partes.length !== 2) {
+      this.ss.showNotification('warning', 'La fecha de expiración no es válida');
+      return;
+    }
+
+    this.tarjeta.expiration_month = partes[0] ?? '';
+    this.tarjeta.expiration_year = partes[1] ?? '';
+
+    if (this.checkDataPago()) {
+      // if(!this.subasta.valorOferta || this.subasta.valorOferta === undefined || this.subasta.valorOferta <= 0){
+      //   this.ss.showNotification('warning','El incremento de oferta no es valido');
+      //   return;
+      // }
+      this.subasta.premium = true;
+      this.loading = true;
+      if (this.selectedCard.id) {
+        this.setComprobanteModel();
+        let d_id = this.ss.getDeviceSessionID();
+        let metodoPagoDescripcion = `Tarjeta • ${this.selectedCard.brand} • **** ${this.selectedCard.card_number}`;
+        this.modeloComprobante.metodoPago = metodoPagoDescripcion;
+        this.textoLoading = 'Procesando pago...'
+        this.GenerarCargo('', d_id, this.selectedCard.id)
+        console.log(d_id)
+      } else {
+        this.tokenizarTarjeta(this.tarjeta);
+      }
+      // this.tokenizarTarjeta();
     }
   }
 
@@ -445,9 +481,9 @@ export class NuevaSubastaModalComponent implements OnInit {
     setTimeout(() => {
       let dataParams = JSON.stringify({ 'id': -1, 'tid': response.id, 'tu': 'comprador', 'rt': response.payment_method.url, 'mtap': true });
       let encoded = this.ss.encodeToBase64(dataParams);
+      console.log(this.subasta);
       this.closeModal();
       this.router.navigate(['/payment-callback', encoded]);
-
     }, 100);
   }
 
@@ -568,21 +604,17 @@ export class NuevaSubastaModalComponent implements OnInit {
   isValidModelSubasta() {
     let isValid = true;
     this.subasta.entregaSucursal = this.tipoEntrega === 'sucursal' ? true : false;
+    console.log(this.subasta.horaRecolecta)
     if (this.tipoEntrega === 'domicilio') {
-      // this.subasta.horaRecolecta = this.horaRecolecta + ':00';
-      console.log('hora de recoleccion')
-      console.log(this.horaRecolecta)
-      if (
-        this.horaRecolecta! < '09:00' ||
-        this.horaRecolecta! > '18:00'
-      ) {
-        this.ss.showNotification(
-          'warning',
-          'La hora de recolecta debe estar entre las 9:00 AM y las 6:00 PM.'
-        );
+      if (!this.subasta.horaRecolecta || this.subasta.horaRecolecta === '') {
+        this.ss.showNotification('warning', 'Seleccione una hora de recoleccion');
         return false;
       }
-
+      console.log(this.subasta.horaRecolecta)
+      if (!this.estaEnRangoHorario(9, 18, this.subasta.horaRecolecta!)) {
+        this.ss.showNotification('warning', 'La hora de recolecta debe estar entre las 9:00 AM y las 6:00 PM.');
+        return false;
+      }
     }
 
     this.subasta.horas = this.tipoSubasta === 'premium' ? this.subasta.horas : 100;
@@ -591,7 +623,7 @@ export class NuevaSubastaModalComponent implements OnInit {
     }
     let result = this.ss.isValidModelV2(this.subasta, ['url', 'horaRecolecta']);
     if (!result.valid) {
-      let texto = result.prop === 'mimagenesSubasta' ? 'Seleccione al menos una imagen' : `Informacion faltante: ${result.prop}`;
+      let texto = result.prop === 'imagenes' ? 'Seleccione al menos una imagen' : `Informacion faltante: ${result.prop}`;
       this.ss.showNotification('warning', texto, 6000);
       isValid = false;
       // return;
@@ -599,6 +631,12 @@ export class NuevaSubastaModalComponent implements OnInit {
     return isValid;
   }
 
+  estaEnRangoHorario(horaMinima: number, horaMaxima: number, horaSeleccionada: string): boolean {
+    const [horas, minutos] = horaSeleccionada.split(':').map(Number);
+    const seleccionEnMinutos = horas * 60 + minutos;
+
+    return seleccionEnMinutos >= horaMinima * 60 && seleccionEnMinutos <= horaMaxima * 60;
+  }
 
 
   setComprobanteModel() {
