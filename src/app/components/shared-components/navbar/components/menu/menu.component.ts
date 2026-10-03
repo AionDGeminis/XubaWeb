@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { SubmenuComponent } from './submenu/submenu.component';
 import { Router } from '@angular/router';
 import { NuevaSubastaModalComponent } from '../../../modals/nueva-subasta-modal/nueva-subasta-modal.component';
+import { LocalSignalsService } from '../../../../../services/localsignals.service';
 
 @Component({
   selector: 'app-menu',
@@ -44,7 +45,7 @@ export class MenuComponent {
     private ss: SharedService,
     private subastaService: SubastasService,
     private router: Router,
-
+    private lss: LocalSignalsService,
     // private auctionService: AuctionService,
     // private openPayService: OpenPayService,
     // private location: Location,
@@ -174,4 +175,11 @@ export class MenuComponent {
     this.closeSubmenu();
     this.closeHiddenMenu();
   }
+
+  changeCurrentTipoSubastaIndexHome(tipo: number) {
+    this.lss.changeCurrentHomeIndex(tipo);
+    this.closeHiddenMenu();
+  }
+
+
 }

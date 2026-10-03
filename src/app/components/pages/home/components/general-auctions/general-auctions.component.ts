@@ -40,28 +40,33 @@ export class GeneralAuctionsComponent implements OnInit {
   }
 
   @Input() tipoSeccion = '';
-
+  tipoSubastas: 'todas' | 'premium' | 'porvencer' = 'todas';
   @Output() abrirDetalle = new EventEmitter<{ subasta: Subasta, lista: Subasta[], origen: string }>();
 
   ngOnInit(): void {
-    let tipoSubasta: any = 'todas';
+    this.tipoSubastas = 'todas';
     switch (this.tipoSeccion) {
       case 'SubastasPremium':
         this.mainTitle = 'Xubastas PREMIUM';
-        tipoSubasta = 'premium';
+        this.tipoSubastas = 'premium';
         break;
       case 'SubastasExpress':
         this.mainTitle = 'Xubastas EXPRESS';
-        tipoSubasta = 'porvencer';
+        this.tipoSubastas = 'porvencer';
         break;
       default:
         this.mainTitle = 'Xubastas GENERALES';
-        tipoSubasta = 'todas';
+        this.tipoSubastas = 'todas';
         break;
 
     }
 
     this.cargarMasSubastas()
+  }
+
+  returnToGeneral() {
+    this.tipoSeccion = '';
+    this.lss.changeCurrentHomeIndex(0);
   }
 
   setTimer(litaItems: any[]) {
@@ -206,7 +211,7 @@ export class GeneralAuctionsComponent implements OnInit {
 
     this.cargandoMas = true;
 
-    this.subastaService.getAuctions('todas').subscribe({
+    this.subastaService.getAuctions(this.tipoSubastas).subscribe({
       next: (respuesta) => {
 
         const nuevas = respuesta.filter(

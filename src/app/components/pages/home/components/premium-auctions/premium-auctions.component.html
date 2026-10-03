@@ -1,4 +1,4 @@
-<div class="mt-4 text-center">
+<div class="mt-4 text-center animate__animated animate__fadeIn">
   <div class="pl-2 pt-2 w-100 d-flex justify-content-between mb-3 pb-1"
     style=" color: #616160; border-bottom: 1px solid #D4367A;">
 
@@ -71,10 +71,11 @@
     >
       >
     </div> -->
-<div style="position: relative;">
+<div style="position: relative;" class="contenedor-items" #contenedor
+  (scroll)="verificarScroll(contenedorRef.nativeElement)">
   <button class="btn btn-sm custom-arrow left-arrow" (click)="prev()">&lt;</button>
   <button class="btn btn-sm custom-arrow right-arrow" (click)="next()">&gt;</button>
-  <div class="carousel-wrapper">
+  <div class="carousel-wrapper animate__animated animate__fadeInLeft">
 
     <!--<button class="left" (click)="prev()">&lt;</button>-->
 
@@ -163,7 +164,7 @@
               <div class="ribbon-label" [ngClass]="{'ribbon-label-nuevo': subasta.nuevo, 'ribbon-label-usado':  !subasta.nuevo}">
                 {{ subasta.nuevo ? 'Nuevo' : 'Usado' }}
               </div>
-              <!-- <div class="ribbon-label">Nuevo</div> 
+              <div class="ribbon-label">Nuevo</div> 
             </div> 
           </ng-template>
         </ng-container>

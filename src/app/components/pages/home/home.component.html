@@ -287,7 +287,8 @@
       <app-general-auctions *ngIf="!terminoBusqueda" (abrirDetalle)="abrirDetalle($event)"></app-general-auctions>
     </div>
   </div>
-  <div class="col-sm-10" *ngIf="currentHomeIndex === 1">
+
+  <div class="col-sm-12" *ngIf="currentHomeIndex === 1">
     <app-loader *ngIf="loading"></app-loader>
     <div class="col-sm-12 mt-3">
       <app-search-auctions [tipoSeccion]="'SubastasPremium'" *ngIf="terminoBusqueda" [terminoBusqueda]="terminoBusqueda"
@@ -296,7 +297,8 @@
         (abrirDetalle)="abrirDetalle($event)"></app-general-auctions>
     </div>
   </div>
-  <div class="col-sm-10" *ngIf="currentHomeIndex === 2">
+
+  <div class="col-sm-12" *ngIf="currentHomeIndex === 2">
     <app-loader *ngIf="loading"></app-loader>
     <div class="col-sm-12 mt-3">
       <app-search-auctions [tipoSeccion]="'SubastasExpress'" *ngIf="terminoBusqueda" [terminoBusqueda]="terminoBusqueda"
