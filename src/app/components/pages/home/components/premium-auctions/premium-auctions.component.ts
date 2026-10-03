@@ -94,6 +94,7 @@ export class PremiumAuctionsComponent implements OnInit, AfterViewInit {
     this.pagina = 1;
     this.subastaService.getAuctions('premium', 0, this.pagina).subscribe({
       next: (data) => {
+        console.log(data)
         this.premium = data;
         for (let p of this.premium) {
           p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);

@@ -5,32 +5,29 @@ import { Subasta } from '../models/subasta.model';
   providedIn: 'root'
 })
 export class LocalSignalsService {
-  
-    triggerFunction = signal(false);
-    triggerFunctionID = signal(-1);
-    triggerToogleFollowedG = signal(-1);
 
-//   subastaSeleccionada = signal<Subasta | null>(null);
+  triggerFunction = signal(false);
+  triggerFunctionID = signal(-1);
+  triggerToogleFollowedG = signal(-1);
+  currentHomeIndex = signal(0);
+
+  //   subastaSeleccionada = signal<Subasta | null>(null);
   constructor() { }
 
-  ejecutarFuncion(){
+  ejecutarFuncion() {
     this.triggerFunction.set(true);
   }
 
-  ejecutarFuncionByID(id: number){
+  ejecutarFuncionByID(id: number) {
     this.triggerFunctionID.set(id);
   }
 
-  toogleFollowedIDG(id: number){
+  toogleFollowedIDG(id: number) {
     this.triggerToogleFollowedG.set(id);
   }
-//   abrir(subasta: Subasta) {
-//     if (this.subastaSeleccionada() !== subasta) {
-//       this.subastaSeleccionada.set(subasta);
-//     }
-//   }
 
-//   cerrar() {
-//     this.subastaSeleccionada.set(null);
-//   }
+  changeCurrentHomeIndex(index: number) {
+    this.currentHomeIndex.set(index);
+  }
+
 }

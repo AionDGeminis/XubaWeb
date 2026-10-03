@@ -17,6 +17,7 @@ import { initDataRegistrarSubasta, RegistrarSubasta } from '../../../models/regi
 import { NuevaSubastaModalComponent } from '../modals/nueva-subasta-modal/nueva-subasta-modal.component';
 import { SubmenuComponent } from './components/menu/submenu/submenu.component';
 import { MenuComponent } from './components/menu/menu.component';
+import { LocalSignalsService } from '../../../services/localsignals.service';
 declare var OpenPay: any;
 
 // interface ISubasta {

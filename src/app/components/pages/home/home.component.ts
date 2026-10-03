@@ -118,11 +118,12 @@ export class HomeComponent implements OnInit {
   title = 'XUBA';
   public usuario!: Signal<Usuario | null>;
   public isLoggedIn!: Signal<boolean>;
+  public currentHomeIndex!: number;
   @Output() close = new EventEmitter<void>();
   openModal: boolean = false;
   openModalPoliticas: boolean = false;
   openModalResetPassword: boolean = false;
-  currentHomeIndex = 0;
+  // currentHomeIndex = 0;
   menuVisible = false;
   mostrarNoti = false;
   mostrarRegistro = false;
@@ -234,11 +235,12 @@ export class HomeComponent implements OnInit {
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document) {
     effect(() => {
-      if (this.lss.triggerFunction()) {
-        // this.miFuncion();
-        this.getSubastasSeguidas();
-        this.lss.triggerFunction.set(false);
-      }
+      // if (this.lss.triggerFunction()) {
+      //   // this.miFuncion();
+      //   this.getSubastasSeguidas();
+      //   this.lss.triggerFunction.set(false);
+      // }
+      this.checkForSignalChanges();
     });
     this.checkNavigation();
     // this.checkTheme();
@@ -262,7 +264,7 @@ export class HomeComponent implements OnInit {
       // this.getInformacionUsuario(this.usuario()!.id);
     }
 
-    effect(() => console.log('¿Está logueado?', this.isLoggedIn()));
+    // effect(() => console.log('¿Está logueado?', this.isLoggedIn()));
     this.subasta = {
       id: 0,
       caption: '',
@@ -331,6 +333,15 @@ export class HomeComponent implements OnInit {
     // this.auctions.splice(index, 1);
     // this.classAsideItem = 'animate__fadeOutLeft'
 
+  }
+
+  checkForSignalChanges() {
+    if (this.lss.triggerFunction()) {
+      // this.miFuncion();
+      this.getSubastasSeguidas();
+      this.lss.triggerFunction.set(false);
+    }
+    this.currentHomeIndex = this.lss.currentHomeIndex();
   }
 
   // checkTheme(){
@@ -1096,7 +1107,7 @@ export class HomeComponent implements OnInit {
   }
 
   changeHomeIndex(index: number) {
-    this.currentHomeIndex = index;
+    // this.currentHomeIndex = index;
   }
 
 

@@ -2,14 +2,19 @@
   <!-- <h2 class="" style="text-align: center; color: #616160; font-family: Gobold;font-size: 20px;" >
     {{mainTitle}}
   </h2> -->
+  <div *ngIf="tipoSeccion !== ''">
+    <button class="btn btn-dark badge ms-2 text-white" (click)="returnToGeneral()"><i class="fas fa-home"></i>
+      Volver</button>
+  </div>
   <div class="pl-2 pt-2 w-100 d-flex justify-content-between mb-3 pb-1"
     style=" color: #616160; font-family: Gobold;font-size: 16px;border-bottom: 1px solid #D4367A; ">
 
-    <h2 style="font-family: Gobold;font-size: 1.2em;"> Xubastas GENERALES</h2>
+    <h2 style="font-family: Gobold;font-size: 1.2em;"> {{mainTitle}}</h2>
     <span>{{generales.length}} resultados</span>
+
   </div>
   <!-- <hr> -->
-  <div class="seguimiento-container">
+  <div class="seguimiento-container animate__animated animate__fadeIn">
     @if (generales.length > 0) {
     <div class="contenedor-subastas-generales d-sm-grid d-none">
       @for ( subasta of generales; track subasta.id) {
