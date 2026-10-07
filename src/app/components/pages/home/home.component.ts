@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { BusquedaService } from '../../../services/busqueda.service';
-import { Usuario, Subasta } from '../../../models/subasta.model';
+import { Subasta } from '../../../models/subasta.model';
 // import { Toast } from 'ngx-toastr';
 import Swal from 'sweetalert2'
 import { SubastasService } from '../../../services/subastas.service';
@@ -21,6 +21,7 @@ import { XpressAuctionsComponent } from './components/xpress-auctions/xpress-auc
 import { GeneralAuctionsComponent } from './components/general-auctions/general-auctions.component';
 import { PremiumAuctionsComponent } from './components/premium-auctions/premium-auctions.component';
 import { SearchAuctionsComponent } from './components/search-auctions/search-auctions.component';
+import { Usuario } from '../../../models/usuario-model';
 declare var OpenPay: any;
 
 interface ISubasta {

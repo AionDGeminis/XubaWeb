@@ -41,6 +41,14 @@
   /* Asegura que quede en la ventana */
 }
 
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #808e9b;
+  opacity: 0.8;
+  font-weight: 600;
+}
+
 .toast-top-center .ngx-toastr {
   display: inline-block;
   background-color: rgba(0, 0, 0, 0.85);

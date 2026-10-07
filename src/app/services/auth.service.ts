@@ -1,10 +1,10 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Usuario } from '../models/subasta.model';
 import { map, Observable, tap } from 'rxjs';
 import { environment as env, headers, auth_headers, test_headers } from '../environment/environment';
 import { SharedService } from './shared.service';
 import pa from '@angular/common/locales/pa';
+import { Usuario } from '../models/usuario-model';
 
 
 // const API_BASE_URL = (window as any).apiBaseUrl;

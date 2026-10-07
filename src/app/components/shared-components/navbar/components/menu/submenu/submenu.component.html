@@ -1,5 +1,5 @@
-<div [class]="'bg-info h-100 submenu-hide fast-animation animate__animated ' +hiddenMenuClass "
-    (click)="$event.stopPropagation()">
+<div [class]="'bg-info h-100 fast-animation animate__animated ' +hiddenMenuClass " (click)="$event.stopPropagation()"
+    [ngClass]="{'submenu-hide': !fromResponsive, 'submenu-hide-responsive': fromResponsive}">
     <div class="secondary-panel">
         <div class="secondary-header">
             <h3 class="secondary-title">{{titulo}} <span class="count-pill">{{currentListResult.length}}</span></h3>
@@ -73,3 +73,7 @@
         </div>
     </div>
 </div>
+
+<!-- <div>
+
+</div> -->

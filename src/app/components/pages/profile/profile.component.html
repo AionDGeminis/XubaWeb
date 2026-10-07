@@ -1,7 +1,78 @@
 <app-loader *ngIf="loading"></app-loader>
 
+<header class="profile-banner">
+  <div class="profile-banner__inner">
+
+    <!-- Avatar -->
+    <!-- <div class="pb-avatar">
+      <span>FV</span>
+      <button type="button" class="pb-avatar__btn" aria-label="Cambiar foto">
+        <i class="fas fa-camera"></i>
+      </button>
+    </div> -->
+    <div class="pb-avatar">
+      <div class="profile-avatar">
+        <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
+      </div>
+      <label class="btn btn-sm btn-light btn-circle pt-2" style="position: absolute;right: -20%;bottom:-25%;">
+        <input type="file" accept="image/*" (change)="onFileChange($event)" hidden />
+        <i class="fas fa-camera"></i>
+      </label>
+    </div>
+
+
+    <!-- Identidad -->
+    <div class="pb-info">
+      <span class="pb-label">Mi perfil</span>
+      <h1 class="pb-name">{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h1>
+      <p class="pb-meta">{{arroba}}{{infoUsuario.usuario}} · {{infoUsuario.correo}}</p>
+    </div>
+
+    <!-- Requisitos -->
+    <div class="pb-reqs">
+      <div class="pb-reqs__head">
+        <span class="pb-label">Requisitos para xubastar</span>
+        <strong>2/4</strong>
+      </div>
+
+      <div class="pb-progress">
+        <div class="pb-progress__bar" style="width: 50%;"></div>
+      </div>
+
+      <ul class="pb-reqs__list">
+        <li>
+          <button type="button" class="pb-req pb-req--done">
+            <i class="fas fa-check"></i>
+            <span>Teléfono registrado</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="pb-req pb-req--done">
+            <i class="fas fa-check"></i>
+            <span>Dirección predeterminada</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="pb-req">
+            <i class="fas fa-circle"></i>
+            <span>Cuenta CLABE para retiros</span>
+            <i class="fas fa-arrow-right pb-req__go"></i>
+          </button>
+        </li>
+        <li>
+          <button type="button" class="pb-req">
+            <i class="fas fa-circle"></i>
+            <span>Datos fiscales completos</span>
+            <i class="fas fa-arrow-right pb-req__go"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</header>
 <div class="profile-container  fast-animation  animate__animated animate__fadeInRight">
-  <div class="profile-sidebar d-none d-sm-flex" style="position: relative;">
+  <!-- <div class="profile-sidebar d-none d-sm-flex" style="position: relative;">
     <div class="profile-avatar">
       <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario">
     </div>
@@ -28,9 +99,11 @@
       </div>
     </div>
 
-  </div>
+  </div> -->
 
-  <div class="profile-sidebar d-sm-none d-block text-center" style="position: relative;">
+
+
+  <!-- <div class="profile-sidebar d-sm-none d-block text-center" style="position: relative;">
     <div class="w-100 profile-xs-container">
       <div class="profile-avatar-xs d-block m-auto">
         <img [src]="imageProfileSrc || 'assets/default-avatar.png'" alt="Foto de usuario" class="d-block m-auto">
@@ -40,10 +113,10 @@
     <h2>{{infoUsuario.nombre}} {{infoUsuario.apellido}}</h2>
     <p class="profile-role">{{infoUsuario.usuario ?? 'ND'}}</p>
     <p class="profile-email">{{infoUsuario.correo}}</p>
-    <!-- <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
+    <button *ngIf="updatingImage" class="btn-edit-photo" (click)="editImgPerfil()">
         <i class="fas fa-upload"></i> Guardar cambio
-      </button> -->
-  </div>
+      </button>
+  </div> -->
 
   <!-- Panel derecho: Información editable -->
   <div class="profile-main">
@@ -81,7 +154,7 @@
     <ng-container *ngIf="tabIndex === 0">
       <div class="profile-card" style="position: relative;">
         <!-- <app-loader *ngIf="loading"></app-loader> -->
-        <h3 c>Datos personales</h3>
+        <h3 class="section-title f-arial">Datos personales</h3>
         <form>
           <div class="form-row">
             <div class="form-group">
@@ -117,7 +190,7 @@
             </div>
           </div>
           <button (click)="saveInfoChange()"
-            class="tw:flex tw:items-center b-radius-1 tw:gap-2 bg-xuba1 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
+            class="tw:flex tw:items-center btn-pill b-radius-1 tw:gap-2 bg-xubav2 tw:text-white tw:font-semibold f-arial smaller-txt tw:px-5 tw:py-2.5 tw:rounded-full tw:shadow-md tw:hover:shadow-lg tw:hover:scale-105 tw:transition-all tw:duration-200 tw:cursor-pointer">
             <i class="fas fa-save tw:text-xs"></i>
             Guardar cambios
           </button>
@@ -127,7 +200,7 @@
       <!-- Direcciones -->
       <div class="profile-card">
         <div class="header-row">
-          <h3>
+          <h3 class="section-title f-arial">
             <i class="fas fa-map"></i>
             Direcciones
           </h3>
@@ -137,11 +210,11 @@
           </button>
         </div>
         <hr>
-        <table class="table table-striped w-100">
-          <tr>
-            <th>Direccion</th>
+        <table class="table table-striped w-100 xuba-table">
+          <tr class="table-header-xuba1">
+            <th class="left-corner">Direccion</th>
             <th class="text-center">Default</th>
-            <th>Acciones</th>
+            <th class="right-corner">Acciones</th>
           </tr>
           <tr *ngFor="let d of infoUsuario.direcciones">
             <td class="w-70 bbtd tddir">{{d.calle}} #{{d.numeroExt}}, {{d.municipio}}</td>
@@ -152,10 +225,10 @@
               </span>
 
             </td>
-            <td class="w-10 text-center bbtd">
-              <button class="btn btn-sm bg-info text-white me-1" (click)="openEditModal('direccion', direccion, d)"><i
+            <td class="w-10 text-center bbtd pt-1 pb-1">
+              <button class="btn btn-xs bg-info text-white me-1" (click)="openEditModal('direccion', direccion, d)"><i
                   class="fas fa-edit"></i> </button>
-              <button class="btn btn-sm bg-danger text-white" (click)="eliminarDireccion(d.id)"><i
+              <button class="btn btn-xs bg-danger text-white" (click)="eliminarDireccion(d.id)"><i
                   class="fas fa-trash"></i> </button>
             </td>
           </tr>
@@ -167,21 +240,59 @@
       <!-- Reclamos abiertos -->
       <div class="profile-card">
         <div class="d-flex between">
-          <h3>Reclamos abiertos</h3>
+          <h3 class="section-title f-arial">Reclamos abiertos</h3>
 
           <button class="btn-sm btn-secondary" (click)="openModal('disputa')">
             <i class="fas fa-plus"></i>
             Reclamo
           </button>
         </div>
+        <hr>
+        <table class="table table-striped w-100 xuba-table">
+          <tr class="table-header-xuba1">
+            <th class="w-10 tw:text-center left-corner">No.</th>
+            <th class="w-10  tw:text-center">Categoria</th>
+            <th class="w-10 tw:text-center">Asunto</th>
+            <th class="w-20 tw:text-center">Descripcion</th>
+            <th class="w-20 tw:text-center">Estatus</th>
+            <th class="w-10 tw:text-center right-corner">Acciones</th>
+          </tr>
+          <tr *ngFor="let d of infoUsuario.reclamos">
+            <td>#{{d.idReclamo}}</td>
+            <td>
+              {{d.categoria}}
+              <!-- <span style="font-size: 0.7em;border: none;" class="tw:badge tw:badge-sm smaller-txt"
+                [ngClass]="{'label-default': d.predeterminada, 'label-n-default':!d.predeterminada}">
+                {{d.predeterminada ? 'SI' : 'NO'}}
+              </span> -->
 
-        <ul class="claim-list">
-          <li *ngFor="let rec of listaReclamosAbiertos">
-            #{{rec.idReclamo}} - {{rec.categoria}} [{{rec.caption}}]
+            </td>
+            <td>
+              {{d.asunto}}
+            </td>
+            <td>
+              {{d.descripcion}}
+            </td>
+            <td>
+              {{d.desStatus}}
+            </td>
+            <td class="pt-1">
+              <button class="btn btn-xs bg-info text-white me-1" (click)="openEditModal('direccion', direccion, d)"><i
+                  class="fas fa-edit"></i> </button>
+              <button class="btn btn-xs bg-danger text-white" (click)="eliminarDireccion(d.id)"><i
+                  class="fas fa-trash"></i> </button>
+            </td>
+          </tr>
+        </table>
+        <!-- <ul class="claim-list">
+          <li *ngFor="let rec of infoUsuario.reclamos">
+            #{{rec.idReclamo}} - {{rec.categoria}} [{{rec.asunto}}]: {{rec.descripcion}}
+            <span class="badge bg-xuba1">{{rec.desStatus}}</span>
+            <span class="badge bg-info">{{rec.tipoReclamo}}</span>
             <span>
             </span>
           </li>
-        </ul>
+        </ul> -->
 
       </div>
     </ng-container>
@@ -275,7 +386,7 @@
               <td>{{toCurrency(subasta.apuesta)}}</td>
               <td>{{formatTimeString(subasta.remaining!)}}</td>
               <td>
-                <span class="status-lbl f-arial" [style]="'background:'+ subasta.bg">{{subasta.desStatus}}</span>
+                <span class="status-lbl f-arial bg-info">{{subasta.desStatus}}</span>
               </td>
               <td>
                 <button (click)="openSubastaDetalle(subasta)"
@@ -596,8 +707,8 @@
               <th>CLABE Interbancaria</th>
               <th class="text-end">Acciones</th>
             </tr>
-            <tr *ngFor="let cc of cuentasClabe">
-              <td class="w-30 bbtd">{{cc.cuentaClabe}}</td>
+            <tr>
+              <td class="w-30 bbtd">{{infoUsuario.cuentaClabe}}</td>
               <td class="w-10 text-end bbtd">
                 <button class="btn btn-sm btn-info me-1"><i class="fas fa-edit"></i> </button>
               </td>
@@ -1260,7 +1371,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="precio">CLABE Interbancaria</label>
-              <input type="text" [(ngModel)]="cuentaClabeUsuario.cuentaClabe" id="clabe" name="clabe" />
+              <input type="text" [(ngModel)]="cuentaClabeUsuario.cuentaClabe" maxlength="18" id="clabe" name="clabe" />
             </div>
           </div>
         </form>
@@ -1272,7 +1383,7 @@
         <button [disabled]="loading" class="btn btn-xuba-cancel me-2" (click)="closeModal('clabe')">
           Cancelar
         </button>
-        <button [disabled]="loading" class="btn btn-xuba btn-add-cart" (click)="saveCuentaClabe()">
+        <button [disabled]="loading" class="btn btn-xuba btn-pill btn-add-cart" (click)="saveCuentaClabe()">
           <i class="fa fa-save"></i> Guardar
         </button>
       </div>

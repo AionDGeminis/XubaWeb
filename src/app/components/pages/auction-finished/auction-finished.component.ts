@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { SubastasService } from '../../../services/subastas.service';
-import { Subasta, Usuario } from '../../../models/subasta.model';
+import { Subasta } from '../../../models/subasta.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedService } from '../../../services/shared.service';
@@ -15,6 +15,7 @@ import { AnyuserViewComponent } from './views/anyuser-view/anyuser-view.componen
 import { SellerViewComponent } from './views/seller-view/seller-view.component';
 import { environment } from '../../../environment/environment';
 import { OpenPayService } from '../../../services/openpay.service';
+import { Usuario } from '../../../models/usuario-model';
 declare var OpenPay: any;
 
 @Component({

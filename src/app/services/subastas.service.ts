@@ -264,7 +264,7 @@ export class SubastasService {
   // }
 
   getListaSubastasForReclamos(idUser: number) {
-    return this.http.get<any>(`${env.base_url}/Subastas/ConsultarMisSubastasEntregadas/${idUser}`, { headers: test_headers }).pipe(map(res => res));
+    return this.http.get<any>(`${env.base_url}/Subastas/ConsultarMisSubastasEntregadas`, { headers: test_headers }).pipe(map(res => res));
   }
 
   getListaReclamosByUser(idUser: number) {

@@ -112,7 +112,7 @@
     </div>
   </div>
 </nav>
-<div class="sub-navbar v-c">
+<div class="sub-navbar v-c d-none d-sm-flex">
 
   <span class="h-100 v-c px-3">
     <i class="fas fa-home me-1"></i> Home
@@ -126,6 +126,22 @@
   <span class="h-100  v-c px-3">
     <i class="fas fa-cogs me-1"></i> Configuracion
   </span>
+</div>
+
+<div class="sub-navbar-xs  v-c d-flex d-sm-none">
+
+  <span class="h-100 v-c px-3">
+    <i class="fas fa-home me-1"></i> Home
+  </span>
+  <span class="h-100 v-c px-3">
+    <i class="fas fa-user me-1"></i> Perfil
+  </span>
+  <span class="h-100  v-c px-3">
+    <i class="fas fa-bell me-1"></i> Notificaciones
+  </span>
+  <!-- <span class="h-100  v-c px-3">
+    <i class="fas fa-cogs me-1"></i> Config
+  </span> -->
 </div>
 
 <div *ngIf="showHiddenMenu" (click)="fnToggleMenu()"

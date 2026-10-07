@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, Signal, SimpleChanges, ViewChild } from '@angular/core';
-import { Subasta, Usuario } from '../../../../../models/subasta.model';
+import { Subasta } from '../../../../../models/subasta.model';
 import { CommonModule } from '@angular/common';
 import { SafeUrlPipe } from "../../../../../pipes/safeurl";
 import { SharedService } from '../../../../../services/shared.service';
@@ -13,6 +13,7 @@ import { SignalRChatService } from '../../../../../services/signalrchat.service'
 import { CotizacionPaqueteriaModel } from '../../../../../models/cotizacion-model';
 import { AuthService } from '../../../../../services/auth.service';
 import { PaymentComponent } from '../../../../shared-components/modals/payment/payment.component';
+import { Usuario } from '../../../../../models/usuario-model';
 
 @Component({
   selector: 'app-seller-view',

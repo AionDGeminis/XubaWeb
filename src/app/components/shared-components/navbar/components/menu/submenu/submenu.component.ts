@@ -19,6 +19,7 @@ export class SubmenuComponent implements OnInit {
   @Output() closeAllMenu = new EventEmitter<void>();
   @Input() tipoCarga: string = '';
   @Input() titulo: string = '';
+  @Input() fromResponsive: boolean = false;
   hiddenMenuClass = 'animate__fadeInLeft';
   showHiddenMenu: boolean = false;
   currentListResult: any[] = [];

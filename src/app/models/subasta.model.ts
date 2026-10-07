@@ -1,27 +1,11 @@
+import { Usuario } from "./usuario-model";
+
 // src/app/models/subasta.model.ts
 export interface ImagenSubasta {
   idSubasta: number;
   url: string;
 }
 
-export interface Usuario {
-  id: number;
-  nombre: string;
-  apellido: string;
-  imgPerfil: string;
-  creado?: Date;
-  telefono: string;
-  mensaje: string;
-  correo: string;
-  contra: string;
-  auth: boolean;
-  stars: number;
-  registrado: boolean;
-  subastasActivas: number;
-  codigoPostal: string;
-  usuario: string;
-  token: string;
-}
 
 export interface Subasta {
   id: number;
@@ -104,3 +88,38 @@ export interface Imagen {
   idImagen: number;
   url: string;
 }
+
+export function initDataDetalleSubasta(): DetalleSubasta {
+  return {
+    id: -1,
+    cveStatus: '',
+    caption: '',
+    descripcion: '',
+    ofertaActual: 0,
+    valorOferta: 0,
+    largo: 0,
+    ancho: 0,
+    profundidad: 0,
+    peso: 0,
+    marca: '',
+    modelo: '',
+    nuevo: true,
+    idVendedor: 0,
+    usuarioVendedor: '',
+    fotoVendedor: '',
+    estado: '',
+    municipio: '',
+    codigoPostal: '',
+    tiempoVence: '',
+    vistas: 0,
+    ofertas: 0,
+    imagenes: [],
+    compraDirecta: false,
+    precio: 0,
+    esMiSubasta: false,
+    urlGuia: ''
+  };
+}
+
+
+

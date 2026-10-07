@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../shared-components/loader/loader.component';
 import { CommonModule } from '@angular/common';
 import { SubastasService } from '../../../services/subastas.service';
-import { Subasta, Usuario } from '../../../models/subasta.model';
+import { Subasta } from '../../../models/subasta.model';
 import { AuthService } from '../../../services/auth.service';
 import { AddressesService } from '../../../services/addresses.service';
 import { SharedService } from '../../../services/shared.service';
@@ -19,6 +19,7 @@ import { DatosFiscalesService } from '../../../services/datos-fiscales.service';
 import { ConsultaDatosUsuarioDTO } from '../../../models/profile';
 import { ProfileService } from '../../../services/profile.service';
 import { PagoSubastaTicketComponent } from '../../shared-components/tickets/pago-subasta-ticket/pago-subasta-ticket.component';
+import { Usuario } from '../../../models/usuario-model';
 
 declare var OpenPay: any;
 
@@ -337,6 +338,7 @@ export class ProfileComponent implements OnInit {
   selectedTipoSubasta: any = {}
   totalSubastasPorRevisar: number = 0;
   showModalComprobante: boolean = false;
+  arroba = '@'
   constructor(private router: Router, private subastasService: SubastasService, private authService: AuthService, private addressService: AddressesService,
     private datosFiscalesService: DatosFiscalesService, private profileService: ProfileService, private ss: SharedService, private http: HttpClient, private openPayService: OpenPayService) {
     this.checkNavigation();
@@ -413,6 +415,7 @@ export class ProfileComponent implements OnInit {
         this.checkListSubastar = response.checkList;
         this.datosFiscales = response.datosFiscales;
         this.checkCurrentMainIndexPage();
+        this.getListaReclamosAbiertos();
       },
       error: (err: any) => {
         this.loading = false;
@@ -717,7 +720,7 @@ export class ProfileComponent implements OnInit {
     console.log(this.intervalId);
     console.log('buscar gp')
     console.log(this.currentTipoSubasta)
-    this.subastasService.GetXubastasUsuarioPerfil(this.currentTipoSubasta, this.infoUsuario.id).subscribe({
+    this.subastasService.GetXubastasUsuarioPerfil(this.currentTipoSubasta, 0).subscribe({
       next: (data: any) => {
         this.loading = false;
         console.log(data);
@@ -725,7 +728,7 @@ export class ProfileComponent implements OnInit {
         this.listaSubastas = data.data.map((item: any) => ({
           ...item,
           short_desc: item.descripcion.substring(0, 35),
-          remaining: item.hora * 3600 + item.minuto * 60 + item.segundo
+          remaining: this.tiempoStringASegundos(item.tiempoVence)
         }));
         this.setTimerV2();
         //  this.auctionsWin = data;
@@ -739,6 +742,23 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+  //p.venceSegundos = this.tiempoStringASegundos(p.tiempoVence);
+
+  setTimerV2() {
+    this.intervalId = setInterval(() => {
+      // this.listaSubastas = this.listaSubastas.map(item => ({
+      //   ...item,
+      //   //this.toShort(item.descripcion),
+      //   remaining: item.remaining > 0 ? item.remaining-1 : 0
+      // }));
+      for (let s of this.listaSubastas) {
+        if (s.remaining > 0) {
+          s.remaining--;
+        }
+      }
+    }, 1000);
+  }
+
 
   getListaSubastasCreadas() {
     this.getSubastasByTipo(this.currentTipoSubasta);
@@ -1360,17 +1380,17 @@ export class ProfileComponent implements OnInit {
 
   //  
 
-  //   getCategoriasReclamo(){
-  //     this.subastasService.getCategoriasReclamo().subscribe({
-  //         next: (categorias: any) => {
-  //           console.log(categorias);
-  //             this.listaCategoriasDisputa = categorias;
-  //         },
-  //         error: (err) => {
-  //             console.error('Error fetching dispute categories:', err);
-  //         }
-  //     });
-  //   }
+  getCategoriasReclamo() {
+    this.subastasService.getCategoriasReclamo().subscribe({
+      next: (categorias: any) => {
+        console.log(categorias);
+        this.listaCategoriasDisputa = categorias;
+      },
+      error: (err) => {
+        console.error('Error fetching dispute categories:', err);
+      }
+    });
+  }
 
   //   
 
@@ -1858,24 +1878,24 @@ export class ProfileComponent implements OnInit {
   //     this.isEditCard = false;
   //   }
 
-  //   getSubastasForReclamos(){
-  //     console.log(this.infoUsuario.id);
-  //     this.subastasService.getListaSubastasForReclamos(this.infoUsuario.id).subscribe({
-  //       next: (response: any) => {
-  //         console.log(response);
-  //         this.listaSimpleSubastas = response;
-  //         // this.loading = false;
-  //         // this.ss.showNotification('success', 'Cuenta CLABE agregada correctamente');
-  //         // this.GetCuentasClabe(this.usuario()!.id);
-  //         // this.closeModal('clabe');
+  getSubastasForReclamos() {
+    console.log(this.infoUsuario.id);
+    this.subastasService.getListaSubastasForReclamos(0).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.listaSimpleSubastas = response;
+        // this.loading = false;
+        // this.ss.showNotification('success', 'Cuenta CLABE agregada correctamente');
+        // this.GetCuentasClabe(this.usuario()!.id);
+        // this.closeModal('clabe');
 
-  //       },
-  //       error: (error: any) => {
-  //           console.error('Error al obtener lista de subastas para reclamo:', error);
-  //           // this.loading = false;
-  //       }
-  //     });
-  //   }
+      },
+      error: (error: any) => {
+        console.error('Error al obtener lista de subastas para reclamo:', error);
+        // this.loading = false;
+      }
+    });
+  }
 
   //   onContentClick(event: MouseEvent) {
   //     event.stopPropagation();
@@ -2176,10 +2196,10 @@ export class ProfileComponent implements OnInit {
   //   //   });
   //   // }
 
-  //   tiempoStringASegundos(tiempo: string) {
-  //     const [h, m, s] = tiempo.split(':').map(Number);
-  //     return h * 3600 + m * 60 + s;
-  //   }
+  tiempoStringASegundos(tiempo: string) {
+    const [h, m, s] = tiempo.split(':').map(Number);
+    return h * 3600 + m * 60 + s;
+  }
 
   //   toShort(val: string){
   //     return val.length > 41 ? val.substring(0, 41) + '...' : val;
@@ -2521,10 +2541,10 @@ export class ProfileComponent implements OnInit {
     // if(key === 'tarjeta' && !this.isEditCard){
     // this.initFormTarjeta();
     // }
-    // if(key === 'disputa'){
-    //   this.getCategoriasReclamo();
-    //   this.getSubastasForReclamos();
-    // }
+    if (key === 'disputa') {
+      this.getCategoriasReclamo();
+      this.getSubastasForReclamos();
+    }
     // if(prop){
     //   prop = value;
     // }
@@ -2609,19 +2629,6 @@ export class ProfileComponent implements OnInit {
 
   onContentClick(event: MouseEvent) {
     event.stopPropagation();
-  }
-
-  setTimerV2() {
-    this.intervalId = setInterval(() => {
-      // this.listaSubastas = this.listaSubastas.map(item => ({
-      //   ...item,
-      //   //this.toShort(item.descripcion),
-      //   remaining: item.remaining > 0 ? item.remaining-1 : 0
-      // }));
-      for (let s of this.listaSubastas) {
-        s.remaining = s.remaining - 1;
-      }
-    }, 1000);
   }
 
   initDireccion() {
