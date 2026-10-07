@@ -6,11 +6,11 @@ import { OpenPayService } from '../../../../services/openpay.service';
 import { AuthService } from '../../../../services/auth.service';
 import { environment } from '../../../../environment/environment';
 import { Router } from '@angular/router';
-import { Usuario } from '../../../../models/subasta.model';
 import { LoaderComponent } from '../../loader/loader.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { initDataTarjeta, Tarjeta } from '../../../../models/tarjeta-model';
+import { Usuario } from '../../../../models/usuario-model';
 
 declare var OpenPay: any;
 
@@ -440,7 +440,9 @@ export class NuevaSubastaModalComponent implements OnInit {
       }
 
     } else {
-      this.ss.showNotification('error', 'Hubo un problema al generar el cargo');
+      let mensaje = responseCharge.error.message ? responseCharge.error.message : 'Hubo un problema al generar el cargo'
+      this.ss.showNotification('error', mensaje);
+      // this.ss.showNotification('error', 'Hubo un problema al generar el cargo');
       return;
     }
   }

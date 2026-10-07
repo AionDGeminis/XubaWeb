@@ -6,7 +6,7 @@ import { AuthService } from '../../../services/auth.service';
 import { SubastasService } from '../../../services/subastas.service';
 import { ToastrService } from 'ngx-toastr';
 import { VerticalPremiumAuctionsComponent } from '../../vertical-premium-auctions/vertical-premium-auctions.component';
-import { Subasta, Usuario, DetalleSubasta } from '../../../models/subasta.model';
+import { Subasta, DetalleSubasta } from '../../../models/subasta.model';
 import { interval, Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2'
@@ -19,6 +19,7 @@ import { Apuesta } from '../../../models/apuesta-model';
 import { gsap } from 'gsap';
 import { SlidebuttonComponent } from '../../shared-components/slidebutton/slidebutton.component';
 import { OfertaPersonalizadaModalComponent } from '../../shared-components/modals/oferta-personalizada-modal/oferta-personalizada-modal.component';
+import { Usuario } from '../../../models/usuario-model';
 
 
 @Component({

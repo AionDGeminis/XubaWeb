@@ -1,5 +1,4 @@
 import { Component, OnInit, Signal, computed } from '@angular/core';
-import { Usuario } from '../../../models/subasta.model';
 import { AuthService } from '../../../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from '../../../services/shared.service';
@@ -10,6 +9,7 @@ import { AuctionStatus } from '../../../../enums/auction-estatus.enum';
 import { ReclamoEstatus } from '../../../../enums/reclamo-status.enum';
 import { OpenPayService } from '../../../services/openpay.service';
 import { Logob64redComponent } from '../../shared-components/logob64red/logob64red.component';
+import { Usuario } from '../../../models/usuario-model';
 
 @Component({
   selector: 'app-auth-callback',
@@ -361,7 +361,10 @@ export class AuthCallbackComponent implements OnInit {
           },
           error: (error) => {
             // this.loading = false;
-            this.ss.showNotification('error', 'Hubo un problema al generar la guia de envio');
+            this.ss.showNotification('info', 'Subasta pagada, pronto se te enviará la guia de envío', 6000);
+            // this.ss.showNotification('error', 'Hubo un problema al generar la guia de envio');
+            this.showComprobanteCargo();
+
             // // this.showComprobante = true;
             // // this.openComprobante();
             // this.showContent =  {success:false,error:true,waiting:false, nodisponible:false}

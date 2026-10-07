@@ -9,7 +9,7 @@
   <app-winner-view *ngIf="currentUser.winner" [isLoggedIn]="isLoggedIn" [usuario]="usuario()" [idSubasta]="idSubasta">
   </app-winner-view>
 
-  <app-anyuser-view *ngIf="currentUser.any">
+  <app-anyuser-view *ngIf="currentUser.any" [idSubasta]="idSubasta">
   </app-anyuser-view>
 
   <!-- <app-seller-view *ngIf="isLoggedIn() && subasta && usuario()!.id === subasta.musuarios.id" [isLoggedIn]="isLoggedIn"

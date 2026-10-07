@@ -3,12 +3,12 @@ import { AuthService } from '../../../../../services/auth.service';
 import { SubastasService } from '../../../../../services/subastas.service';
 import { SharedService } from '../../../../../services/shared.service';
 import { SignalRNotificationService } from '../../../../../services/signalrnotifications.service';
-import { Usuario } from '../../../../../models/subasta.model';
 import { CommonModule } from '@angular/common';
 import { SubmenuComponent } from './submenu/submenu.component';
 import { Router } from '@angular/router';
 import { NuevaSubastaModalComponent } from '../../../modals/nueva-subasta-modal/nueva-subasta-modal.component';
 import { LocalSignalsService } from '../../../../../services/localsignals.service';
+import { Usuario } from '../../../../../models/usuario-model';
 
 @Component({
   selector: 'app-menu',
@@ -36,6 +36,7 @@ export class MenuComponent {
   tipoSubmenu: string = '';
   tituloSubmenu: string = '';
   submenu = viewChild(SubmenuComponent);
+  fromResponsive: boolean = false;
   // opened = '';
 
   constructor(
@@ -115,8 +116,9 @@ export class MenuComponent {
   }
 
 
-  openSubmenu(tipo: string, titulo: string) {
+  openSubmenu(tipo: string, titulo: string, fromResponsive?: boolean) {
     // if (this.showHiddenSubmenu) {
+    this.fromResponsive = fromResponsive ?? false;
     this.tipoSubmenu = tipo;
     this.tituloSubmenu = titulo;
     this.submenu()?.closeNoEmit();
@@ -137,6 +139,10 @@ export class MenuComponent {
     // this.tipoSubmenu = tipo;
     // this.tituloSubmenu = titulo;
 
+  }
+
+  openSubmenuResponsive() {
+    //this.openSubmenu('SSEG', 'Subastas Seguidas');
   }
 
   closeSubmenu() {

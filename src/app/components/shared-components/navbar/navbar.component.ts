@@ -4,7 +4,7 @@ import { CommonModule, Location } from '@angular/common';
 import { BusquedaService } from '../../../services/busqueda.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { Subasta, Usuario } from '../../../models/subasta.model';
+import { Subasta } from '../../../models/subasta.model';
 import { AuthService } from '../../../services/auth.service';
 import { AuctionService } from '../../../services/auction.service';
 import { SubastasService } from '../../../services/subastas.service';
@@ -18,6 +18,7 @@ import { NuevaSubastaModalComponent } from '../modals/nueva-subasta-modal/nueva-
 import { SubmenuComponent } from './components/menu/submenu/submenu.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { LocalSignalsService } from '../../../services/localsignals.service';
+import { Usuario } from '../../../models/usuario-model';
 declare var OpenPay: any;
 
 // interface ISubasta {

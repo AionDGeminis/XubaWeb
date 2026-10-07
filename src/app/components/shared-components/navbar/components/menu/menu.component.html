@@ -23,15 +23,31 @@
             <!-- <span class="arrow"><i class="fas fa-chevron-right"></i></span> -->
         </a>
 
-        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'SSEG'}"
+        <a class="menu-item d-sm-flex d-none" [ngClass]="{'opened': tipoSubmenu === 'SSEG'}"
             (click)="openSubmenu('SSEG','Subastas Seguidas')">
             <i class="fas fa-heart"></i>
             <span class="text">Subastas Seguidas</span>
             <span class="arrow"><i class="fas fa-chevron-right"></i></span>
         </a>
 
-        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'SGAN'}"
+        <!-- ======= OPCION DE MENU PARA VERSION RESPONSIVA ======== -->
+        <a class="menu-item d-flex d-sm-none" [ngClass]="{'opened': tipoSubmenu === 'SSEG'}"
+            (click)="openSubmenu('SSEG','Subastas Seguidas', true)">
+            <i class="fas fa-heart"></i>
+            <span class="text">Subastas Seguidas</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item d-sm-flex d-none" [ngClass]="{'opened': tipoSubmenu === 'SGAN'}"
             (click)="openSubmenu('SGAN','Subastas Ganadas')">
+            <i class="fas fa-trophy"></i>
+            <span class="text">Subastas Ganadas</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <!-- ======= OPCION DE MENU PARA VERSION RESPONSIVA ======== -->
+        <a class="menu-item d-flex d-sm-none" [ngClass]="{'opened': tipoSubmenu === 'SGAN'}"
+            (click)="openSubmenu('SGAN','Subastas Ganadas', true)">
             <i class="fas fa-trophy"></i>
             <span class="text">Subastas Ganadas</span>
             <span class="arrow"><i class="fas fa-chevron-right"></i></span>
@@ -43,22 +59,44 @@
             <!-- <span class="arrow"><i class="fas fa-chevron-right"></i></span> -->
         </a>
 
-        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'NOTI'}"
+        <a class="menu-item d-sm-flex d-none" [ngClass]="{'opened': tipoSubmenu === 'NOTI'}"
             (click)="openSubmenu('NOTI','Notificaciones')">
             <i class="fas fa-bell"></i>
             <span class="text">Notificaciones</span>
             <span class="badge">{{totalNotificaciones}}</span>
         </a>
+        <!-- ======= OPCION DE MENU PARA VERSION RESPONSIVA ======== -->
+        <a class="menu-item  d-flex d-sm-none" [ngClass]="{'opened': tipoSubmenu === 'NOTI'}"
+            (click)="openSubmenu('NOTI','Notificaciones', true)">
+            <i class="fas fa-bell"></i>
+            <span class="text">Notificaciones</span>
+            <span class="badge">{{totalNotificaciones}}</span>
+        </a>
 
-        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'SGUI'}"
+        <a class="menu-item d-sm-flex d-none" [ngClass]="{'opened': tipoSubmenu === 'SGUI'}"
             (click)="openSubmenu('SGUI','Mis seguidores')">
             <i class="fas fa-users"></i>
             <span class="text">Seguidores</span>
             <span class="arrow"><i class="fas fa-chevron-right"></i></span>
         </a>
 
-        <a class="menu-item" [ngClass]="{'opened': tipoSubmenu === 'VSEG'}"
+        <!-- ======= OPCION DE MENU PARA VERSION RESPONSIVA ======== -->
+        <a class="menu-item  d-flex d-sm-none" [ngClass]="{'opened': tipoSubmenu === 'SGUI'}"
+            (click)="openSubmenu('SGUI','Mis seguidores', true)">
+            <i class="fas fa-users"></i>
+            <span class="text">Seguidores</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+
+        <a class="menu-item d-sm-flex d-none" [ngClass]="{'opened': tipoSubmenu === 'VSEG'}"
             (click)="openSubmenu('VSEG','Vendedores Seguidos')">
+            <i class="fas fa-clipboard-list"></i>
+            <span class="text">Vendedores Seguidos</span>
+            <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+        </a>
+        <!-- ======= OPCION DE MENU PARA VERSION RESPONSIVA ======== -->
+        <a class="menu-item  d-flex d-sm-none" [ngClass]="{'opened': tipoSubmenu === 'VSEG'}"
+            (click)="openSubmenu('VSEG','Vendedores Seguidos', true)">
             <i class="fas fa-clipboard-list"></i>
             <span class="text">Vendedores Seguidos</span>
             <span class="arrow"><i class="fas fa-chevron-right"></i></span>
@@ -88,4 +126,4 @@
 
 <!-- <app-nueva-subasta-modal (close)="closeModalNuevaSubasta()" *ngIf="showModalNuevaSubasta" /> -->
 <app-submenu *ngIf="showHiddenSubmenu" (close)="closeSubmenu()" (closeAllMenu)="closeAll()" [tipoCarga]="tipoSubmenu"
-    [titulo]="tituloSubmenu" />
+    [titulo]="tituloSubmenu" [fromResponsive]="fromResponsive" />
