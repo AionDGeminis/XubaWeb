@@ -312,6 +312,10 @@ input[type="email"]:focus {
   }
 }
 
+.form-group label {
+  color: #596275 !important;
+  font-size: 0.9em;
+}
 
 .fast-animation {
   animation-duration: 0.4s !important;
@@ -326,6 +330,10 @@ input[type="email"]:focus {
   font-size: 0.9em !important;
   padding: 5px 5px !important;
   line-height: 1.4 !important;
+}
+
+.badge-xs {
+  font-size: 0.8em !important;
 }
 
 .table-header-xuba1 {

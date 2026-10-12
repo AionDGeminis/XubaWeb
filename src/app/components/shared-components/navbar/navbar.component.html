@@ -53,8 +53,16 @@
       </div>
     </div>
 
-    <div class="col-5">
+    <div class="col-5 v-c">
+      <div class="busqueda-container" *ngIf="showSearch">
+        <input #campoBusqueda type="text" class="campo-busqueda" [ngClass]="{'opened': isOpened}"
+          placeholder="Buscar..." [(ngModel)]="textoBusqueda" (keydown.enter)="buscar()" />
 
+        <button class="p-0 bg-dark"> <i class="fa fa-search"></i></button>
+        <!-- <img *ngIf="showSearch" src="lupa.png" alt="Buscar" class="search-icon"
+          (click)="toggleBusqueda()" /> -->
+      </div>
+      <button class="btn-circle mtr"><i class="fas fa-cogs"></i> </button>
     </div>
     <!-- <div class="col-3 v-c fs1" *ngIf="isLoggedIn()">
       <button *ngIf="showTitleDetail" class="btn btn-outline-light btn-sm" (click)="backToPage()">
@@ -112,7 +120,7 @@
     </div>
   </div>
 </nav>
-<div class="sub-navbar v-c d-none d-sm-flex">
+<!-- <div class="sub-navbar v-c d-none d-sm-flex">
 
   <span class="h-100 v-c px-3">
     <i class="fas fa-home me-1"></i> Home
@@ -126,23 +134,38 @@
   <span class="h-100  v-c px-3">
     <i class="fas fa-cogs me-1"></i> Configuracion
   </span>
-</div>
+</div> -->
+<!-- <div class="sub-navbar-lg d-none d-sm-flex">
 
+  <span class="h-100 w-xs v-c text-center d-flex justify-content-center xs-resp-btn">
+    <i class="fas fa-home me-1"></i>
+  </span>
+  <span class="h-100 w-xs v-c text-center d-flex justify-content-center   xs-resp-btn">
+    <i class="fas fa-user me-1"></i>
+  </span>
+  <span class="h-100 w-xs v-c text-center d-flex justify-content-center xs-resp-btn">
+    <i class="fas fa-bell me-1"></i>
+  </span>
+  <span class="h-100  w-xs v-c text-center d-flex justify-content-center xs-resp-btn">
+    <i class="fas fa-cogs me-1"></i>
+  </span>
+</div> -->
+<!-- 
 <div class="sub-navbar-xs  v-c d-flex d-sm-none">
 
-  <span class="h-100 v-c px-3">
-    <i class="fas fa-home me-1"></i> Home
+  <span class="h-100 w-xs v-c text-center d-flex justify-content-center xs-resp-btn">
+    <i class="fas fa-home me-1"></i>
   </span>
-  <span class="h-100 v-c px-3">
-    <i class="fas fa-user me-1"></i> Perfil
+  <span class="h-100 w-xs v-c text-center d-flex justify-content-center   xs-resp-btn">
+    <i class="fas fa-user me-1"></i>
   </span>
-  <span class="h-100  v-c px-3">
-    <i class="fas fa-bell me-1"></i> Notificaciones
+  <span class="h-100 w-xs v-c text-center d-flex justify-content-center xs-resp-btn">
+    <i class="fas fa-bell me-1"></i>
   </span>
-  <!-- <span class="h-100  v-c px-3">
-    <i class="fas fa-cogs me-1"></i> Config
-  </span> -->
-</div>
+  <span class="h-100  w-xs v-c text-center d-flex justify-content-center xs-resp-btn">
+    <i class="fas fa-cogs me-1"></i>
+  </span>
+</div> -->
 
 <div *ngIf="showHiddenMenu" (click)="fnToggleMenu()"
   [class]="'main-menu-hide fast-animation animate__animated ' + hiddenMenuClass.container">

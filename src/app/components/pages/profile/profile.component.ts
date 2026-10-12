@@ -20,6 +20,7 @@ import { ConsultaDatosUsuarioDTO } from '../../../models/profile';
 import { ProfileService } from '../../../services/profile.service';
 import { PagoSubastaTicketComponent } from '../../shared-components/tickets/pago-subasta-ticket/pago-subasta-ticket.component';
 import { Usuario } from '../../../models/usuario-model';
+import { initDataRegistroDatosFiscales, RegistroDatosFiscales } from '../../../models/datos-fiscales-model';
 
 declare var OpenPay: any;
 
@@ -174,24 +175,25 @@ export class ProfileComponent implements OnInit {
   subastaSeleccionada: any = {};
   subastaEdicion: any = {};
 
-  datosFiscales: RegistrardatosFiscalesDTO = {
-    idUsuario: 0,
-    tipoPersona: '',
-    pais: '',
-    razonSocial: '',
-    rfc: '',
-    regimenFiscal: '',
-    usoCfdi: '',
-    correoElectronico: '',
-    calle: '',
-    numeroExterior: '',
-    numeroInterior: '',
-    codigoPostal: '',
-    colonia: '',
-    ciudad: '',
-    municipio: '',
-    estado: ''
-  }
+  datosFiscales: RegistroDatosFiscales = initDataRegistroDatosFiscales();
+  // datosFiscales: RegistrardatosFiscalesDTO = {
+  //   idUsuario: 0,
+  //   tipoPersona: '',
+  //   pais: '',
+  //   razonSocial: '',
+  //   rfc: '',
+  //   regimenFiscal: '',
+  //   usoCfdi: '',
+  //   correoElectronico: '',
+  //   calle: '',
+  //   numeroExterior: '',
+  //   numeroInterior: '',
+  //   codigoPostal: '',
+  //   colonia: '',
+  //   ciudad: '',
+  //   municipio: '',
+  //   estado: ''
+  // }
 
   datosUsuario!: ConsultaDatosUsuarioDTO;
 
@@ -339,6 +341,7 @@ export class ProfileComponent implements OnInit {
   totalSubastasPorRevisar: number = 0;
   showModalComprobante: boolean = false;
   arroba = '@'
+  totalRequisitosVerificados = 0;
   constructor(private router: Router, private subastasService: SubastasService, private authService: AuthService, private addressService: AddressesService,
     private datosFiscalesService: DatosFiscalesService, private profileService: ProfileService, private ss: SharedService, private http: HttpClient, private openPayService: OpenPayService) {
     this.checkNavigation();
@@ -372,7 +375,7 @@ export class ProfileComponent implements OnInit {
     this.usuario = this.authService.currentUser;
     this.isLoggedIn = this.authService.isLoggedIn //computed(() => !!this.usuario());
     if (this.isLoggedIn()) {
-      this.getInformacionUsuario(0);
+      this.getInformacionUsuario();
       console.log('consulta perfil')
       //this.getInformacionPerfil(this.usuario()!.id);
     }
@@ -402,9 +405,9 @@ export class ProfileComponent implements OnInit {
   //   });
   // }
 
-  getInformacionUsuario(idUsuario: number) {
+  getInformacionUsuario() {
     this.loading = true;
-    this.authService.consultarDatosUsuario(idUsuario).subscribe({
+    this.authService.consultarDatosUsuario(0).subscribe({
       next: (response: any) => {
 
         this.loading = false;
@@ -413,6 +416,7 @@ export class ProfileComponent implements OnInit {
         this.idOrganizacion = response.idOrganizacion;
         console.log(this.infoUsuario);
         this.checkListSubastar = response.checkList;
+        this.totalRequisitosVerificados = this.checkListSubastar.filter((x: any) => x.verificado).length;
         this.datosFiscales = response.datosFiscales;
         this.checkCurrentMainIndexPage();
         this.getListaReclamosAbiertos();
@@ -591,7 +595,7 @@ export class ProfileComponent implements OnInit {
         this.loading = false;
         this.ss.showNotification('success', 'Direccion  agregada correctamente');
         // this.getDirecciones(this.usuario()!.id);
-        this.getInformacionUsuario(0);
+        this.getInformacionUsuario();
         this.initDireccion();
         this.closeModal('direccion');
       },
@@ -604,7 +608,7 @@ export class ProfileComponent implements OnInit {
   }
 
   saveEditDireccion() {
-    this.direccion.idUsuario = this.usuario()!.id;
+    // this.direccion.idUsuario = this.usuario()!.id;
     if (!this.ss.isValidModel(this.direccion, ['numeroInt'])) {
       this.ss.showNotification('warning', 'Por favor, complete todos los campos requeridos');
       return;
@@ -1091,7 +1095,7 @@ export class ProfileComponent implements OnInit {
     if (r) {
       this.loading = true;
 
-      this.datosFiscales.idUsuario = this.infoUsuario.id;
+      // this.datosFiscales.idUsuario = this.infoUsuario.id;
       console.log(this.datosFiscales)
       this.datosFiscalesService.RegistrarDatosFiscales(this.datosFiscales).subscribe({
         next: (res: any) => {
@@ -1515,7 +1519,8 @@ export class ProfileComponent implements OnInit {
         next: (value) => {
           this.loading = false;
           this.ss.showNotification('success', 'Direccion eliminada correctamente');
-          this.getDirecciones(this.usuario()!.id)
+          this.getInformacionUsuario()
+          // this.getDirecciones(this.usuario()!.id)
         },
         error: (err) => {
           this.loading = false;
