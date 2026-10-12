@@ -30,11 +30,12 @@
 }
 
 .sub-navbar-xs {
-  width: 100%;
+  width: 96%;
+  left: 2%;
   position: fixed !important;
   z-index: 1000;
   background: linear-gradient(to right, #B92F6A, #5222B3, #0875C7);
-  height: 30px;
+  height: 40px;
   bottom: 0px;
   font-size: 0.7em;
   font-family: Arial, Helvetica, sans-serif !important;
@@ -42,7 +43,37 @@
   color: #fff;
   margin: 0;
   text-align: center;
-  justify-content: center;
+  justify-content: space-between;
+  border-radius: 30px;
+}
+
+.sub-navbar-lg {
+  width: 60%;
+  left: 20%;
+  position: fixed !important;
+  z-index: 1000;
+  background: linear-gradient(to right, #B92F6A, #5222B3, #0875C7);
+  height: 40px;
+  bottom: 0px;
+  font-size: 0.7em;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 100 !important;
+  color: #fff;
+  margin: 0;
+  text-align: center;
+  justify-content: space-between;
+  border-radius: 30px;
+}
+
+
+.w-xs {
+  width: 40px;
+}
+
+.xs-resp-btn {
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 }
 
 .logo {
@@ -327,41 +358,69 @@
   /* justify-content: flex-end; */
 }
 
-.busqueda-container {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  width: 80% !important;
-  /* background: pink; */
-  justify-content: flex-end;
-}
-
 .w-10 {
   width: 10% !important;
+}
+
+.busqueda-container {
+  display: flex;
+  align-items: stretch;
+  /* misma altura para input y botón */
+  gap: 0;
+  /* sin espacio entre ellos */
+  width: 80% !important;
+  justify-content: flex-end;
 }
 
 .campo-busqueda {
   padding: 6px 10px;
   border: 1px solid #fff;
-  border-radius: 20px 0px 0px 20px;
-  outline: none;
+  border-right: 0;
+  /* sin borde en medio */
+  border-radius: 20px 0 0 20px;
+  outline: none !important;
   font-size: 14px;
-  margin-right: 0px;
+  margin: 0;
   width: 80%;
   transition: width 0.3s ease;
-  background: transparent;
-  outline: none !important;
+  background: rgba(0, 0, 0, 0.2);
   color: #fff;
 }
 
 .campo-busqueda:focus {
   border: 1px solid #fff;
-  caret-color: #000;
+  border-right: 0;
+  caret-color: #fff;
 }
 
 .campo-busqueda::placeholder {
-  color: #fff;
+  color: rgba(255, 255, 255, 0.5);
   font-style: italic;
+}
+
+/* Botón pegado al input, cierra el "pill" a la derecha */
+.busqueda-container button {
+  padding: 0 14px !important;
+  border: 1px solid #fff;
+  border-left: 0;
+  /* sin borde en medio */
+  border-radius: 0 20px 20px 0;
+  background: transparent !important;
+  /* pisa el bg-dark de Bootstrap */
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn-circle {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.2);
+  margin-left: 5%;
 }
 
 .btn-r {
@@ -371,6 +430,10 @@
   background: #fff;
 }
 
+.mtr {
+  /* margin-right: auto !important; */
+  margin-left: auto !important;
+}
 
 .search-icon {
   height: 40px;

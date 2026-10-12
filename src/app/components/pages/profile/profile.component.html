@@ -32,21 +32,22 @@
     <div class="pb-reqs">
       <div class="pb-reqs__head">
         <span class="pb-label">Requisitos para xubastar</span>
-        <strong>2/4</strong>
+        <strong>{{totalRequisitosVerificados}}/{{checkListSubastar.length}}</strong>
       </div>
 
       <div class="pb-progress">
-        <div class="pb-progress__bar" style="width: 50%;"></div>
+        <div class="pb-progress__bar"
+          [style.width]="(totalRequisitosVerificados / checkListSubastar.length) * 100 + '%' "></div>
       </div>
 
       <ul class="pb-reqs__list">
-        <li>
-          <button type="button" class="pb-req pb-req--done">
-            <i class="fas fa-check"></i>
-            <span>Teléfono registrado</span>
+        <li *ngFor="let item of checkListSubastar">
+          <button type="button" class="pb-req" [ngClass]="{'pb-req--done': item.verificado}">
+            <i class="fas" [ngClass]="{'fa-check': item.verificado, 'fa-circle': !item.verificado}"></i>
+            <span>{{item.label}}</span>
           </button>
         </li>
-        <li>
+        <!-- <li>
           <button type="button" class="pb-req pb-req--done">
             <i class="fas fa-check"></i>
             <span>Dirección predeterminada</span>
@@ -65,7 +66,7 @@
             <span>Datos fiscales completos</span>
             <i class="fas fa-arrow-right pb-req__go"></i>
           </button>
-        </li>
+        </li> -->
       </ul>
     </div>
 
@@ -228,7 +229,7 @@
             <td class="w-10 text-center bbtd pt-1 pb-1">
               <button class="btn btn-xs bg-info text-white me-1" (click)="openEditModal('direccion', direccion, d)"><i
                   class="fas fa-edit"></i> </button>
-              <button class="btn btn-xs bg-danger text-white" (click)="eliminarDireccion(d.id)"><i
+              <button class="btn btn-xs bg-danger text-white" (click)="eliminarDireccion(d.idDireccion)"><i
                   class="fas fa-trash"></i> </button>
             </td>
           </tr>
@@ -248,12 +249,12 @@
           </button>
         </div>
         <hr>
-        <table class="table table-striped w-100 xuba-table">
+        <table class="table table-striped w-100 xuba-table d-none d-sm-block">
           <tr class="table-header-xuba1">
             <th class="w-10 tw:text-center left-corner">No.</th>
-            <th class="w-10  tw:text-center">Categoria</th>
-            <th class="w-10 tw:text-center">Asunto</th>
-            <th class="w-20 tw:text-center">Descripcion</th>
+            <th class="w-15  tw:text-center">Categoria</th>
+            <th class="w-15 tw:text-center">Asunto</th>
+            <th class="w-30 tw:text-center">Descripcion</th>
             <th class="w-20 tw:text-center">Estatus</th>
             <th class="w-10 tw:text-center right-corner">Acciones</th>
           </tr>
@@ -277,13 +278,50 @@
               {{d.desStatus}}
             </td>
             <td class="pt-1">
-              <button class="btn btn-xs bg-info text-white me-1" (click)="openEditModal('direccion', direccion, d)"><i
-                  class="fas fa-edit"></i> </button>
-              <button class="btn btn-xs bg-danger text-white" (click)="eliminarDireccion(d.id)"><i
-                  class="fas fa-trash"></i> </button>
+              <button class="btn btn-xs bg-info text-white me-1" (click)="getDatosSubasta(d.idSubasta)"><i
+                  class="fas fa-eye"></i> </button>
+              <!-- <button class="btn btn-xs bg-danger text-white" (click)="eliminarDireccion(d.id)"><i
+                  class="fas fa-trash"></i> </button> -->
             </td>
           </tr>
         </table>
+        <div class="w-100 d-sm-none d-block">
+          <div class="w-100" *ngFor="let d of infoUsuario.reclamos">
+            <div class="row">
+              <div class="col-5">No.</div>
+              <div class="col-7 text-end f-arial">
+                {{d.idReclamo}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-5">Categoria</div>
+              <div class="col-7 text-end f-arial">{{d.categoria}}</div>
+            </div>
+            <div class="row">
+              <div class="col-5">Asunto</div>
+              <div class="col-7 text-end f-arial">{{d.asunto}}</div>
+            </div>
+            <div class="row">
+              <div class="col-5">Descripcion</div>
+              <div class="col-7 text-end f-arial">{{d.descripcion}}</div>
+            </div>
+            <div class="row">
+              <div class="col-5">Estatus</div>
+              <div class="col-7 text-end f-arial">
+                <span class="badge badge-danger badge-xs">{{d.desStatus}}</span>
+
+              </div>
+            </div>
+            <div class="row mt-1  pt-1 px-3">
+              <!-- <button class="btn-xuba btn-pill pt-1 pb-1" (click)="openSubastaDetalle(subasta)">
+                Ver Detalles <i class="fas fa-gavel text-white "></i>
+              </button> -->
+            </div>
+            <div class="line-divider">
+            </div>
+          </div>
+        </div>
+
         <!-- <ul class="claim-list">
           <li *ngFor="let rec of infoUsuario.reclamos">
             #{{rec.idReclamo}} - {{rec.categoria}} [{{rec.asunto}}]: {{rec.descripcion}}
@@ -1061,6 +1099,21 @@
                     <label>Estado</label>
                     <input type="text" (input)="checkStateAndCity()" [(ngModel)]="datosFiscales.estado" name="estado">
                   </div>
+                  <div class="form-group">
+                    <label>IVA</label>
+                    <div class="tipo-subasta pt-2 pb-2">
+                      <label>
+                        <input type="radio" name="iva" value="8" [(ngModel)]="datosFiscales.iva" />
+                        8%
+                      </label>
+                      <label class="ms-5">
+                        <input type="radio" name="iva" value="16" [(ngModel)]="datosFiscales.iva" /> Persona
+                        16%
+                      </label>
+
+                    </div>
+                    <!-- <input type="text" (input)="checkStateAndCity()" [(ngModel)]="datosFiscales.estado" name="estado"> -->
+                  </div>
                 </div>
 
                 <div class="w-100 text-center mt-3 mb-3">
@@ -1094,9 +1147,9 @@
                     <div class="form-group">
                       <label>Archivo CERT</label>
 
-                      <label class="cargar-foto-label">
+                      <label class="cargar-foto-label ">
                         <input type="file" accept=".cer" multiple (change)="onCerSelected($event)" hidden />
-                        <span><i class="fas fa-file"></i> seleccionar archivo</span>
+                        <span class="text-white"><i class="fas fa-file"></i> seleccionar archivo</span>
                       </label>
                       <br><span>{{cerFile? cerFile.name : 'No seleccionado'}}</span>
                     </div>
@@ -1105,7 +1158,7 @@
 
                       <label class="cargar-foto-label">
                         <input type="file" accept=".key" multiple (change)="onKeySelected($event)" hidden />
-                        <span><i class="fas fa-file"></i> seleccionar archivo</span>
+                        <span class="text-white"><i class="fas fa-file"></i> seleccionar archivo</span>
                       </label>
                       <br><span>{{keyFile? keyFile.name : 'No seleccionado'}}</span>
                     </div>

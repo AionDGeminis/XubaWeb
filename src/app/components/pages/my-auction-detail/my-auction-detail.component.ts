@@ -60,7 +60,8 @@ export class MyAuctionDetailComponent {
   mostrarModalGuiaEnvio = false;
   guiaEnvioUrl: SafeResourceUrl | null = null;
 
-
+  indexTab: number = 0;
+  noDataList: string = '';
   get estatusDHLActual(): any {
     return this.listaHistorialDHL?.length
       ? this.listaHistorialDHL[0]
@@ -279,6 +280,12 @@ export class MyAuctionDetailComponent {
     });
   
   }*/
+
+  selectTab(tabIndex: number) {
+    this.indexTab = tabIndex;
+    // this.noDataList = ''
+  }
+
   tiempoStringASegundos(tiempo: string): number {
 
     if (!tiempo) {
