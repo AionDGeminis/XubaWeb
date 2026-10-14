@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { Router } from '@angular/router';
 import { LoaderComponent } from '../../loader/loader.component';
-import { Subasta } from '../../../../models/subasta.model';
+import { DetalleSubasta, Subasta } from '../../../../models/subasta.model';
 import { SharedService } from '../../../../services/shared.service';
 import { SubastasService } from '../../../../services/subastas.service';
 import { AuthService } from '../../../../services/auth.service';
@@ -19,7 +19,7 @@ declare var OpenPay: any;
   styleUrl: './payment.component.css'
 })
 export class PaymentComponent implements OnInit {
-  @Input() subasta: Subasta | null = null;
+  @Input() subasta: DetalleSubasta | null = null;
   @Input() tarjetas: any[] = [];
   @Input() totalPago: number = 0;
   @Input() precioEnvio: number = 0;

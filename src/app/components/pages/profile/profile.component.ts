@@ -417,7 +417,9 @@ export class ProfileComponent implements OnInit {
         console.log(this.infoUsuario);
         this.checkListSubastar = response.checkList;
         this.totalRequisitosVerificados = this.checkListSubastar.filter((x: any) => x.verificado).length;
-        this.datosFiscales = response.datosFiscales;
+
+        this.datosFiscales = response.datosFiscales ? response.datosFiscales : this.datosFiscales;
+        console.log(this.datosFiscales)
         this.checkCurrentMainIndexPage();
         this.getListaReclamosAbiertos();
       },
@@ -1095,18 +1097,22 @@ export class ProfileComponent implements OnInit {
     if (r) {
       this.loading = true;
 
-      // this.datosFiscales.idUsuario = this.infoUsuario.id;
       console.log(this.datosFiscales)
       this.datosFiscalesService.RegistrarDatosFiscales(this.datosFiscales).subscribe({
         next: (res: any) => {
           console.log(res)
+          this.loading = false;
+          this.ss.showNotification('success', 'Datos fiscales registrados correctamente');
+          this.getInformacionUsuario();
         },
         error: (err: any) => {
+          this.loading = false;
+          this.ss.showNotification('error', 'Error al registrar datos fiscales');
           console.log("Error", err.error.mensaje)
         }
       });
 
-      this.loading = false;
+      // this.loading = false;
     }
   }
 

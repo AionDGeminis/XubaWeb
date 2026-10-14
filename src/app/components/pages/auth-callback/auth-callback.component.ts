@@ -339,6 +339,10 @@ export class AuthCallbackComponent implements OnInit {
                       'success',
                       'La recolección fue programada correctamente.'
                     );
+                  },
+                  error: (err) => {
+                    console.error('Error al generar recolección:', err);
+                    this.ss.showNotification('error', 'Hubo un problema al generar la recolección.');
                   }
                 });
             }

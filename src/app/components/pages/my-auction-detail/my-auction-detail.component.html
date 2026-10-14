@@ -1,4 +1,10 @@
-<div class="sp-page">
+<app-loader *ngIf="loading" [texto]="textoLoading"></app-loader>
+<div *ngIf="!isLoggedIn" class="w-100 v-c text-center mt-5">
+  <p class="estatus-banner__siguiente">
+    NO tienes permiso para acceder a esta sección.
+  </p>
+</div>
+<div *ngIf="isLoggedIn" class="sp-page">
 
   <!-- Encabezado -->
   <!-- <header class="sp-header">
@@ -17,20 +23,29 @@
           <span class="estatus-banner__label">Estatus</span>
           <span class="estatus-badge">
             <span class="estatus-badge__punto"></span>
-            {{ estatusDHLActual?.estatus || estatusActual?.estatus }}
+            {{currentEstatus.estatus}}
+            <!-- {{ estatusDHLActual?.estatus || estatusActual?.estatus }} -->
           </span>
         </div>
-        <h2 class="estatus-banner__mensaje">{{ listaHistorial[0]?.descripcion }}</h2>
+        <h2 class="estatus-banner__mensaje">{{ currentEstatus?.descripcion }}</h2>
         <p class="estatus-banner__siguiente">Puedes consultar las ofertas mientras la subasta está activa.</p>
       </div>
-
+      <!-- <hr> -->
       <div class="estatus-banner__acciones">
         <div class="estatus-banner__botones">
-          <!-- <button type="button" class="btn btn--primario">Ver ofertas <span aria-hidden="true">→</span></button>
-          <button type="button" class="btn btn--secundario">Rechazar oferta</button> -->
-          <button type="button" class="btn btn--secundario sp-btn-danger" (click)="abrirModalCancelar()"><i
+
+          <!-- <button class="btn btn--secundario bg-xuba3 me-1" *ngIf="showActionButton(1021)">
+            <i class="fas fa-handshake"></i> Aceptar precio actual
+          </button>
+          <button class="btn btn--primario bg-xuba-success ms-1 me-1" *ngIf="showActionButton(1021)"><i
+              class="fas fa-hand-holding-usd"></i> Enviar nueva oferta
+          </button> -->
+
+          <!-- <button type="button" class="btn btn--secundario">Rechazar oferta</button> -->
+
+          <!-- <button type="button" class="btn btn--secundario sp-btn-danger" (click)="abrirModalCancelar()"><i
               class="fas fa-ban"></i> Cancelar
-            Subasta</button>
+            Subasta</button> -->
         </div>
         <!-- <button type="button" class="btn btn--secundario sp-btn-danger"><i class="fas fa-ban"></i> Cancelar
           Subasta</button> -->
@@ -40,7 +55,23 @@
     </div>
 
     <footer class="estatus-banner__pie">
-      Proceso en curso · Acciones disponibles según el estatus
+      <!-- Proceso en curso · Acciones disponibles según el estatus -->
+      <div></div>
+      <div>
+        <!-- =========  1021: MINIMO NO ALCANZADO ======== -->
+        <button class="btn btn-xuba1 bg-xuba3 me-1" *ngIf="showActionButton(1021)" (click)="aceptarOfertaActual()">
+          <i class="fas fa-handshake"></i> Aceptar precio actual
+        </button>
+        <button class="btn btn-xuba2 bg-xuba-success ms-1 me-1" (click)="setOpenModal('nuevaOferta')"
+          *ngIf="showActionButton(1021)"><i class="fas fa-hand-holding-usd"></i> Enviar nueva oferta
+        </button>
+
+
+        <button type="button" class="btn btn--secundario sp-btn-danger" (click)="abrirModalCancelar()"><i
+            class="fas fa-ban"></i> Cancelar
+          Subasta</button>
+      </div>
+
     </footer>
   </section>
 
@@ -319,14 +350,14 @@
       <section class="mejor-oferta">
         <h3 class="mejor-oferta__titulo mb-2">Mejor oferta</h3>
 
-        <article class="ganador">
+        <article class="ganador" *ngIf="subasta.ultimasOfertas.length > 0">
           <div class="ganador__avatar">
-            <img [src]="subasta.imgPerfilGanador" alt="Alejandro Sanchez">
+            <img [src]="subasta.imgPerfilGanador" [alt]="subasta.ganador">
           </div>
 
           <div class="ganador__info">
             <div class="ganador__nombre">
-              <span style="font-size: 0.6em;">Alejandro Sanchez</span>
+              <span style="font-size: 0.6em;">{{subasta.ganador}}</span>
               <!-- <svg class="ganador__icono" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                 <path fill="currentColor"
                   d="M6 3h12l4 6-10 12L2 9l4-6zm1.2 2L4.6 9h4.1L10 5H7.2zm5.6 0L14.1 9h5.3l-2.6-4h-4zM5 11l7 8.4L9 11H5zm6.1 0 .9 7 .9-7h-1.8zM15 11l-3 8.4L19 11h-4z" />
@@ -341,6 +372,9 @@
             </div>
           </div>
         </article>
+        <div class="" *ngIf="subasta.ultimasOfertas.length <= 0">
+          <span class="sp-empty">No se registraron ofertas por este producto</span>
+        </div>
       </section>
 
       <section class="sp-card">
@@ -381,33 +415,78 @@
 
     </aside>
   </div>
-
   <!-- Barra de acciones -->
-
-
 </div>
 
-<div class="galeria-backdrop" *ngIf="mostrarGaleria" (click)="cerrarGaleria()">
 
-  <div class="galeria-modal" (click)="$event.stopPropagation()">
-
-    <button class="cerrar" (click)="cerrarGaleria()">
-
-      <i class="fa fa-times"></i>
-
-    </button>
-
-    <img class="imagen-principal" [src]="listaImagenes[imagenSeleccionada]?.url">
-
-    <div class="miniaturas">
-
-      <img *ngFor="let img of listaImagenes; let i=index" [src]="img.url" [class.activa]="i==imagenSeleccionada"
-        (click)="seleccionarImagen(i)">
-
+<!-- ======================= -->
+<div *ngIf="isModalOpen.nuevaOferta" class="modal-backdrop">
+  <div class="modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <h3 class="modal-title">
+        <span class="text-white">Nueva oferta para el {{oferta2nd? 'segundo lugar':'ganador'}}</span>
+      </h3>
+      <button class="close-button" (click)="setCloseModal('nuevaOferta')">
+        <span class="text-white">&times;</span>
+      </button>
     </div>
 
-  </div>
+    <div class="modal-body">
+      <div class="tab-content text-start fast-animation  animate__animated animate__fadeInRight">
+        <form class="form-productos pl-2 pr-2">
+          <div class="form-row" *ngIf="getCurrentTipoOferta() === 'COMP'">
+            <div class="form-group">
+              <label for="oferta">Oferta actual: </label>
+              <label class="price" for="oferta">{{toCurrency(getLastOferta())}} MXN</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="oferta">Nueva Oferta</label>
+              <input type="text" [(ngModel)]="nuevaOfertaModel.oferta"
+                (input)="onInput($event, nuevaOfertaModel.oferta)" id="oferta" name="oferta" />
+            </div>
+          </div>
+          <!-- <div class="form-row">
+                    <div class="form-group">
+                        <label for="confirmar">Confirmar Oferta</label>
+                        <input type="text" [(ngModel)]="nuevaOfertaModel.confirmarOferta" (input)="onInput($event, nuevaOfertaModel.confirmarOferta)" id="confirmar" name="confirmar" />
+                    </div>
+                </div> -->
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer text-start">
 
+      <!-- Botones para el paso del carrito -->
+      <div class="pb-3 pe-3 pt-2">
+        <button class="btn btn-danger btn-pill me-2" (click)="ofrecerNuevoPrecio()">
+          Enviar Oferta
+        </button>
+        <!-- <a [href]="selectedSubasta.urlGuia"  rel="noopener">Descargar</a> -->
+        <button class="btn btn-dark btn-pill me-2" (click)="setCloseModal('nuevaOferta')">
+          Cerrar
+        </button>
+
+      </div>
+    </div>
+    <!-- </div> -->
+  </div>
+</div>
+
+<!-- ======================= -->
+
+<div class="galeria-backdrop" *ngIf="mostrarGaleria" (click)="cerrarGaleria()">
+  <div class="galeria-modal" (click)="$event.stopPropagation()">
+    <button class="cerrar" (click)="cerrarGaleria()">
+      <i class="fa fa-times"></i>
+    </button>
+    <img class="imagen-principal" [src]="listaImagenes[imagenSeleccionada]?.url">
+    <div class="miniaturas">
+      <img *ngFor="let img of listaImagenes; let i=index" [src]="img.url" [class.activa]="i==imagenSeleccionada"
+        (click)="seleccionarImagen(i)">
+    </div>
+  </div>
 </div>
 
 <div class="modal fade show" *ngIf="mostrarModalCancelar" style="display:block; background:rgba(0,0,0,.6);">

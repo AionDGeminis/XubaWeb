@@ -1,4 +1,4 @@
-<div class="mt-4 text-center animate__animated animate__fadeIn">
+<div class="mt-4 text-center ">
   <div class="pl-2 pt-2 w-100 d-flex justify-content-between mb-3 pb-1"
     style=" color: #616160; border-bottom: 1px solid #D4367A;">
 
@@ -75,7 +75,7 @@
   (scroll)="verificarScroll(contenedorRef.nativeElement)">
   <button class="btn btn-sm custom-arrow left-arrow" (click)="prev()">&lt;</button>
   <button class="btn btn-sm custom-arrow right-arrow" (click)="next()">&gt;</button>
-  <div class="carousel-wrapper animate__animated animate__fadeInLeft">
+  <div class="carousel-wrapper fast-animation  animate__animated animate__fadeInLeft">
 
     <!--<button class="left" (click)="prev()">&lt;</button>-->
 
@@ -83,8 +83,8 @@
 
       <div class="carousel-track" [style.transform]="getTransform()">
 
-        <div class="auction-card" *ngFor="let subasta of premium; trackBy: trackBySubasta"
-          (click)="abrirDetalleSubasta(subasta)">
+        <div class="auction-card animate__animated animate__flipInY"
+          *ngFor="let subasta of premium; trackBy: trackBySubasta" (click)="abrirDetalleSubasta(subasta)">
 
           <img [src]="subasta.url" alt="">
 

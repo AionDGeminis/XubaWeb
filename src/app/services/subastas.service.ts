@@ -77,6 +77,7 @@ export class SubastasService {
   getAuctionById(id: number): Observable<Subasta> {
     return this.http.get<Subasta>(`${env.base_url}/subastas/ConsultaSubataId/${id}`, { headers: test_headers }).pipe(map(res => res));
   }
+
   ConsultarDetalleSeguimientoId(idSubasta: number) {
     return this.http.get(
       `${env.base_url}/subastas/ConsultarDetalleSeguimientoId`,
@@ -141,6 +142,7 @@ export class SubastasService {
     // const apiPaqueteria = 'https://envios.xuba.mx:10443/api/DHL/Envio';
     return this.http.post(`${this.apiPaqueteria}/DHL/Envio`, data, { headers: test_headers }).pipe(map(res => res));
   }
+
   generarRecoleccion(model: any) {
     return this.http.post(`${this.apiPaqueteria}/DHL/SolicitarRecoleccion`, model);
   }
@@ -216,8 +218,9 @@ export class SubastasService {
     return this.http.put(`${env.base_url}/estatus/EditarEstatusSubasta/${idSubasta}/${idEstatus}`, { headers: test_headers }).pipe(map(res => res));
   }
 
+  // se usa
   guardarOFertaCompraSubasta(data: any) {
-    return this.http.post(`${env.base_url}/subastas/RegistrarOferta`, data, { headers: test_headers }).pipe(map(res => res));
+    return this.http.post(`${env.base_url}/subastas/RegistrarOferta`, data, { headers: headers }).pipe(map(res => res));
   }
 
   GetVendedoresSeguidos(idUsuario: number, pagina: number = 1) {

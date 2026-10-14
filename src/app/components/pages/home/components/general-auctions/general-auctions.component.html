@@ -16,7 +16,7 @@
   <!-- <hr> -->
   <div class="seguimiento-container animate__animated animate__fadeIn">
     @if (generales.length > 0) {
-    <div class="contenedor-subastas-generales d-sm-grid d-none">
+    <div class="contenedor-subastas-generales d-sm-grid d-none fast-animation animate__animated animate__flipInX">
       @for ( subasta of generales; track subasta.id) {
       @let clase = subasta.vencida ? 'tarjeta-general fade-out' : 'tarjeta-general';
       <!-- <div class="{{ clase }}" (click)="abrirModal(subasta)">
