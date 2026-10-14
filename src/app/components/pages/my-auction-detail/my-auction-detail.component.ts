@@ -1,4 +1,4 @@
-import { Component, Inject, Renderer2 } from '@angular/core';
+import { Component, computed, Inject, Renderer2, Signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ToastrService } from 'ngx-toastr';
@@ -6,16 +6,19 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { Subasta } from '../../../models/subasta.model';
+import { DetalleSubasta, Subasta } from '../../../models/subasta.model';
 import { SignalRService } from '../../../services/signalr.service';
 import { AuthService } from '../../../services/auth.service';
 import { SubastasService } from '../../../services/subastas.service';
 import { SharedService } from '../../../services/shared.service';
 import { AuctionService } from '../../../services/auction.service';
+import { Usuario } from '../../../models/usuario-model';
+import { LoaderComponent } from '../../shared-components/loader/loader.component';
+import { AuctionStatus } from '../../../../enums/auction-estatus.enum';
 
 @Component({
   selector: 'app-my-auction-detail',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoaderComponent],
   templateUrl: './my-auction-detail.component.html',
   styleUrl: './my-auction-detail.component.css'
 })
@@ -67,8 +70,15 @@ export class MyAuctionDetailComponent {
       ? this.listaHistorialDHL[0]
       : null;
   }
-
+  currentEstatus: any = {};
   private intervalId: any;
+  public usuario!: Signal<Usuario | null>;
+  public isLoggedIn!: Signal<boolean>;
+  hasPermiso: boolean = false;
+  isModalOpen: any = { etiqueta: false, nuevaOferta: false, pago: false, viewer: false };
+  oferta2nd: boolean = false;
+  nuevaOfertaModel: any = { oferta: null, confirmarOferta: null }
+
   constructor(private route: ActivatedRoute,
     private router: Router,
     private signalRService: SignalRService,
@@ -83,123 +93,177 @@ export class MyAuctionDetailComponent {
     private sanitizer: DomSanitizer
   ) {
     const id = +this.route.snapshot.paramMap.get('id')!;
-    console.log(id)
+    // console.log(id)
+    this.usuario = this.authService.currentUser;
+    this.isLoggedIn = computed(() => !!this.usuario());
+    if (this.usuario) {
+      this.getComisionesUsuario(this.usuario()!.id);
+    }
     this.getInitialData(id);
   }
 
-  getInitialData(IdSubasta: number) {
+  getEstatusClave(idEstatus: number) {
+    return
+  }
 
+  getInitialData(IdSubasta: number) {
     this.loading = true;
 
     this.subastasService.ConsultarDetalleSeguimientoId(IdSubasta).subscribe({
-
       next: (sub: any) => {
         console.log(sub);
-
-        const historialDHLGuardado = this.listaHistorial.filter(
-          (x: any) => x.tipo === 'DHL'
-        );
-
+        this.loading = false;
         this.subasta = sub;
-        console.log('Motivo:', this.subasta.motivoCanclacion?.motivoCancelacion);
-
-        // Siempre cargar el historial de la subasta
-        this.listaHistorial = (sub.historialEstatus || []).filter((item: any) => {
-          return item.estatus !== '' && item.estatus !== 'Enviado';
-        });
-        this.listaHistorial.push(...historialDHLGuardado);
-
-        this.estatusActual = this.listaHistorial.find(
-          x => x.idEstatus === this.subasta.idEstatus
-        );
-
-
-
+        this.listaHistorial = sub.historialEstatus ?? [];
         this.listaHistorial.sort((a: any, b: any) =>
           new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
         );
-
-        // Si está Enviado o Entregado, agregar los eventos de DHL
-        const posicion = this.listaHistorial.findIndex(item => item.idEstatus === 13);
-        console.log("posicion idestatus " + posicion)
-        if ((sub.idEstatus == 13 || sub.idEstatus == 1023) && sub.guiaEnvio && sub.guiaEnvio !== 'Guía no disponible') {
-
-          this.cargarSeguimientoDHL(sub.numGuia, posicion);
-          this.listaHistorial.sort((a: any, b: any) =>
-            new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-          );
-
-        }
-
+        this.currentEstatus = this.listaHistorial[0]
         this.subasta.remaining = this.tiempoStringASegundos(sub.tiempoVence);
-
-        // Detener un contador anterior
         clearInterval(this.intervalId);
-
-        // Iniciar contador si aún hay tiempo
+        this.setGanadorInfo(sub);
         if (this.subasta.remaining > 0) {
           this.setTimerV2();
         }
-
         this.listaImagenes = sub.imagenesSubasta || [];
-        console.log('Historial:', this.listaHistorial);
         this.listaOfertas = sub.ultimasOfertas || [];
-
         this.listaVistas = sub.ultimasVistas || [];
-
-        this.ganadorInfo = {
-          nombre: sub.ganador,
-          apuesta: sub.precioFinal,
-          imgPerfil: sub.imgPerfilGanador,
-          estatus: sub.estatus,
-          claveEstatus: sub.idEstatus
-        };
-
-        this.subasta.estatus = sub.estatus;
-
         this.calcularGanancia();
-        const usuario = this.authService.currentUser();
+        // this.usuario! = this.authService.currentUser;
 
-        if (usuario) {
-          this.getComisionesUsuario(usuario.id);
-        }
+
+
+        // const historialDHLGuardado = this.listaHistorial.filter(
+        //   (x: any) => x.tipo === 'DHL'
+        // );
+        // this.subasta = sub;
+        // console.log('Motivo:', this.subasta.motivoCanclacion?.motivoCancelacion);
+        // // Siempre cargar el historial de la subasta
+        // this.listaHistorial = (sub.historialEstatus || []).filter((item: any) => {
+        //   return item.estatus !== '' && item.estatus !== 'Enviado';
+        // });
+        // this.listaHistorial.push(...historialDHLGuardado);
+        // this.estatusActual = this.listaHistorial.find(
+        //   x => x.idEstatus === this.subasta.idEstatus
+        // );
+
+        // this.listaHistorial.sort((a: any, b: any) =>
+        //   new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+        // );
+
+        // // Si está Enviado o Entregado, agregar los eventos de DHL
+        // const posicion = this.listaHistorial.findIndex(item => item.idEstatus === 13);
+        // console.log("posicion idestatus " + posicion)
+        // if ((sub.idEstatus == 13 || sub.idEstatus == 1023) && sub.guiaEnvio && sub.guiaEnvio !== 'Guía no disponible') {
+
+        //   this.cargarSeguimientoDHL(sub.numGuia, posicion);
+        //   this.listaHistorial.sort((a: any, b: any) =>
+        //     new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+        //   );
+
+        // }
+        // this.subasta.remaining = this.tiempoStringASegundos(sub.tiempoVence);
+
+        // // Detener un contador anterior
+        // clearInterval(this.intervalId);
+        // // Iniciar contador si aún hay tiempo
+        // if (this.subasta.remaining > 0) {
+        //   this.setTimerV2();
+        // }
+        // this.listaImagenes = sub.imagenesSubasta || [];
+        // console.log('Historial:', this.listaHistorial);
+        // this.listaOfertas = sub.ultimasOfertas || [];
+
+        // this.listaVistas = sub.ultimasVistas || [];
+
+        // this.ganadorInfo = {
+        //   nombre: sub.ganador,
+        //   apuesta: sub.precioFinal,
+        //   imgPerfil: sub.imgPerfilGanador,
+        //   estatus: sub.estatus,
+        //   claveEstatus: sub.idEstatus
+        // };
+
+        // this.subasta.estatus = sub.estatus;
+
+        // this.calcularGanancia();
+        // const usuario = this.authService.currentUser();
+
+        // if (usuario) {
+        //   this.getComisionesUsuario(usuario.id);
+        // }
 
       }
 
     });
+  }
 
+  setGanadorInfo(subasta: any) {
+    this.ganadorInfo = {
+      nombre: subasta.ganador,
+      apuesta: subasta.precioFinal,
+      imgPerfil: subasta.imgPerfilGanador,
+      estatus: subasta.estatus,
+      claveEstatus: subasta.idEstatus
+    };
+  }
+
+  getCurrentTipoOferta() {
+    return this.ganadorInfo.ofertas && this.ganadorInfo.ofertas.length > 0 ? this.ganadorInfo.ofertas[this.ganadorInfo.ofertas.length - 1].tipoUsuario : '';
+  }
+
+  // getDetalleSubasta(IdSubasta: number) {
+  //   this.loading = true;
+  //   this.subastasService.ConsultarDetalleSeguimientoId(IdSubasta).subscribe({
+  //     next: (sub: any) => {
+  //       console.log("Subasta detalle: ");
+  //       console.log(sub);
+  //       this.subasta = sub;
+  //       this.loading = false;
+  //     },
+  //     error: (err) => {
+  //       console.error(err);
+  //       this.loading = false;
+  //     }
+  //   })
+  // }
+
+  showActionButton(estatus: number): boolean {
+    return this.currentEstatus.idEstatus === estatus;
+  }
+
+  setOpenModal(modalName: string) {
+    this.isModalOpen[modalName] = true;
+    // if (modalName === 'detalleReclamo') {
+    //   if (this.informacionReclamo.idEstatus === 2) {
+    //     setTimeout(() => this.scrollToBottom({ behavior: 'smooth' }), 100);
+    //   }
+    // }
+  }
+  setCloseModal(modalName: string) {
+    this.isModalOpen[modalName] = false;
   }
 
   setTimerV2() {
-
     clearInterval(this.intervalId);
-
     this.intervalId = setInterval(() => {
-
       if (this.subasta.remaining > 0) {
-
         this.subasta.remaining--;
-
       } else {
-
         clearInterval(this.intervalId);
-
         this.getInitialData(this.subasta.id);
-
       }
-
     }, 1000);
-
+  }
+  onContentClick(event: MouseEvent) {
+    event.stopPropagation();
   }
   formatTimeString(total: number): string {
-
     const dias = Math.floor(total / 86400);
     const horas = Math.floor((total % 86400) / 3600);
     const minutos = Math.floor((total % 3600) / 60);
     const segundos = total % 60;
-
     return `${dias}d ${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
-
   }
   abrirModalCancelar() {
     this.mostrarModalCancelar = true;
@@ -280,6 +344,48 @@ export class MyAuctionDetailComponent {
     });
   
   }*/
+
+
+  async ofrecerNuevoPrecio() {
+    if (!this.nuevaOfertaModel.oferta || this.nuevaOfertaModel.oferta < 1 || this.nuevaOfertaModel.oferta === undefined) {
+      this.ss.showNotification('error', 'El valor de la oferta no es valido');
+      return;
+    }
+    if (this.nuevaOfertaModel.oferta > this.subasta!.precio) {
+      this.ss.showNotification('error', 'La oferta no puede ser mayor al precio minimo');
+      return;
+    }
+    let r = await this.ss.showConfirmMessage(`¿Desea enviar esta oferta al ganador?`);
+    if (r) {
+      let dataOferta = {
+        idSubasta: this.subasta!.id,
+        // idUsuario: this.usuario()!.id,
+        oferta: this.nuevaOfertaModel.oferta,
+        tipoUsuario: 'VEND'
+      }
+      this.setCloseModal('nuevaOferta');
+      this.subastasService.guardarOFertaCompraSubasta(dataOferta).subscribe({
+        next: () => {
+          //this.ss.showNotification('success', 'Oferta enviada correctamente');
+          this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.PropuestaGanador);
+
+        },
+        error: (err) => {
+          this.ss.showNotification('error', 'Error al enviar la oferta');
+          console.log(err)
+        }
+      });
+      // this.CambiarEstatusSubasta(this.subasta!.id, this.oferta2nd? AuctionStatus.PropuestaSiguiente:AuctionStatus.PropuestaGanador);
+      this.oferta2nd = false;
+    };
+  }
+
+  onInput(event: any, atributo: any, fn?: (value: any) => void) {
+    const soloNumeros = event.target.value.replace(/[^0-9]/g, '');
+    atributo = soloNumeros;
+    event.target.value = soloNumeros;
+    fn?.(soloNumeros);
+  }
 
   selectTab(tabIndex: number) {
     this.indexTab = tabIndex;
@@ -403,42 +509,29 @@ export class MyAuctionDetailComponent {
   }
 
   CambiarEstatusSubasta(idSubasta: number, nuevoEstatus: number) {
-
     this.loading = true;
-
     this.subastasService.actualizarEstatusSubasta(idSubasta, nuevoEstatus).subscribe({
-
       next: (resp) => {
-
         console.log(resp);
-
         this.loading = false;
-
         this.getInitialData(idSubasta);
-
         //this.getHistorialEstatus(idSubasta);
-
-        this.toastr.success("Estatus actualizado");
-
+        //this.toastr.success("Estatus actualizado");
       },
-
       error: (err) => {
-
         this.loading = false;
-
         console.error(err);
-
-        this.toastr.error("No se pudo actualizar el estatus");
-
+        this.ss.showNotification('error', 'No se pudo actualizar el estatus', 5000);
+        // this.toastr.error("No se pudo actualizar el estatus");
       }
-
     });
-
   }
+
   async aceptarOfertaActual() {
 
     if (this.listaOfertas.length === 0) {
-      this.toastr.warning("No hay ofertas para aceptar.");
+      this.ss.showNotification('warning', 'No hay ofertas para aceptar.', 5000);
+      //this.toastr.warning("No hay ofertas para aceptar.");
       return;
     }
 
@@ -469,8 +562,8 @@ export class MyAuctionDetailComponent {
     return this.listaOfertas[0].ultimaOferta;
 
   }
-  toCurrency(valor: number): string {
 
+  toCurrency(valor: number): string {
     return new Intl.NumberFormat('es-MX', {
       style: 'currency',
       currency: 'MXN'

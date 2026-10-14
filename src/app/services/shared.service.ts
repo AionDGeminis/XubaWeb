@@ -8,7 +8,7 @@ import html2canvas from 'html2canvas';
 import { AuctionStatus } from '../../enums/auction-estatus.enum';
 import { AuctionClaveStatus } from '../../enums/auction-estatus-cve.enum';
 import { CotizacionPaqueteriaModel } from '../models/cotizacion-model';
-import { Subasta } from '../models/subasta.model';
+import { DetalleSubasta, Subasta } from '../models/subasta.model';
 declare var OpenPay: any;
 
 type tipoNotificacion = 'success' | 'error' | 'info' | 'warning';
@@ -1221,7 +1221,7 @@ export class SharedService {
     }
   }
 
-  getPaqueteriaGuiaModel(subasta: Subasta, direccionEnvio: any, usuarioEnvia: any, direccionEntrega: any, usuarioEntrega: any) {
+  getPaqueteriaGuiaModel(subasta: DetalleSubasta, direccionEnvio: any, usuarioEnvia: any, direccionEntrega: any, usuarioRecibe: any) {
     let paqueteriaRequestModel: any = this.getInitialGuiaModel();
     paqueteriaRequestModel.idsubasta = subasta!.id;
     paqueteriaRequestModel.plannedShippingDateAndTime = this.getCorrectDateFormat();
@@ -1256,7 +1256,7 @@ export class SharedService {
         phone: usuarioEnvia.telefono,
         mobilePhone: "2563456227231",
         companyName: "XUBA",
-        fullName: `${subasta.musuarios.nombre} ${subasta.musuarios.apellido}`
+        fullName: `${subasta.usuarioVendedor}`
       },
       registrationNumbers: [
         {
@@ -1277,11 +1277,11 @@ export class SharedService {
           countryName: "Mexico"
         },
         contactInformation: {
-          email: usuarioEntrega.correo,
-          phone: usuarioEntrega.telefono,
-          mobilePhone: usuarioEntrega.telefono,
+          email: usuarioRecibe.correo,
+          phone: usuarioRecibe.telefono,
+          mobilePhone: usuarioRecibe.telefono,
           companyName: "XUBA",
-          fullName: `${usuarioEntrega.nombre} ${usuarioEntrega.apellido}`
+          fullName: `${usuarioRecibe.nombre} ${usuarioRecibe.apellido}`
         },
         registrationNumbers: [
           {

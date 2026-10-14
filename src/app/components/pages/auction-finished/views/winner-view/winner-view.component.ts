@@ -159,7 +159,7 @@ export class WinnerViewComponent implements OnInit {
     private signalRChatService: SignalRChatService) {
 
     this.dataParams = this.route.snapshot.params['permissionData'];
-    this.getInitialGuiaModel();
+    // this.getInitialGuiaModel();
   }
 
   // getInitialDataSubastaModel() {
@@ -312,7 +312,7 @@ export class WinnerViewComponent implements OnInit {
         console.log(subasta)
         this.subasta = subasta;
         // this.precioActualSubasta = this.subasta.apuesta;
-        this.precioTotal = 10;
+        // this.precioTotal = 10;
         this.loading = false;
         this.getDireccionesEntrega();
         this.getInformacionGanador(this.idSubasta);
@@ -716,7 +716,7 @@ export class WinnerViewComponent implements OnInit {
         this.tipoEnvioSeleccionado = this.listaTiposEnvio[0];
         this.precioEnvio = this.tipoEnvioSeleccionado.precio
         // this.precioTotal = 1;
-        // this.precioTotal = +(this.precioActualSubasta + this.precioEnvio).toFixed(2);
+        this.precioTotal = +(this.precioActualSubasta + this.precioEnvio).toFixed(2);
       },
       error: (err) => {
         this.loading = false;
@@ -907,6 +907,10 @@ export class WinnerViewComponent implements OnInit {
   }
 
   createPaqueteriaModel() {
+
+
+    // this.paqueteriaRequestModel = this.ss.getPaqueteriaGuiaModel(this.subasta!, this.direccionEnvio, this.usuarioEnvio, this.miDireccionEntrega, this.infoUsuario);
+
     //Cambiar la api de guardar direccion, para que se registre un telefono y correo en cada direccion
 
     // this.paqueteriaRequestModel = this.ss.getPaqueteriaGuiaModel(this.subasta!, this.subasta!.direccion, this.subasta!.direccion, this.miDireccionEntrega, this.infoUsuario);
