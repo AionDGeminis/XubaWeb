@@ -66,6 +66,7 @@ export class WinnerViewComponent implements OnInit {
   openModal: boolean = false;
   listaSeguimiento: any[] = [];
   listaHistorialEstatusProducto: any[] = [];
+  currentEstatus: any = {};
   textoLoading: string = '';
   modeloComprobante: ComprobantePago = initDataComprobantePago();
   // modeloComprobante: any = {
@@ -314,9 +315,11 @@ export class WinnerViewComponent implements OnInit {
         // this.precioActualSubasta = this.subasta.apuesta;
         // this.precioTotal = 10;
         this.loading = false;
+        this.listaHistorialEstatusProducto = subasta.historialEstatus;
+        this.currentEstatus = this.listaHistorialEstatusProducto[0] ?? { estatus: 'N/D', descripcion: '--' }
         this.getDireccionesEntrega();
         this.getInformacionGanador(this.idSubasta);
-        this.getHistorialEstatus(this.idSubasta);
+        // this.getHistorialEstatus(this.idSubasta);
 
       },
       error: (err) => {
@@ -325,6 +328,28 @@ export class WinnerViewComponent implements OnInit {
       }
     })
   }
+
+  getSubdescripcionPorEstatus(idEstatus: number) {
+    let desc = '';
+    switch (idEstatus) {
+      case AuctionStatus.PorAprobar: desc = 'Envíado'; break;
+      case 2: desc = 'Recibido'; break;
+      case 3: desc = 'Cancelado'; break;
+      case 4: desc = 'Rechazado'; break;
+      case 5: desc = 'Pendiente'; break;
+      case 6: desc = 'En Revisión'; break;
+      case 7: desc = 'Pagado'; break;
+      case 8: desc = 'Reembolsado'; break;
+      case 9: desc = 'Cancelado'; break;
+      case 10: desc = 'Rechazado'; break;
+      case 11: desc = 'Pendiente'; break;
+      case 12: desc = 'En Revisión'; break;
+      case 13: desc = 'Pagado'; break;
+      case 14: desc = 'Reembolsado'; break;
+    }
+    return desc;
+  }
+
 
   getInformacionGanador(IdSubasta: number) {
     console.log(IdSubasta)
@@ -880,16 +905,16 @@ export class WinnerViewComponent implements OnInit {
     });
   }
 
-  getHistorialEstatus(IdSubasta: number) {
-    this.subastasService.GetHistorialEstatusSubasta(IdSubasta).subscribe({
-      next: (historial: any) => {
-        this.listaHistorialEstatusProducto = historial;
-      },
-      error: (error: any) => {
-        console.error('Error fetching history information:', error);
-      }
-    });
-  }
+  // getHistorialEstatus(IdSubasta: number) {
+  //   this.subastasService.GetHistorialEstatusSubasta(IdSubasta).subscribe({
+  //     next: (historial: any) => {
+  //       this.listaHistorialEstatusProducto = historial;
+  //     },
+  //     error: (error: any) => {
+  //       console.error('Error fetching history information:', error);
+  //     }
+  //   });
+  // }
 
 
 
@@ -909,7 +934,7 @@ export class WinnerViewComponent implements OnInit {
   createPaqueteriaModel() {
 
 
-    // this.paqueteriaRequestModel = this.ss.getPaqueteriaGuiaModel(this.subasta!, this.direccionEnvio, this.usuarioEnvio, this.miDireccionEntrega, this.infoUsuario);
+    this.paqueteriaRequestModel = this.ss.getPaqueteriaGuiaModel(this.subasta!, this.miDireccionEntrega, this.infoUsuario);
 
     //Cambiar la api de guardar direccion, para que se registre un telefono y correo en cada direccion
 
@@ -1179,6 +1204,7 @@ export class WinnerViewComponent implements OnInit {
     } else {
       this.createPaqueteriaModel();
       this.createRecoleccionModel();
+      //ahconsole.log(JSON.stringify(this.paqueteriaRequestModel));
       this.setToXubaComprobante(response)
       this.moveTo3DAuth(response);
     }
@@ -1205,11 +1231,12 @@ export class WinnerViewComponent implements OnInit {
 
         // this.closeModal();
         // this.getInitialData(this.subasta.id);
-        if (generaGuia) {
-          this.generarGuiaDeEnvio();
-        } else {
-          // this.getInitialData(true);
-        }
+        // if (generaGuia) {
+        //   this.generarGuiaDeEnvio();
+        // } else {
+        //   // this.getInitialData(true);
+        // }
+        this.getDatosSubasta(this.idSubasta);
         // 
       },
       error: (error) => {

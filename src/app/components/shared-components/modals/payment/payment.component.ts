@@ -303,7 +303,7 @@ export class PaymentComponent implements OnInit {
   }
 
   createPaqueteriaModel() {
-    this.paqueteriaRequestModel = this.ss.getPaqueteriaGuiaModel(this.subasta!, this.direccionEnvio, this.usuarioEnvio, this.direccionEntrega, this.usuarioEntrega);
+    //this.paqueteriaRequestModel = this.ss.getPaqueteriaGuiaModel(this.subasta!, this.direccionEnvio, this.usuarioEnvio, this.direccionEntrega, this.usuarioEntrega);
   }
 
   emitirEvento() {

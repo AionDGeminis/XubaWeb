@@ -66,6 +66,12 @@
           *ngIf="showActionButton(1021)"><i class="fas fa-hand-holding-usd"></i> Enviar nueva oferta
         </button>
 
+        <button class="btn btn-xuba1 bg-xuba3 me-1" *ngIf="showActionButton(1022)" (click)="aceptarOfertaActual()">
+          <i class="fas fa-handshake"></i> Aceptar oferta
+        </button>
+        <button class="btn btn-xuba2 bg-xuba-success ms-1 me-1" (click)="setOpenModal('nuevaOferta')"
+          *ngIf="showActionButton(1022)"><i class="fas fa-hand-holding-usd"></i> Contraofertar
+        </button>
 
         <button type="button" class="btn btn--secundario sp-btn-danger" (click)="abrirModalCancelar()"><i
             class="fas fa-ban"></i> Cancelar

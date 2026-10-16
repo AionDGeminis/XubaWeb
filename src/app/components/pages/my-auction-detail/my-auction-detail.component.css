@@ -1007,16 +1007,16 @@ textarea {
 }
 
 .btn-xuba1 {
-    color: #000;
-    background: #1abc9c;
-    border: 1px solid #16a085;
+    color: #fff;
+    background: #0984e3;
+    border: 1px solid #2980b9;
     /* box-shadow: -4px 4px 5px #21212133; */
 }
 
 .btn-xuba1:hover {
     color: #fff;
-    background: #1dd1a1;
-    border: 1px solid #1abc9c;
+    background: #3498db;
+    border: 1px solid #0984e3;
     /* box-shadow: -4px 4px 5px #ccc; */
 
 }
