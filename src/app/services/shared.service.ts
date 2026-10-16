@@ -1221,7 +1221,7 @@ export class SharedService {
     }
   }
 
-  getPaqueteriaGuiaModel(subasta: DetalleSubasta, direccionEnvio: any, usuarioEnvia: any, direccionEntrega: any, usuarioRecibe: any) {
+  getPaqueteriaGuiaModel(subasta: DetalleSubasta, direccionEntrega: any, usuarioRecibe: any) {
     let paqueteriaRequestModel: any = this.getInitialGuiaModel();
     paqueteriaRequestModel.idsubasta = subasta!.id;
     paqueteriaRequestModel.plannedShippingDateAndTime = this.getCorrectDateFormat();
@@ -1244,16 +1244,16 @@ export class SharedService {
     }
     paqueteriaRequestModel.customerDetails.shipperDetails = {
       postalAddress: {
-        postalCode: direccionEnvio.codigoPostal,
-        cityName: direccionEnvio.municipio,
+        postalCode: '00000',
+        cityName: 'None',
         countryCode: "MX",
-        addressLine1: `${direccionEnvio.calle} ${direccionEnvio.numeroExt} ${direccionEnvio.numeroInt}`,
-        addressLine2: direccionEnvio.colonia,
+        addressLine1: `None1`,
+        addressLine2: 'None2',
         countryName: "Mexico"
       },
       contactInformation: {
-        email: usuarioEnvia.correo,
-        phone: usuarioEnvia.telefono,
+        email: 'example@mail.com',
+        phone: '0000000000',
         mobilePhone: "2563456227231",
         companyName: "XUBA",
         fullName: `${subasta.usuarioVendedor}`

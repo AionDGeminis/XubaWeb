@@ -364,14 +364,18 @@ export class MyAuctionDetailComponent {
         tipoUsuario: 'VEND'
       }
       this.setCloseModal('nuevaOferta');
+      this.loading = true;
       this.subastasService.guardarOFertaCompraSubasta(dataOferta).subscribe({
         next: () => {
+          this.loading = false;
           //this.ss.showNotification('success', 'Oferta enviada correctamente');
-          this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.PropuestaGanador);
-
+          // this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.PropuestaGanador);
+          this.getInitialData(this.subasta!.id);
         },
         error: (err) => {
-          this.ss.showNotification('error', 'Error al enviar la oferta');
+          this.loading = false;
+          let mensaje = err && err.error && err.error.mensaje ? err.error.mensaje : "Error al enviar la oferta";
+          this.ss.showNotification('error', mensaje);
           console.log(err)
         }
       });
@@ -535,14 +539,14 @@ export class MyAuctionDetailComponent {
       return;
     }
 
-    const ultimaOferta = this.listaOfertas[0].ultimaOferta;
+    const ultimaOferta = this.subasta.ultimaContraOferta.oferta; //this.listaOfertas[0].ultimaOferta;
 
     const r = await this.ss.showConfirmMessage(
       `¿Desea aceptar la oferta de compra actual al precio de ${this.toCurrency(ultimaOferta)}?`
     );
 
     if (r) {
-
+      //this.loading = true;
       // 1023 es un ejemplo.
       // Aquí debes poner el id del estatus "Pendiente de pago"
       this.CambiarEstatusSubasta(

@@ -140,7 +140,8 @@ export class SubastasService {
 
   generarGuiaPaqueteria(data: any) {
     // const apiPaqueteria = 'https://envios.xuba.mx:10443/api/DHL/Envio';
-    return this.http.post(`${this.apiPaqueteria}/DHL/Envio`, data, { headers: test_headers }).pipe(map(res => res));
+    return this.http.post(`${env.base_url}/DHL/CrearEnvio`, data, { headers: headers }).pipe(map(res => res));
+    // return this.http.post(`${this.apiPaqueteria}/DHL/Envio`, data, { headers: test_headers }).pipe(map(res => res));
   }
 
   generarRecoleccion(model: any) {

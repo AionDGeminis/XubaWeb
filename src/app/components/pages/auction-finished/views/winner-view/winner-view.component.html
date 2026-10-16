@@ -44,6 +44,23 @@
             <!-- <div
             *ngIf="ganadorInfo && ganadorInfo.claveEstatus && isInList(ganadorInfo!.claveEstatus,['ACT','FIN','MNA', 'PGA','PPV'])"
             class="row gy-3 align-items-stretch"> -->
+            <div class="w-100">
+              <div class="estatus-banner__info">
+                <div class="estatus-banner__fila">
+                  <span class="estatus-banner__label">Estatus</span>
+                  <span class="estatus-badge">
+                    <span class="estatus-badge__punto"></span>
+                    {{currentEstatus.estatus}}
+                    <!-- {{ estatusDHLActual?.estatus || estatusActual?.estatus }} -->
+                  </span>
+                </div>
+                <h2 class="estatus-banner__mensaje">{{ currentEstatus.descripcion }}</h2>
+                <!-- <p class="estatus-banner__siguiente">{{getSubdescripcionPorEstatus(currentEstatus.idEstatus)}}</p> -->
+                <!-- <p class="estatus-banner__siguiente">Puedes consultar las ofertas mientras la subasta está activa.</p> -->
+              </div>
+            </div>
+            <hr>
+
             <div class="col-12 col-md-6">
               <ul class="list-unstyled mb-0">
                 <li class="d-flex justify-content-between py-1">
@@ -65,7 +82,17 @@
                 </div>
               </div>
             </div>
-            <div class="col-12" *ngIf="esEstatusValido(['ACT','FIN'])">
+            <hr>
+
+            <!-- <div class="col-12" *ngIf="esEstatusValido(['ACT'])">
+              <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                <div class="d-flex justify-content-center align-items-center">
+                  <span class="alert bg-label-xuba2 text-white">Subasta activa, pronto sabras si fuiste el
+                    ganador</span>
+                </div>
+              </div>
+            </div> -->
+            <div class="col-12" *ngIf="esEstatusValido(['FIN'])">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
                 <div class="d-flex justify-content-center align-items-center">
                   <span class="alert bg-label-xuba2 text-white">Subasta terminada, esperando seguimiento del
@@ -73,14 +100,14 @@
                 </div>
               </div>
             </div>
-            <div class="col-12" *ngIf="esEstatusValido(['MNA'])">
+            <!-- <div class="col-12" *ngIf="esEstatusValido(['MNA'])">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
                 <div class="d-flex justify-content-center align-items-center">
                   <span class="alert bg-label-xuba2 text-white">La subasta finalizo pero no se alcanzo el precio minimo,
                     esperando la decision del vendedor</span>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div class="col-12" *ngIf="esEstatusValido(['PGA'])">
               <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
                 <div class="alert bg-label-xuba5 text-white mt-2" style="position: relative;overflow: hidden;">
@@ -413,7 +440,7 @@
 
         <div class="col-md-12 h-50">
           <div class="card p-4 shadow-sm auction-status-track">
-            <h5 class="mb-4 fw-bold text-center">Historial de estatus</h5>
+            <!-- <h5 class="mb-4 fw-bold text-center">Historial de estatus</h5> -->
             <div class="w-100" style="height: 50vh !important;overflow-y: scroll;">
               <ul class="status-track-list list-unstyled">
                 <ng-container *ngFor="let item of listaHistorialEstatusProducto; let i = index">
@@ -423,11 +450,11 @@
                     <span class="status-dot"></span>
                     <div class="status-content">
                       <div class="status-main">
-                        <span class="status-label">{{item.desStatus}}</span>
+                        <span class="status-label">{{item.estatus}}</span>
                       </div>
 
                       <div class="status-main">
-                        <small *ngIf="item.cveStatus !== 'ENV'" class="desc">{{item.labelC}}</small>
+                        <small *ngIf="item.cveStatus !== 'ENV'" class="desc">{{item.descripcion}}</small>
 
                         <div class="historial-envios" *ngIf="item.cveStatus === 'ENV'">
                           <p *ngFor="let seg of listaSeguimiento">
