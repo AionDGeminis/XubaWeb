@@ -1,4 +1,4 @@
-import { Component, computed, Inject, Renderer2, Signal } from '@angular/core';
+import { Component, computed, ElementRef, Inject, Renderer2, Signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ToastrService } from 'ngx-toastr';
@@ -15,6 +15,8 @@ import { AuctionService } from '../../../services/auction.service';
 import { Usuario } from '../../../models/usuario-model';
 import { LoaderComponent } from '../../shared-components/loader/loader.component';
 import { AuctionStatus } from '../../../../enums/auction-estatus.enum';
+import { ReclamoEstatusCve } from '../../../../enums/reclamo-status.enum';
+import { ReclamoSubestatusCve } from '../../../../enums/reclamo-subestatus.enum';
 
 @Component({
   selector: 'app-my-auction-detail',
@@ -79,6 +81,17 @@ export class MyAuctionDetailComponent {
   oferta2nd: boolean = false;
   nuevaOfertaModel: any = { oferta: null, confirmarOferta: null }
 
+  // ===== RECLAMO
+  informacionReclamo: any = {};
+  conversacion: any[] = [];
+  newReclamoMessage: string = '';
+  newMessageClass = '';
+  classNavigateImg = '';
+  sendingMessage: boolean = false;
+  idConexionChat: number = -1;
+  subestatus = ReclamoSubestatusCve.EsperaGuiaVendedor;
+  @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+
   constructor(private route: ActivatedRoute,
     private router: Router,
     private signalRService: SignalRService,
@@ -110,15 +123,27 @@ export class MyAuctionDetailComponent {
     this.loading = true;
 
     this.subastasService.ConsultarDetalleSeguimientoId(IdSubasta).subscribe({
-      next: (sub: any) => {
+      next: async (sub: any) => {
         console.log(sub);
         this.loading = false;
         this.subasta = sub;
-        this.listaHistorial = sub.historialEstatus ?? [];
-        this.listaHistorial.sort((a: any, b: any) =>
-          new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
-        );
-        this.currentEstatus = this.listaHistorial[0]
+        let _listaHistorial = this.getFormatHistorialEstatus(sub.historialEstatus);
+        console.log(_listaHistorial)
+        // this.listaHistorial = sub.historialEstatus ?? [];
+        // this.listaHistorial.sort((a: any, b: any) =>
+        //   new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+        // );
+        // let indexEnviado = this.listaHistorial.findIndex(x => x.idEstatus === AuctionStatus.Enviado);
+        // if (indexEnviado !== -1 && this.subasta.numGuia) {
+        //   let historialDhl = await this.getSeguimientoDHL(this.subasta.numGuia);
+        //   this.listaHistorial.splice(indexEnviado, 0, ...historialDhl);
+        // }
+        this.listaHistorial = await this.getMergeListHistorial(_listaHistorial, this.subasta.numGuia);
+        console.log(this.listaHistorial)
+        this.currentEstatus = this.listaHistorial[0];
+        if (this.currentEstatus.idEstatus == AuctionStatus.Reclamo) {
+          this.getReclamoInfo();
+        }
         this.subasta.remaining = this.tiempoStringASegundos(sub.tiempoVence);
         clearInterval(this.intervalId);
         this.setGanadorInfo(sub);
@@ -198,6 +223,28 @@ export class MyAuctionDetailComponent {
     });
   }
 
+  getFormatHistorialEstatus(hitorialEstatus: any[]) {
+    if (!hitorialEstatus) return [];
+    hitorialEstatus.sort((a: any, b: any) =>
+      new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+    );
+    return hitorialEstatus;
+  }
+
+  async getMergeListHistorial(historial: any[], numGuia: string) {
+    console.log('intentar merge')
+    let indexEnviado = historial.findIndex(x => x.idEstatus === AuctionStatus.Enviado);
+    console.log(indexEnviado)
+    if (indexEnviado !== -1 && numGuia) {
+      console.log('obteniendo seguimiento dhl')
+      let historialDhl = await this.getSeguimientoDHL(numGuia);
+      console.log(historialDhl);
+      historial.splice(indexEnviado, 0, ...historialDhl);
+    }
+    console.log(historial)
+    return historial;
+  }
+
   setGanadorInfo(subasta: any) {
     this.ganadorInfo = {
       nombre: subasta.ganador,
@@ -227,6 +274,84 @@ export class MyAuctionDetailComponent {
   //     }
   //   })
   // }
+
+  getReclamoInfo() {
+    this.subastasService.getInfoDetalleReclamo(this.subasta!.id).subscribe({
+      next: (reclamoInfo: any) => {
+        this.informacionReclamo = reclamoInfo;
+        console.log('Reclamo:');
+        console.log(this.informacionReclamo);
+        // this.getMensajesReclamo(reclamoInfo.id)
+        // this.conectarSignalR(this.informacionReclamo.id);
+        // this.informacionReclamo.idEstatus = 3;
+      },
+      error: (err) => {
+        console.error('Error fetching claim information:', err);
+      }
+    });
+  }
+
+  inMinimumEstatus(sub: string, minimum: string) {
+    let val = this.getClaveSubastatusId(sub);
+    let min = this.getClaveSubastatusId(minimum);
+
+    return val >= min;
+  }
+
+  getClaveSubastatusId(sub: string) {
+    let val = -1;
+    switch (sub) {
+      case ReclamoSubestatusCve.EsperaGuiaVendedor: val = 1; break;
+      case ReclamoSubestatusCve.ReembolsoSinRetorno: val = 2; break;
+      case ReclamoSubestatusCve.GuiaRetornoGenerada: val = 3; break;
+      case ReclamoSubestatusCve.Enviado: val = 3; break;
+      case ReclamoSubestatusCve.Entregado: val = 3; break;
+    }
+
+
+    return val;
+  }
+
+  addNewMessage() {
+    if (!this.sendingMessage) {
+      this.sendingMessage = true;
+      let mensaje = { idReclamo: this.informacionReclamo.id, mensaje: this.newReclamoMessage, tipoUsuario: 'V', idUsuario: 0 }
+      this.subastasService.saveMessageChat(mensaje).subscribe({
+        next: (response) => {
+          // this.signalRChatService.sendGetMessageAsync(this.informacionReclamo.id);
+
+          // this.addMessageToList(mensaje);
+          this.newReclamoMessage = '';
+          this.sendingMessage = false;
+        },
+        error: (err) => {
+          this.sendingMessage = false;
+          console.error('Error saving message', err);
+        }
+      });
+    }
+
+  }
+
+  addMessageToList(message: any) {
+    //let mensaje = { id: this.conversacion.length + 1, fecha: new Date().toISOString(), idUsuario: 1, tipoUsuario: 'C', mensaje: this.newReclamoMessage };
+    this.conversacion.push(message);
+    this.newReclamoMessage = '';
+    setTimeout(() => this.scrollToBottom({ behavior: 'smooth' }), 100);
+    this.newMessageClass = 'animate__slideInRight';
+    setTimeout(() => {
+      this.newMessageClass = '';
+    }, 200);
+  }
+
+
+  private scrollToBottom(options?: ScrollToOptions) {
+    const el = this.messagesContainer.nativeElement;
+    if (!el) return;
+    // instantáneo o suave según options
+    el.scrollTo({ top: el.scrollHeight, ...(options || {}) });
+  }
+
 
   showActionButton(estatus: number): boolean {
     return this.currentEstatus.idEstatus === estatus;
@@ -433,83 +558,67 @@ export class MyAuctionDetailComponent {
     this.imagenSeleccionada = index;
   }
 
-  cargarSeguimientoDHL(noGuia: string, posicion: number) {
 
+
+  async getSeguimientoDHL(noGuia: string) {
     console.log('Número de guía:', noGuia);
-    this.listaHistorialDHL = [];
-
-    this.subastasService.GetPaqueteriaSeguimiento(noGuia).subscribe({
-
-      next: (resp: any) => {
-
-        console.log('Respuesta DHL:', resp);
-
-        if (!resp.events || resp.events.length === 0) {
-          return;
-        }
-
-        // Crear la lista de eventos DHL
-        const eventosDHL = resp.events.map((e: any) => {
-
-          let estatus = e.description;
-
-          switch (e.description) {
-
-            case 'Shipment picked up':
-              estatus = 'Paquete recolectado';
-              break;
-
-            case 'Shipment is out with courier for delivery':
-              estatus = 'En ruta para entrega';
-              break;
-
-            case 'Delivered':
-              estatus = 'Entregado';
-              break;
+    // this.listaHistorialDHL = [];
+    let resp = await new Promise<any>((resolve, reject) => {
+      this.subastasService.GetPaqueteriaSeguimiento(noGuia).subscribe({
+        next: (resp: any) => {
+          console.log('Respuesta DHL:', resp);
+          if (!resp.events || resp.events.length === 0) {
+            resolve([])
           }
 
-          return {
-            estatus,
-            descripcion: e.location,
-            fecha: e.date,
-            tipo: 'DHL'
-          };
-
-        }).reverse();
-        this.listaHistorialDHL = eventosDHL;
-
-        // Buscar "Enviado"
-        const indexEnviado = this.listaHistorial.findIndex(x => x.idEstatus == 13);
-
-        if (indexEnviado !== -1) {
-
+          // Crear la lista de eventos DHL
+          const eventosDHL = resp.events.map((e: any) => {
+            let estatus = e.description;
+            switch (e.description) {
+              case 'Shipment picked up':
+                estatus = 'Paquete recolectado';
+                break;
+              case 'Shipment is out with courier for delivery':
+                estatus = 'En ruta para entrega';
+                break;
+              case 'Delivered':
+                estatus = 'Entregado';
+                break;
+            }
+            return {
+              estatus,
+              descripcion: e.location,
+              fecha: e.date,
+              tipo: 'DHL'
+            };
+          }).reverse();
+          resolve(eventosDHL);
+          // this.listaHistorialDHL = eventosDHL;
+          // Buscar "Enviado"
+          // const indexEnviado = this.listaHistorial.findIndex(x => x.idEstatus == 13);
+          // if (indexEnviado !== -1) {
           // Insertar DHL antes de "Enviado"
-          this.listaHistorial.splice(indexEnviado, 0, ...eventosDHL);
-
+          // this.listaHistorial.splice(indexEnviado, 0, ...eventosDHL);
+          // }
+          // if (indexEnviado !== -1) {
+          //   // Quitar el estatus "Enviado"
+          //   this.listaHistorial.splice(indexEnviado + eventosDHL.length, 1);
+          // }
+          // console.log('Historial final:', this.listaHistorial);
+        },
+        error: (err) => {
+          resolve([]);
+          console.error('Error DHL:', err);
+          // this.listaHistorial = [{
+          // estatus: 'No fue posible consultar el seguimiento',
+          // descripcion: 'La paquetería no respondió correctamente.',
+          // fecha: new Date()
+          // }];
         }
-        if (indexEnviado !== -1) {
-          // Quitar el estatus "Enviado"
-          this.listaHistorial.splice(indexEnviado + eventosDHL.length, 1);
-        }
-
-        console.log('Historial final:', this.listaHistorial);
-
-      },
-
-      error: (err) => {
-
-        console.error('Error DHL:', err);
-
-        this.listaHistorial = [{
-          estatus: 'No fue posible consultar el seguimiento',
-          descripcion: 'La paquetería no respondió correctamente.',
-          fecha: new Date()
-        }];
-
-      }
-
+      });
     });
 
+    return resp;
   }
 
   CambiarEstatusSubasta(idSubasta: number, nuevoEstatus: number) {
