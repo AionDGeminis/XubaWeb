@@ -146,9 +146,26 @@ export class WinnerViewComponent implements OnInit {
   ];
   // USERIDREF
   // en cookies eliminar cualquiere referencia a un id de usuario
-  currentIdUsuario: number = -1;
+  // currentIdUsuario: number = -1;
+  //  pasoActual = 
+  pasos: any[] = [{ paso: 'Ganada', actual: false }, { paso: 'Pago', actual: false }, { paso: 'Preparacion', actual: true }, { paso: 'Envio', actual: false }, { paso: 'Entrega', actual: false }];
+  pasoActual: number = -1;
 
-
+  get clave(): string {
+    // usa aquí la misma fuente que usa esEstatusValido()
+    return this.ganadorInfo?.claveEstatus ?? '';
+  }
+  // get esPrePago(): boolean  { return (GRUPO_ESTATUS.PRE_PAGO  as readonly string[]).includes(this.clave); }
+  // get esPostPago(): boolean { return (GRUPO_ESTATUS.POST_PAGO as readonly string[]).includes(this.clave); }
+  get imagenPrincipal(): string | null { return this.subasta?.imagenes?.[0]?.url ?? null; }
+  get tieneDirecciones(): boolean { return (this.listaDireccionesEntrega?.length ?? 0) > 0; }
+  get sinDirecciones(): boolean { return this.listaDireccionesEntrega?.length === 0; }
+  get puedeContraofertar(): boolean { return (this.ganadorInfo?.ofertas?.length ?? 0) < 3; }
+  get reclamoCerrado(): boolean { return this.informacionReclamo?.cvStatus === 'ENT'; }
+  get totalPagarTexto(): string {
+    const t = this.toCurrency(this.precioTotal);
+    return t !== '$0.00' ? `${t} MXN` : '-- ND --';
+  }
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   constructor(
     private ss: SharedService,
@@ -216,7 +233,7 @@ export class WinnerViewComponent implements OnInit {
   // }
 
   ngOnInit(): void {
-    this.currentIdUsuario = this.usuario!.id;
+    // this.currentIdUsuario = this.usuario!.id;
     // OpenPay.setId('mz5jjyzabcb3zzpevo0l');
     // OpenPay.setApiKey('pk_f2da5530e74d4c7fbf292d886aba5e50');
     // OpenPay.setSandboxMode(true);
@@ -266,6 +283,25 @@ export class WinnerViewComponent implements OnInit {
     });
   }
 
+  getCurrentPaso(): number {
+    switch (this.currentEstatus.idEstatus) {
+      case AuctionStatus.Activa: return -1;
+      case AuctionStatus.Finalizada:
+      case AuctionStatus.MinimoNoAlcanzado:
+      case AuctionStatus.PropuestaGanador:
+      case AuctionStatus.PropuestaVendedor:
+      case AuctionStatus.RechazoGanador: return 0;
+      case AuctionStatus.PendientePago: return 1;
+      case AuctionStatus.Pagado:
+      case AuctionStatus.PreparacionEnvio: return 2;
+      case AuctionStatus.Enviado: return 3;
+      case AuctionStatus.Recibido:
+      case AuctionStatus.RecepcionCorrecta:
+      case AuctionStatus.Reclamo: return 4;
+      default: return -1;
+    }
+
+  }
 
   // getInitialData(reloadSubastaInfo?: boolean) {
   //   // if (this.subasta) {
@@ -316,7 +352,9 @@ export class WinnerViewComponent implements OnInit {
         // this.precioTotal = 10;
         this.loading = false;
         this.listaHistorialEstatusProducto = subasta.historialEstatus;
+        this.listaHistorialEstatusProducto = this.listaHistorialEstatusProducto.filter(x => x.descripcion != null && x.descripcion.trim() != '');
         this.currentEstatus = this.listaHistorialEstatusProducto[0] ?? { estatus: 'N/D', descripcion: '--' }
+        this.pasoActual = this.getCurrentPaso();
         this.getDireccionesEntrega();
         this.getInformacionGanador(this.idSubasta);
         // this.getHistorialEstatus(this.idSubasta);
@@ -520,14 +558,17 @@ export class WinnerViewComponent implements OnInit {
     for (let image of r) {
       this.reclamoModel.imagenesReclamos.push({ url: image });
     }
-
+    this.setCloseModal('disputa');
+    this.loading = true;
     this.subastasService.addReclamo(this.reclamoModel).subscribe({
       next: (response) => {
-        this.setCloseModal('disputa');
+        this.loading = false;
+        this.ss.showNotification('success', 'Reclamo creado exitosamente');
         this.getDatosSubasta(this.idSubasta)
         // this.getInitialData(true);
       },
       error: (err) => {
+        this.loading = false;
         console.error('Error saving reclamo', err);
       }
     });
@@ -787,14 +828,20 @@ export class WinnerViewComponent implements OnInit {
         tipoUsuario: 'COMP'
       }
       this.setCloseModal('nuevaOferta');
+      this.loading = true;
       this.subastasService.guardarOFertaCompraSubasta(dataOferta).subscribe({
         next: () => {
+          this.loading = false;
+          this.getDatosSubasta(this.idSubasta);
           //this.ss.showNotification('success', 'Oferta enviada correctamente');
-          this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.PropuestaVendedor);
+          // this.CambiarEstatusSubasta(this.subasta!.id, AuctionStatus.PropuestaVendedor);
 
         },
         error: (err) => {
-          this.ss.showNotification('error', 'Error al enviar la oferta');
+          this.loading = false;
+          let mensaje = err && err.error && err.error.mensaje ? err.error.mensaje : "Error al enviar la oferta";
+          this.ss.showNotification('error', mensaje);
+          console.log(err)
         }
       });
       // this.CambiarEstatusSubasta(this.subasta!.id, this.oferta2nd? AuctionStatus.PropuestaSiguiente:AuctionStatus.PropuestaGanador);

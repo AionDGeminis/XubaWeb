@@ -73,6 +73,11 @@
           *ngIf="showActionButton(1022)"><i class="fas fa-hand-holding-usd"></i> Contraofertar
         </button>
 
+        <button class="btn  xs-btn--dark ms-1 me-1" (click)="setOpenModal('detalleReclamo')"
+          *ngIf="showActionButton(1024)"><i class="fas fa-hand-holding-usd"></i> Ver detalles
+        </button>
+
+
         <button type="button" class="btn btn--secundario sp-btn-danger" (click)="abrirModalCancelar()"><i
             class="fas fa-ban"></i> Cancelar
           Subasta</button>
@@ -356,7 +361,7 @@
       <section class="mejor-oferta">
         <h3 class="mejor-oferta__titulo mb-2">Mejor oferta</h3>
 
-        <article class="ganador" *ngIf="subasta.ultimasOfertas.length > 0">
+        <article class="ganador" *ngIf="subasta.ultimasOfertas && subasta.ultimasOfertas.length > 0">
           <div class="ganador__avatar">
             <img [src]="subasta.imgPerfilGanador" [alt]="subasta.ganador">
           </div>
@@ -378,7 +383,7 @@
             </div>
           </div>
         </article>
-        <div class="" *ngIf="subasta.ultimasOfertas.length <= 0">
+        <div class="" *ngIf="subasta.ultimasOfertas && subasta.ultimasOfertas.length <= 0">
           <span class="sp-empty">No se registraron ofertas por este producto</span>
         </div>
       </section>
@@ -531,5 +536,293 @@
         </button>
       </div>
     </div>
+  </div>
+</div>
+
+
+<!-- MODAL DETALLE DEL RECLAMO -->
+
+<div *ngIf="isModalOpen.detalleReclamo" class="modal-backdrop">
+  <div class="modal-container" (click)="onContentClick($event)">
+    <div class="modal-header bg-main-header text-white">
+      <!-- <h3 class="modal-title">
+          <span class="text-white" >Detalle de actualizaciones de reclamo</span>
+        </h3> -->
+      <!-- <div class="claim-header"> -->
+      <!-- {{informacionReclamo | json}} -->
+      <h2 style="font-size: 1em;">Reclamo #R-{{informacionReclamo.id}} <span
+          class="claim-status status-en-proceso">{{informacionReclamo.desStatus}}</span>
+      </h2>
+      <!-- </div> -->
+      <button class="close-button" (click)="setCloseModal('detalleReclamo')">
+        <span class="text-white">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="tab-content text-start fast-animation  animate__animated animate__fadeInRight">
+        <div class="claim-modal-content">
+          <!-- <div class="claim-header">
+                  <h2>Reclamo #R-2025-001</h2>
+                  <span class="claim-status status-en-proceso">{{informacionReclamo.desStatus}}</span>
+                </div> -->
+
+          <div class="claim-details">
+            <div class="detail-row d-sm-none d-block">
+              <button class="btn btn-pill bg-label-xuba4 px-2 py-1 text-white w-100 mt-2 mb-2" style="font-size: 1em;"
+                (click)="setOpenModal('viewer')">
+                ver evidencias <i class="fas fa-file-image"></i>
+              </button>
+            </div>
+            <div class="detail-row">
+              <span class="label">Producto:</span>
+              <span class="value">{{subasta!.caption}}</span>
+              <span class="value d-sm-block d-none">
+                <button class="btn btn-pill bg-label-xuba4 px-2 py-1 text-white " style="font-size: 1em;"
+                  (click)="setOpenModal('viewer')">
+                  ver evidencias <i class="fas fa-file-image"></i>
+                </button>
+              </span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Fecha de inicio:</span>
+              <span class="value">{{informacionReclamo.fechaApertura}}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Tipo de reclamo:</span>
+              <span class="value">{{informacionReclamo.categoria}}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">Motivo:</span>
+              <span class="value">{{informacionReclamo.descripcion}}</span>
+            </div>
+          </div>
+
+
+          <!-- =============== ESTATUS EN ESPERA DE REVISION ================ -->
+          <div *ngIf="informacionReclamo.idEstatus === 1">
+            <div class="col-12">
+              <div class="bg-light rounded-3 p-3 h-100 d-flex flex-column justify-content-center">
+                <div class="alert bg-label-xuba2 text-dark mt-2">
+                  En espera que un agente sea asignado para revisar tu caso
+                  <i class="fas fa-user-clock fa-3x" style="position: absolute;right:10px;top:10px;opacity: 0.3;"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =============== ESTATUS EN PROCESO ================ -->
+          <div class="chat-section" *ngIf="informacionReclamo.idEstatus === 2">
+            <div class="w-100 mb-2 d-none d-sm-block">
+              <h5 style="font-size: 0.9em;">Chat de seguimiento</h5>
+              <span style="font-size: 0.75em;">Participantes: </span> &nbsp;
+              <span class="square-c me-2">Comprador (Yo)</span>
+              <span class="square-v me-2">Vendedor</span>
+              <span class="square-a">Agente Xuba</span>
+            </div>
+            <div class="w-100 mb-2 d-sm-none d-block">
+              <h5 style="font-size: 0.9em;">Chat de seguimiento</h5>
+              <span style="font-size: 0.75em;">Participantes: </span>
+              <br>
+              <span class="square-c me-2">Comprador (Yo)</span>
+              <span class="square-v me-2">Vendedor</span>
+              <span class="square-a">Agente Xuba</span>
+            </div>
+            <div class="messages-container" #messagesContainer>
+              <div
+                [class]="'message message-short align-right fast-animations  animate__animated ' + (i+1 === conversacion.length? newMessageClass:'') "
+                *ngFor="let msj of conversacion; let i = index;" [ngClass]="{
+                     'align-right msc': msj.tipoUsuario === 'Comprador' ||  msj.tipoUsuario === 'C', 
+                     'align-left msv': msj.tipoUsuario === 'Vendedor' ||  msj.tipoUsuario === 'V',
+                     'align-left msa': msj.tipoUsuario === 'XUBA' ||  msj.tipoUsuario === 'X'}">
+                <div class="message-content">
+                  {{msj.mensaje}}
+                  <div class="w-100 text-end">
+                    <span class="timestamp" style="color: #2f3542;">{{msj.fecha}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="message-input-section flex d-none d-sm-flex">
+              <input type="text" class="w-90" [(ngModel)]="newReclamoMessage" (keydown.enter)="addNewMessage()"> &nbsp;
+              <button class="message-send-btn bg-label-xuba1" (click)="addNewMessage()">
+                <i class="fas  text-white"
+                  [ngClass]="{'fa-hourglass': sendingMessage, 'fa-paper-plane':!sendingMessage }"></i>
+              </button>
+            </div>
+            <div class="message-input-section flex d-sm-none d-flex">
+              <input type="text" class="w-90" [(ngModel)]="newReclamoMessage" (keydown.enter)="addNewMessage()"> &nbsp;
+              <button class="message-send-btn bg-label-xuba1" (click)="addNewMessage()">
+                <i class="fas  text-white"
+                  [ngClass]="{'fa-hourglass': sendingMessage, 'fa-paper-plane':!sendingMessage }"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ============= ESTATUS DE REEMBOLSO COMPLETO ================ -->
+          <div class="chat-section"
+            *ngIf="(informacionReclamo.idEstatus === 3 || informacionReclamo.cvStatus === 'REE') && informacionReclamo.cvSubStatus !== 'RSR' ">
+            <div class="w-100 mb-2">
+              <h5 style="font-size: 0.9em;">Resolucion de agente</h5>
+              <span style="font-size: 0.85em;color:#636e72;">El agente de xuba a tomado la siguiente resolucion sobre tu
+                reclamo: </span> &nbsp;
+              <span class="square-c me-2">Reembolso Total</span>
+            </div>
+            <hr>
+
+            <div class="flex">
+              <p><small>Tu reclamo ha procedido, en proceso de reembolso total.</small></p>
+              <p *ngIf="subestatus === 'EVD'"><small>Producto en camino, reembolso aun pendiente</small></p>
+              <p *ngIf="subestatus !== 'EVD' && subestatus !== 'EGO'"
+                style="font-family: Arial, Helvetica, sans-serif;font-weight: 100;font-size: 0.85em;"> - Para continuar
+                debes hacer la devolucion del producto, asegurándote de que esté en las mismas condiciones en las que lo
+                recibiste.</p>
+              <ng-container *ngIf="subestatus === 'EGV'">
+                <div class="text-center lbl-1">
+                  Esperando a que el vendedor confirme el pago del envio.
+                  <div class="placeholder-label"></div>
+                  <div class="text-center small-txt">
+                    Una vez que el comprador confirme el pago de envio, aqui se mostrara la etiqueta que debes imprimir
+                    para realizar la devolución del producto.
+                  </div>
+                </div>
+              </ng-container>
+              <!-- <ng-container *ngIf="subestatus === 'GRL'">
+                      <div class="text-center lbl-1">
+                        El vendedor ha confirmado el pago del envío. 
+                        <br>
+                        <button class="btn-pdf" (click)="setOpenModal('etiqueta')">
+                          <i class="fas fa-file-pdf fa-4x text-white"></i> <br>
+                          <span>Ver etiqueta</span> 
+                        </button>
+                        <div class="text-center small-txt">
+                          Puedes descargar e imprimir esta etiqueta.
+                        </div>
+                      </div>
+                    </ng-container> -->
+              <ng-container *ngIf="subestatus === 'EVD'">
+                <div class="text-center lbl-1 badge w-100 bg-label-xuba4">
+                  El producto ha sido enviado, espera a que el vendedor confirme de recibido.
+
+                  <div class="text-center small-txt mt-2">
+                    una vez recibido se liberara tu reembolso.
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="subestatus === 'EGO'">
+                <div class="text-center lbl-1 w-100 bg-light pt-2 pb-2">
+                  El producto ha sido entregado correctamente de regreso. <br>
+                  Se muestra el estatus actual de tu pago de reembolso.
+                  <br>
+                  <span class="text-center mt-2 badge bg-label-xuba2">
+                    Pago Pendiente <i class="fas fa-hourglass"></i>
+                  </span>
+                  <span class="text-center mt-2 badge bg-label-xuba1">
+                    Pago En proceso <i class="fas fa-cogs"></i>
+                  </span>
+                  <span class="text-center mt-2 badge bg-label-xuba6">
+                    Pagado <i class="fas fa-check"></i>
+                  </span>
+                </div>
+              </ng-container>
+
+
+            </div>
+          </div>
+
+          <div class="chat-section"
+            *ngIf="(informacionReclamo.idEstatus === 1002 || informacionReclamo.cvStatus === 'ENP')">
+            <div class="text-center lbl-1">
+              El vendedor ha confirmado el pago del envío.
+              <br>
+              <button class="btn-pdf" (click)="setOpenModal('etiqueta')">
+                <i class="fas fa-file-pdf fa-4x text-white"></i> <br>
+                <span>Ver etiqueta</span>
+              </button>
+              <div class="text-center small-txt">
+                Puedes descargar e imprimir esta etiqueta.
+              </div>
+            </div>
+          </div>
+
+          <div class="" *ngIf="(informacionReclamo.idEstatus === 1003 || informacionReclamo.cvStatus === 'ENV')">
+            <div class="text-center lbl-1 radius-1 p-2 text-white w-100 bg-label-xuba4">
+              El producto ha sido enviado, espera a que el vendedor confirme de recibido.
+
+              <div class="text-center small-txt mt-2 w-100">
+                una vez recibido se liberara tu reembolso.
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-section"
+            *ngIf="(informacionReclamo.idEstatus === 3 || informacionReclamo.cvStatus === 'REE') && informacionReclamo.cvSubStatus === 'RSR' ">
+            <div class="text-center  bg-label-xuba1 radius1 py-2 text-white">
+              Reclamo terminado <i class="fas fa-check"></i> <br /> Tu reembolso se ha proceso correctamente y se ha
+              agregado a tu cartera digital.
+            </div>
+          </div>
+
+
+          <div class="chat-section" *ngIf="informacionReclamo.idEstatus === 4">
+            <div class="w-100 mb-2">
+              <h5 style="font-size: 0.9em;">Resolucion de agente</h5>
+              <span style="font-size: 0.85em;color:#636e72;">El agente de xuba a tomado la siguiente resolucion sobre tu
+                reclamo: </span> &nbsp;
+              <span class="square-c me-2">No efectuado</span>
+            </div>
+            <hr>
+
+            <div class="flex">
+
+              <div class="badge bg-label-xuba2 w-100 lbl-1 py-2">Tu reclamo no ha procedido, por lo que que el reclamo
+                se cerrara.</div>
+              <!-- <p *ngIf="subestatus === 'PER'"><small>Producto en camino, reembolso aun pendiente</small></p>
+                    <p *ngIf="subestatus !== 'PER'" style="font-family: Arial, Helvetica, sans-serif;font-weight: 100;font-size: 0.85em;"> - Para continuar debes hacer la devolucion del producto, asegurándote de que esté en las mismas condiciones en las que lo recibiste.</p> -->
+
+              <ng-container>
+                <div class="text-start mt-2 small-txt2">
+                  Si crees que la decision no es valida, puedes volver a pedir una segunda revision.
+                  <br>
+                  <div class="text-center pt-3">
+                    <button class="btn btn-pill bg-label-xuba1 px-3 py2 text-white" (click)="setOpenModal('etiqueta')">
+                      <i class="fas fa-hand-paper text-white"></i>
+                      Solicitar segunda revision
+                    </button>
+                  </div>
+
+                  <!-- <div class="text-center small-txt">
+                          Puedes descargar e imprimir esta etiqueta.
+                        </div> -->
+                </div>
+              </ng-container>
+
+
+
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer text-start">
+
+      <!-- Botones para el paso del carrito -->
+      <div class="pb-3 pe-3 pt-2">
+        <!-- <button class="btn btn-info btn-pill me-2" (click)="nextEstatusReclamo()">
+          Siguiente
+        </button> -->
+        <!-- <button class="btn btn-info btn-pill me-2" (click)="setToProcesoTemporal()">
+            proceso
+          </button> -->
+        <!-- <a [href]="selectedSubasta.urlGuia"  rel="noopener">Descargar</a> -->
+        <button class="btn btn-danger btn-pill me-2" (click)="setCloseModal('detalleReclamo')">
+          <i class="fas fa-times"></i> Cerrar
+        </button>
+
+      </div>
+    </div>
+    <!-- </div> -->
   </div>
 </div>

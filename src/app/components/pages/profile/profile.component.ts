@@ -1131,7 +1131,8 @@ export class ProfileComponent implements OnInit {
           this.loading = false;
           console.log(value)
           this.idOrganizacion = value.id_Organizacion;
-          this.updateDatosFiscales();
+          // this.updateDatosFiscales();
+          this.getInformacionUsuario();
         },
         error: (err: any) => {
           this.loading = false;
