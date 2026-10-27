@@ -253,6 +253,10 @@ export class SubastasService {
     return this.http.post(`${env.base_url}/ChatReclamos/RegistrarMensaje`, data, { headers: test_headers }).pipe(map(res => res));
   }
 
+  saveImageMessageChat(data: any) {
+    return this.http.post(`${env.base_url}/ChatReclamos/RegistrarImagenChatReclamo`, data, { headers: test_headers }).pipe(map(res => res));
+  }
+
   getMensajesChatReclamo(idReclamo: number) {
     return this.http.get(`${env.base_url}/ChatReclamos/ConsultarMensajes/${idReclamo}`, { headers: test_headers }).pipe(map(res => res));
   }

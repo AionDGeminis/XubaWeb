@@ -419,6 +419,9 @@ export class ProfileComponent implements OnInit {
         this.totalRequisitosVerificados = this.checkListSubastar.filter((x: any) => x.verificado).length;
 
         this.datosFiscales = response.datosFiscales ? response.datosFiscales : this.datosFiscales;
+        if (this.datosFiscales.tipoFacturacion) {
+          this.tipoValidacion = this.datosFiscales.tipoFacturacion === '1' ? 'Sellos' : 'CuentaTerceros'
+        }
         console.log(this.datosFiscales)
         this.checkCurrentMainIndexPage();
         this.getListaReclamosAbiertos();

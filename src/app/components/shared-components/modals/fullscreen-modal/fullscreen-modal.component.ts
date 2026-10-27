@@ -9,14 +9,16 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class FullscreenModalComponent {
 
-  @Input() imageList: any[]  = [];
+  @Input() imageList: any[] = [];
   @Output() onCloseModal = new EventEmitter<void>();
   @Output() onProcessModal = new EventEmitter<any>();
   currentImageIndex = 0;
   classNavigateImg = '';
-  
-  constructor(){}
-  
+
+  constructor() {
+    console.log(this.imageList)
+  }
+
   closeModal(): void {
     this.onCloseModal.emit();
   }
@@ -25,20 +27,20 @@ export class FullscreenModalComponent {
     this.onProcessModal.emit();
   }
 
-  navigateImage(to: string, event: any){
+  navigateImage(to: string, event: any) {
     event.stopPropagation();
-    switch(to){
+    switch (to) {
       case 'prev':
-        if(this.currentImageIndex > 0){
+        if (this.currentImageIndex > 0) {
           this.classNavigateImg = 'animate__fadeOutRight';
           setTimeout(() => {
             this.currentImageIndex--;
             this.classNavigateImg = 'animate__fadeInLeft';
           }, 350);
         }
-          break;
+        break;
       case 'next':
-        if(this.currentImageIndex < this.imageList.length - 1) {
+        if (this.currentImageIndex < this.imageList.length - 1) {
           this.classNavigateImg = 'animate__fadeOutLeft';
           setTimeout(() => {
             this.currentImageIndex++;
@@ -46,7 +48,7 @@ export class FullscreenModalComponent {
           }, 350);
           // this.currentImageIndex++;
         }
-          break;
+        break;
     }
   }
 

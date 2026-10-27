@@ -15,6 +15,7 @@ export interface RegistroDatosFiscales {
     municipio: string;
     estado: string;
     iva: number;
+    tipoFacturacion?: string;
 }
 
 export function initDataRegistroDatosFiscales(): RegistroDatosFiscales {
@@ -35,5 +36,6 @@ export function initDataRegistroDatosFiscales(): RegistroDatosFiscales {
         municipio: '',
         estado: '',
         iva: 0,
+        tipoFacturacion: '0',
     }
 }
