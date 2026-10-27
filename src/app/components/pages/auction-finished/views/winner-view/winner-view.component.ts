@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, Input, OnInit, Signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CotizacionPaqueteriaModel, RecoleccionModel } from '../../../../../models/cotizacion-model';
@@ -18,11 +18,13 @@ import { FullscreenModalComponent } from '../../../../shared-components/modals/f
 import { ComprobantePago, initDataComprobantePago } from '../../../../../models/comprobante-model';
 import { DetalleSubasta, initDataDetalleSubasta } from '../../../../../models/subasta.model';
 import { Usuario } from '../../../../../models/usuario-model';
+import { ReclamoEstatus } from '../../../../../../enums/reclamo-status.enum';
+import { PaymentComponent } from '../../../../shared-components/modals/payment/payment.component';
 declare var OpenPay: any;
 
 @Component({
   selector: 'app-winner-view',
-  imports: [CommonModule, FormsModule, LoaderComponent, SafeUrlPipe, FullscreenModalComponent],
+  imports: [CommonModule, FormsModule, LoaderComponent, SafeUrlPipe, FullscreenModalComponent, PaymentComponent],
   standalone: true,
   templateUrl: './winner-view.component.html',
   styleUrl: './winner-view.component.css'
@@ -166,7 +168,14 @@ export class WinnerViewComponent implements OnInit {
     const t = this.toCurrency(this.precioTotal);
     return t !== '$0.00' ? `${t} MXN` : '-- ND --';
   }
+  imagesPreviewReclamo: any[] = [];
+  sendingImages: boolean = false;
+  dataParamsAfter3DSAuth: any = {};
+  tipoUsuarioPayment: string = 'comprador';
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+  @ViewChild('bodyContainer') private bodyContainer!: ElementRef;
+  fullScreenImages: any[] = [];
+
   constructor(
     private ss: SharedService,
     private subastasService: SubastasService,
@@ -261,10 +270,13 @@ export class WinnerViewComponent implements OnInit {
 
 
   private scrollToBottom(options?: ScrollToOptions) {
-    const el = this.messagesContainer.nativeElement;
-    if (!el) return;
+    const _el = this.messagesContainer.nativeElement;
+    const _body = this.bodyContainer.nativeElement;
+    if (!_el) return;
+    if (!_body) return;
     // instantáneo o suave según options
-    el.scrollTo({ top: el.scrollHeight, ...(options || {}) });
+    _el.scrollTo({ top: _el.scrollHeight, ...(options || {}) });
+    _body.scrollTo({ top: _body.scrollHeight, ...(options || {}) })
   }
 
   getInformacionUsuario(idUsuario: number) {
@@ -333,6 +345,10 @@ export class WinnerViewComponent implements OnInit {
     return '';
   }
 
+  setDataParamsAfter3DS() {
+    let redirectTo = `subasta-terminada`;
+    this.dataParamsAfter3DSAuth = { id: this.subasta!.id, tu: 'comprador', rt: redirectTo, mtap: false, process: 'payment-winner' }
+  }
 
   private conectarSignalR(idReclamo: number): void {
     this.signalRChatService.connectToChat(idReclamo.toString(), '0', (datos: any[]) => {
@@ -348,6 +364,7 @@ export class WinnerViewComponent implements OnInit {
       next: (subasta) => {
         console.log(subasta)
         this.subasta = subasta;
+        this.setDataParamsAfter3DS();
         // this.precioActualSubasta = this.subasta.apuesta;
         // this.precioTotal = 10;
         this.loading = false;
@@ -365,6 +382,24 @@ export class WinnerViewComponent implements OnInit {
         this.loading = false;
       }
     })
+  }
+
+  abrirGuiaEnvioRetorno() {
+
+    if (!this.informacionReclamo!.guiaDevolucion || this.informacionReclamo!.guiaDevolucion === 'Guía no disponible') {
+      this.ss.showNotification('warning', 'La guía de envío aún no está disponible.');
+      return;
+    }
+
+    if (window.innerWidth <= 767) {
+
+      // this.mostrarModalGuiaEnvio = true;
+      // this.document.body.style.overflow = 'hidden';
+
+      return;
+    }
+
+    window.open(this.informacionReclamo!.guiaDevolucion, '_blank');
   }
 
   getSubdescripcionPorEstatus(idEstatus: number) {
@@ -504,24 +539,46 @@ export class WinnerViewComponent implements OnInit {
   // }
 
   addNewMessage() {
-    if (!this.sendingMessage) {
-      this.sendingMessage = true;
-      let mensaje = { idReclamo: this.informacionReclamo.id, mensaje: this.newReclamoMessage, tipoUsuario: 'C', idUsuario: this.usuario!.id }
-      this.subastasService.saveMessageChat(mensaje).subscribe({
-        next: (response) => {
-          // this.signalRChatService.sendGetMessageAsync(this.informacionReclamo.id);
-
-          // this.addMessageToList(mensaje);
-          this.newReclamoMessage = '';
-          this.sendingMessage = false;
-        },
-        error: (err) => {
-          this.sendingMessage = false;
-          console.error('Error saving message', err);
-        }
-      });
+    if (this.sendingMessage) return;
+    let _data: any = {};
+    // if (!this.sendingMessage) {
+    if (this.sendingImages) {
+      if (this.imagesPreviewReclamo?.length === 0) {
+        return;
+      }
+      _data = {
+        idReclamo: this.informacionReclamo.id,
+        imagenes: this.imagesPreviewReclamo,
+        tipoUsuario: 'C',
+        idUsuario: 0
+      }
+      this.saveImageMessageChat(_data);
+    } else {
+      if (!this.newReclamoMessage || this.newReclamoMessage.trim() == '') {
+        return;
+      }
+      let mensaje = { idReclamo: this.informacionReclamo.id, mensaje: this.newReclamoMessage.trim(), tipoUsuario: 'C', idUsuario: 0 }
+      this.saveTextMessageChat(mensaje);
     }
 
+    // if (!this.sendingMessage) {
+    //   if (!this.newReclamoMessage || this.newReclamoMessage.trim() == '') {
+    //     return;
+    //   }
+    //   this.sendingMessage = true;
+
+    //   let mensaje = { idReclamo: this.informacionReclamo.id, mensaje: this.newReclamoMessage.trim(), tipoUsuario: 'C', idUsuario: 0 }
+    //   this.subastasService.saveMessageChat(mensaje).subscribe({
+    //     next: (response) => {
+    //       this.newReclamoMessage = '';
+    //       this.sendingMessage = false;
+    //     },
+    //     error: (err) => {
+    //       this.sendingMessage = false;
+    //       console.error('Error saving message', err);
+    //     }
+    //   });
+    // }
   }
 
   addMessageToList(message: any) {
@@ -533,6 +590,44 @@ export class WinnerViewComponent implements OnInit {
     setTimeout(() => {
       this.newMessageClass = '';
     }, 200);
+  }
+
+  saveTextMessageChat(data: any) {
+    this.sendingMessage = true;
+    this.subastasService.saveMessageChat(data).subscribe({
+      next: (response) => {
+        // this.signalRChatService.sendGetMessageAsync(this.informacionReclamo.id);
+
+        // this.addMessageToList(mensaje);
+        this.newReclamoMessage = '';
+        this.sendingMessage = false;
+        this.sendingImages = false;
+        this.imagesPreviewReclamo = [];
+      },
+      error: (err) => {
+        this.sendingMessage = false;
+        console.error('Error saving message', err);
+      }
+    });
+  }
+
+  saveImageMessageChat(data: any) {
+    this.sendingMessage = true;
+    this.subastasService.saveImageMessageChat(data).subscribe({
+      next: (response) => {
+        // this.signalRChatService.sendGetMessageAsync(this.informacionReclamo.id);
+
+        // this.addMessageToList(mensaje);
+        this.newReclamoMessage = '';
+        this.sendingMessage = false;
+        this.sendingImages = false;
+        this.imagesPreviewReclamo = [];
+      },
+      error: (err) => {
+        this.sendingMessage = false;
+        console.error('Error saving message', err);
+      }
+    });
   }
 
 
@@ -548,6 +643,9 @@ export class WinnerViewComponent implements OnInit {
     });
   }
 
+  getImageListArray(message: string) {
+    return message.split(',');
+  }
 
   saveReclamo() {
     this.reclamoModel.fechaApertura = new Date();
@@ -663,6 +761,8 @@ export class WinnerViewComponent implements OnInit {
     this.subastasService.getInfoDetalleReclamo(this.subasta!.id).subscribe({
       next: (reclamoInfo: any) => {
         this.informacionReclamo = reclamoInfo;
+        console.log('reclamo')
+        console.log(this.informacionReclamo)
         this.getMensajesReclamo(reclamoInfo.id)
         this.conectarSignalR(this.informacionReclamo.id);
         // this.informacionReclamo.idEstatus = 3;
@@ -676,6 +776,7 @@ export class WinnerViewComponent implements OnInit {
   getMensajesReclamo(idReclamo: number) {
     this.subastasService.getMensajesChatReclamo(idReclamo).subscribe({
       next: (msg: any) => {
+        console.log(msg)
         this.conversacion = msg;
       },
       error: (error) => {
@@ -686,6 +787,23 @@ export class WinnerViewComponent implements OnInit {
 
   setToProcesoTemporal() {
     this.informacionReclamo.idEstatus = 2;
+  }
+
+  getTipoUsuarioLabel(tipo: string) {
+    switch (tipo) {
+      case 'V':
+      case 'Vendedor':
+        return 'Vendedor';
+      case 'C':
+      case 'Comprador':
+        return 'Comprador (Yo)';
+      default:
+        return 'Agente Xuba';
+    }
+  }
+
+  formatearFecha(fecha: string): string {
+    return new DatePipe('es-MX').transform(fecha, 'dd MMM yy, HH:mm') ?? '';
   }
 
 
@@ -704,6 +822,24 @@ export class WinnerViewComponent implements OnInit {
         reader.readAsDataURL(files[i]);
       }
     }
+  }
+
+  onFileChangeReclamo(event: any) {
+    const files = event.target.files;
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.newReclamoMessage = '';
+      this.sendingImages = true;
+      this.imagesPreviewReclamo!.push({ base64: e.target.result });
+    };
+    reader.readAsDataURL(files[0]);
+  }
+
+  eliminarImagenReclamo(index: number) {
+    // this.subasta.imagenes.splice(index, 1);
+    this.imagesPreviewReclamo!.splice(index, 1);
+    this.sendingImages = this.imagesPreviewReclamo!.length > 0;
+    // this.imagenes
   }
 
   getInitialGuiaModel() {
@@ -736,6 +872,11 @@ export class WinnerViewComponent implements OnInit {
       "fechaEnvio": this.getCotizarFecha()
     }
     return cotizacion;
+  }
+
+  setLoadingPayment(loading: boolean) {
+    this.loading = loading;
+    this.textoLoading = this.loading ? 'Procesando pago...' : '';
   }
 
   getCorrectDateFormat(): string {
@@ -1238,8 +1379,10 @@ export class WinnerViewComponent implements OnInit {
       }
 
     } else {
-      let mensaje = responseCharge.error.message ? responseCharge.error.message : 'Hubo un problema al generar el cargo'
-      this.ss.showNotification('error', mensaje);
+      let mensaje = responseCharge.result.error.message ? responseCharge.result.error.message : 'Hubo un problema al generar el cargo'
+      let textoError = responseCharge.result.error && responseCharge.result.error.detail ? this.parseOpenpayError(responseCharge.result.error.detail) : null;
+      let _mensaje = textoError ? textoError.description : mensaje;
+      this.ss.showNotification('error', _mensaje, 5000);
       return;
     }
   }
@@ -1263,6 +1406,18 @@ export class WinnerViewComponent implements OnInit {
       let encoded = this.ss.encodeToBase64(dataParams);
       this.router.navigate(['/payment-callback', encoded]);
     }, 100);
+  }
+
+  parseOpenpayError(msg: string): any | null {
+    const start = msg.indexOf('{');
+    const end = msg.lastIndexOf('}');
+    if (start === -1 || end <= start) return null;
+
+    try {
+      return JSON.parse(msg.substring(start, end + 1));
+    } catch {
+      return null;
+    }
   }
 
 
@@ -1510,7 +1665,7 @@ export class WinnerViewComponent implements OnInit {
   }
 
   openModalPago() {
-    this.openModal = true;
+    this.isModalOpen.pago = true;
   }
 
 
@@ -1538,12 +1693,17 @@ export class WinnerViewComponent implements OnInit {
 
     switch (modalName) {
       case 'detalleReclamo':
-        if (this.informacionReclamo.idEstatus === 2) {
+        if (this.informacionReclamo.idEstatus === ReclamoEstatus.EnProceso) {
+          this.sendingImages = false;
+          this.imagesPreviewReclamo = [];
           setTimeout(() => this.scrollToBottom({ behavior: 'smooth' }), 100);
         }
         break;
       case 'disputa':
         this.getCategoriasReclamo();
+        break;
+      case 'viewer':
+        this.fullScreenImages = this.informacionReclamo.imagenesReclamos;
         break;
 
     }
@@ -1561,6 +1721,46 @@ export class WinnerViewComponent implements OnInit {
 
   onCloseModal(modalName: string) {
     this.isModalOpen[modalName] = false;
+  }
+
+  //  setOpenModal(modalName: string) {
+  //   this.isModalOpen[modalName] = true;
+  //   if (modalName === 'viewer') {
+  //     this.fullScreenImages = this.informacionReclamo.imagenesReclamos;
+  //   }
+  //   if (modalName === 'detalleReclamo') {
+
+  //     if (this.informacionReclamo.idEstatus === ReclamoEstatus.EnProceso) {
+  //       this.sendingImages = false;
+  //       this.imagesPreview = [];
+  //       setTimeout(() => this.scrollToBottom({ behavior: 'smooth' }), 100);
+  //     }
+  //   }
+  // }
+  descargarGuia(urlGuia: string) {
+    if (!urlGuia || urlGuia === 'Guía no disponible') {
+      this.ss.showNotification('warning', 'La guía de envío aún no está disponible.');
+      return;
+    }
+
+    if (!urlGuia) {
+      this.ss.showNotification('warning', 'La guía no está disponible.');
+      return;
+    }
+
+    this.subastasService.DescargarGuiaDhl(urlGuia);
+
+  }
+
+
+  openModalViewerChat(url: any) {
+    this.fullScreenImages = [{ url: url }];
+    // setTimeout(() => {
+    console.log(this.fullScreenImages)
+    this.isModalOpen['viewer'] = true;
+    // this.setOpenModal('viewer');
+    // }, 100);
+
   }
 
   async AceptarOfertaGanador() {

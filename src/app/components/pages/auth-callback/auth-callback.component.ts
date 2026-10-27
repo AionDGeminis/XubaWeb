@@ -240,10 +240,11 @@ export class AuthCallbackComponent implements OnInit {
     if (updated && updated === 'UPDATED') {
       this.generarGuiaDeEnvio(true);
     } else {
-      let reclamo = { idReclamo: idReclamo, idEstatus: ReclamoEstatus.EnvioPagado, idUsuarioXuba: this.usuario()!.id }
+      let reclamo = { idReclamo: idReclamo, idEstatus: ReclamoEstatus.EnvioPagado, idUsuarioXuba: 0 }
       // let r = await this.ss.showConfirmMessage('¿Desea proceder con el reembolso al cliente sin reenvio del producto?');
       // if(r){
       // this.loading = true;
+      console.log('reclamo info', reclamo)
       this.subastaService.changeReclamoEstatus(reclamo).subscribe({
         next: (res) => {
           console.log(res);
@@ -310,6 +311,7 @@ export class AuthCallbackComponent implements OnInit {
       let paqueteriaModel = paqueteriaModelString ? JSON.parse(paqueteriaModelString!) : null;
       if (paqueteriaModel) {
         console.log(paqueteriaModel);
+        paqueteriaModel.tipoEnvio = forReturn ? 'R' : 'S'
         this.subastaService.generarGuiaPaqueteria(paqueteriaModel).subscribe({
           next: (response) => {
             console.log(response)
@@ -321,35 +323,36 @@ export class AuthCallbackComponent implements OnInit {
             // this.closeModal(); subasta test 11384
             // this.getInitialData(true);tmp_direccion_eg
             // console.log('Guía de envío generada exitosamente:', response);
-            if (!paqueteriaModel.entregaSucursal) {
-              console.log('Antes de generar recolección');
+            // if (!paqueteriaModel.entregaSucursal) {
+            //   console.log('Antes de generar recolección');
 
-              this.subastaService.generarRecoleccion(recoleccionModel)
-                .subscribe({
-                  next: (resp: any) => {
+            //   this.subastaService.generarRecoleccion(recoleccionModel)
+            //     .subscribe({
+            //       next: (resp: any) => {
 
-                    if (!resp.success) {
-                      console.error('DHL rechazó la recolección:', resp);
-                      this.ss.showNotification('error', 'DHL rechazó la recolección.');
-                      return;
-                    }
+            //         if (!resp.success) {
+            //           console.error('DHL rechazó la recolección:', resp);
+            //           this.ss.showNotification('error', 'DHL rechazó la recolección.');
+            //           return;
+            //         }
 
-                    console.log('Recolección creada', resp);
-                    this.ss.showNotification(
-                      'success',
-                      'La recolección fue programada correctamente.'
-                    );
-                  },
-                  error: (err) => {
-                    console.error('Error al generar recolección:', err);
-                    this.ss.showNotification('error', 'Hubo un problema al generar la recolección.');
-                  }
-                });
-            }
+            //         console.log('Recolección creada', resp);
+            //         this.ss.showNotification(
+            //           'success',
+            //           'La recolección fue programada correctamente.'
+            //         );
+            //       },
+            //       error: (err) => {
+            //         console.error('Error al generar recolección:', err);
+            //         this.ss.showNotification('error', 'Hubo un problema al generar la recolección.');
+            //       }
+            //     });
+            // }
 
             localStorage.setItem('isGuideGenerated', 'CREATED');
 
             if (forReturn) {
+              this.ss.showNotification('success', 'Pago procesado correctamente');
               this.showComprobanteCargo();
               // localStorage.setItem('isGuideGenerated', 'CREATED');
             } else {

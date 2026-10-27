@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ToastrService } from 'ngx-toastr';
 
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { CommonModule, DatePipe, DOCUMENT } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { DetalleSubasta, Subasta } from '../../../models/subasta.model';
@@ -15,12 +15,16 @@ import { AuctionService } from '../../../services/auction.service';
 import { Usuario } from '../../../models/usuario-model';
 import { LoaderComponent } from '../../shared-components/loader/loader.component';
 import { AuctionStatus } from '../../../../enums/auction-estatus.enum';
-import { ReclamoEstatusCve } from '../../../../enums/reclamo-status.enum';
-import { ReclamoSubestatusCve } from '../../../../enums/reclamo-subestatus.enum';
+import { ReclamoEstatus, ReclamoEstatusCve } from '../../../../enums/reclamo-status.enum';
+import { ReclamoSubestatus, ReclamoSubestatusCve } from '../../../../enums/reclamo-subestatus.enum';
+import { SignalRChatService } from '../../../services/signalrchat.service';
+import { FullscreenModalComponent } from '../../shared-components/modals/fullscreen-modal/fullscreen-modal.component';
+import { CotizacionPaqueteriaModel } from '../../../models/cotizacion-model';
+import { PaymentComponent } from '../../shared-components/modals/payment/payment.component';
 
 @Component({
   selector: 'app-my-auction-detail',
-  imports: [CommonModule, FormsModule, LoaderComponent],
+  imports: [CommonModule, FormsModule, LoaderComponent, FullscreenModalComponent, PaymentComponent],
   templateUrl: './my-auction-detail.component.html',
   styleUrl: './my-auction-detail.component.css'
 })
@@ -77,7 +81,7 @@ export class MyAuctionDetailComponent {
   public usuario!: Signal<Usuario | null>;
   public isLoggedIn!: Signal<boolean>;
   hasPermiso: boolean = false;
-  isModalOpen: any = { etiqueta: false, nuevaOferta: false, pago: false, viewer: false };
+  isModalOpen: any = { etiqueta: false, nuevaOferta: false, pago: false, viewer: false, detalleReclamo: false };
   oferta2nd: boolean = false;
   nuevaOfertaModel: any = { oferta: null, confirmarOferta: null }
 
@@ -90,6 +94,20 @@ export class MyAuctionDetailComponent {
   sendingMessage: boolean = false;
   idConexionChat: number = -1;
   subestatus = ReclamoSubestatusCve.EsperaGuiaVendedor;
+  imagesPreview: any[] = [];
+  sendingImages: boolean = false;
+  listaDireccionesEntrega: any[] = [];
+  miDireccionEntrega: any;
+  listaTiposEnvio: any[] = [];
+  tipoEnvioSeleccionado: any = null;
+  precioEnvio: number = 0;
+  totalPago: number = 0;
+  condicionesAceptadas: boolean = false;
+  confirmarCondicion: boolean = false;
+  dataParamsAfter3DSAuth: any = {};
+  tipoUsuarioPayment: string = 'vendedor';
+  // imagesPreview: any[] = [];
+  fullScreenImages: any[] = [];
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
   constructor(private route: ActivatedRoute,
@@ -102,6 +120,7 @@ export class MyAuctionDetailComponent {
     private ss: SharedService,
     private auctionService: AuctionService,
     private renderer: Renderer2,
+    private signalRChatService: SignalRChatService,
     @Inject(DOCUMENT) private document: Document,
     private sanitizer: DomSanitizer
   ) {
@@ -112,12 +131,15 @@ export class MyAuctionDetailComponent {
     if (this.usuario) {
       this.getComisionesUsuario(this.usuario()!.id);
     }
+
     this.getInitialData(id);
   }
 
   getEstatusClave(idEstatus: number) {
     return
   }
+
+
 
   getInitialData(IdSubasta: number) {
     this.loading = true;
@@ -127,6 +149,7 @@ export class MyAuctionDetailComponent {
         console.log(sub);
         this.loading = false;
         this.subasta = sub;
+        this.setDataParamsAfter3DS();
         let _listaHistorial = this.getFormatHistorialEstatus(sub.historialEstatus);
         console.log(_listaHistorial)
         // this.listaHistorial = sub.historialEstatus ?? [];
@@ -143,6 +166,7 @@ export class MyAuctionDetailComponent {
         this.currentEstatus = this.listaHistorial[0];
         if (this.currentEstatus.idEstatus == AuctionStatus.Reclamo) {
           this.getReclamoInfo();
+
         }
         this.subasta.remaining = this.tiempoStringASegundos(sub.tiempoVence);
         clearInterval(this.intervalId);
@@ -223,6 +247,11 @@ export class MyAuctionDetailComponent {
     });
   }
 
+  setDataParamsAfter3DS() {
+    let redirectTo = `my-subasta-detalle/${this.subasta!.id}`;
+    this.dataParamsAfter3DSAuth = { idc: 0, tu: 'vendedor', rt: redirectTo, mtap: false, process: 'payment-guide-return' }
+  }
+
   getFormatHistorialEstatus(hitorialEstatus: any[]) {
     if (!hitorialEstatus) return [];
     hitorialEstatus.sort((a: any, b: any) =>
@@ -232,6 +261,7 @@ export class MyAuctionDetailComponent {
   }
 
   async getMergeListHistorial(historial: any[], numGuia: string) {
+    this.loading = true;
     console.log('intentar merge')
     let indexEnviado = historial.findIndex(x => x.idEstatus === AuctionStatus.Enviado);
     console.log(indexEnviado)
@@ -242,6 +272,7 @@ export class MyAuctionDetailComponent {
       historial.splice(indexEnviado, 0, ...historialDhl);
     }
     console.log(historial)
+    this.loading = false;
     return historial;
   }
 
@@ -253,6 +284,23 @@ export class MyAuctionDetailComponent {
       estatus: subasta.estatus,
       claveEstatus: subasta.idEstatus
     };
+  }
+
+  getDireccionesEntrega(idUsuario: number, tipo: string) {
+    this.subastasService.GetDireccionesUsuario(idUsuario, tipo).subscribe({
+      next: (response: any) => {
+        // console.log(response);
+        this.listaDireccionesEntrega = response;
+        this.miDireccionEntrega = this.listaDireccionesEntrega.length > 0 ? this.listaDireccionesEntrega.find((direccion: any) => direccion.predeterminada) : null;
+        if (this.miDireccionEntrega && this.miDireccionEntrega !== null && this.miDireccionEntrega !== undefined) {
+          this.calcularPrecios();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching addresses:', error);
+      }
+    }
+    );
   }
 
   getCurrentTipoOferta() {
@@ -274,21 +322,90 @@ export class MyAuctionDetailComponent {
   //     }
   //   })
   // }
+  changeTipoEnvio() {
+    this.precioEnvio = this.tipoEnvioSeleccionado?.precio || 0;
+    this.totalPago = this.precioEnvio;
+    // this.totalPago = this.precioEnvio + this.subasta!.apuesta;
+  }
+
+  async setNoReturnItem() {
+    let reclamo = { idReclamo: this.informacionReclamo.id, idEstatus: ReclamoEstatus.Reembolso, idSubEstatus: ReclamoSubestatus.ReembolsoSinRetorno }
+    let r = await this.ss.showConfirmMessage('¿Desea proceder con el reembolso al cliente sin reenvio del producto?');
+    if (r) {
+      this.loading = true;
+      this.subastasService.changeReclamoEstatus(reclamo).subscribe({
+        next: (res) => {
+          console.log(res);
+          this.loading = false;
+          this.ss.showNotification('success', 'Estatus del reclamo actualizado');
+        },
+        error: (err) => {
+          this.loading = false;
+        }
+      })
+    }
+  }
 
   getReclamoInfo() {
     this.subastasService.getInfoDetalleReclamo(this.subasta!.id).subscribe({
       next: (reclamoInfo: any) => {
         this.informacionReclamo = reclamoInfo;
+        this.dataParamsAfter3DSAuth.idc = this.informacionReclamo.id;
         console.log('Reclamo:');
         console.log(this.informacionReclamo);
-        // this.getMensajesReclamo(reclamoInfo.id)
-        // this.conectarSignalR(this.informacionReclamo.id);
+        if (this.informacionReclamo.idEstatus === ReclamoEstatus.EnProceso) {
+          // this.subasta!.estatus = 'Completado';
+
+          this.getMensajesReclamo(this.informacionReclamo.id)
+          this.conectarSignalR(this.informacionReclamo.id);
+        }
+        if (this.informacionReclamo.idEstatus === ReclamoEstatus.Reembolso) {
+          this.getDireccionesEntrega(0, '');
+        }
+        //
+        //
         // this.informacionReclamo.idEstatus = 3;
       },
       error: (err) => {
         console.error('Error fetching claim information:', err);
       }
     });
+  }
+
+  private conectarSignalR(idReclamo: number): void {
+    this.signalRChatService.connectToChat(idReclamo.toString(), '0', (datos: any[]) => {
+      console.log(datos)
+      this.addMessageToList(datos);
+    });
+  }
+
+  getTipoUsuarioLabel(tipo: string) {
+    switch (tipo) {
+      case 'V':
+      case 'Vendedor':
+        return 'Vendedor (Yo)';
+      case 'C':
+      case 'Comprador':
+        return 'Comprador';
+      default:
+        return 'Agente Xuba';
+    }
+  }
+
+  formatearFecha(fecha: string): string {
+    return new DatePipe('es-MX').transform(fecha, 'dd MMM yy, HH:mm') ?? '';
+  }
+
+  getMensajesReclamo(idReclamo: number) {
+    this.subastasService.getMensajesChatReclamo(idReclamo).subscribe({
+      next: (msg: any) => {
+        this.conversacion = msg;
+        console.log(this.conversacion)
+      },
+      error: (error) => {
+        console.log(error)
+      }
+    })
   }
 
   inMinimumEstatus(sub: string, minimum: string) {
@@ -312,25 +429,79 @@ export class MyAuctionDetailComponent {
     return val;
   }
 
-  addNewMessage() {
-    if (!this.sendingMessage) {
-      this.sendingMessage = true;
-      let mensaje = { idReclamo: this.informacionReclamo.id, mensaje: this.newReclamoMessage, tipoUsuario: 'V', idUsuario: 0 }
-      this.subastasService.saveMessageChat(mensaje).subscribe({
-        next: (response) => {
-          // this.signalRChatService.sendGetMessageAsync(this.informacionReclamo.id);
+  getImageListArray(message: string) {
+    return message.split(',');
+  }
 
-          // this.addMessageToList(mensaje);
-          this.newReclamoMessage = '';
-          this.sendingMessage = false;
-        },
-        error: (err) => {
-          this.sendingMessage = false;
-          console.error('Error saving message', err);
-        }
-      });
+  addNewMessage() {
+    if (this.sendingMessage) return;
+    let _data: any = {};
+    // if (!this.sendingMessage) {
+    if (this.sendingImages) {
+      if (this.imagesPreview?.length === 0) {
+        return;
+      }
+      _data = {
+        idReclamo: this.informacionReclamo.id,
+        imagenes: this.imagesPreview,
+        tipoUsuario: 'V',
+        idUsuario: 0
+      }
+      this.saveImageMessageChat(_data);
+    } else {
+      if (!this.newReclamoMessage || this.newReclamoMessage.trim() == '') {
+        return;
+      }
+      let mensaje = { idReclamo: this.informacionReclamo.id, mensaje: this.newReclamoMessage.trim(), tipoUsuario: 'V', idUsuario: 0 }
+      this.saveTextMessageChat(mensaje);
     }
 
+
+
+    // this.saveTextMessageChat(mensaje);
+
+    // }
+
+  }
+
+  saveTextMessageChat(data: any) {
+    this.sendingMessage = true;
+    this.subastasService.saveMessageChat(data).subscribe({
+      next: (response) => {
+        // this.signalRChatService.sendGetMessageAsync(this.informacionReclamo.id);
+
+        // this.addMessageToList(mensaje);
+        this.newReclamoMessage = '';
+        this.sendingMessage = false;
+        this.sendingImages = false;
+        this.imagesPreview = [];
+        this.newReclamoMessage = '';
+      },
+      error: (err) => {
+        this.sendingMessage = false;
+        console.error('Error saving message', err);
+      }
+    });
+  }
+
+  saveImageMessageChat(data: any) {
+    this.sendingMessage = true;
+    this.subastasService.saveImageMessageChat(data).subscribe({
+      next: (response) => {
+        // this.signalRChatService.sendGetMessageAsync(this.informacionReclamo.id);
+
+        // this.addMessageToList(mensaje);
+        this.newReclamoMessage = '';
+        this.sendingMessage = false;
+        this.sendingImages = false;
+        this.imagesPreview = [];
+        this.newReclamoMessage = '';
+      },
+      error: (err) => {
+        this.sendingMessage = false;
+        console.error('Error saving message', err);
+      }
+    });
   }
 
   addMessageToList(message: any) {
@@ -359,14 +530,113 @@ export class MyAuctionDetailComponent {
 
   setOpenModal(modalName: string) {
     this.isModalOpen[modalName] = true;
-    // if (modalName === 'detalleReclamo') {
-    //   if (this.informacionReclamo.idEstatus === 2) {
-    //     setTimeout(() => this.scrollToBottom({ behavior: 'smooth' }), 100);
-    //   }
-    // }
+    if (modalName === 'viewer') {
+      this.fullScreenImages = this.informacionReclamo.imagenesReclamos;
+    }
+    if (modalName === 'detalleReclamo') {
+
+      if (this.informacionReclamo.idEstatus === ReclamoEstatus.EnProceso) {
+        this.sendingImages = false;
+        this.imagesPreview = [];
+        setTimeout(() => this.scrollToBottom({ behavior: 'smooth' }), 100);
+      }
+    }
   }
+
+  openModalViewerChat(url: any) {
+    this.fullScreenImages = [{ url: url }];
+    // setTimeout(() => {
+    console.log(this.fullScreenImages)
+    this.isModalOpen['viewer'] = true;
+    // this.setOpenModal('viewer');
+    // }, 100);
+
+  }
+
   setCloseModal(modalName: string) {
     this.isModalOpen[modalName] = false;
+  }
+
+  onFileChange(event: any) {
+    const files = event.target.files;
+    // let maxFileCount = this.tipoSubasta === 'general' ? 5 : 100;
+    // let maxCantAdd = maxFileCount - this.subasta.imagenes.length;
+    // let restFilesCount = files && files.length > maxCantAdd ? maxCantAdd : files.length;
+    // if (files && files.length + this.subasta.mimagenesSubasta.length <= maxFileCount) {
+    // if (restFilesCount > 0) {
+    // for (let i = 0; i < restFilesCount; i++) {
+    // for (let i = 0; i < files.length && this.subasta.mimagenesSubasta.length < maxFileCount; i++) {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      // this.subasta.imagenes.push({ base64: e.target.result });
+      this.newReclamoMessage = '';
+      this.sendingImages = true;
+      this.imagesPreview!.push({ base64: e.target.result });
+      // this.imagenes.push(e.target.result);
+    };
+    reader.readAsDataURL(files[0]);
+    // }
+    // }
+    // }
+  }
+
+  eliminarImagen(index: number) {
+    // this.subasta.imagenes.splice(index, 1);
+    this.imagesPreview!.splice(index, 1);
+    this.sendingImages = this.imagesPreview!.length > 0;
+    // this.imagenes
+  }
+
+  changeDireccion() {
+    this.listaTiposEnvio = [];
+    this.calcularPrecios();
+  }
+
+  getCotizarModelFormat() {
+    const cotizacion: CotizacionPaqueteriaModel = {
+      "codigoPostalOrigen": this.informacionReclamo.direccionEnvio.codigoPostal,
+      "ciudadOrigen": this.informacionReclamo.direccionEnvio.municipio,
+      "codigoPostalDestino": this.miDireccionEntrega.codigoPostal,
+      "ciudadDestino": this.miDireccionEntrega.municipio,
+      "peso": this.subasta!.peso,
+      "logitud": this.subasta!.largo,
+      "ancho": this.subasta!.profundidad,
+      "altura": this.subasta!.ancho,
+      "fechaEnvio": this.getCotizarFecha()
+    }
+    return cotizacion;
+  }
+
+  getCotizarFecha() {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    return today.toISOString();
+  }
+
+  async calcularPrecios() {
+    // setTimeout(() => {
+    this.precioEnvio = 0;
+    let modeloCotizar = this.getCotizarModelFormat();
+    console.log(modeloCotizar)
+    this.loading = true;
+    this.subastasService.cotizarEnvio(modeloCotizar).subscribe({
+      next: (data: any) => {
+        this.loading = false;
+        this.listaTiposEnvio = data.filter((x: any) => x.codigoProducto === 'G' || x.codigoProducto === 'N');
+        this.tipoEnvioSeleccionado = this.listaTiposEnvio[0];
+        this.precioEnvio = this.tipoEnvioSeleccionado.precio
+        this.totalPago = this.precioEnvio;
+        // this.totalPago = this.precioEnvio + this.subasta!.apuesta;
+        console.log(this.totalPago)
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error en la cotización:', err);
+      }
+    })
+    // }, 1500);
+
   }
 
   setTimerV2() {
@@ -993,4 +1263,8 @@ export class MyAuctionDetailComponent {
     this.router.navigate(['/profile']);
   }
 
+  setLoadingPayment(loading: boolean) {
+    this.loading = loading;
+    this.textoLoading = this.loading ? 'Procesando pago...' : '';
+  }
 }

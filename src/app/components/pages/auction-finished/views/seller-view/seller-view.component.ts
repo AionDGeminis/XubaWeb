@@ -104,7 +104,7 @@ export class SellerViewComponent implements OnInit, OnChanges {
   tipoEnvioSeleccionado: any = null;
   precioEnvio: number = 0;
   infoUsuario: any = {}
-  dataParamsAfterAuth: any = { id: 0, tu: 'comprador', rt: '', mtap: false, process: 'payment-guide-return' }
+  dataParamsAfterAuth: any = { id: 0, tu: 'comprador', rt: '', mtap: false, process: 'payment-winner' }
   // dataParamsAfterAuth: any = {id: this.subasta!.id, tu:'comprador', rt: _redirectTo, mtap: false, process:'payment-winner'}
   constructor(
     private ss: SharedService,

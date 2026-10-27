@@ -50,6 +50,29 @@
   position: relative;
 }
 
+.bg-label-xuba1 {
+  background: linear-gradient(to top, #066FBF, #0984e3);
+  font-size: 0.9em;
+  border: none;
+}
+
+.bg-label-xuba2 {
+  background: linear-gradient(to top, #DE2F5B, #f43f5e);
+  font-size: 0.9em;
+}
+
+.bg-label-xuba3 {
+  background: linear-gradient(to top, #EB6393, #fd79a8);
+  font-size: 0.9em;
+  border: none !important;
+}
+
+.bg-label-xuba4 {
+  background: linear-gradient(to top, #2f3542, #57606f);
+  font-size: 0.9em;
+  border: none !important;
+}
+
 .bg-items {
   background-color: rgba(236, 240, 241, 1.0) !important;
 }
