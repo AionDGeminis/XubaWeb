@@ -1252,7 +1252,7 @@ export class MyAuctionDetailComponent {
       this.toastr.warning('La guía no está disponible.');
       return;
     }
-
+    console.log("Guia: " + this.subasta.guiaEnvio)
     this.subastasService.DescargarGuiaDhl(this.subasta.guiaEnvio);
 
   }
