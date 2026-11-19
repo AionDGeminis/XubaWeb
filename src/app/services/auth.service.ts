@@ -20,8 +20,9 @@ export class AuthService {
 
   isLoggedIn = computed(() => {
     const __usuario = !!this._usuario();
-    const __token = localStorage.getItem('XUBA_TKN');
-    return __usuario && !!__token;
+    // const __token = localStorage.getItem('XUBA_TKN');
+    return __usuario;
+    // return __usuario && !!__token;
   });
 
   currentUser = computed(() => this._usuario());

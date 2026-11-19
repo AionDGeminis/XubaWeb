@@ -27,14 +27,49 @@
             <!-- {{ estatusDHLActual?.estatus || estatusActual?.estatus }} -->
           </span>
         </div>
-        <ng-container *ngIf="showActionButton(1024)  && informacionReclamo.idEstatus === 1004">
-          <h2 class="estatus-banner__mensaje">El producto se ha entregado correctamente</h2>
-          <p class="estatus-banner__siguiente">Reclamo terminado</p>
-        </ng-container>
+        {{this.currentEstatus.idEstatus}} {{informacionReclamo.idEstatus}} {{informacionReclamo.cvSubStatus}}
+        <!-- ====== Subasta en cualquier estatus excepto RECLAMO ===== -->
         <ng-container *ngIf="!showActionButton(1024)">
           <h2 class="estatus-banner__mensaje">{{ currentEstatus?.descripcion }}</h2>
           <p class="estatus-banner__siguiente">Puedes consultar las ofertas mientras la subasta está activa.</p>
         </ng-container>
+
+        <!-- ====== Subasta en RECLAMO ===== -->
+        <ng-container *ngIf="showActionButton(1024)">
+          <div class="row" *ngIf="informacionReclamo.idEstatus !== 1004 && informacionReclamo.cvSubStatus !== 'RSR'">
+            <h2 class="estatus-banner__mensaje">Se ha levantado un reclamo, sobre el producto</h2>
+            <p class="estatus-banner__siguiente">Puedes consultar las ofertas mientras la subasta está activa.</p>
+          </div>
+
+          <div class="row" *ngIf="informacionReclamo.idEstatus === 1004 && informacionReclamo.cvSubStatus !== 'RSR'">
+            <h2 class="estatus-banner__mensaje">El producto se ha entregado correctamente de regreso.</h2>
+            <p class="estatus-banner__siguiente">Reclamo terminado</p>
+          </div>
+
+          <div class="row" *ngIf="informacionReclamo.cvSubStatus === 'RSR'">
+            <h2 class="estatus-banner__mensaje">Se proceso el reembolso completo al comprador.</h2>
+            <p class="estatus-banner__siguiente">Reclamo terminado</p>
+          </div>
+
+
+        </ng-container>
+
+        <!-- <ng-container
+          *ngIf="showActionButton(1024)  && informacionReclamo.idEstatus === 1004 || informacionReclamo.cvSubStatus !== 'RSR'">
+          <h2 class="estatus-banner__mensaje">El producto se ha entregado correctamente de regreso.</h2>
+          <p class="estatus-banner__siguiente">Reclamo terminado</p>
+        </ng-container>
+        <ng-container
+          *ngIf="showActionButton(1024)  && informacionReclamo.idEstatus === 1004 || informacionReclamo.cvSubStatus === 'RSR'">
+          <h2 class="estatus-banner__mensaje">Se proceso el reembolso completo al comprador.</h2>
+          <p class="estatus-banner__siguiente">Reclamo terminado</p>
+        </ng-container>
+       
+        <ng-container *ngIf="showActionButton(1024) && informacionReclamo.cvSubStatus !== 'RSR'">
+          <h2 class="estatus-banner__mensaje">Se ha levantado un reclamo, sobre el producto</h2>
+
+          <p class="estatus-banner__siguiente">Puedes consultar el detalle del reclamo en el botón "Ver detalles".</p>
+        </ng-container> -->
 
       </div>
       <!-- <hr> -->
@@ -866,21 +901,13 @@
                   Tu producto ha sido entregado de regreso. <br>
                   <small>Para continuar selecciona la opcion adecuada.</small> <br>
                   <br>
-                  <button class="btn bg-label-xuba1 btn-pill py-1 text-white">
+                  <!-- <button class="btn bg-label-xuba1 btn-pill py-1 text-white">
                     Recepcion correcto
                   </button>
                   <button class="btn bg-label-xuba2 btn-pill py-1 text-white">
                     Producto con detalle/Reclamo??
-                  </button>
-                  <!-- <span class="text-center mt-2 badge bg-label-xuba2">
-                         Pago Pendiente <i class="fas fa-hourglass"></i>
-                        </span>
-                        <span class="text-center mt-2 badge bg-label-xuba1">
-                         Pago En proceso <i class="fas fa-cogs"></i>
-                        </span>
-                        <span class="text-center mt-2 badge bg-label-xuba6">
-                         Pagado <i class="fas fa-check"></i>
-                        </span> -->
+                  </button> -->
+
                 </div>
               </ng-container>
 
@@ -893,10 +920,13 @@
             <div class="flex">
               El pago de envio se ha confirmado correctamente
               <br>
-
-              <div class="text-center small-txt bg-label-xuba4 radius1 py-2 text-white mt-2 px-2">
-                En espera a que se realice la devolucion de tu producto
+              <div class="pay__notice mt-2 m1f">
+                <i class="fas fa-hourglass-half"></i>
+                <p> En espera a que se realice la devolucion de tu producto</p>
               </div>
+              <!-- <div class="text-center small-txt bg-label-xuba4 radius1 py-2 text-white mt-2 px-2">
+                En espera a que se realice la devolucion de tu producto
+              </div> -->
             </div>
           </div>
 
@@ -963,9 +993,16 @@
 
           <div class="chat-section"
             *ngIf="(informacionReclamo.idEstatus === 3 || informacionReclamo.cvStatus === 'REE') && informacionReclamo.cvSubStatus === 'RSR' ">
-            <div class="text-center  bg-label-xuba1 radius1 py-2 text-white">
+            <!-- <div class="text-center  bg-label-xuba1 radius1 py-2 text-white">
               Reclamo terminado <i class="fas fa-check"></i> <br /> Tu reembolso se ha proceso correctamente y se ha
               agregado a tu cartera digital.
+            </div> -->
+            <div class="pay__notice mt-2 m1f">
+
+              <p> <i class="fas fa-check"></i> Se proceso el reembolso completo al comprador.
+                <br>
+                <span> Reclamo terminado</span>
+              </p>
             </div>
           </div>
 

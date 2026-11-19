@@ -1165,7 +1165,9 @@ textarea {
     color: #636e72;
 }
 
-
+/* .bg-section{
+    background: ;
+} */
 .row dt {
     font-size: 14px;
     color: var(--ink-soft);
