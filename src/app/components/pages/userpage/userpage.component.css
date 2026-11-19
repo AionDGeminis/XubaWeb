@@ -231,6 +231,7 @@
 
     color: #fff !important;
     /* background: linear-gradient(to right, #0984e3, #D4367A) !important; */
+    background: linear-gradient(to right, #D4367A, #0984e3) !important;
 
     box-shadow:
         0 9px 20px rgba(140, 90, 214, .32);

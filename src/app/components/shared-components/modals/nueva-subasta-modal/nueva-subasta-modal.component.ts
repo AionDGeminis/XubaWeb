@@ -427,6 +427,7 @@ export class NuevaSubastaModalComponent implements OnInit {
     console.log(dataCharge)
     console.log(card_id)
     this.loading = true;
+    dataCharge.tipo = 'Premium';
     let responseCharge = await this.getChargePaymentResponse(dataCharge, card_id);
 
     console.log(responseCharge);

@@ -21,6 +21,7 @@ import { ProfileService } from '../../../services/profile.service';
 import { PagoSubastaTicketComponent } from '../../shared-components/tickets/pago-subasta-ticket/pago-subasta-ticket.component';
 import { Usuario } from '../../../models/usuario-model';
 import { initDataRegistroDatosFiscales, RegistroDatosFiscales } from '../../../models/datos-fiscales-model';
+import { ProfileTabIndexCve } from '../../../../enums/profile-index-tab-enum';
 
 declare var OpenPay: any;
 
@@ -32,6 +33,7 @@ declare var OpenPay: any;
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
+  public ProfileTabIndexCve = ProfileTabIndexCve;
   //'Cq@3K$K$RD' = 'secure local card'
   isModalOpen: any = {
     direccion: false,
@@ -79,7 +81,8 @@ export class ProfileComponent implements OnInit {
   public usuario!: Signal<Usuario | null>;
   public isLoggedIn!: Signal<boolean>;
   direcciones: any[] = [];
-  tabIndex: number = 0;
+  tabIndexClave: ProfileTabIndexCve = ProfileTabIndexCve.General;
+  // tabIndex: number = 0;
   tabSubastasIndex: number = 0;
   tabCuentasIndex: number = 0;
   subastasActivas: Subasta[] = [];
@@ -436,31 +439,33 @@ export class ProfileComponent implements OnInit {
 
   checkCurrentMainIndexPage() {
     this.checkSavedPageIndex();
-    switch (this.tabIndex) {
-      case 0: //this.getDataPageGeneral();
+    switch (this.tabIndexClave) {
+      case ProfileTabIndexCve.General://this.getDataPageGeneral();
         break;
-      case 1:
+      case ProfileTabIndexCve.Xubastas:
         break;
-      case 2:
+      case ProfileTabIndexCve.CuentasWallet:
         break;
-      case 3:
-        break;
-      case 4:
+      case ProfileTabIndexCve.DatosFiscales:
         break;
     }
   }
 
 
+  isValidEnum(value: string | null): value is ProfileTabIndexCve {
+    if (!value) return false;
+    return Object.values(ProfileTabIndexCve).includes(value as ProfileTabIndexCve);
+  }
 
   checkSavedPageIndex() {
     let index = localStorage.getItem('TpTbIdx');
-    this.tabIndex = index ? +index : 0;
+    this.tabIndexClave = this.isValidEnum(index) ? index : ProfileTabIndexCve.General;
     //localStorage.setItem('TpTbIdx',this.tabIndex.toString())
     //console.log('index de paginas ' + index)
-    if (this.tabIndex === 1) {
+    if (this.tabIndexClave === ProfileTabIndexCve.Xubastas) {
       this.checkSavedSubastaTabIndex();
     }
-    this.setCurrentTabPage(this.tabIndex);
+    this.setCurrentTabPage(this.tabIndexClave);
   }
 
   checkSavedSubastaTabIndex() {
@@ -471,35 +476,30 @@ export class ProfileComponent implements OnInit {
     this.setCurrentTabSubastas(this.tabSubastasIndex);
   }
 
-  setCurrentTabPage(index: number) {
-    this.tabIndex = index;
+  setCurrentTabPage(index: ProfileTabIndexCve) {
+    this.tabIndexClave = index;
     switch (index) {
-      case 0: //this.getDataPageGeneral();
+      case ProfileTabIndexCve.General: //this.getDataPageGeneral();
         break;
-      case 1:
+      case ProfileTabIndexCve.Xubastas:
         this.tabSubastasIndex = this.getCurrenTabSubastaIndex();
         this.selectedTipoSubasta = this.ListTipoSubastaPG[0];
         this.currentTipoSubasta = this.tabSubastasIndex === 0 ? 'todas' : 'Activa';
         // console.log(this.currentTipoSubasta)
         this.setCurrentTabSubastas(this.tabSubastasIndex);
         break;
-      case 2:
-        break;
-      case 3:
+      case ProfileTabIndexCve.CuentasWallet:
         this.checkCuentasTarjetaIndex();
         if (this.tabCuentasIndex === 0) {
           this.GetCuentasClabe(this.infoUsuario.id)
         } else {
           this.getSecureCards();
         }
-
-
         break;
-        //case 4: this.setInformacionFiscal(this.infoUsuario);
-
+      case ProfileTabIndexCve.DatosFiscales:
         break;
     }
-    localStorage.setItem('TpTbIdx', this.tabIndex.toString())
+    localStorage.setItem('TpTbIdx', this.tabIndexClave)
   }
 
   getCurrenTabSubastaIndex() {

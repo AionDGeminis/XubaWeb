@@ -9,7 +9,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
-    { provide: LOCALE_ID, useValue: 'es-MX' }
+    provideHttpClient(withInterceptors([authInterceptor]))
+    // { provide: LOCALE_ID, useValue: 'es-MX' }
   ]
 };

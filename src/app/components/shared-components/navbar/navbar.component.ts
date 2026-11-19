@@ -19,6 +19,7 @@ import { SubmenuComponent } from './components/menu/submenu/submenu.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { LocalSignalsService } from '../../../services/localsignals.service';
 import { Usuario } from '../../../models/usuario-model';
+import { UserService } from '../../../services/user.service';
 declare var OpenPay: any;
 
 // interface ISubasta {
@@ -136,6 +137,7 @@ export class NavbarComponent implements OnInit {
     private auctionService: AuctionService,
     private openPayService: OpenPayService,
     private location: Location,
+    private userService: UserService,
     private authService: AuthService) {
     // this.subasta = {
     //   id: 0,
@@ -1024,28 +1026,31 @@ export class NavbarComponent implements OnInit {
       // },
       next: (usuario: any) => {
         this.loading = false;
+        console.log(usuario)
 
         // 
         if (usuario.success) {
-          if (usuario.token) {
-            let _key = this.ss.toXubaEncode('UserGuest');
-            let user = localStorage.getItem(_key);
-            if (user) {
-              localStorage.removeItem(_key);
-            }
-            localStorage.setItem('XUBA_TKN', usuario.token)
-            this.authService.setUser(usuario);
-            // this.fnToggleMenu();
-            this.ss.showNotification('success', 'Inicio de sesión exitoso');
-            // this.isLoggedIn = this.authService.isLoggedIn();
-            this.toggleLoginForm();
-            //this.conectarSignalR(0);
-            // this.conectarSignalR(this.usuario()!.id);
-          }
+          // this.userService.setUser(usuario);
+
+          // if (usuario.token) {
+          //     let _key = this.ss.toXubaEncode('UserGuest');
+          //     let user = localStorage.getItem(_key);
+          //     if (user) {
+          //       localStorage.removeItem(_key);
+          //     }
+          // localStorage.setItem('XUBA_TKN', usuario.token)
+          this.authService.setUser(usuario);
+          //     // this.fnToggleMenu();
+          this.ss.showNotification('success', 'Inicio de sesión exitoso');
+          //     // this.isLoggedIn = this.authService.isLoggedIn();
+          this.toggleLoginForm();
+          //     //this.conectarSignalR(0);
+          //     // this.conectarSignalR(this.usuario()!.id);
+          //   }
         } else {
           this.ss.showNotification('error', usuario.mensaje, 4500);
         }
-        console.log('Login exitoso:', usuario);
+        // console.log('Login exitoso:', usuario);
       },
       error: (err) => {
         this.loading = false;

@@ -337,7 +337,9 @@ export class MyAuctionDetailComponent {
         next: (res) => {
           console.log(res);
           this.loading = false;
-          this.ss.showNotification('success', 'Estatus del reclamo actualizado');
+          this.setCloseModal('detalleReclamo');
+          this.getInitialData(this.subasta!.id);
+          this.ss.showNotification('success', 'Reclamo actualizado');
         },
         error: (err) => {
           this.loading = false;
@@ -527,6 +529,8 @@ export class MyAuctionDetailComponent {
   showActionButton(estatus: number): boolean {
     return this.currentEstatus.idEstatus === estatus;
   }
+
+
 
   setOpenModal(modalName: string) {
     this.isModalOpen[modalName] = true;

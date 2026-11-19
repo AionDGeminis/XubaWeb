@@ -102,6 +102,7 @@ export class SubastasService {
       { headers: test_headers }
     ).pipe(map(res => res));
   }
+
   ConsultarUltimasOfertas(idSubasta: number, pagina: number): Observable<any> {
 
     return this.http.get<any>(

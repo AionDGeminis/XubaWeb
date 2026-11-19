@@ -122,37 +122,42 @@
   <!-- Panel derecho: Información editable -->
   <div class="profile-main">
     <div class="w-100 d-none d-sm-block">
-      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(0)"
-        [ngClass]="{'active': tabIndex === 0}">General</button>
-      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(1)"
-        [ngClass]="{'active': tabIndex === 1}">Xubastas</button>
+      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(ProfileTabIndexCve.General)"
+        [ngClass]="{'active': tabIndexClave === ProfileTabIndexCve.General}">General</button>
+      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(ProfileTabIndexCve.Xubastas)"
+        [ngClass]="{'active': tabIndexClave === ProfileTabIndexCve.Xubastas}">Xubastas</button>
       <!-- <button class="btn-tab-card w-20" (click)="setCurrentTab(1)" [ngClass]="{'active': tabIndex === 1}">Ganadas</button> -->
-      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(3)" [ngClass]="{'active': tabIndex === 3}">Cuentas y
+      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(ProfileTabIndexCve.CuentasWallet)"
+        [ngClass]="{'active': tabIndexClave === ProfileTabIndexCve.CuentasWallet}">Cuentas y
         Wallet</button>
-      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(4)" [ngClass]="{'active': tabIndex === 4}">Datos
+      <button class="btn-tab-card w-20" (click)="setCurrentTabPage(ProfileTabIndexCve.DatosFiscales)"
+        [ngClass]="{'active': tabIndexClave === ProfileTabIndexCve.DatosFiscales}">Datos
         fiscales</button>
     </div>
 
     <div class="w-100 d-block d-sm-none">
-      <button title="Configuracion general" class="btn-tab-card w-20" (click)="setCurrentTabPage(0)"
-        [ngClass]="{'active': tabIndex === 0}">
+      <button title="Configuracion general" class="btn-tab-card w-20"
+        (click)="setCurrentTabPage(ProfileTabIndexCve.General)"
+        [ngClass]="{'active': tabIndexClave === ProfileTabIndexCve.General}">
         <i class="fas fa-cogs"></i>
       </button>
-      <button title="Mis Xubastas" class="btn-tab-card w-20" (click)="setCurrentTabPage(1)"
-        [ngClass]="{'active': tabIndex === 1}">
+      <button title="Mis Xubastas" class="btn-tab-card w-20" (click)="setCurrentTabPage(ProfileTabIndexCve.Xubastas)"
+        [ngClass]="{'active': tabIndexClave === ProfileTabIndexCve.Xubastas}">
         <i class="fas fa-gavel"></i> 2
       </button>
-      <button title="Cuentas y Wallet" class="btn-tab-card w-20" (click)="setCurrentTabPage(3)"
-        [ngClass]="{'active': tabIndex === 3}">
+      <button title="Cuentas y Wallet" class="btn-tab-card w-20"
+        (click)="setCurrentTabPage(ProfileTabIndexCve.CuentasWallet)"
+        [ngClass]="{'active': tabIndexClave === ProfileTabIndexCve.CuentasWallet}">
         <i class="fas fa-wallet"></i>
       </button>
-      <button title="Datos fiscales" class="btn-tab-card w-20" (click)="setCurrentTabPage(4)"
-        [ngClass]="{'active': tabIndex === 4}">
+      <button title="Datos fiscales" class="btn-tab-card w-20"
+        (click)="setCurrentTabPage(ProfileTabIndexCve.DatosFiscales)"
+        [ngClass]="{'active': tabIndexClave === ProfileTabIndexCve.DatosFiscales}">
         <i class="fas fa-book"></i>
       </button>
     </div>
     <!-- Datos personales -->
-    <ng-container *ngIf="tabIndex === 0">
+    <ng-container *ngIf="tabIndexClave === 'General'">
       <div class="profile-card" style="position: relative;">
         <!-- <app-loader *ngIf="loading"></app-loader> -->
         <h3 class="section-title f-arial">Datos personales</h3>
@@ -334,7 +339,7 @@
 
       </div>
     </ng-container>
-    <ng-container *ngIf="tabIndex === 1">
+    <ng-container *ngIf="tabIndexClave === 'Xubastas'">
       <div class="profile-card">
         <h3 class="mb-0" style="display: flex;justify-content:space-between;">
           Mis xubastas
@@ -411,13 +416,18 @@
               <th class="w-20">Precio</th>
               <th class="w-10">Tiempo</th>
               <th class="w-10">Estatus</th>
-              <th class="w-10">Acciones</th>
+              <th class="w-10 pe-1">Acciones</th>
             </tr>
             <tr class="row-selectable" *ngFor="let subasta of listaSubastas">
-              <td style="width:100px">
-                <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null"
+              <td>
+                <!-- <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null"
                   (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)"
-                  class="d-block img-fluid img-auct" alt="Auction Image">
+                  class="d-block img-fluid img-auct" alt="Auction Image"> -->
+
+                <img class="img-auct-table" style="width:70px;border:none;display:block;border-radius: 5px;"
+                  [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null"
+                  (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)" class=""
+                  alt="Auction Image">
               </td>
               <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
               <td class="td-desc">{{subasta.short_desc}}</td>
@@ -480,23 +490,28 @@
         </div>
         <!-- ========================================================== -->
         <div class="table-cont-scroll mt-2" *ngIf="tabSubastasIndex === 1">
-          <table class="table table-striped w-100 text-center d-none d-sm-table">
+          <table class="table table-striped w-100 text-center d-none d-sm-table table-xubastas">
             <tr class="bg-xuba1 text-white">
               <th class="w-10">Img</th>
               <th class="w-10">Titulo</th>
               <th class="w-30">Descripcion</th>
               <th class="w-20">Precio</th>
               <th class="w-20">Tiempo</th>
-              <th class="w-10">Acciones</th>
+              <th class="w-10 pe-1">Acciones</th>
 
             </tr>
-            <tr class="row-selectable tw:odd:bg-white tw:even:bg-gray-100"
-              style="border-bottom:1px solid #b2bec3;padding-bottom: 4px !important;"
+            <tr class="row-selectable " style="border-bottom:1px solid #b2bec3;padding-bottom: 4px !important;"
               *ngFor="let subasta of listaSubastas">
-              <td style="width:100px; padding-bottom: 8px;">
+              <!-- <td class="bg-dark" style="width:45px; padding-bottom: 8px;">
                 <img [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null"
                   (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)"
-                  class="d-block img-fluid img-auct" alt="Auction Image">
+                  class="d-block  img-auct img-auct-table" alt="Auction Image">
+              </td> -->
+              <td>
+                <img class="img-auct-table" style="width:70px;border:none;display:block;border-radius: 5px;"
+                  [src]="subasta.imagenes.length > 0 ? subasta.imagenes[0].url:null"
+                  (click)="openImagesViewer(subasta.imagenes, $event)" (error)="onImgError($event)" class=""
+                  alt="Auction Image">
               </td>
               <td class="td-caption">{{subasta.caption}} # {{subasta.id}}</td>
               <td class="td-desc">{{subasta.short_desc}}</td>
@@ -504,15 +519,15 @@
               <td>{{segundosATiempoString(subasta.tiempoVence!)}}</td>
               <td>
                 <button (click)="openSubastaDetalleCreada(subasta)" title="Ver detalles"
-                  class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt border-none">
+                  class="btn-pill btn-offer w-100 glass-btn pt-1 pb-1 smaller-txt border-none">
                   <i class="fas fa-file text-white"></i>
                 </button>
                 <button (click)="openSubastaDetalle(subasta)" title="Ver apuestas"
-                  class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt mt-1 border-none">
+                  class="btn-pill btn-offer w-100 glass-btn pt-1 pb-1 smaller-txt mt-1 border-none">
                   <i class="fas fa-gavel text-white"></i>
                 </button>
                 <button *ngIf="subasta.desStatus === 'Rechazada'" (click)="openModalSubastaEdicion(subasta)"
-                  class="btn-pill btn-offer glass-btn pt-1 pb-1 smaller-txt mt-1 border-none">
+                  class="btn-pill btn-offer w-100 glass-btn pt-1 pb-1 smaller-txt mt-1 border-none">
                   <i class="fas fa-edit text-white"></i>
                 </button>
 
@@ -574,7 +589,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="tabIndex === 2">
+    <!-- <ng-container *ngIf="tabIndexClave === 2">
       <div class="row m-auto w-100">
         <div class="container py-4">
           <div class="d-flex align-items-center mb-3">
@@ -714,10 +729,10 @@
 
         </div>
       </div>
-    </ng-container>
+    </ng-container> -->
 
 
-    <ng-container *ngIf="tabIndex === 3">
+    <ng-container *ngIf="tabIndexClave === 'CuentasWallet'">
       <div class="profile-card">
         <div class="header-row">
           <h3>
@@ -950,7 +965,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="tabIndex === 4">
+    <ng-container *ngIf="tabIndexClave === 'DatosFiscales'">
       <div class="profile-card">
         <div class="header-row">
           <h3>
