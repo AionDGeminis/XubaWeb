@@ -20,8 +20,8 @@ export const environment = {
   token_url: 'https://api.xuba.mx:8443/api/login/authenticate',
   auth_base_url: 'https://api.xuba.mx:8443/Auth',
   //   image_url:'http://173.208.155.152:8088/api/'
-  // threeds_redirect_url: 'https://www.xuba.mx/payment-callback',
-  threeds_redirect_url: 'http://localhost:4200/payment-callback',
+  threeds_redirect_url: 'https://www.xuba.mx/payment-callback',
+  //  threeds_redirect_url: 'http://localhost:4200/payment-callback',
 
   openPayId: 'mz5jjyzabcb3zzpevo0l',
   // openPayApiKey: 'pk_324198c2c6534c8695935c731ec69e5a',
