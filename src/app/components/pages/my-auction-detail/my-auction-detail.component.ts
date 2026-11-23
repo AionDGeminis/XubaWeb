@@ -21,6 +21,7 @@ import { SignalRChatService } from '../../../services/signalrchat.service';
 import { FullscreenModalComponent } from '../../shared-components/modals/fullscreen-modal/fullscreen-modal.component';
 import { CotizacionPaqueteriaModel } from '../../../models/cotizacion-model';
 import { PaymentComponent } from '../../shared-components/modals/payment/payment.component';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-my-auction-detail',
@@ -114,6 +115,7 @@ export class MyAuctionDetailComponent {
     private router: Router,
     private signalRService: SignalRService,
     private authService: AuthService,
+    private userService: UserService,
     private subastasService: SubastasService,
     // private renderer: Renderer2,
     private toastr: ToastrService,
@@ -125,11 +127,14 @@ export class MyAuctionDetailComponent {
     private sanitizer: DomSanitizer
   ) {
     const id = +this.route.snapshot.paramMap.get('id')!;
+    this.usuario = this.userService.currentUser;
+    this.isLoggedIn = this.userService.isLoggedIn
     // console.log(id)
-    this.usuario = this.authService.currentUser;
-    this.isLoggedIn = computed(() => !!this.usuario());
-    if (this.usuario) {
-      this.getComisionesUsuario(this.usuario()!.id);
+    // this.usuario = this.authService.currentUser;
+    // this.isLoggedIn = computed(() => !!this.usuario());
+
+    if (this.isLoggedIn()) {
+      this.getComisionesUsuario(0);
     }
 
     this.getInitialData(id);
@@ -675,11 +680,11 @@ export class MyAuctionDetailComponent {
 
   confirmarCancelacion() {
 
-    const usuario = this.authService.currentUser();
+    // const usuario = this.authService.currentUser();
 
     const data = {
       idSubasta: this.subasta.id,
-      idUsuario: usuario?.id,
+      idUsuario: 0,
       motivo: this.motivoCancelacion
     };
 
@@ -1133,16 +1138,16 @@ export class MyAuctionDetailComponent {
   }
   confirmarContraoferta() {
 
-    const usuario = this.authService.currentUser();
+    // const usuario = this.authService.currentUser();
 
-    if (!usuario) {
-      this.toastr.error('No se encontró el usuario.');
-      return;
-    }
+    // if (!usuario) {
+    //   this.toastr.error('No se encontró el usuario.');
+    //   return;
+    // }
 
     const data = {
       idSubasta: this.subasta.id,
-      idUsuario: usuario.id,
+      idUsuario: 0,
       oferta: this.montoContraoferta,
       tipoUsuario: 'VEND'
     };

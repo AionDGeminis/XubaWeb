@@ -2032,7 +2032,7 @@ export class HomeComponent implements OnInit {
 
     const correo = '';
     this.loading = true;
-    this.authService.login(this.loginForm.usuario.trim(), this.loginForm.pass.trim(), correo).subscribe({
+    this.authService.login(this.loginForm.usuario.trim(), this.loginForm.pass.trim()).subscribe({
       next: (usuario: any) => {
         this.loading = false;
 

@@ -18,7 +18,9 @@
 
       <!-- Artículo -->
       <article class="xs-panel xs-item">
-        <img class="xs-item__img" [src]="subasta.imagenes[0].url" alt="subasta">
+        <img *ngIf="subasta && subasta.imagenes && subasta.imagenes.length > 0" class="xs-item__img"
+          [src]="subasta.imagenes[0].url" alt="subasta">
+
         <ng-template #sinImagen>
           <div class="xs-item__img xs-item__img--vacia"></div>
         </ng-template>

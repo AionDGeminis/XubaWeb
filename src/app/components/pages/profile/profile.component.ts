@@ -1,4 +1,4 @@
-import { Component, computed, HostListener, OnInit, Signal } from '@angular/core';
+import { Component, computed, effect, HostListener, OnInit, Signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LoaderComponent } from '../../shared-components/loader/loader.component';
 import { CommonModule } from '@angular/common';
@@ -22,6 +22,7 @@ import { PagoSubastaTicketComponent } from '../../shared-components/tickets/pago
 import { Usuario } from '../../../models/usuario-model';
 import { initDataRegistroDatosFiscales, RegistroDatosFiscales } from '../../../models/datos-fiscales-model';
 import { ProfileTabIndexCve } from '../../../../enums/profile-index-tab-enum';
+import { UserService } from '../../../services/user.service';
 
 declare var OpenPay: any;
 
@@ -345,10 +346,20 @@ export class ProfileComponent implements OnInit {
   showModalComprobante: boolean = false;
   arroba = '@'
   totalRequisitosVerificados = 0;
-  constructor(private router: Router, private subastasService: SubastasService, private authService: AuthService, private addressService: AddressesService,
+  constructor(private router: Router, private subastasService: SubastasService, private authService: AuthService, private userService: UserService, private addressService: AddressesService,
     private datosFiscalesService: DatosFiscalesService, private profileService: ProfileService, private ss: SharedService, private http: HttpClient, private openPayService: OpenPayService) {
     this.checkNavigation();
-    this.loadInitData();
+    effect(() => {
+      this.usuario = this.userService.currentUser;
+      this.isLoggedIn = this.userService.isLoggedIn
+
+      console.log(this.usuario())
+      console.log(this.isLoggedIn())
+      if (this.isLoggedIn()) {
+        this.loadInitData();
+      }
+    })
+
   }
 
   ngOnInit(): void {
@@ -375,13 +386,17 @@ export class ProfileComponent implements OnInit {
   loadInitData() {
 
     this.getWalletPagos();
-    this.usuario = this.authService.currentUser;
-    this.isLoggedIn = this.authService.isLoggedIn //computed(() => !!this.usuario());
-    if (this.isLoggedIn()) {
-      this.getInformacionUsuario();
-      console.log('consulta perfil')
-      //this.getInformacionPerfil(this.usuario()!.id);
-    }
+    this.usuario = this.userService.currentUser;
+    this.isLoggedIn = this.userService.isLoggedIn //computed(() => !!this.usuario());
+    //this.usuario = this.authService.currentUser;
+    console.log(this.usuario())
+    console.log(this.isLoggedIn())
+    //this.isLoggedIn = this.authService.isLoggedIn //computed(() => !!this.usuario());
+    // if (this.isLoggedIn()) {
+    this.getInformacionUsuario();
+    console.log('consulta perfil')
+    //this.getInformacionPerfil(this.usuario()!.id);
+    // }
 
   }
 

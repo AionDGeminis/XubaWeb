@@ -98,12 +98,24 @@ export class AuthService {
   //   return false;
   // }
 
-  login(telefono: string, contra: string, correo: string): Observable<Usuario> {
-    const body = { telefono, contra, correo };
+  login(usuario: string, contra: string): Observable<Usuario> {
+    const body = { usuario, contra };
+    // const body = { telefono, contra, correo };
 
     return this.http.post<Usuario>(this.apiUrlv2, body);
     // return this.http.post<Usuario>(this.apiUrlv2, body).pipe(map(res => res));
   }
+
+  // checkLoggedUser() {
+  //   let __usuario = this._usuario();
+  //   if (!__usuario) {
+  //     let _usuario = this.validarSesion().subscribe((user) => {
+
+  //     });
+  //     // return this.http.get<Usuario>(`${env.base_url}/Auth/ValidarSesion`, { headers: headers }).pipe(map(res => res));
+  //     // this.setUser(__usuario);
+  //   }
+  // }
 
   setUser(user: Usuario) {
     console.log(user)
@@ -144,7 +156,9 @@ export class AuthService {
     console.log(result)
   }
 
-
+  validarSesion(): Observable<Usuario> {
+    return this.http.get<Usuario>(`${env.auth_base_url}ValidarSesion`, { headers: headers }).pipe(map(res => res));
+  }
 
   registerUser(dataUser: any) {
     // final response = await dio.post('/usuarios/RegistroUsuario', data: data, options: Options(headers: getHeaders()));

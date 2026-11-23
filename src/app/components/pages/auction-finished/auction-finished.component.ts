@@ -16,6 +16,7 @@ import { SellerViewComponent } from './views/seller-view/seller-view.component';
 import { environment } from '../../../environment/environment';
 import { OpenPayService } from '../../../services/openpay.service';
 import { Usuario } from '../../../models/usuario-model';
+import { UserService } from '../../../services/user.service';
 declare var OpenPay: any;
 
 @Component({
@@ -38,9 +39,13 @@ export class AuctionFinishedComponent implements OnInit {
   textoLoading: string = 'Cargando...';
   dataParams: any = null;
 
-  constructor(private route: ActivatedRoute, private openPayService: OpenPayService, private ss: SharedService, private authService: AuthService, private subastasService: SubastasService, private router: Router) {
-    this.usuario = this.authService.currentUser;
-    this.isLoggedIn = computed(() => !!this.usuario());
+  constructor(private route: ActivatedRoute, private openPayService: OpenPayService,
+    private ss: SharedService, private authService: AuthService, private userService: UserService,
+    private subastasService: SubastasService, private router: Router) {
+    // this.usuario = this.authService.currentUser;
+    // this.isLoggedIn = computed(() => !!this.usuario());
+    this.usuario = this.userService.currentUser;
+    this.isLoggedIn = this.userService.isLoggedIn
     let dataParams: any = this.route.snapshot.params['permissionData'];
     let decoded = this.ss.decodeFromBase64(dataParams);
     if (decoded) {
@@ -92,7 +97,7 @@ export class AuctionFinishedComponent implements OnInit {
       next: (response) => {
         this.loading = false;
         //     // console.log('informacion del ganador')
-        // console.log(response);
+        console.log(response);
         this.currentUser.winner = response.ganador;
         this.currentUser.any = !this.currentUser.winner;
         //     this.ganadorInfo = response;

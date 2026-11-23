@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { NuevaSubastaModalComponent } from '../../../modals/nueva-subasta-modal/nueva-subasta-modal.component';
 import { LocalSignalsService } from '../../../../../services/localsignals.service';
 import { Usuario } from '../../../../../models/usuario-model';
+import { UserService } from '../../../../../services/user.service';
 
 @Component({
   selector: 'app-menu',
@@ -50,9 +51,11 @@ export class MenuComponent {
     // private auctionService: AuctionService,
     // private openPayService: OpenPayService,
     // private location: Location,
-    private authService: AuthService) {
-    this.isLoggedIn = this.authService.isLoggedIn;
-    this.usuario = this.authService.currentUser;
+    private authService: AuthService,
+    private userService: UserService) {
+    this.isLoggedIn = this.userService.isLoggedIn;
+    // this.isLoggedIn = this.authService.isLoggedIn;
+    this.usuario = this.userService.currentUser;
   }
 
 
