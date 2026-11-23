@@ -173,12 +173,47 @@ export class MenuComponent {
   }
 
   logout() {
+    this.closeAll();
+    this.authService.logout().subscribe({
+      next: (res) => {
+        if (res.success) {
 
-    console.log('Cerrando sesión...');
-    this.signalRNotiService.closeConnection();
-    this.authService.logout();
-    // this.isLoggedIn() = this.authService.isLoggedIn();
+          this.authService.limpiarSesionLocal();
+          this.userService.clear();
+          this.router.navigate(['/']);
+          try {
+            this.signalRNotiService.closeConnection();
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      },
+      error: (err) => console.log(err)
+    });
   }
+  // logout() {
+  //   this.authService.logout().subscribe({
+  //     next: (res) => {
+  //       console.log(res);
+  //       if (res.success) {
+  //         this.userService.setUser(null);
+  //         try {
+  //           this.signalRNotiService.closeConnection();
+  //         } catch (error) {
+
+  //         }
+  //         // this.userService.setIsLoggedIn(false);
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.log(err);
+  //     }
+  //   });
+  //   // console.log('Cerrando sesión...');
+  //   // this.signalRNotiService.closeConnection();
+  //   // this.authService.logout();
+  //   // this.isLoggedIn() = this.authService.isLoggedIn();
+  // }
 
   closeAll() {
     this.closeSubmenu();

@@ -102,10 +102,42 @@ export class AuthService {
     const body = { usuario, contra };
     // const body = { telefono, contra, correo };
 
-    return this.http.post<Usuario>(this.apiUrlv2, body);
+    //    return this.http.post<Usuario>(this.apiUrlv2, body);
+    return this.http.post<Usuario>(`${env.auth_base_url}/Login`, body, { headers: headers }).pipe(map(res => res));
+
     // return this.http.post<Usuario>(this.apiUrlv2, body).pipe(map(res => res));
   }
 
+  limpiarSesionLocal() {
+    this._usuario.set(null);
+
+    let _userkey = this.toXubaEncode('VALID_USER');
+    localStorage.removeItem('usuario');
+    localStorage.removeItem(_userkey);
+    localStorage.removeItem('XUBA_TKN');
+    let _key = this.ss.toXubaEncode('UserGuest');
+    let user = localStorage.getItem(_key);
+    // if (!user) {
+    // localStorage.setItem(_key, crypto.randomUUID());
+    // }
+  }
+
+  logout() {
+    // this._usuario.set(null);
+    // console.log('logout _usuario set null');
+    return this.http.post<any>(`${env.auth_base_url}/Logout`, { headers: headers }).pipe(map(res => res));
+
+    // let _userkey = this.toXubaEncode('VALID_USER');
+    // localStorage.removeItem('usuario');
+    // localStorage.removeItem(_userkey);
+    // localStorage.removeItem('XUBA_TKN');
+    // let _key = this.ss.toXubaEncode('UserGuest');
+    // let user = localStorage.getItem(_key);
+    // if (!user) {
+    //   const guid = crypto.randomUUID();
+    //   localStorage.setItem(_key, guid);
+    // }
+  }
   // checkLoggedUser() {
   //   let __usuario = this._usuario();
   //   if (!__usuario) {
@@ -157,7 +189,7 @@ export class AuthService {
   }
 
   validarSesion(): Observable<Usuario> {
-    return this.http.get<Usuario>(`${env.auth_base_url}ValidarSesion`, { headers: headers }).pipe(map(res => res));
+    return this.http.get<Usuario>(`${env.auth_base_url}/ValidarSesion`, { headers: headers }).pipe(map(res => res));
   }
 
   registerUser(dataUser: any) {
@@ -233,21 +265,7 @@ export class AuthService {
     // return stringDecoded ? JSON.parse(userData) : null;
   }
 
-  logout() {
-    this._usuario.set(null);
-    console.log('logout _usuario set null');
 
-    let _userkey = this.toXubaEncode('VALID_USER');
-    localStorage.removeItem('usuario');
-    localStorage.removeItem(_userkey);
-    localStorage.removeItem('XUBA_TKN');
-    let _key = this.ss.toXubaEncode('UserGuest');
-    let user = localStorage.getItem(_key);
-    if (!user) {
-      const guid = crypto.randomUUID();
-      localStorage.setItem(_key, guid);
-    }
-  }
 
   saveOrganization(data: any) {
     return this.http.post(`${env.base_url}/Facturacion/CrearOrganizacion`, data, { headers: test_headers }).pipe(map(res => res));

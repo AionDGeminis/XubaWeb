@@ -79,8 +79,8 @@ export class ProfileComponent implements OnInit {
     idUsuario: 0,
     predeterminada: false
   }
-  public usuario!: Signal<Usuario | null>;
-  public isLoggedIn!: Signal<boolean>;
+  // public usuario!: Signal<Usuario | null>;
+  // public isLoggedIn!: Signal<boolean>;
   direcciones: any[] = [];
   tabIndexClave: ProfileTabIndexCve = ProfileTabIndexCve.General;
   // tabIndex: number = 0;
@@ -346,27 +346,30 @@ export class ProfileComponent implements OnInit {
   showModalComprobante: boolean = false;
   arroba = '@'
   totalRequisitosVerificados = 0;
+  usuario = this.userService.currentUser;
+  isLoggedIn = this.userService.isLoggedIn
   constructor(private router: Router, private subastasService: SubastasService, private authService: AuthService, private userService: UserService, private addressService: AddressesService,
     private datosFiscalesService: DatosFiscalesService, private profileService: ProfileService, private ss: SharedService, private http: HttpClient, private openPayService: OpenPayService) {
     this.checkNavigation();
-    effect(() => {
-      this.usuario = this.userService.currentUser;
-      this.isLoggedIn = this.userService.isLoggedIn
+    // effect(() => {
+    //   this.usuario = this.userService.currentUser;
+    //   this.isLoggedIn = this.userService.isLoggedIn
 
-      console.log(this.usuario())
-      console.log(this.isLoggedIn())
-      if (this.isLoggedIn()) {
-        this.loadInitData();
-      }
-    })
+    //   console.log(this.usuario())
+    //   console.log(this.isLoggedIn())
+    //   if (this.isLoggedIn()) {
+    // this.loadInitData();
+    //   }
+    // })
 
   }
 
   ngOnInit(): void {
+
     OpenPay.setId(environment.openPayId);
     OpenPay.setApiKey(environment.openPayApiKey);
     OpenPay.setSandboxMode(environment.openPaySandBox);
-
+    this.loadInitData();
     this.getInformacionListafiscal();
   }
 

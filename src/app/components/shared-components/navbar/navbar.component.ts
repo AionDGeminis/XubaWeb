@@ -1004,9 +1004,17 @@ export class NavbarComponent implements OnInit {
 
   logout() {
 
-    console.log('Cerrando sesión...');
-    this.signalRNotiService.closeConnection();
-    this.authService.logout();
+    // console.log('Cerrando sesión...');
+    // this.signalRNotiService.closeConnection();
+    // this.authService.logout();
+    this.authService.logout().subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
     // this.isLoggedIn() = this.authService.isLoggedIn();
   }
 
@@ -1065,26 +1073,34 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  // verificarSesion() {
+  //   let _isUserLoggedIn = this.userService.isLoggedIn();
+  //   if (!_isUserLoggedIn) {
+  //     this.loading = true;
+  //     this.authService.validarSesion().subscribe({
+  //       next: (usuario: any) => {
+  //         this.loading = false;
+  //         console.log(usuario)
+  //         // 
+  //         if (usuario) {
+  //           this.userService.setUser(usuario);
+  //         }
+  //       },
+  //       error: (err) => {
+  //         this.loading = false;
+  //         console.error('Error en login:', err);
+  //         this.ss.showNotification('error', 'Inicie sesion correctamente para acceder a esta pagina');
+  //       }
+  //     });
+  //   }
+  // }
   verificarSesion() {
-    let _isUserLoggedIn = this.userService.isLoggedIn();
-    if (!_isUserLoggedIn) {
-      this.loading = true;
-      this.authService.validarSesion().subscribe({
-        next: (usuario: any) => {
-          this.loading = false;
-          console.log(usuario)
-          // 
-          if (usuario) {
-            this.userService.setUser(usuario);
-          }
-        },
-        error: (err) => {
-          this.loading = false;
-          console.error('Error en login:', err);
-          this.ss.showNotification('error', 'Inicie sesion correctamente para acceder a esta pagina');
-        }
-      });
-    }
+    if (this.userService.isLoggedIn()) return;
+    this.loading = true;
+    this.userService.checkSession().subscribe(ok => {
+      this.loading = false;
+      // si ok es false, simplemente se muestra el formulario de login
+    });
   }
 
   goToSearch() {

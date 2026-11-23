@@ -14,22 +14,25 @@ import { SearchResultComponent } from './components/pages/search-result/search-r
 import { MyAuctionDetailComponent } from './components/pages/my-auction-detail/my-auction-detail.component';
 import { UserpageComponent } from './components/pages/userpage/userpage.component';
 import { ChangePasswordComponent } from './components/shared-components/change-password/change-password.component';
+import { ErrorpageComponent } from './components/pages/errorpage/errorpage.component';
+import { authGuard } from './services/auth.guard';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
-    { path: 'subasta-detalle/:id/:origen', component: AuctionDetailComponent },
-    { path: 'my-subasta-detalle/:id', component: MyAuctionDetailComponent },
+    { path: 'subasta-detalle/:id/:origen', component: AuctionDetailComponent, canActivate: [authGuard] },
+    { path: 'my-subasta-detalle/:id', component: MyAuctionDetailComponent, canActivate: [authGuard] },
     { path: 'subasta-terminada/:permissionData', component: AuctionFinishedComponent },
-    { path: 'profile', component: ProfileComponent },
+    { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
     { path: 'crearSubasta', component: CreateAuctionsComponent },
     { path: 'registro', component: UserRegisterComponent },
     { path: 'userpage/:id', component: UserpageComponent },
-    { path: 'payment-callback/:responseData', component: AuthCallbackComponent },
+    { path: 'payment-callback/:responseData', component: AuthCallbackComponent, canActivate: [authGuard] },
     { path: 'search-result', component: SearchResultComponent },
     { path: 'validate/:userValidateData', component: ValidateComponent },
     { path: 'change-password/:userValidateData', component: ChangePasswordComponent },
     { path: 'politica-de-uso', component: PoliticaDeUsoComponent },
     { path: 'aviso-de-privacidad', component: AvisoPrivacidadComponent },
+    { path: 'error-page', component: ErrorpageComponent },
     // { path: 'search-result/:paramSearch', component:SearchResultComponent },
     { path: '**', redirectTo: 'home' }
     // { path: '**', redirectTo: 'home' }
