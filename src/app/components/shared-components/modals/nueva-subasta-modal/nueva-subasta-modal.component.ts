@@ -441,8 +441,16 @@ export class NuevaSubastaModalComponent implements OnInit {
       }
 
     } else {
-      let mensaje = responseCharge.error.message ? responseCharge.error.message : 'Hubo un problema al generar el cargo'
-      this.ss.showNotification('error', mensaje);
+      let mensaje = responseCharge.error || responseCharge.result ?
+        (responseCharge.error ?
+          responseCharge.error
+          :
+          responseCharge.result.error.message)
+        :
+        'Hubo un problema al generar el cargo'
+
+      //responseCharge.error.message ? responseCharge.error.message : 'Hubo un problema al generar el cargo'
+      this.ss.showNotification('error', mensaje, 5000);
       // this.ss.showNotification('error', 'Hubo un problema al generar el cargo');
       return;
     }
@@ -534,10 +542,12 @@ export class NuevaSubastaModalComponent implements OnInit {
   }
 
   generarModeloCargo(deviceSessionId: any, encodedAuth: string) {
-    let userData = this.authService.getUserData();
+    // let userData = this.authService.getUserData();
+    let clienteNombre = `${this.usuario()?.nombre} ${this.usuario()?.apellido}`
+    const timestamp = Date.now();
     const dataCharge: any = {
       'amount': this.Premium,
-      'description': 'Pago subasta premium vendedor ' + userData.id,
+      'description': 'Pago subasta premium vendedor_' + timestamp + '_' + clienteNombre,
       'name': this.tarjeta.holder_name,
       'lastName': this.tarjeta.holder_lastname,
       'email': this.tarjeta.mail,
@@ -593,7 +603,7 @@ export class NuevaSubastaModalComponent implements OnInit {
       this.subasta.valorOferta = null;
       this.calcularValorInicial();
     }
-    this.getComisionesUsuario(this.usuario()!.id, 'Premium');
+    this.getComisionesUsuario(0, 'Premium');
 
   }
 
@@ -653,7 +663,7 @@ export class NuevaSubastaModalComponent implements OnInit {
       metodoPago: '',
       cliente: clienteNombre,
       correo: '',
-      ordenXuba: `NAX-PREMIUM_${timestamp}-${this.usuario()?.id}`,
+      ordenXuba: `NXU-PREMIUM_${timestamp}-${clienteNombre}`,
       total: this.Premium,
       subtotal: this.Premium,
       envio: 0,
