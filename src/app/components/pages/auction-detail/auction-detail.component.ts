@@ -20,6 +20,7 @@ import { gsap } from 'gsap';
 import { SlidebuttonComponent } from '../../shared-components/slidebutton/slidebutton.component';
 import { OfertaPersonalizadaModalComponent } from '../../shared-components/modals/oferta-personalizada-modal/oferta-personalizada-modal.component';
 import { Usuario } from '../../../models/usuario-model';
+import { UserService } from '../../../services/user.service';
 
 
 @Component({
@@ -179,6 +180,7 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
     private router: Router,
     private signalRService: SignalRService,
     private authService: AuthService,
+    private userService: UserService,
     private subastasService: SubastasService,
     // private renderer: Renderer2,
     private toastr: ToastrService,
@@ -189,14 +191,16 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   ) {
     this.checkNavigation();
     this.checkTheme();
-    this.usuario = this.authService.currentUser;
     const id = +this.route.snapshot.paramMap.get('id')!;
 
     // this.idSubasta = id;
     // console.log(id)
     // this.getInitialData(id);
     // this.isLoggedIn = computed(() => !!this.usuario());
-    this.isLoggedIn = this.authService.isLoggedIn
+    this.usuario = this.userService.currentUser;
+    this.isLoggedIn = this.userService.isLoggedIn
+    // this.usuario = this.authService.currentUser;
+    // this.isLoggedIn = this.authService.isLoggedIn
     this.omitFirstBidIncoming = true;
     this.checkUserLoggedData();
     // this.vistas.idUsuario = this.usuario()?.id ?? 0;
@@ -879,10 +883,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   getSubastasSeguidas() {
-    const usuario = this.authService.currentUser();
-    if (usuario) {
-      const idUsuario = usuario.id;
-      this.auctionService.getAuctions(idUsuario).subscribe({
+    if (this.usuario()) {
+      this.auctionService.getAuctions(0).subscribe({
         next: (data) => {
           this.auctionsId = data.map(subasta => subasta.id);
         },
@@ -897,12 +899,10 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
 
   toggleSingleSeguida(idSubasta: number, event: Event): void {
     // event.stopPropagation();
-    const usuario = this.authService.currentUser();
-    if (usuario) {
+    if (this.isLoggedIn()) {
       // if (this.isSingleSeguida(idSubasta)) {
       //   // this.auctionsId = this.auctionsId.filter(id => id !== idSubasta);
       // } else {
-      console.log(usuario!.id);
       //   this.auctionsId.push(idSubasta);
       //   this.subastasService.seguirSubasta(usuario!.id, idSubasta.toString()).subscribe({
       //     next: (data) => {
@@ -989,11 +989,8 @@ export class AuctionDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   verificarSiSiguiendo(): void {
-    const idUsuario = 0;
-    // const idUsuario = Number(this.authService.idUsuario);
-
     this.subastasService.ConsultarSiSiguiendo(
-      idUsuario,
+      0,
       this.detallesubasta.id
     ).subscribe({
       next: res => this.isFollowed = res === true,

@@ -170,8 +170,12 @@ export class NavbarComponent implements OnInit {
 
 
     // };
-    this.usuario = this.authService.currentUser;
-    this.isLoggedIn = this.authService.isLoggedIn;//computed(() => !!this.usuario());
+    this.usuario = this.userService.currentUser;
+    this.isLoggedIn = this.userService.isLoggedIn;
+    // this.usuario = this.authService.currentUser;
+    // this.isLoggedIn = this.authService.isLoggedIn;
+
+    //computed(() => !!this.usuario());
     //this.initSubasta();
 
     OpenPay.setId(environment.openPayId);
@@ -228,8 +232,9 @@ export class NavbarComponent implements OnInit {
         }
         // Aquí puedes hacer lógica para mostrar/ocultar elementos
       });
-
-    this.usuario = this.authService.currentUser;
+    this.verificarSesion()
+    //this.usuario = this.userService.currentUser;
+    // this.usuario = this.authService.currentUser;
     // this.isLoggedIn = computed(() => !!this.usuario());
     // console.log('USUAROO LOGUEADO ACTUAL')
     // console.log(this.usuario())
@@ -463,11 +468,11 @@ export class NavbarComponent implements OnInit {
   // ================ FUNCIONES DENTRO DEL MENU DESPLEGABLE ==================
 
   getSubastasSeguidas() {
-    const usuario = this.authService.currentUser();
+    const usuario = this.userService.currentUser();
     if (usuario) {
       const idUsuario = usuario.id;
       this.loadingNotificaciones = true;
-      this.auctionService.getAuctions(idUsuario).subscribe({
+      this.auctionService.getAuctions(0).subscribe({
         next: (data) => {
           this.auctions = data.map(subasta => ({
             ...subasta,
@@ -490,7 +495,7 @@ export class NavbarComponent implements OnInit {
   }
 
   getSubastasGanadas() {
-    const usuario = this.authService.currentUser();
+    const usuario = this.userService.currentUser();
     if (usuario) {
       this.loadingNotificaciones = true;
       const idUsuario = usuario.id;
@@ -525,8 +530,8 @@ export class NavbarComponent implements OnInit {
 
   getNotificaciones() {
     this.loadingNotificaciones = true;
-    let userData = this.authService.getUserData();
-    this.subastaService.getNotifications(userData.id).subscribe({
+    // let userData = this.authService.getUserData();
+    this.subastaService.getNotifications(0).subscribe({
       next: (data: any) => {
         console.log('Notificaciones cargadas:', data);
         this.notificaciones = data;
@@ -541,8 +546,8 @@ export class NavbarComponent implements OnInit {
 
   getMisSeguidores() {
     this.loadingNotificaciones = true;
-    let userData = this.authService.getUserData();
-    this.subastaService.getSeguidores(userData.id).subscribe({
+    // let userData = this.authService.getUserData();
+    this.subastaService.getSeguidores(0).subscribe({
       next: (data: any) => {
         console.log('seguidos cargadas:', data);
         this.followers = data;
@@ -557,8 +562,8 @@ export class NavbarComponent implements OnInit {
 
   getVendedoresFavoritos() {
     this.loadingNotificaciones = true;
-    let userData = this.authService.getUserData();
-    this.subastaService.GetVendedoresSeguidos(userData.id).subscribe({
+    // let userData = this.authService.getUserData();
+    this.subastaService.GetVendedoresSeguidos(0).subscribe({
       next: (data: any) => {
         console.log('favoritos  obtenidos:', data);
         this.favoritos = data;
@@ -734,7 +739,7 @@ export class NavbarComponent implements OnInit {
     } else {
       if (this.isValidModelSubasta() && this.isValidNoNegativeValues()) {
         // this.ss.showNotification('success', 'todo correcto')
-        let userData = this.authService.getUserData();
+        // let userData = this.authService.getUserData();
         // this.subasta.idVendedor = userData.id;
         this.subasta.imagenes = this.getClearBase64(this.subasta.imagenes);
         if (this.tipoSubasta === 'premium') {
@@ -864,7 +869,7 @@ export class NavbarComponent implements OnInit {
   }
 
   GenerarCargo(tokenId: string, deviceSessionId: any) {
-    let userData = this.authService.getUserData();
+    // let userData = this.authService.getUserData();
     // const deviceSessionId = OpenPay.deviceData.setup('payment-form', 'device-session-id');
     //let dataParamsEndAuth = JSON.stringify({idSubasta: -1, autoRedirect: false, redirectTo: 'home', moveToAuthPage:false, tipoUsuario:'vendedor', process:'payment-premium' });
     let dataParamsEndAuth = JSON.stringify({ id: -1, tu: 'vendedor', rt: 'home', mtap: false, process: 'payment-premium' });
@@ -875,7 +880,7 @@ export class NavbarComponent implements OnInit {
     const dataCharge = {
       'token': tokenId,
       'amount': this.precioSubastaPremium,
-      'description': 'Pago subasta premium vendedor ' + userData.id,
+      'description': 'Pago subasta premium vendedor ',
       'name': this.tarjeta.holder_name,
       'lastName': this.tarjeta.holder_lastname,
       'email': this.tarjeta.mail,
@@ -1016,7 +1021,7 @@ export class NavbarComponent implements OnInit {
 
     const correo = '';
     this.loading = true;
-    this.authService.login(this.loginForm.usuario.trim(), this.loginForm.pass.trim(), correo).subscribe({
+    this.authService.login(this.loginForm.usuario.trim(), this.loginForm.pass.trim()).subscribe({
       // next: (usuario: any) => {
       //   this.loading = false;
       //   console.log('Login exitoso:', usuario);
@@ -1030,7 +1035,7 @@ export class NavbarComponent implements OnInit {
 
         // 
         if (usuario.success) {
-          // this.userService.setUser(usuario);
+          this.userService.setUser(usuario);
 
           // if (usuario.token) {
           //     let _key = this.ss.toXubaEncode('UserGuest');
@@ -1039,7 +1044,7 @@ export class NavbarComponent implements OnInit {
           //       localStorage.removeItem(_key);
           //     }
           // localStorage.setItem('XUBA_TKN', usuario.token)
-          this.authService.setUser(usuario);
+          // this.authService.setUser(usuario);
           //     // this.fnToggleMenu();
           this.ss.showNotification('success', 'Inicio de sesión exitoso');
           //     // this.isLoggedIn = this.authService.isLoggedIn();
@@ -1058,6 +1063,28 @@ export class NavbarComponent implements OnInit {
         this.ss.showNotification('error', 'Error en el inicio de sesión');
       }
     });
+  }
+
+  verificarSesion() {
+    let _isUserLoggedIn = this.userService.isLoggedIn();
+    if (!_isUserLoggedIn) {
+      this.loading = true;
+      this.authService.validarSesion().subscribe({
+        next: (usuario: any) => {
+          this.loading = false;
+          console.log(usuario)
+          // 
+          if (usuario) {
+            this.userService.setUser(usuario);
+          }
+        },
+        error: (err) => {
+          this.loading = false;
+          console.error('Error en login:', err);
+          this.ss.showNotification('error', 'Inicie sesion correctamente para acceder a esta pagina');
+        }
+      });
+    }
   }
 
   goToSearch() {
