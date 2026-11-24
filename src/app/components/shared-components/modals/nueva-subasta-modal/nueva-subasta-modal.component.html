@@ -194,6 +194,10 @@
                             <label for="precio">Precio (con IVA incluido)</label>
                             <input type="number" [(ngModel)]="subasta.precio" id="precio" name="precio" />
                         </div>
+                        <div class="form-group">
+                            <label for="costo">Costo (Opcional)</label>
+                            <input type="number" [(ngModel)]="subasta.costo" id="costo" name="costo" />
+                        </div>
 
                         <!-- <div class="form-group ps-5">
                         <label for="compraDirecta">Compra directa</label>
@@ -217,6 +221,11 @@
                                 <span>Precio de venta</span>
                                 <span class="tw:font-medium tw:text-gray-700">{{subasta.precio?
                                     toCurrency(subasta.precio!):'--'}}</span>
+                            </div>
+                            <div class="tw:flex tw:justify-between tw:text-gray-500">
+                                <span>Costo del producto</span>
+                                <span class="tw:font-medium tw:text-red-700">{{subasta.costo?
+                                    '-' + toCurrency(subasta.costo):'--'}}</span>
                             </div>
                             <hr class="tw:border-gray-200">
                             <div *ngFor="let com of listaComisiones"
@@ -248,7 +257,7 @@
 
                             <div class="tw:flex tw:justify-between tw:font-bold tw:text-base">
                                 <span class="tw:text-gray-700">Tu ganancia</span>
-                                <span class="tw:text-green-500">${{getGanancia()}}</span>
+                                <span class="tw:text-green-500">{{getGanancia()}}</span>
                             </div>
 
                         </ng-container>
@@ -407,7 +416,7 @@
             <div class="tab-content fast-animation  animate__animated animate__fadeInRight"
                 *ngIf="currentTabIndex === 2">
                 <!-- form-fotos-subasta.component.html -->
-                <div class="card-fotos">
+                <!-- <div class="card-fotos">
                     <div class="label label-xubaimg mb-3">Favor de cargar fotos reales de tu Producto</div>
                     <label class="cargar-foto-label">
                         <input type="file" accept="image/*" multiple (change)="onFileChange($event)" hidden />
@@ -423,6 +432,26 @@
                         fotos</div>
                     <div class="max-fotos" *ngIf="imagesPreview!.length >= 20 && tipoSubasta === 'premium'">Máximo 20
                         fotos</div>
+                </div> -->
+
+                <div class="card-fotos">
+                    <div class="label label-xubaimg mb-3">Favor de cargar fotos reales de tu Producto</div>
+
+                    <div class="dropzone" [class.dragging]="isDragging" (dragover)="onDragOver($event)"
+                        (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+                        <label class="cargar-foto-label">
+                            <input type="file" accept="image/*" multiple (change)="onFileChange($event)" hidden />
+                            <span><i class="fas fa-image"></i> Cargar foto o arrastra aquí</span>
+                        </label>
+                    </div>
+
+                    <div class="preview-list mt-1">
+                        <div class="preview-img" *ngFor="let img of imagesPreview; let i = index">
+                            <img [src]="img.url" alt="Preview" />
+                            <button type="button" (click)="eliminarImagen(i)">×</button>
+                        </div>
+                    </div>
+                    <!-- tus mensajes de máximo se quedan igual -->
                 </div>
 
                 <!-- <div class="tipo-subasta">

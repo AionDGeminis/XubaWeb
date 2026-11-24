@@ -46,6 +46,7 @@ export class NuevaSubastaModalComponent implements OnInit {
   tarjetas: any[] = [];
   mostrarCVV = false;
   aceptarTerminos: boolean = false;
+  isDragging = false;
 
   constructor(
     private ss: SharedService,
@@ -64,10 +65,23 @@ export class NuevaSubastaModalComponent implements OnInit {
     this.getDireccionesUsusario();
     this.getHorarios();
     this.getSecureCards();
+    this.getPrecioSubastaPremium();
     //throw new Error('Method not implemented.');
   }
 
 
+  getPrecioSubastaPremium() {
+    this.subastaService.getConfigByKey('Premium').subscribe({
+      next: (response: any) => {
+        this.Premium = parseFloat(response.valor);
+        console.log('precio premium')
+        console.log(response);
+      },
+      error: (error: any) => {
+        console.error(error);
+      }
+    });
+  }
 
   getHorarios() {
     for (let h = 9; h <= 18; h++) {
@@ -310,6 +324,7 @@ export class NuevaSubastaModalComponent implements OnInit {
   }
 
   toCurrency(valor: number): string {
+    //console.log(valor)
     return this.ss.toCurrency(valor);
   }
 
@@ -379,7 +394,7 @@ export class NuevaSubastaModalComponent implements OnInit {
         }
       }
     }
-    return this.subasta.precio! - totalComision;
+    return this.toCurrency(this.subasta.precio! - totalComision - (this.subasta.costo! || 0));
   }
 
   async tokenizarTarjeta(card: any) {
@@ -560,26 +575,26 @@ export class NuevaSubastaModalComponent implements OnInit {
     return dataCharge;
   }
 
-  onFileChange(event: any) {
-    const files = event.target.files;
-    let maxFileCount = this.tipoSubasta === 'general' ? 5 : 100;
-    let maxCantAdd = maxFileCount - this.subasta.imagenes.length;
-    let restFilesCount = files && files.length > maxCantAdd ? maxCantAdd : files.length;
-    // if (files && files.length + this.subasta.mimagenesSubasta.length <= maxFileCount) {
-    if (restFilesCount > 0) {
-      for (let i = 0; i < restFilesCount; i++) {
-        // for (let i = 0; i < files.length && this.subasta.mimagenesSubasta.length < maxFileCount; i++) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.subasta.imagenes.push({ base64: e.target.result });
-          this.imagesPreview!.push({ url: e.target.result });
-          // this.imagenes.push(e.target.result);
-        };
-        reader.readAsDataURL(files[i]);
-        // }
-      }
-    }
-  }
+  // onFileChange(event: any) {
+  //   const files = event.target.files;
+  //   let maxFileCount = this.tipoSubasta === 'general' ? 5 : 20;
+  //   let maxCantAdd = maxFileCount - this.subasta.imagenes.length;
+  //   let restFilesCount = files && files.length > maxCantAdd ? maxCantAdd : files.length;
+  //   // if (files && files.length + this.subasta.mimagenesSubasta.length <= maxFileCount) {
+  //   if (restFilesCount > 0) {
+  //     for (let i = 0; i < restFilesCount; i++) {
+  //       // for (let i = 0; i < files.length && this.subasta.mimagenesSubasta.length < maxFileCount; i++) {
+  //       const reader = new FileReader();
+  //       reader.onload = (e: any) => {
+  //         this.subasta.imagenes.push({ base64: e.target.result });
+  //         this.imagesPreview!.push({ url: e.target.result });
+  //         // this.imagenes.push(e.target.result);
+  //       };
+  //       reader.readAsDataURL(files[i]);
+  //       // }
+  //     }
+  //   }
+  // }
 
   eliminarImagen(index: number) {
     this.subasta.imagenes.splice(index, 1);
@@ -587,6 +602,46 @@ export class NuevaSubastaModalComponent implements OnInit {
     // this.imagenes
   }
 
+
+  onFileChange(event: any) {
+    this.agregarArchivos(event.target.files);
+    event.target.value = ''; // permite volver a elegir la misma foto
+  }
+
+  onDragOver(e: DragEvent) {
+    e.preventDefault(); // obligatorio para permitir el drop
+    this.isDragging = true;
+  }
+
+  onDragLeave(e: DragEvent) {
+    e.preventDefault();
+    this.isDragging = false;
+  }
+
+  onDrop(e: DragEvent) {
+    e.preventDefault();
+    this.isDragging = false;
+    this.agregarArchivos(e.dataTransfer?.files);
+  }
+
+  // Es tu mismo código de antes, solo que recibe "files" como parámetro
+  private agregarArchivos(files: FileList | null | undefined) {
+    if (!files) return;
+    let maxFileCount = this.tipoSubasta === 'general' ? 5 : 100;
+    let maxCantAdd = maxFileCount - this.subasta.imagenes.length;
+    let restFilesCount = files.length > maxCantAdd ? maxCantAdd : files.length;
+    if (restFilesCount > 0) {
+      for (let i = 0; i < restFilesCount; i++) {
+        if (!files[i].type.startsWith('image/')) continue; // al arrastrar no hay filtro "accept"
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          this.subasta.imagenes.push({ base64: e.target.result });
+          this.imagesPreview!.push({ url: e.target.result });
+        };
+        reader.readAsDataURL(files[i]);
+      }
+    }
+  }
 
   setValorHoras() {
     if (this.tipoSubasta === 'general') {
@@ -609,8 +664,10 @@ export class NuevaSubastaModalComponent implements OnInit {
 
 
   calcularValorInicial() {
-    this.subasta.apuesta = (this.subasta.precio! * this.porcentajeValorInicial) / 100
-    this.subasta.valorOferta = this.subasta.apuesta * 0.6;
+    this.subasta.apuesta = (this.subasta.precio! * this.porcentajeValorInicial) / 100;
+    let _valorOferta = (this.subasta.apuesta * 0.6).toFixed(2);
+    //_valorOferta = _valorOferta.toFixed(2);
+    this.subasta.valorOferta = parseFloat(_valorOferta);
   }
 
 

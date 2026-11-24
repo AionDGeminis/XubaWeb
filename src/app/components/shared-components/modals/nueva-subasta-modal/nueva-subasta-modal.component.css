@@ -463,6 +463,19 @@ input[type="checkbox"] {
     padding: 0;
 }
 
+.dropzone {
+    border: 2px dashed #999;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: .2s;
+}
+
+.dropzone.dragging {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
 .max-fotos {
     color: #f43f5e;
     font-size: 0.95rem;

@@ -19,6 +19,7 @@ export interface RegistrarSubasta {
     entregaSucursal: boolean;
     horaRecolecta: string;
     imagenes: RegistrarSubastaImagen[];
+    costo?: number | null;
 }
 
 export interface RegistrarSubastaImagen {
@@ -46,6 +47,7 @@ export function initDataRegistrarSubasta(): RegistrarSubasta {
         modelo: '',
         entregaSucursal: false,
         horaRecolecta: '',
-        imagenes: []
+        imagenes: [],
+        costo: null
     };
 }

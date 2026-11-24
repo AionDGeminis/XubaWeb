@@ -37,6 +37,10 @@ export class SubastasService {
     return this.http.get<any>(`${env.base_url}/subastas/consultarMisSubastasParticipadasGanadas`, { params: { tipo }, headers: test_headers });
   }
 
+  getConfigByKey(key: string) {
+    return this.http.get<any>(`${env.base_url}/Configuracion/GetConfigByClave`, { params: { clave: key }, headers: test_headers });
+  }
+
   getSubastasActivasVendedor(idVendedor: number) {
     let data = { idVendedor };
     return this.http.post<Subasta[]>(`${env.base_url}/subastas/misSubastas`, data, { headers: test_headers });
