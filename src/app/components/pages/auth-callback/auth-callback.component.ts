@@ -103,7 +103,7 @@ export class AuthCallbackComponent implements OnInit {
               break;
             case 'completed':
               this.setShowContent('actualizando');
-              this.checkCurrentProcess();
+              this.checkCurrentProcess(transactionID!, response.status);
               break;
             default:
               this.setShowContent('error');
@@ -123,12 +123,12 @@ export class AuthCallbackComponent implements OnInit {
 
 
 
-  checkCurrentProcess() {
+  checkCurrentProcess(id_transaction: string, status: string) {
     let _status = this.jsonParams.process;//localStorage.getItem('current_payment_status');
     console.log(_status);
     switch (_status) {
       case 'payment-premium':
-        this.saveNewSubasta();
+        this.saveNewSubasta(id_transaction, status);
         break;
       case 'payment-winner':
         this.CambiarEstatusSubasta(this.jsonParams.id, AuctionStatus.PreparacionEnvio);
@@ -170,7 +170,7 @@ export class AuthCallbackComponent implements OnInit {
   }
 
 
-  saveNewSubasta() {
+  saveNewSubasta(id_transaction: string, status: string) {
     // let encodedKeyDataSubasta =  this.ss.encodeToBase64('tmp_subasta_model');
     let created = localStorage.getItem('isXubastaCreated');
     if (created && created === 'CREATED') {
@@ -181,6 +181,8 @@ export class AuthCallbackComponent implements OnInit {
       let subasta = subastaString ? JSON.parse(subastaString!) : null;
       console.log(subasta);
       if (subasta) {
+        subasta.IdTransaccionOpenPay = id_transaction;
+        subasta.EstatusTransaccion = status;
         this.subastaService.crearSubasta(subasta).subscribe({
           next: (response) => {
             this.ss.showNotification('success', 'Subasta creada exitosamente', 2000)
